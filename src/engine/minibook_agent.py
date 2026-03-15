@@ -153,21 +153,29 @@ class MinibookAgentBase(ABC):
         # Build system prompt with file output instructions
         system = self.get_system_prompt() + """
 
-CRITICAL OUTPUT RULE: When generating code files, you MUST wrap each file in a code block
-with the filepath on the opening line, like this:
+CRITICAL OUTPUT RULES:
+1. When generating code files, you MUST wrap each file in a code block with the filepath on the opening line.
+2. EVERY file must be COMPLETE — full imports, full class body, full method implementations.
+3. NEVER write "// ... rest of implementation" or "// TODO" — write the ACTUAL code.
+
+FORMAT — use exactly this pattern for each file:
 
 ```typescript filepath: src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
-// ... full file content
+// ... full file content here
 ```
 
 ```python filepath: src/models/user.py
 from sqlalchemy import Column
-# ... full file content
+# ... full file content here
 ```
 
-Always use the exact format: ```<language> filepath: <path>
-Each file must be complete, not a snippet. Include ALL imports."""
+RULES:
+- Use: ```<language> filepath: <path>
+- One code block per file
+- Include ALL imports at the top
+- Write COMPLETE method bodies with real logic
+- If a file would be very long, still write it completely"""
 
         # Call Ollama
         response = self.ollama.chat(
@@ -373,6 +381,27 @@ Each file must be complete, not a snippet. Include ALL imports."""
             if header_match and "/" in header_match.group(1):
                 detected_path = header_match.group(1).strip()
                 # Find next code block
+                i += 1
+                while i < len(lines) and not lines[i].strip().startswith("```"):
+                    i += 1
+                if i < len(lines):
+                    i += 1  # skip opening ```
+                    code_lines = []
+                    while i < len(lines) and lines[i].strip() != "```":
+                        code_lines.append(lines[i])
+                        i += 1
+                    if detected_path and code_lines:
+                        files.append({"path": detected_path, "content": "\n".join(code_lines)})
+                i += 1
+                continue
+
+            # Pattern 5: File: src/foo.ts (plain text, no markdown)
+            plain_file_match = re.match(
+                r'^(?:File|Filename|Path):\s*`?([^\s`]+\.[a-z]{1,5})`?\s*$',
+                line, re.IGNORECASE,
+            )
+            if plain_file_match and "/" in plain_file_match.group(1):
+                detected_path = plain_file_match.group(1).strip()
                 i += 1
                 while i < len(lines) and not lines[i].strip().startswith("```"):
                     i += 1
