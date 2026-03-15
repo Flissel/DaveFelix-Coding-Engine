@@ -11,10 +11,11 @@ for name in ['httpx', 'httpcore', 'src.engine.minibook_client', 'src.engine.mini
 import warnings
 warnings.filterwarnings("ignore")
 
-# Force UTF-8 output on Windows
+# Force UTF-8 output on Windows + unbuffered
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+os.environ["PYTHONUNBUFFERED"] = "1"
 
 from src.engine.master_orchestrator import MasterOrchestrator
 

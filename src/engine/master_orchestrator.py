@@ -59,6 +59,12 @@ class ProjectRequirements:
     openapi_spec: str = ""          # OpenAPI 3.0 YAML (truncated to key parts)
     data_dictionary: str = ""       # Entity definitions
     architecture_doc: str = ""      # Architecture overview
+    test_documentation: str = ""    # Test cases and specs
+    api_documentation: str = ""     # Human-readable API docs
+    asyncapi_spec: str = ""         # WebSocket/event specs
+    state_machines: str = ""        # State machine definitions
+    component_matrix: str = ""      # UI component matrix
+    test_factories: str = ""        # Test data factories
     epic_runner_dir: str = ""       # Path to epic runner output
 
 
@@ -260,16 +266,29 @@ class MasterOrchestrator:
         if epic_dir:
             reqs.epic_runner_dir = str(epic_dir)
             print(f"  [+] Epic runner output found: {epic_dir.name}")
+            # Core specs
             reqs.openapi_spec = self._load_epic_file(epic_dir / "api" / "openapi_spec.yaml", max_lines=500)
             reqs.data_dictionary = self._load_epic_file(epic_dir / "data" / "data_dictionary.md", max_lines=300)
             reqs.architecture_doc = self._load_epic_file(epic_dir / "architecture" / "architecture.md", max_lines=200)
+            # Extended specs
+            reqs.test_documentation = self._load_epic_file(epic_dir / "testing" / "test_documentation.md", max_lines=400)
+            reqs.api_documentation = self._load_epic_file(epic_dir / "api" / "api_documentation.md", max_lines=300)
+            reqs.asyncapi_spec = self._load_epic_file(epic_dir / "api" / "asyncapi_spec.yaml", max_lines=200)
+            reqs.state_machines = self._load_epic_file(epic_dir / "state_machines" / "state_machines.json", max_lines=150)
+            reqs.component_matrix = self._load_epic_file(epic_dir / "ui_design" / "compositions" / "component_matrix.md", max_lines=150)
+            reqs.test_factories = self._load_epic_file(epic_dir / "testing" / "factories" / "factories.json", max_lines=200)
 
-            if reqs.openapi_spec:
-                print(f"  [+] OpenAPI spec loaded ({len(reqs.openapi_spec)} chars)")
-            if reqs.data_dictionary:
-                print(f"  [+] Data dictionary loaded ({len(reqs.data_dictionary)} chars)")
-            if reqs.architecture_doc:
-                print(f"  [+] Architecture doc loaded ({len(reqs.architecture_doc)} chars)")
+            loaded = sum(1 for x in [reqs.openapi_spec, reqs.data_dictionary, reqs.architecture_doc,
+                                     reqs.test_documentation, reqs.api_documentation, reqs.asyncapi_spec,
+                                     reqs.state_machines, reqs.component_matrix, reqs.test_factories] if x)
+            print(f"  [+] Loaded {loaded} epic runner artifacts:")
+            for name, val in [("OpenAPI spec", reqs.openapi_spec), ("Data dictionary", reqs.data_dictionary),
+                              ("Architecture", reqs.architecture_doc), ("Test docs", reqs.test_documentation),
+                              ("API docs", reqs.api_documentation), ("AsyncAPI", reqs.asyncapi_spec),
+                              ("State machines", reqs.state_machines), ("Components", reqs.component_matrix),
+                              ("Test factories", reqs.test_factories)]:
+                if val:
+                    print(f"      {name}: {len(val)} chars")
 
         return reqs
 
@@ -717,6 +736,37 @@ Return ONLY the JSON array, no markdown, no explanation."""
             if self.requirements.architecture_doc and "module.ts" in file_path:
                 # Architecture context for module files
                 epic_context += f"\n\n## Architecture (from spec)\n{self.requirements.architecture_doc[:2000]}"
+
+            # Test files get test documentation + factories
+            if self.requirements.test_documentation and ("spec.ts" in file_path or "e2e" in file_path):
+                # Find relevant test section
+                td = self.requirements.test_documentation
+                if domain_cap and domain_cap.lower() in td.lower():
+                    # Extract domain-relevant test section
+                    td_lower = td.lower()
+                    idx = td_lower.find(domain_cap.lower())
+                    if idx >= 0:
+                        section = td[max(0, idx-200):idx+3000]
+                        epic_context += f"\n\n## Test Specification (from spec)\n{section}"
+                else:
+                    epic_context += f"\n\n## Test Specification (from spec)\n{td[:2000]}"
+
+            if self.requirements.test_factories and ("spec.ts" in file_path or "seed" in file_path):
+                epic_context += f"\n\n## Test Factories (from spec)\n{self.requirements.test_factories[:2000]}"
+
+            # WebSocket/realtime services get AsyncAPI
+            if self.requirements.asyncapi_spec and any(x in file_path for x in ["chat", "message", "notification", "socket", "gateway"]):
+                epic_context += f"\n\n## AsyncAPI Spec (WebSocket events)\n{self.requirements.asyncapi_spec[:2000]}"
+
+            # State machines for services with workflows
+            if self.requirements.state_machines and "service.ts" in file_path:
+                epic_context += f"\n\n## State Machines (from spec)\n{self.requirements.state_machines[:1500]}"
+
+            # Frontend gets component matrix + API docs
+            if self.requirements.component_matrix and "frontend" in file_path:
+                epic_context += f"\n\n## UI Components (from spec)\n{self.requirements.component_matrix[:2000]}"
+            if self.requirements.api_documentation and "frontend" in file_path and ("api" in file_path or "service" in file_path):
+                epic_context += f"\n\n## API Documentation (from spec)\n{self.requirements.api_documentation[:2000]}"
 
         prompt = f"""Generate the COMPLETE file: `{file_path}`
 
