@@ -65,6 +65,10 @@ class ProjectRequirements:
     state_machines: str = ""        # State machine definitions
     component_matrix: str = ""      # UI component matrix
     test_factories: str = ""        # Test data factories
+    user_stories: str = ""          # User stories with acceptance criteria
+    realtime_docs: str = ""         # Realtime/WebSocket documentation
+    infra_overview: str = ""        # Infrastructure overview
+    task_list: str = ""             # Task breakdown per epic
     epic_runner_dir: str = ""       # Path to epic runner output
 
 
@@ -187,8 +191,12 @@ class MasterOrchestrator:
         review_result = self._phase_review()
         self.phase_results.append(review_result)
 
-        # Phase 7: Infrastructure
-        print(f"\n--- Phase 7: Infrastructure ---")
+        # Phase 7: Consistency Check
+        print(f"\n--- Phase 7: Consistency Check ---")
+        self._phase_consistency_check()
+
+        # Phase 8: Infrastructure
+        print(f"\n--- Phase 8: Infrastructure ---")
         infra_result = self._phase_infrastructure()
         self.phase_results.append(infra_result)
 
@@ -277,16 +285,24 @@ class MasterOrchestrator:
             reqs.state_machines = self._load_epic_file(epic_dir / "state_machines" / "state_machines.json", max_lines=150)
             reqs.component_matrix = self._load_epic_file(epic_dir / "ui_design" / "compositions" / "component_matrix.md", max_lines=150)
             reqs.test_factories = self._load_epic_file(epic_dir / "testing" / "factories" / "factories.json", max_lines=200)
+            # Additional artifacts
+            reqs.user_stories = self._load_epic_file(epic_dir / "user_stories" / "user_stories.md", max_lines=200)
+            reqs.realtime_docs = self._load_epic_file(epic_dir / "api" / "realtime_documentation.md", max_lines=150)
+            reqs.infra_overview = self._load_epic_file(epic_dir / "infrastructure" / "infrastructure_overview.md", max_lines=100)
+            reqs.task_list = self._load_epic_file(epic_dir / "tasks" / "task_list.md", max_lines=200)
 
-            loaded = sum(1 for x in [reqs.openapi_spec, reqs.data_dictionary, reqs.architecture_doc,
-                                     reqs.test_documentation, reqs.api_documentation, reqs.asyncapi_spec,
-                                     reqs.state_machines, reqs.component_matrix, reqs.test_factories] if x)
+            all_artifacts = [
+                ("OpenAPI spec", reqs.openapi_spec), ("Data dictionary", reqs.data_dictionary),
+                ("Architecture", reqs.architecture_doc), ("Test docs", reqs.test_documentation),
+                ("API docs", reqs.api_documentation), ("AsyncAPI", reqs.asyncapi_spec),
+                ("State machines", reqs.state_machines), ("Components", reqs.component_matrix),
+                ("Test factories", reqs.test_factories), ("User stories", reqs.user_stories),
+                ("Realtime docs", reqs.realtime_docs), ("Infra overview", reqs.infra_overview),
+                ("Task list", reqs.task_list),
+            ]
+            loaded = sum(1 for _, v in all_artifacts if v)
             print(f"  [+] Loaded {loaded} epic runner artifacts:")
-            for name, val in [("OpenAPI spec", reqs.openapi_spec), ("Data dictionary", reqs.data_dictionary),
-                              ("Architecture", reqs.architecture_doc), ("Test docs", reqs.test_documentation),
-                              ("API docs", reqs.api_documentation), ("AsyncAPI", reqs.asyncapi_spec),
-                              ("State machines", reqs.state_machines), ("Components", reqs.component_matrix),
-                              ("Test factories", reqs.test_factories)]:
+            for name, val in all_artifacts:
                 if val:
                     print(f"      {name}: {len(val)} chars")
 
@@ -664,16 +680,39 @@ Return ONLY the JSON array, no markdown, no explanation."""
         if not agent:
             return AgentResult(success=False, content="", error=f"Unknown agent: {agent_name}")
 
-        # Pick only related files for context (same domain, max 5)
+        # Pick only related files for context (same domain, max 7)
         domain = file_path.split("/")[1] if "/" in file_path else ""
         context_files = {}
+
+        # MANDATORY context: controllers MUST see their service (method names!)
+        if "controller.ts" in file_path and domain:
+            svc_path = f"src/{domain}/{domain}.service.ts"
+            if svc_path in related_files:
+                context_files[svc_path] = related_files[svc_path]
+
+        # MANDATORY context: Prisma schema for services (field names!)
+        if ("service.ts" in file_path or "entity" in file_path) and "prisma/schema.prisma" in related_files:
+            context_files["prisma/schema.prisma"] = related_files["prisma/schema.prisma"]
+
+        # MANDATORY context: strategies/guards need auth.service.ts
+        if ("strategy" in file_path or "guard" in file_path) and domain == "auth":
+            auth_svc = "src/auth/auth.service.ts"
+            if auth_svc in related_files:
+                context_files[auth_svc] = related_files[auth_svc]
+
+        # Same-domain files
         for p, c in related_files.items():
-            if domain and domain in p:
-                context_files[p] = c
-            elif "prisma" in p or "app.module" in p or "main.ts" in p:
-                context_files[p] = c
-            if len(context_files) >= 5:
+            if len(context_files) >= 7:
                 break
+            if domain and domain in p and p not in context_files:
+                context_files[p] = c
+
+        # Core structural files
+        for p, c in related_files.items():
+            if len(context_files) >= 7:
+                break
+            if p not in context_files and ("prisma" in p or "main.ts" in p):
+                context_files[p] = c
 
         context_block = ""
         if context_files:
@@ -692,6 +731,7 @@ Return ONLY the JSON array, no markdown, no explanation."""
         epic_context = ""
         if self.requirements:
             domain = file_path.split("/")[1] if len(file_path.split("/")) > 1 else ""
+            domain_cap = domain.capitalize() if domain else ""
 
             if self.requirements.data_dictionary and (
                 "service.ts" in file_path or "entity" in file_path or
@@ -701,7 +741,6 @@ Return ONLY the JSON array, no markdown, no explanation."""
                 # Extract relevant entity from data dictionary
                 dd = self.requirements.data_dictionary
                 # Try to find domain-specific section
-                domain_cap = domain.capitalize() if domain else ""
                 if domain_cap and f"### {domain_cap}" in dd:
                     start_idx = dd.index(f"### {domain_cap}")
                     next_section = dd.find("\n### ", start_idx + 10)
@@ -768,6 +807,30 @@ Return ONLY the JSON array, no markdown, no explanation."""
             if self.requirements.api_documentation and "frontend" in file_path and ("api" in file_path or "service" in file_path):
                 epic_context += f"\n\n## API Documentation (from spec)\n{self.requirements.api_documentation[:2000]}"
 
+            # User stories provide acceptance criteria for services and controllers
+            if self.requirements.user_stories and (
+                "service.ts" in file_path or "controller.ts" in file_path or "module.ts" in file_path
+            ):
+                us = self.requirements.user_stories
+                if domain_cap and domain_cap.lower() in us.lower():
+                    us_lower = us.lower()
+                    idx = us_lower.find(domain_cap.lower())
+                    if idx >= 0:
+                        section = us[max(0, idx-200):idx+2000]
+                        epic_context += f"\n\n## User Stories & Acceptance Criteria\n{section}"
+
+            # Realtime docs for WebSocket/gateway files (more detailed than AsyncAPI)
+            if self.requirements.realtime_docs and any(x in file_path for x in ["gateway", "socket", "chat.service", "message.service", "notification.service"]):
+                epic_context += f"\n\n## Realtime Documentation\n{self.requirements.realtime_docs[:2000]}"
+
+            # Infrastructure overview for infra files
+            if self.requirements.infra_overview and any(x in file_path for x in ["Dockerfile", "docker-compose", "ci.yml", "deploy.yml", ".env"]):
+                epic_context += f"\n\n## Infrastructure Overview (from spec)\n{self.requirements.infra_overview}"
+
+            # Task breakdown for architecture/module design
+            if self.requirements.task_list and ("module.ts" in file_path or "app.module" in file_path):
+                epic_context += f"\n\n## Task Breakdown (from spec)\n{self.requirements.task_list[:2000]}"
+
         prompt = f"""Generate the COMPLETE file: `{file_path}`
 
 ## What this file does
@@ -790,7 +853,8 @@ Return ONLY the JSON array, no markdown, no explanation."""
 4. If it's a service, include REAL business logic (validation, error handling, DB queries)
 5. If it's a controller, include ALL CRUD endpoints with proper decorators
 6. If it's a DTO, include ALL fields with class-validator decorators
-7. Write 50-200 lines of real code, not 10 lines of stubs"""
+7. Write 50-200 lines of real code, not 10 lines of stubs
+{self._get_file_type_rules(file_path)}"""
 
         # Use _assign_and_wait which handles the full Minibook post/comment cycle
         result = self._assign_and_wait(
@@ -802,29 +866,89 @@ Return ONLY the JSON array, no markdown, no explanation."""
         return result
 
     def _phase_code_generation(self) -> PhaseResult:
-        """Phase 2: File-by-file code generation for complete output."""
+        """Phase 2: File-by-file code generation with smart ordering.
+
+        Order matters! We generate in this sequence:
+        1. Prisma schema FIRST (so services know what fields exist)
+        2. Core files (main.ts, prisma module/service)
+        3. Domain services BEFORE controllers (so controllers see service methods)
+        4. Domain controllers + DTOs (with service as mandatory context)
+        5. Auth files
+        6. Common utilities
+        7. Frontend files
+        8. app.module.ts LAST (so it only imports modules that actually exist)
+        """
         start = time.time()
         errors = []
         total_files = 0
 
         arch_context = self._get_latest_output("architect")
 
+        # Step 0: Generate Prisma schema FIRST so services know field names
+        print("  [*] Generating Prisma schema first (services need field names)...")
+        schema_result = self._generate_single_file(
+            "database-gen", "prisma/schema.prisma",
+            "Complete Prisma schema: ALL models from architecture, relations (1:1, 1:N, N:M), enums, indexes, createdAt/updatedAt on every model",
+            arch_context, self.all_generated_files,
+        )
+        if schema_result.success:
+            if schema_result.files_generated:
+                total_files += 1
+                has_target = any(f["path"] == "prisma/schema.prisma" for f in schema_result.files_generated)
+                if not has_target and len(schema_result.files_generated) == 1:
+                    self.all_generated_files["prisma/schema.prisma"] = schema_result.files_generated[0]["content"]
+            elif len(schema_result.content) > 200:
+                import re
+                code_match = re.search(r'```\w*\n(.*?)```', schema_result.content, re.DOTALL)
+                content = code_match.group(1) if code_match else schema_result.content
+                self.all_generated_files["prisma/schema.prisma"] = content
+                total_files += 1
+            print(f"  [OK] prisma/schema.prisma generated ({len(self.all_generated_files.get('prisma/schema.prisma', ''))} bytes)")
+        else:
+            print(f"  [!] prisma/schema.prisma FAILED: {schema_result.error}")
+
         # Step 1: Get the full file list
         print("  [*] Building file manifest...")
         file_list = self._build_file_list(arch_context)
-        print(f"  [*] {len(file_list)} files to generate")
 
-        # Group by agent for progress reporting
-        by_agent: Dict[str, List[Dict]] = {}
+        # Smart ordering: separate files into priority groups
+        deferred_files = []  # app.module.ts, package.json — generated last
+        core_files = []      # main.ts, prisma/*
+        service_files = []   # *.service.ts, *.module.ts (before controllers)
+        controller_files = []  # *.controller.ts, dto/* (after services)
+        auth_files = []      # src/auth/* (after core)
+        common_files = []    # src/common/*
+        frontend_files = []  # frontend/*
+        other_files = []
+
         for f in file_list:
-            agent = f.get("agent", "backend-gen")
-            by_agent.setdefault(agent, []).append(f)
+            path = f.get("path", "")
+            if path in ("src/app.module.ts", "package.json"):
+                deferred_files.append(f)
+            elif "prisma/schema.prisma" in path:
+                continue  # Already generated above
+            elif any(x in path for x in ["src/main.ts", "prisma/"]):
+                core_files.append(f)
+            elif path.startswith("src/auth/"):
+                auth_files.append(f)
+            elif path.startswith("src/common/"):
+                common_files.append(f)
+            elif path.startswith("frontend/"):
+                frontend_files.append(f)
+            elif path.endswith(".service.ts") or path.endswith(".module.ts"):
+                service_files.append(f)
+            elif path.endswith(".controller.ts") or "/dto/" in path:
+                controller_files.append(f)
+            else:
+                other_files.append(f)
 
-        for agent_name, agent_files in by_agent.items():
-            print(f"  [{agent_name}] {len(agent_files)} files to generate")
+        # Ordered generation: services before controllers, deferred last
+        ordered_list = core_files + service_files + controller_files + auth_files + common_files + frontend_files + other_files + deferred_files
+        print(f"  [*] {len(ordered_list) + 1} files to generate (schema already done)")
+        print(f"      Order: {len(core_files)} core -> {len(service_files)} services -> {len(controller_files)} controllers -> {len(auth_files)} auth -> {len(common_files)} common -> {len(frontend_files)} frontend -> {len(other_files)} other -> {len(deferred_files)} deferred")
 
         # Step 2: Generate each file one at a time
-        for idx, file_info in enumerate(file_list, 1):
+        for idx, file_info in enumerate(ordered_list, 1):
             file_path = file_info.get("path", "")
             file_desc = file_info.get("desc", "")
             agent_name = file_info.get("agent", "backend-gen")
@@ -832,7 +956,39 @@ Return ONLY the JSON array, no markdown, no explanation."""
             if not file_path:
                 continue
 
-            print(f"  [{idx}/{len(file_list)}] {agent_name} -> {file_path}...", end=" ", flush=True)
+            # Deferred files get special treatment
+            if file_path == "src/app.module.ts":
+                # Generate app.module.ts with knowledge of ALL modules that exist
+                existing_modules = [p for p in self.all_generated_files.keys() if p.endswith(".module.ts") and p != "src/app.module.ts"]
+                module_list = "\n".join(f"  - {m}" for m in sorted(existing_modules))
+                file_desc = f"""Root NestJS module. Import ONLY these modules that actually exist:
+{module_list}
+
+CRITICAL: Do NOT import any module not in this list. Import PrismaModule. Use ConfigModule.forRoot()."""
+
+            elif file_path == "package.json":
+                # Scan all generated files for imports to determine dependencies
+                all_imports = set()
+                for content in self.all_generated_files.values():
+                    for line in content.split("\n"):
+                        if "from '" in line or "from \"" in line:
+                            import re
+                            m = re.search(r"from ['\"](@?[^'\"./][^'\"]*)['\"]", line)
+                            if m:
+                                pkg = m.group(1)
+                                # Get root package name
+                                if pkg.startswith("@"):
+                                    all_imports.add("/".join(pkg.split("/")[:2]))
+                                else:
+                                    all_imports.add(pkg.split("/")[0])
+                imports_list = "\n".join(f"  - {p}" for p in sorted(all_imports))
+                file_desc = f"""package.json with ALL required dependencies. The codebase uses these imports:
+{imports_list}
+
+CRITICAL: Include ALL of these as dependencies. Also include: @prisma/client, prisma (devDep), @types/node, typescript, ts-node.
+Include scripts: start, start:dev, build, test, test:e2e, lint, format, prisma:generate, prisma:migrate, prisma:seed."""
+
+            print(f"  [{idx}/{len(ordered_list)}] {agent_name} -> {file_path}...", end=" ", flush=True)
 
             result = self._generate_single_file(
                 agent_name, file_path, file_desc,
@@ -877,16 +1033,17 @@ Return ONLY the JSON array, no markdown, no explanation."""
         )
 
     def _phase_database(self) -> PhaseResult:
-        """Phase 3: Database agent creates schema and migrations file-by-file."""
+        """Phase 3: Database agent creates migrations and seed (schema already in Phase 2)."""
         start = time.time()
         arch_context = self._get_latest_output("architect")
         errors = []
         total_files = 0
 
+        # Schema is already generated in Phase 2 (_phase_code_generation)
+        # Here we only generate migrations and seed
         db_files = [
-            ("prisma/schema.prisma", "Complete Prisma schema: ALL models from architecture, relations (1:1, 1:N, N:M), enums, indexes, createdAt/updatedAt on every model"),
-            ("prisma/migrations/001_initial/migration.sql", "SQL migration matching the Prisma schema exactly — CREATE TABLE for every model, indexes, enums"),
-            ("prisma/seed.ts", "Seed script with realistic test data (real names, emails, lorem text) — NOT placeholder data"),
+            ("prisma/migrations/001_initial/migration.sql", "SQL migration matching the Prisma schema exactly — CREATE TABLE for every model, indexes, enums. Reference the schema.prisma in Related Files."),
+            ("prisma/seed.ts", "Seed script with realistic test data (real names, emails, lorem text) — NOT placeholder data. Use Prisma models from schema.prisma."),
         ]
 
         print(f"  [*] {len(db_files)} database files to generate")
@@ -1083,6 +1240,109 @@ If no fixes needed, say "LGTM" for that file.""",
             duration_ms=int((time.time() - start) * 1000),
         )
 
+    def _phase_consistency_check(self) -> None:
+        """Phase 7: Automated consistency checks and fixes (no LLM needed)."""
+        import re
+        fixes_applied = 0
+
+        # Fix 1: Ensure all *.module.ts files import PrismaModule
+        for path, content in list(self.all_generated_files.items()):
+            if path.endswith(".module.ts") and "app.module" not in path:
+                if "PrismaModule" not in content and "prisma" not in path:
+                    # Add PrismaModule import
+                    if "import {" in content and "from '@nestjs/common'" in content:
+                        # Add import statement
+                        content = "import { PrismaModule } from '../prisma/prisma.module';\n" + content
+                    # Add to imports array
+                    imports_match = re.search(r'imports:\s*\[(.*?)\]', content, re.DOTALL)
+                    if imports_match:
+                        current = imports_match.group(1).strip()
+                        if current:
+                            new_imports = f"imports: [{current}, PrismaModule]"
+                        else:
+                            new_imports = "imports: [PrismaModule]"
+                        content = content[:imports_match.start()] + new_imports + content[imports_match.end():]
+                    elif "imports: []" in content:
+                        content = content.replace("imports: []", "imports: [PrismaModule]")
+                    self.all_generated_files[path] = content
+                    fixes_applied += 1
+
+                # Fix 2: Remove DTOs from providers array
+                providers_match = re.search(r'providers:\s*\[(.*?)\]', content, re.DOTALL)
+                if providers_match:
+                    providers_text = providers_match.group(1)
+                    # Remove anything ending in Dto
+                    cleaned = re.sub(r',?\s*\w+Dto\b', '', providers_text).strip()
+                    cleaned = re.sub(r'^,\s*', '', cleaned)  # Remove leading comma
+                    if cleaned != providers_text.strip():
+                        content = content[:providers_match.start()] + f"providers: [{cleaned}]" + content[providers_match.end():]
+                        self.all_generated_files[path] = content
+                        fixes_applied += 1
+
+        # Fix 3: Ensure app.module.ts only imports existing modules
+        app_module = self.all_generated_files.get("src/app.module.ts", "")
+        if app_module:
+            existing_modules = set()
+            for path in self.all_generated_files:
+                if path.endswith(".module.ts") and path != "src/app.module.ts":
+                    # Extract module class name from path
+                    parts = path.replace("src/", "").replace(".module.ts", "").split("/")
+                    domain = parts[-1]
+                    module_name = "".join(w.capitalize() for w in domain.split("-")) + "Module"
+                    existing_modules.add(module_name)
+
+            # Check each import in the module
+            import_lines = re.findall(r"import\s*\{([^}]+)\}\s*from\s*['\"]([^'\"]+)['\"]", app_module)
+            for imports, from_path in import_lines:
+                for imp in imports.split(","):
+                    imp = imp.strip()
+                    if imp.endswith("Module") and imp not in existing_modules and imp not in (
+                        "Module", "ConfigModule", "PrismaModule", "AuthModule"
+                    ):
+                        # Remove this phantom import
+                        app_module = re.sub(rf',?\s*{re.escape(imp)}\b', '', app_module)
+                        app_module = re.sub(rf"import\s*\{{\s*{re.escape(imp)}\s*\}}\s*from\s*['\"][^'\"]+['\"];\n?", '', app_module)
+                        fixes_applied += 1
+
+            self.all_generated_files["src/app.module.ts"] = app_module
+
+        # Fix 4: Ensure package.json has critical dependencies
+        pkg = self.all_generated_files.get("package.json", "")
+        if pkg:
+            critical_deps = {
+                "@prisma/client": "^5.0.0",
+                "@nestjs/config": "^3.0.0",
+                "class-validator": "^0.14.0",
+                "class-transformer": "^0.5.0",
+                "bcrypt": "^5.1.0",
+                "@nestjs/jwt": "^10.0.0",
+                "@nestjs/passport": "^10.0.0",
+                "passport": "^0.7.0",
+                "passport-jwt": "^4.0.0",
+                "passport-local": "^1.0.0",
+                "@nestjs/swagger": "^7.0.0",
+            }
+            for dep, version in critical_deps.items():
+                if dep not in pkg:
+                    # Insert before the closing brace of dependencies
+                    pkg = pkg.replace(
+                        '"dependencies": {',
+                        f'"dependencies": {{\n    "{dep}": "{version}",',
+                        1,
+                    )
+                    fixes_applied += 1
+            # Ensure prisma in devDependencies
+            if '"prisma"' not in pkg and '"devDependencies"' in pkg:
+                pkg = pkg.replace(
+                    '"devDependencies": {',
+                    '"devDependencies": {\n    "prisma": "^5.0.0",',
+                    1,
+                )
+                fixes_applied += 1
+            self.all_generated_files["package.json"] = pkg
+
+        print(f"  [OK] {fixes_applied} consistency fixes applied")
+
     def _phase_infrastructure(self) -> PhaseResult:
         """Phase 7: Infra agent generates files one-by-one."""
         start = time.time()
@@ -1140,6 +1400,61 @@ If no fixes needed, say "LGTM" for that file.""",
             duration_ms=int((time.time() - start) * 1000),
             errors=errors,
         )
+
+    # ==================================================================
+    # File-type specific rules
+    # ==================================================================
+    def _get_file_type_rules(self, file_path: str) -> str:
+        """Return file-type-specific generation rules to prevent common LLM mistakes."""
+        rules = []
+
+        if file_path.endswith(".module.ts") and "app.module" not in file_path:
+            rules.append("""
+## MODULE RULES
+- MUST import PrismaModule in the imports array (services need PrismaService)
+- MUST list the service as a provider
+- MUST list the controller as a controller
+- Do NOT list DTOs as providers (they are plain classes)
+- MUST export the service so other modules can use it
+- Example: imports: [PrismaModule], providers: [ChatService], controllers: [ChatController], exports: [ChatService]""")
+
+        elif file_path.endswith(".controller.ts"):
+            rules.append("""
+## CONTROLLER RULES
+- Look at the Related Files section above — your service file is there
+- Call ONLY methods that EXIST in the service file (check method names carefully!)
+- Use the EXACT same parameter types the service expects
+- Standard CRUD: findAll, findOne, create, update, remove (match your service)
+- Every endpoint needs @UseGuards(JwtAuthGuard) for protected routes
+- Use @ApiTags, @ApiOperation, @ApiResponse decorators from @nestjs/swagger""")
+
+        elif file_path.endswith(".service.ts"):
+            rules.append("""
+## SERVICE RULES
+- Look at the Related Files section — prisma/schema.prisma shows exact model field names
+- ONLY use fields that EXIST in the Prisma schema (check model definition!)
+- Use this.prisma.<modelName> for DB access (e.g., this.prisma.user, this.prisma.chat)
+- Include proper error handling with NotFoundException, BadRequestException
+- Include pagination (skip, take) for list methods""")
+
+        elif "strategy" in file_path:
+            rules.append("""
+## STRATEGY RULES
+- Look at the Related Files section — auth.service.ts shows available methods
+- Call ONLY methods that exist in AuthService (check the file!)
+- If you need a validateUser method, make sure it exists in the service
+- JWT Strategy: extract userId from payload, call a findById-style method
+- Local Strategy: call a validateCredentials-style method""")
+
+        elif file_path.endswith(".dto.ts"):
+            rules.append("""
+## DTO RULES
+- Import ALL decorators you use: @IsString, @IsInt, @IsOptional, @IsEmail, etc. from 'class-validator'
+- Import @ApiProperty from '@nestjs/swagger' for every field
+- Use class-transformer decorators if needed: @Type, @Transform
+- Field names MUST match what the controller/service expects""")
+
+        return "\n".join(rules)
 
     # ==================================================================
     # Helpers
