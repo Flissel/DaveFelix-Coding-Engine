@@ -1,0 +1,58 @@
+{
+  "name": "task-manager-pro",
+  "type": "nestjs",
+  "description": "A professional task management application with projects, boards, tasks, comments, and team collaboration.",
+  "features": [
+    {
+      "id": "user-auth",
+      "description": "Email + password login, JWT tokens, password reset via email",
+      "priority": "critical"
+    },
+    {
+      "id": "projects",
+      "description": "Create/manage projects with name, description, members, and settings",
+      "priority": "critical"
+    },
+    {
+      "id": "boards",
+      "description": "Kanban boards with customizable columns (To Do, In Progress, Done, etc.)",
+      "priority": "critical"
+    },
+    {
+      "id": "tasks",
+      "description": "CRUD tasks with title, description, assignee, due date, priority, labels, attachments",
+      "priority": "critical"
+    },
+    {
+      "id": "comments",
+      "description": "Thread comments on tasks with @mentions and markdown support",
+      "priority": "high"
+    },
+    {
+      "id": "notifications",
+      "description": "In-app and email notifications for mentions, assignments, due dates",
+      "priority": "high"
+    },
+    {
+      "id": "team-management",
+      "description": "Invite members, assign roles (admin, member, viewer), manage permissions",
+      "priority": "high"
+    },
+    {
+      "id": "activity-log",
+      "description": "Track all changes to tasks and projects with timestamps and authors",
+      "priority": "medium"
+    }
+  ],
+  "tech_stack": {
+    "backend": "NestJS + TypeScript",
+    "database": "PostgreSQL + Prisma ORM",
+    "cache": "Redis",
+    "auth": "JWT + bcrypt (Passport)",
+    "realtime": "WebSocket (Socket.io) for live updates",
+    "queue": "BullMQ for email notifications",
+    "storage": "S3-compatible for file attachments",
+    "testing": "Jest + Supertest",
+    "frontend": "React 18 + TypeScript + Tailwind CSS"
+  }
+}

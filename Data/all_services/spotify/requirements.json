@@ -1,0 +1,80 @@
+{
+  "name": "spotify-music-streaming",
+  "type": "nestjs",
+  "description": "A Spotify-style music streaming platform with user accounts, playlists, search, recommendations, and real-time playback sync across devices.",
+  "features": [
+    {
+      "id": "user-registration",
+      "description": "Email + password registration with email verification, OAuth (Google, Apple)",
+      "priority": "critical"
+    },
+    {
+      "id": "user-profiles",
+      "description": "Profile with display name, avatar, bio, follower/following system",
+      "priority": "high"
+    },
+    {
+      "id": "music-catalog",
+      "description": "Artists, albums, tracks with metadata (duration, genre, release date, cover art)",
+      "priority": "critical"
+    },
+    {
+      "id": "audio-streaming",
+      "description": "Stream audio files with adaptive bitrate, range requests, and CDN integration",
+      "priority": "critical"
+    },
+    {
+      "id": "playlists",
+      "description": "Create, edit, delete playlists. Collaborative playlists. Public/private visibility",
+      "priority": "critical"
+    },
+    {
+      "id": "search",
+      "description": "Full-text search across tracks, artists, albums, playlists. Auto-suggest with debounce",
+      "priority": "high"
+    },
+    {
+      "id": "playback-queue",
+      "description": "Queue management: add, remove, reorder tracks. Shuffle, repeat modes",
+      "priority": "high"
+    },
+    {
+      "id": "listening-history",
+      "description": "Track play history, recently played, most played. Used for recommendations",
+      "priority": "medium"
+    },
+    {
+      "id": "recommendations",
+      "description": "Personalized recommendations based on listening history, genre preferences, collaborative filtering",
+      "priority": "medium"
+    },
+    {
+      "id": "social-features",
+      "description": "Follow artists/users, see friend activity, share tracks/playlists via link",
+      "priority": "medium"
+    },
+    {
+      "id": "subscription-tiers",
+      "description": "Free (ads, limited skips) and Premium (no ads, offline, high quality). Stripe billing",
+      "priority": "high"
+    },
+    {
+      "id": "offline-mode",
+      "description": "Download tracks for offline playback (Premium only). Sync state across devices",
+      "priority": "low"
+    }
+  ],
+  "tech_stack": {
+    "backend": "NestJS + TypeScript",
+    "database": "PostgreSQL + Prisma ORM",
+    "cache": "Redis",
+    "search": "Elasticsearch (or pg_trgm for MVP)",
+    "realtime": "WebSocket (Socket.io) for playback sync",
+    "auth": "JWT + bcrypt + OAuth2 (Passport)",
+    "storage": "S3-compatible (audio files, cover art)",
+    "queue": "BullMQ (Redis) for background jobs",
+    "payments": "Stripe",
+    "testing": "Jest + Supertest + Playwright",
+    "frontend": "React 18 + TypeScript + Tailwind CSS + Zustand"
+  }
+}

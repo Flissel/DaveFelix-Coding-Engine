@@ -827,8 +827,12 @@ If no fixes needed, say "LGTM" for that file.""",
         # Deduplicate: normalize paths, keep longest version of duplicate files
         deduped: Dict[str, str] = {}
         for path, content in self.all_generated_files.items():
-            # Normalize: strip leading ./ or /
-            norm_path = path.lstrip("./").lstrip("/")
+            # Normalize: strip leading ./ prefix (but preserve dotfiles like .env)
+            norm_path = path
+            while norm_path.startswith("./"):
+                norm_path = norm_path[2:]
+            if norm_path.startswith("/"):
+                norm_path = norm_path[1:]
             # If duplicate, keep the longer (more complete) version
             if norm_path in deduped:
                 if len(content) > len(deduped[norm_path]):
