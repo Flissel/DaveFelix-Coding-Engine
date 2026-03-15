@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Nicht Stoeren System Context Diagram
+
+    Person(customer, "Kunde", "Ein Benutzer, der den Nicht-Stoeren-Modus aktivieren möchte.")
+    System(nichtStoerenSystem, "Nicht Stoeren System", "Bietet einen Nicht-Stoeren-Modus.")
+
+    Rel(customer, nichtStoerenSystem, "Aktiviert den Nicht-Stoeren-Modus")

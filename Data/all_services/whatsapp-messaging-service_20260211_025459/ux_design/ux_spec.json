@@ -1,0 +1,1052 @@
+{
+  "project_name": "whatsapp-messaging-service",
+  "personas": [
+    {
+      "id": "PERSONA-001",
+      "name": "Laura Schmitt",
+      "role": "Private Nutzerin",
+      "age_range": "25-34",
+      "goals": [
+        "Schnelle und sichere Anmeldung",
+        "Nahtloser Wechsel zwischen Smartphone und Laptop",
+        "Vertrauenswuerdige Kommunikation mit Kontakten"
+      ],
+      "pain_points": [
+        "Komplizierte Verifizierung",
+        "Unsichere Passwoerter",
+        "Langsame Zustellung von Nachrichten"
+      ],
+      "tech_savviness": "medium",
+      "frequency_of_use": "multiple times daily",
+      "quote": "Ich will mich einfach per Face ID entsperren und sofort losschreiben.",
+      "background": "Nutzt Messaging-Apps intensiv fuer Familie und Freunde, legt Wert auf Datenschutz."
+    },
+    {
+      "id": "PERSONA-002",
+      "name": "Ahmed Kaya",
+      "role": "Business-Inhaber (Einzelhandel)",
+      "age_range": "30-45",
+      "goals": [
+        "Professioneller Auftritt mit verifiziertem Profil",
+        "Klarer Anzeigename und Info-Text fuer Kunden",
+        "Schnelle Kontaktaufnahme ueber QR-Code"
+      ],
+      "pain_points": [
+        "Unklare Identitaet im Chat",
+        "Aufwendige Kundenkommunikation",
+        "Fehlende Sichtbarkeit wichtiger Infos"
+      ],
+      "tech_savviness": "medium",
+      "frequency_of_use": "daily",
+      "quote": "Kunden sollen mich sofort erkennen und unkompliziert erreichen koennen.",
+      "background": "Betreibt einen kleinen Laden, kommuniziert staendig mit Kunden ueber Messaging."
+    },
+    {
+      "id": "PERSONA-003",
+      "name": "Sophie Brandt",
+      "role": "Compliance & Support Managerin",
+      "age_range": "35-50",
+      "goals": [
+        "Missbrauchspraevention und Content-Moderation",
+        "Nutzerverwaltung und schnelle Problemloesung",
+        "Einhaltung von Datenschutz- und Compliance-Vorgaben"
+      ],
+      "pain_points": [
+        "Unzureichende Monitoring-Tools",
+        "Hoher manueller Aufwand bei Abuse-Faellen",
+        "Intransparente Nutzerhistorie"
+      ],
+      "tech_savviness": "medium-high",
+      "frequency_of_use": "daily",
+      "quote": "Ich brauche klare Kontroll- und Monitoringfunktionen, um Risiken zu minimieren.",
+      "background": "Arbeitet im Support-Team eines Messaging-Dienstes mit Fokus auf Sicherheit."
+    },
+    {
+      "id": "PERSONA-004",
+      "name": "Jonas Richter",
+      "role": "Softwareentwickler (Integrationen)",
+      "age_range": "28-40",
+      "goals": [
+        "Stabile API-Integration mit Webhooks",
+        "Gute Dokumentation und SDKs",
+        "Planbare Rate Limits fuer Skalierung"
+      ],
+      "pain_points": [
+        "Unvollstaendige API-Dokumentation",
+        "Unerwartete Rate-Limits",
+        "Fehlende Beispielimplementierungen"
+      ],
+      "tech_savviness": "high",
+      "frequency_of_use": "weekly",
+      "quote": "Wenn die API klar dokumentiert ist, kann ich Features viel schneller ausrollen.",
+      "background": "Entwickelt Kundenloesungen fuer Messaging-Automatisierung und Plattform-Integrationen."
+    }
+  ],
+  "user_flows": [
+    {
+      "id": "FLOW-001",
+      "name": "Telefonnummer-Registrierung",
+      "description": "Flow zur Registrierung und Verifizierung einer Telefonnummer",
+      "actor": "Laura Schmitt",
+      "trigger": "User oeffnet Registrierungsseite",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet die Registrierungsseite",
+          "screen": "Registrierung",
+          "expected_result": "Registrierungsformular mit Telefonnummernfeld wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User gibt Telefonnummer ein und sendet Registrierung ab",
+          "screen": "Registrierung",
+          "expected_result": "System validiert die Telefonnummer und sendet einen Verifizierungscode",
+          "decision_point": true,
+          "error_scenario": "Ungueltige oder unvollstaendige Telefonnummer fuehrt zu Fehlermeldung und verhindert Registrierung"
+        },
+        {
+          "step_number": 3,
+          "action": "System zeigt Hinweis zur Code-Zustellung und Eingabefeld fuer Verifizierungscode",
+          "screen": "Code-Verifizierung",
+          "expected_result": "User sieht Eingabefeld und Zeitlimit fuer Code",
+          "decision_point": true,
+          "error_scenario": "Nachrichtenzustellung nicht moeglich; System informiert und bietet erneuten Versand spaeter an"
+        },
+        {
+          "step_number": 4,
+          "action": "User gibt Verifizierungscode ein und bestaetigt",
+          "screen": "Code-Verifizierung",
+          "expected_result": "System prueft den Code",
+          "decision_point": true,
+          "error_scenario": "Falscher oder abgelaufener Code wird abgelehnt; Option zum erneuten Anfordern wird angezeigt"
+        },
+        {
+          "step_number": 5,
+          "action": "System bestaetigt Verifizierung und erstellt Konto",
+          "screen": "Erfolgsbestaetigung",
+          "expected_result": "Telefonnummer ist verifiziert; Zugriff auf die Plattform wird innerhalb von 5 Sekunden gewaehrt",
+          "decision_point": false,
+          "error_scenario": ""
+        }
+      ],
+      "success_criteria": "Konto ist erstellt, Telefonnummer verifiziert und Zugang zur Plattform gewaehrt",
+      "error_scenarios": [
+        "Ungueltige oder unvollstaendige Telefonnummer",
+        "Zustellung des Verifizierungscodes nicht moeglich",
+        "Falscher oder abgelaufener Verifizierungscode",
+        "Systemverzoegerung verhindert Zugriff innerhalb von 5 Sekunden"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Telefonnummer-Registrierung])\n    S1[User oeffnet die Registrierungsseite]\n    Start --> S1\n    S2{User gibt Telefonnummer ein und sendet Registrierung ab}\n    S1 --> S2\n    E2[/Ungueltige oder unvollstaendige Telefonnummer fuehrt zu Fehlermeldung und verhindert Registrierung/]\n    S2 -.-> E2\n    S3{System zeigt Hinweis zur Code-Zustellung und Eingabefeld fuer Verifizierungscode}\n    S2 --> S3\n    E3[/Nachrichtenzustellung nicht moeglich; System informiert und bietet erneuten Versand spaeter an/]\n    S3 -.-> E3\n    S4{User gibt Verifizierungscode ein und bestaetigt}\n    S3 --> S4\n    E4[/Falscher oder abgelaufener Code wird abgelehnt; Option zum erneuten Anfordern wird angezeigt/]\n    S4 -.-> E4\n    S5[System bestaetigt Verifizierung und erstellt Konto]\n    S4 --> S5\n    S5 --> End([End])\n",
+      "linked_persona_id": "",
+      "linked_screen_ids": [],
+      "linked_user_story_ids": []
+    },
+    {
+      "id": "FLOW-002",
+      "name": "Zwei-Faktor-Authentifizierung aktivieren und verwenden",
+      "description": "Flow zum Aktivieren der 2FA mit 6-stelliger PIN und anschließender Anmeldung mit PIN",
+      "actor": "Laura Schmitt",
+      "trigger": "User oeffnet Sicherheits-Einstellungen und moechte 2FA aktivieren",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet Einstellungen",
+          "screen": "Einstellungen",
+          "expected_result": "Einstellungsmenue wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User navigiert zu 'Sicherheit'",
+          "screen": "Sicherheit",
+          "expected_result": "Sicherheitsoptionen werden angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 3,
+          "action": "User klickt 'Zwei-Faktor-Authentifizierung aktivieren'",
+          "screen": "Sicherheit",
+          "expected_result": "PIN-Eingabedialog erscheint",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 4,
+          "action": "User gibt eine 6-stellige PIN ein",
+          "screen": "PIN-Eingabe",
+          "expected_result": "PIN wird validiert",
+          "decision_point": true,
+          "error_scenario": "Wenn PIN nicht genau 6 Stellen hat, wird die Eingabe abgelehnt und eine Fehlermeldung angezeigt"
+        },
+        {
+          "step_number": 5,
+          "action": "User bestaetigt die PIN",
+          "screen": "PIN-Bestaetigung",
+          "expected_result": "2FA wird aktiviert und PIN als zweiter Faktor gespeichert",
+          "decision_point": false,
+          "error_scenario": "Fehlermeldung bei Verbindungsfehler oder Speichervorgang fehlgeschlagen"
+        },
+        {
+          "step_number": 6,
+          "action": "User loggt sich aus",
+          "screen": "Menue",
+          "expected_result": "Logout erfolgreich, Login-Screen wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 7,
+          "action": "User gibt Benutzername und Passwort ein und klickt 'Anmelden'",
+          "screen": "Login",
+          "expected_result": "PIN-Abfrage wird angezeigt",
+          "decision_point": true,
+          "error_scenario": "Bei falschem Passwort wird der Login abgelehnt"
+        },
+        {
+          "step_number": 8,
+          "action": "User gibt die 6-stellige PIN ein",
+          "screen": "PIN-Abfrage",
+          "expected_result": "PIN wird geprueft",
+          "decision_point": true,
+          "error_scenario": "Wenn PIN fehlt oder nicht 6-stellig ist, wird der Zugriff verweigert und eine Fehlermeldung angezeigt"
+        },
+        {
+          "step_number": 9,
+          "action": "System validiert PIN",
+          "screen": "PIN-Abfrage",
+          "expected_result": "Bei korrekter PIN erfolgt erfolgreicher Login",
+          "decision_point": true,
+          "error_scenario": "Bei falscher PIN wird der Login blockiert und eine generische Fehlermeldung angezeigt"
+        },
+        {
+          "step_number": 10,
+          "action": "User wird in die App weitergeleitet",
+          "screen": "Dashboard",
+          "expected_result": "User ist erfolgreich angemeldet",
+          "decision_point": false,
+          "error_scenario": ""
+        }
+      ],
+      "success_criteria": "2FA ist aktiviert und ein Login mit korrektem Passwort sowie korrekter 6-stelliger PIN ist erfolgreich",
+      "error_scenarios": [
+        "PIN hat weniger oder mehr als 6 Stellen",
+        "Falsche PIN bei der Anmeldung",
+        "PIN fehlt bei der Anmeldung",
+        "Serververbindung fehlgeschlagen beim Aktivieren von 2FA"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Zwei-Faktor-Authentifizierung aktivieren und verwenden])\n    S1[User oeffnet Einstellungen]\n    Start --> S1\n    S2[User navigiert zu 'Sicherheit']\n    S1 --> S2\n    S3[User klickt 'Zwei-Faktor-Authentifizierung aktivieren']\n    S2 --> S3\n    S4{User gibt eine 6-stellige PIN ein}\n    S3 --> S4\n    E4[/Wenn PIN nicht genau 6 Stellen hat, wird die Eingabe abgelehnt und eine Fehlermeldung angezeigt/]\n    S4 -.-> E4\n    S5[User bestaetigt die PIN]\n    S4 --> S5\n    E5[/Fehlermeldung bei Verbindungsfehler oder Speichervorgang fehlgeschlagen/]\n    S5 -.-> E5\n    S6[User loggt sich aus]\n    S5 --> S6\n    S7{User gibt Benutzername und Passwort ein und klickt 'Anmelden'}\n    S6 --> S7\n    E7[/Bei falschem Passwort wird der Login abgelehnt/]\n    S7 -.-> E7\n    S8{User gibt die 6-stellige PIN ein}\n    S7 --> S8\n    E8[/Wenn PIN fehlt oder nicht 6-stellig ist, wird der Zugriff verweigert und eine Fehlermeldung angezeigt/]\n    S8 -.-> E8\n    S9{System validiert PIN}\n    S8 --> S9\n    E9[/Bei falscher PIN wird der Login blockiert und eine generische Fehlermeldung angezeigt/]\n    S9 -.-> E9\n    S10[User wird in die App weitergeleitet]\n    S9 --> S10\n    S10 --> End([End])\n",
+      "linked_persona_id": "",
+      "linked_screen_ids": [],
+      "linked_user_story_ids": []
+    },
+    {
+      "id": "FLOW-003",
+      "name": "App per Biometrie entsperren",
+      "description": "Flow zum Entsperren der App mittels Fingerabdruck oder Face ID inkl. Fallback",
+      "actor": "Laura Schmitt",
+      "trigger": "User oeffnet die App",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User tippt auf App-Icon",
+          "screen": "Splash Screen",
+          "expected_result": "App startet und prueft Authentifizierungsoptionen",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "System prueft, ob Biometrie aktiviert und am Geraet eingerichtet ist",
+          "screen": "Authentifizierungs-Check",
+          "expected_result": "Biometrische Abfrage wird vorbereitet oder Passwort-Login angezeigt",
+          "decision_point": true,
+          "error_scenario": "Unbekannter Authentifizierungsstatus -> Passwort-Login anzeigen"
+        },
+        {
+          "step_number": 3,
+          "action": "Biometrische Abfrage wird angezeigt",
+          "screen": "Biometrie-Prompt",
+          "expected_result": "User kann Fingerabdruck/Face ID scannen",
+          "decision_point": false,
+          "error_scenario": "Biometrie-Prompt laesst sich nicht laden -> Passwort-Login anzeigen"
+        },
+        {
+          "step_number": 4,
+          "action": "User bestaetigt Biometrie erfolgreich",
+          "screen": "Biometrie-Prompt",
+          "expected_result": "App wird innerhalb von 2 Sekunden entsperrt",
+          "decision_point": true,
+          "error_scenario": "Zeitueberschreitung >2 Sekunden -> Ladehinweis oder Passwort-Fallback"
+        },
+        {
+          "step_number": 5,
+          "action": "App zeigt Hauptansicht",
+          "screen": "Chats/Home",
+          "expected_result": "User ist eingeloggt und kann die App nutzen",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 6,
+          "action": "Biometrische Pruefung schlaegt fehl",
+          "screen": "Biometrie-Prompt",
+          "expected_result": "Fallback zur Passworteingabe wird angezeigt",
+          "decision_point": true,
+          "error_scenario": "Mehrere Fehlversuche -> kurze Sperre mit Hinweis"
+        },
+        {
+          "step_number": 7,
+          "action": "User gibt Passwort ein",
+          "screen": "Passwort-Login",
+          "expected_result": "Bei korrektem Passwort Zugriff auf App",
+          "decision_point": true,
+          "error_scenario": "Falsches Passwort -> Fehlermeldung und erneute Eingabe"
+        },
+        {
+          "step_number": 8,
+          "action": "Geraet unterstuetzt keine Biometrie oder ist deaktiviert",
+          "screen": "Passwort-Login",
+          "expected_result": "User wird ausschliesslich zur Passworteingabe aufgefordert",
+          "decision_point": false,
+          "error_scenario": ""
+        }
+      ],
+      "success_criteria": "App wird nach erfolgreicher Biometrie innerhalb von 2 Sekunden entsperrt oder nach Passwort-Login geoeffnet",
+      "error_scenarios": [
+        "Biometrische Pruefung fehlgeschlagen -> Passwort-Fallback",
+        "Biometrie nicht verfuegbar oder deaktiviert -> Passwort-Login",
+        "Zeitueberschreitung beim Entsperren",
+        "Falsches Passwort -> erneute Eingabe"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: App per Biometrie entsperren])\n    S1[User tippt auf App-Icon]\n    Start --> S1\n    S2{System prueft, ob Biometrie aktiviert und am Geraet eingerichtet ist}\n    S1 --> S2\n    E2[/Unbekannter Authentifizierungsstatus -> Passwort-Login anzeigen/]\n    S2 -.-> E2\n    S3[Biometrische Abfrage wird angezeigt]\n    S2 --> S3\n    E3[/Biometrie-Prompt laesst sich nicht laden -> Passwort-Login anzeigen/]\n    S3 -.-> E3\n    S4{User bestaetigt Biometrie erfolgreich}\n    S3 --> S4\n    E4[/Zeitueberschreitung >2 Sekunden -> Ladehinweis oder Passwort-Fallback/]\n    S4 -.-> E4\n    S5[App zeigt Hauptansicht]\n    S4 --> S5\n    S6{Biometrische Pruefung schlaegt fehl}\n    S5 --> S6\n    E6[/Mehrere Fehlversuche -> kurze Sperre mit Hinweis/]\n    S6 -.-> E6\n    S7{User gibt Passwort ein}\n    S6 --> S7\n    E7[/Falsches Passwort -> Fehlermeldung und erneute Eingabe/]\n    S7 -.-> E7\n    S8[Geraet unterstuetzt keine Biometrie oder ist deaktiviert]\n    S7 --> S8\n    S8 --> End([End])\n",
+      "linked_persona_id": "",
+      "linked_screen_ids": [],
+      "linked_user_story_ids": []
+    },
+    {
+      "id": "FLOW-004",
+      "name": "Multi-Device Support nutzen",
+      "description": "Flow zur Nutzung des Dienstes auf zwei Geräten mit Synchronisation von Nachrichten, Benachrichtigungen und Lesestatus sowie Handling des Geräte-Limits",
+      "actor": "Laura Schmitt",
+      "trigger": "User meldet sich mit demselben Konto auf einem zweiten Gerät an",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User öffnet die App auf Gerät A und ist bereits angemeldet",
+          "screen": "Chat-Übersicht",
+          "expected_result": "Chat-Übersicht wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User öffnet die App auf Gerät B und meldet sich mit demselben Konto an",
+          "screen": "Login",
+          "expected_result": "Anmeldung erfolgreich, Chat-Übersicht erscheint",
+          "decision_point": false,
+          "error_scenario": "Login fehlgeschlagen bei falschen Zugangsdaten"
+        },
+        {
+          "step_number": 3,
+          "action": "User sendet eine Nachricht auf Gerät A",
+          "screen": "Chat",
+          "expected_result": "Nachricht wird als gesendet markiert",
+          "decision_point": false,
+          "error_scenario": "Senden fehlgeschlagen bei Netzwerkfehler"
+        },
+        {
+          "step_number": 4,
+          "action": "System synchronisiert die gesendete Nachricht auf Gerät B",
+          "screen": "Chat (Gerät B)",
+          "expected_result": "Nachricht erscheint innerhalb von 2 Sekunden und ist als gesendet markiert",
+          "decision_point": false,
+          "error_scenario": "Nachricht erscheint verzögert oder nicht bei Sync-Problem"
+        },
+        {
+          "step_number": 5,
+          "action": "User erhält eine neue Nachricht auf Gerät A",
+          "screen": "Chat-Übersicht (Gerät A)",
+          "expected_result": "Push-Benachrichtigung wird auf Gerät A angezeigt",
+          "decision_point": false,
+          "error_scenario": "Benachrichtigung bleibt aus bei deaktivierten Notifications"
+        },
+        {
+          "step_number": 6,
+          "action": "System zeigt die Benachrichtigung auch auf Gerät B an",
+          "screen": "Chat-Übersicht (Gerät B)",
+          "expected_result": "Benachrichtigung erscheint auf beiden Geräten",
+          "decision_point": false,
+          "error_scenario": "Benachrichtigung wird nicht synchron angezeigt"
+        },
+        {
+          "step_number": 7,
+          "action": "User öffnet die neue Nachricht auf Gerät B",
+          "screen": "Chat (Gerät B)",
+          "expected_result": "Nachricht wird als gelesen markiert",
+          "decision_point": false,
+          "error_scenario": "Lesestatus bleibt ungelesen bei Sync-Problem"
+        },
+        {
+          "step_number": 8,
+          "action": "System synchronisiert den Lesestatus auf Gerät A",
+          "screen": "Chat (Gerät A)",
+          "expected_result": "Lesestatus wird auf beiden Geräten aktualisiert",
+          "decision_point": false,
+          "error_scenario": "Lesestatus wird nicht synchronisiert"
+        },
+        {
+          "step_number": 9,
+          "action": "Drittes Gerät versucht, sich mit demselben Konto anzumelden",
+          "screen": "Login",
+          "expected_result": "System prüft Geräte-Limit",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 10,
+          "action": "Geräte-Limit erreicht -> System zeigt Fehlermeldung",
+          "screen": "Login",
+          "expected_result": "Verständliche Fehlermeldung, keine neue Sitzung erstellt",
+          "decision_point": false,
+          "error_scenario": "Unklare Fehlermeldung oder dennoch Sitzung erstellt"
+        }
+      ],
+      "success_criteria": "Nachrichten, Benachrichtigungen und Lesestatus werden zwischen zwei Geräten innerhalb von 2 Sekunden synchronisiert; Anmeldung eines dritten Geräts wird verständlich abgelehnt",
+      "error_scenarios": [
+        "Synchronisation der Nachricht überschreitet 2 Sekunden",
+        "Benachrichtigungen erscheinen nicht auf beiden Geräten",
+        "Lesestatus wird nicht auf beiden Geräten aktualisiert",
+        "Anmeldung eines dritten Geräts wird nicht korrekt blockiert"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Multi-Device Support nutzen])\n    S1[User öffnet die App auf Gerät A und ist bereits angemeldet]\n    Start --> S1\n    S2[User öffnet die App auf Gerät B und meldet sich mit demselben Konto an]\n    S1 --> S2\n    E2[/Login fehlgeschlagen bei falschen Zugangsdaten/]\n    S2 -.-> E2\n    S3[User sendet eine Nachricht auf Gerät A]\n    S2 --> S3\n    E3[/Senden fehlgeschlagen bei Netzwerkfehler/]\n    S3 -.-> E3\n    S4[System synchronisiert die gesendete Nachricht auf Gerät B]\n    S3 --> S4\n    E4[/Nachricht erscheint verzögert oder nicht bei Sync-Problem/]\n    S4 -.-> E4\n    S5[User erhält eine neue Nachricht auf Gerät A]\n    S4 --> S5\n    E5[/Benachrichtigung bleibt aus bei deaktivierten Notifications/]\n    S5 -.-> E5\n    S6[System zeigt die Benachrichtigung auch auf Gerät B an]\n    S5 --> S6\n    E6[/Benachrichtigung wird nicht synchron angezeigt/]\n    S6 -.-> E6\n    S7[User öffnet die neue Nachricht auf Gerät B]\n    S6 --> S7\n    E7[/Lesestatus bleibt ungelesen bei Sync-Problem/]\n    S7 -.-> E7\n    S8[System synchronisiert den Lesestatus auf Gerät A]\n    S7 --> S8\n    E8[/Lesestatus wird nicht synchronisiert/]\n    S8 -.-> E8\n    S9{Drittes Gerät versucht, sich mit demselben Konto anzumelden}\n    S8 --> S9\n    S10[Geräte-Limit erreicht -> System zeigt Fehlermeldung]\n    S9 --> S10\n    E10[/Unklare Fehlermeldung oder dennoch Sitzung erstellt/]\n    S10 -.-> E10\n    S10 --> End([End])\n",
+      "linked_persona_id": "",
+      "linked_screen_ids": [],
+      "linked_user_story_ids": []
+    },
+    {
+      "id": "FLOW-005",
+      "name": "Passkey-Anmeldung",
+      "description": "Flow zur passwortlosen Anmeldung per Passkey",
+      "actor": "Laura Schmitt",
+      "trigger": "User waehlt im Login-Bildschirm die Option 'Mit Passkey anmelden'",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet die App und sieht den Login-Bildschirm",
+          "screen": "Login",
+          "expected_result": "Login-Optionen werden angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User klickt auf 'Mit Passkey anmelden'",
+          "screen": "Login",
+          "expected_result": "System prueft, ob ein Passkey fuer den Nutzer auf dem Geraet vorhanden ist",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 3,
+          "action": "System erkennt, dass kein Passkey vorhanden ist",
+          "screen": "Login",
+          "expected_result": "Hinweismeldung wird angezeigt und alternative Anmeldeoptionen werden angeboten",
+          "decision_point": false,
+          "error_scenario": "Kein Passkey hinterlegt"
+        },
+        {
+          "step_number": 4,
+          "action": "System erkennt, dass ein Passkey vorhanden ist und startet die Geraete-Authentifizierung (Biometrie/PIN)",
+          "screen": "Geraete-Authentifizierung",
+          "expected_result": "Authentifizierungsdialog wird angezeigt",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 5,
+          "action": "User bestaetigt die biometrische oder Geraete-Authentifizierung",
+          "screen": "Geraete-Authentifizierung",
+          "expected_result": "Authentifizierung wird innerhalb von 3 Sekunden abgeschlossen",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 6,
+          "action": "System erstellt eine Session und leitet den User in die App weiter",
+          "screen": "Chat-Übersicht",
+          "expected_result": "User ist erfolgreich angemeldet",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 7,
+          "action": "Geraete-Authentifizierung schlaegt fehl",
+          "screen": "Geraete-Authentifizierung",
+          "expected_result": "Fehlermeldung wird angezeigt, Login wird abgebrochen und keine Session erstellt",
+          "decision_point": false,
+          "error_scenario": "Biometrie/PIN fehlgeschlagen"
+        }
+      ],
+      "success_criteria": "User wird innerhalb von 3 Sekunden per Passkey angemeldet und eine Session wird erstellt",
+      "error_scenarios": [
+        "Kein Passkey auf dem Geraet hinterlegt",
+        "Biometrische oder Geraete-Authentifizierung fehlgeschlagen",
+        "Authentifizierung dauert laenger als 3 Sekunden"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Passkey-Anmeldung])\n    S1[User oeffnet die App und sieht den Login-Bildschirm]\n    Start --> S1\n    S2{User klickt auf 'Mit Passkey anmelden'}\n    S1 --> S2\n    S3[System erkennt, dass kein Passkey vorhanden ist]\n    S2 --> S3\n    E3[/Kein Passkey hinterlegt/]\n    S3 -.-> E3\n    S4{System erkennt, dass ein Passkey vorhanden ist und startet die Geraete-Authentifizierung (Biometrie/PIN)}\n    S3 --> S4\n    S5{User bestaetigt die biometrische oder Geraete-Authentifizierung}\n    S4 --> S5\n    S6[System erstellt eine Session und leitet den User in die App weiter]\n    S5 --> S6\n    S7[Geraete-Authentifizierung schlaegt fehl]\n    S6 --> S7\n    E7[/Biometrie/PIN fehlgeschlagen/]\n    S7 -.-> E7\n    S7 --> End([End])\n",
+      "linked_persona_id": "",
+      "linked_screen_ids": [],
+      "linked_user_story_ids": []
+    }
+  ],
+  "information_architecture": [
+    {
+      "id": "IA-001",
+      "name": "Start",
+      "path": "/",
+      "parent_id": "",
+      "children": [
+        "IA-002",
+        "IA-003",
+        "IA-004",
+        "IA-005"
+      ],
+      "content_types": [
+        "landing",
+        "navigation"
+      ]
+    },
+    {
+      "id": "IA-002",
+      "name": "Onboarding",
+      "path": "/onboarding",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-006",
+        "IA-007",
+        "IA-008"
+      ],
+      "content_types": [
+        "wizard",
+        "forms"
+      ]
+    },
+    {
+      "id": "IA-003",
+      "name": "Chats",
+      "path": "/chats",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-009"
+      ],
+      "content_types": [
+        "list",
+        "search",
+        "filters"
+      ]
+    },
+    {
+      "id": "IA-004",
+      "name": "Profil",
+      "path": "/profile",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-010",
+        "IA-011",
+        "IA-012",
+        "IA-013",
+        "IA-014"
+      ],
+      "content_types": [
+        "details",
+        "media",
+        "actions"
+      ]
+    },
+    {
+      "id": "IA-005",
+      "name": "Einstellungen",
+      "path": "/settings",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-015",
+        "IA-016",
+        "IA-017"
+      ],
+      "content_types": [
+        "list",
+        "toggles"
+      ]
+    },
+    {
+      "id": "IA-006",
+      "name": "Telefonnummer-Registrierung",
+      "path": "/onboarding/phone",
+      "parent_id": "IA-002",
+      "children": [
+        "IA-018"
+      ],
+      "content_types": [
+        "form",
+        "verification"
+      ]
+    },
+    {
+      "id": "IA-007",
+      "name": "Passkey-Einrichtung",
+      "path": "/onboarding/passkey",
+      "parent_id": "IA-002",
+      "children": [],
+      "content_types": [
+        "setup",
+        "system-prompt"
+      ]
+    },
+    {
+      "id": "IA-008",
+      "name": "2FA-Setup",
+      "path": "/onboarding/2fa",
+      "parent_id": "IA-002",
+      "children": [],
+      "content_types": [
+        "form",
+        "pin-setup"
+      ]
+    },
+    {
+      "id": "IA-009",
+      "name": "Chat-Detail",
+      "path": "/chats/:id",
+      "parent_id": "IA-003",
+      "children": [],
+      "content_types": [
+        "conversation",
+        "composer"
+      ]
+    },
+    {
+      "id": "IA-010",
+      "name": "Profilbild",
+      "path": "/profile/photo",
+      "parent_id": "IA-004",
+      "children": [],
+      "content_types": [
+        "upload",
+        "editor"
+      ]
+    },
+    {
+      "id": "IA-011",
+      "name": "Anzeigename",
+      "path": "/profile/name",
+      "parent_id": "IA-004",
+      "children": [],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-012",
+      "name": "Info/Status Text",
+      "path": "/profile/status",
+      "parent_id": "IA-004",
+      "children": [],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-013",
+      "name": "Telefonnummer anzeigen",
+      "path": "/profile/phone",
+      "parent_id": "IA-004",
+      "children": [],
+      "content_types": [
+        "read-only",
+        "actions"
+      ]
+    },
+    {
+      "id": "IA-014",
+      "name": "QR-Code Profil",
+      "path": "/profile/qr",
+      "parent_id": "IA-004",
+      "children": [],
+      "content_types": [
+        "qr-code",
+        "share"
+      ]
+    },
+    {
+      "id": "IA-015",
+      "name": "Sicherheit & Anmeldung",
+      "path": "/settings/security",
+      "parent_id": "IA-005",
+      "children": [
+        "IA-019",
+        "IA-020",
+        "IA-021"
+      ],
+      "content_types": [
+        "toggles",
+        "actions"
+      ]
+    },
+    {
+      "id": "IA-016",
+      "name": "Multi-Device",
+      "path": "/settings/devices",
+      "parent_id": "IA-005",
+      "children": [
+        "IA-022",
+        "IA-023"
+      ],
+      "content_types": [
+        "list",
+        "status",
+        "actions"
+      ]
+    },
+    {
+      "id": "IA-017",
+      "name": "Benachrichtigungen",
+      "path": "/settings/notifications",
+      "parent_id": "IA-005",
+      "children": [],
+      "content_types": [
+        "toggles",
+        "preferences"
+      ]
+    },
+    {
+      "id": "IA-018",
+      "name": "Verifizierungscode",
+      "path": "/onboarding/phone/verify",
+      "parent_id": "IA-006",
+      "children": [],
+      "content_types": [
+        "otp-input"
+      ]
+    },
+    {
+      "id": "IA-019",
+      "name": "2FA verwalten",
+      "path": "/settings/security/2fa",
+      "parent_id": "IA-015",
+      "children": [],
+      "content_types": [
+        "pin-management",
+        "recovery"
+      ]
+    },
+    {
+      "id": "IA-020",
+      "name": "Biometrische Entsperrung",
+      "path": "/settings/security/biometrics",
+      "parent_id": "IA-015",
+      "children": [],
+      "content_types": [
+        "toggle",
+        "fallback"
+      ]
+    },
+    {
+      "id": "IA-021",
+      "name": "Passkeys verwalten",
+      "path": "/settings/security/passkeys",
+      "parent_id": "IA-015",
+      "children": [],
+      "content_types": [
+        "list",
+        "actions"
+      ]
+    },
+    {
+      "id": "IA-022",
+      "name": "Geraet hinzufügen",
+      "path": "/settings/devices/add",
+      "parent_id": "IA-016",
+      "children": [],
+      "content_types": [
+        "qr-scan",
+        "pairing"
+      ]
+    },
+    {
+      "id": "IA-023",
+      "name": "Geraete-Details",
+      "path": "/settings/devices/:id",
+      "parent_id": "IA-016",
+      "children": [],
+      "content_types": [
+        "details",
+        "actions"
+      ]
+    }
+  ],
+  "accessibility_requirements": [
+    "WCAG 2.1 Level AA Compliance",
+    "Keyboard Navigation fuer alle Funktionen",
+    "Screen Reader Support",
+    "Kontrastverhältnis mindestens 4.5:1",
+    "Haptische und visuelle Hinweise bei Verifizierungsschritten"
+  ],
+  "interaction_patterns": [
+    "Modal Dialoge fuer Formulare und Sicherheitsabfragen",
+    "Toast Notifications fuer Feedback",
+    "Bottom Sheets fuer schnelle Aktionen",
+    "QR-Scanner als Fullscreen-Overlay",
+    "Inline Validation fuer PIN/OTP Eingaben"
+  ],
+  "design_principles": [
+    "Mobile First",
+    "Progressive Disclosure",
+    "Consistency ueber alle Screens",
+    "Fehlertoleranz",
+    "Security by Design"
+  ],
+  "validation_rules": [
+    {
+      "field": "phone_number",
+      "screen": "Telefonnummer-Registrierung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Phone number is required"
+        },
+        {
+          "type": "format",
+          "pattern": "E.164",
+          "message": "Must be valid E.164 format"
+        },
+        {
+          "type": "min_length",
+          "value": 9,
+          "message": "Too short"
+        },
+        {
+          "type": "max_length",
+          "value": 15,
+          "message": "Too long"
+        }
+      ]
+    },
+    {
+      "field": "verification_code",
+      "screen": "Telefonnummer-Registrierung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Verification code is required"
+        },
+        {
+          "type": "format",
+          "pattern": "^[0-9]{6}$",
+          "message": "Must be a 6-digit code"
+        }
+      ]
+    },
+    {
+      "field": "twofa_pin",
+      "screen": "Zwei-Faktor-Authentifizierung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "PIN is required"
+        },
+        {
+          "type": "format",
+          "pattern": "^[0-9]{6}$",
+          "message": "Must be a 6-digit PIN"
+        }
+      ]
+    },
+    {
+      "field": "twofa_pin_confirm",
+      "screen": "Zwei-Faktor-Authentifizierung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "PIN confirmation is required"
+        },
+        {
+          "type": "match",
+          "field": "twofa_pin",
+          "message": "PINs must match"
+        }
+      ]
+    },
+    {
+      "field": "twofa_enable",
+      "screen": "Zwei-Faktor-Authentifizierung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Selection required"
+        },
+        {
+          "type": "dependency",
+          "field": "phone_verified",
+          "value": true,
+          "message": "Phone number must be verified to enable 2FA"
+        }
+      ]
+    },
+    {
+      "field": "biometric_unlock",
+      "screen": "Biometrische Entsperrung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Selection required"
+        },
+        {
+          "type": "dependency",
+          "field": "device_biometric_supported",
+          "value": true,
+          "message": "Device must support biometrics"
+        }
+      ]
+    },
+    {
+      "field": "fallback_pin",
+      "screen": "Biometrische Entsperrung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Fallback PIN is required"
+        },
+        {
+          "type": "format",
+          "pattern": "^[0-9]{6}$",
+          "message": "Must be a 6-digit PIN"
+        },
+        {
+          "type": "dependency",
+          "field": "biometric_unlock",
+          "value": true,
+          "message": "Fallback PIN required when biometrics are enabled"
+        }
+      ]
+    },
+    {
+      "field": "device_name",
+      "screen": "Multi-Device Support",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Device name is required"
+        },
+        {
+          "type": "min_length",
+          "value": 2,
+          "message": "Too short"
+        },
+        {
+          "type": "max_length",
+          "value": 30,
+          "message": "Too long"
+        }
+      ]
+    },
+    {
+      "field": "active_device_count",
+      "screen": "Multi-Device Support",
+      "rules": [
+        {
+          "type": "max",
+          "value": 4,
+          "message": "Device limit exceeded"
+        }
+      ]
+    },
+    {
+      "field": "passkey_name",
+      "screen": "Passkey-Unterstuetzung",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Passkey name is required"
+        },
+        {
+          "type": "min_length",
+          "value": 2,
+          "message": "Too short"
+        },
+        {
+          "type": "max_length",
+          "value": 40,
+          "message": "Too long"
+        }
+      ]
+    },
+    {
+      "field": "passkey_registration",
+      "screen": "Passkey-Unterstuetzung",
+      "rules": [
+        {
+          "type": "dependency",
+          "field": "device_passkey_supported",
+          "value": true,
+          "message": "Device must support passkeys"
+        }
+      ]
+    },
+    {
+      "field": "profile_photo",
+      "screen": "Profilbild",
+      "rules": [
+        {
+          "type": "format",
+          "pattern": "image/jpeg|image/png",
+          "message": "Only JPG or PNG allowed"
+        },
+        {
+          "type": "max_size",
+          "value": 5242880,
+          "message": "Max file size is 5MB"
+        }
+      ]
+    },
+    {
+      "field": "display_name",
+      "screen": "Anzeigename",
+      "rules": [
+        {
+          "type": "required",
+          "message": "Display name is required"
+        },
+        {
+          "type": "min_length",
+          "value": 1,
+          "message": "Too short"
+        },
+        {
+          "type": "max_length",
+          "value": 50,
+          "message": "Too long"
+        },
+        {
+          "type": "format",
+          "pattern": "^[\\p{L}\\p{N} _.'-]+$",
+          "message": "Contains invalid characters"
+        }
+      ]
+    },
+    {
+      "field": "status_text",
+      "screen": "Info/Status Text",
+      "rules": [
+        {
+          "type": "max_length",
+          "value": 140,
+          "message": "Too long"
+        }
+      ]
+    }
+  ]
+}

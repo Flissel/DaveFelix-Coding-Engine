@@ -1,0 +1,134 @@
+{
+  "route": "/onboarding",
+  "screen_name": "Onboarding",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "placeholder": "Telefonnummer eingeben",
+        "variant": "outline",
+        "type": "tel"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Telefonnummer verifizieren"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "ghost",
+        "text": "Code erneut senden"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "placeholder": "6-stellige PIN eingeben",
+        "variant": "outline",
+        "type": "password"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "2FA aktivieren"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Biometrische Anmeldung einrichten"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "secondary",
+        "text": "Später einrichten"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+  "data_sources": [
+    "POST /api/v1/phone-registrations",
+    "POST /api/v1/phone-registrations/{registrationId}/verify",
+    "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+    "POST /api/v1/users/{userId}/2fa",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "POST /api/v1/devices"
+  ],
+  "state_shape": {
+    "currentStep": "string",
+    "phoneNumber": "string",
+    "registrationId": "string",
+    "otpCode": "string",
+    "twoFactorPin": "string",
+    "isLoading": "boolean",
+    "error": "string",
+    "userId": "string"
+  }
+}

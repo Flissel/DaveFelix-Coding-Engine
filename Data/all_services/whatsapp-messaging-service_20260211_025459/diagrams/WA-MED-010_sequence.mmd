@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as HD-Medien System
+    participant MediaServer as Medienserver
+
+    User->>System: Anfrage zum Senden von Medien in HD-Qualität
+    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien
+    MediaServer-->>System: HD-Medien bereitgestellt
+    System-->>User: Medien in HD-Qualität gesendet

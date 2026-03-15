@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "Share-Extension Context Diagram", "version": "1.0" } }%%
+C4Context
+    Person(user, "User", "A user who wants to share content using the Share-Extension.")
+    System(shareExtension, "Share Extension", "A system that provides sharing integration.")
+    System(externalSystem, "External System", "An external application or service that can receive shared content.")
+
+    Rel(user, shareExtension, "Uses")
+    Rel(shareExtension, externalSystem, "Shares content to")

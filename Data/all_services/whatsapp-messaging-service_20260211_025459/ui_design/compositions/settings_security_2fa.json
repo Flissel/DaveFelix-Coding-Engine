@@ -1,0 +1,132 @@
+{
+  "route": "/settings/security/2fa",
+  "screen_name": "2FA verwalten",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "2FA verwalten",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "2FA aktiviert",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6,
+        "placeholder": "6-stellige PIN eingeben"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "PIN bestätigen",
+        "variant": "primary"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Biometrische Authentifizierung",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Biometrie einrichten",
+        "variant": "secondary"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "2FA deaktivieren",
+        "variant": "danger"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "alert",
+        "title": "2FA deaktivieren?",
+        "message": "Möchten Sie die Zwei-Faktor-Authentifizierung wirklich deaktivieren?"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, gap-4, padding-4, max-width 400px, centered",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa",
+    "POST /api/v1/users/{userId}/2fa",
+    "DELETE /api/v1/users/{userId}/2fa",
+    "GET /api/v1/biometric/credentials",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials"
+  ],
+  "state_shape": {
+    "is2FAEnabled": "boolean",
+    "isBiometricEnabled": "boolean",
+    "pinInput": "string",
+    "showConfirmModal": "boolean",
+    "biometricCredentials": "array",
+    "isLoading": "boolean"
+  }
+}

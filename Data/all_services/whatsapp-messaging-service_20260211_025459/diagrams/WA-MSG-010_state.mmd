@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Chat_Offen
+    Chat_Offen --> Chat_Sperren : Anfrage zum Sperren
+    Chat_Sperren --> Authentifizierung : Zusätzliche Authentifizierung erforderlich
+    Authentifizierung --> Chat_Gesperrt : Authentifizierung erfolgreich
+    Authentifizierung --> Chat_Offen : Authentifizierung fehlgeschlagen
+    Chat_Gesperrt --> Chat_Offen : Chat entsperren

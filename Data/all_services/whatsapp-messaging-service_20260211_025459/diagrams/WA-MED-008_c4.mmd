@@ -1,0 +1,8 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Audio-Dateien System Context Diagram
+
+    Person(user, "User", "A user who sends audio files")
+    System(system, "Audio-Dateien System", "A system that supports sending audio files")
+
+    Rel(user, system, "Sends audio files to")

@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Videoanruf System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Videoanrufe tätigt.")
+    System(videoanrufSystem, "Videoanruf System", "Ein System, das verschlüsselte Videoanrufe unterstützt.")
+    System_Ext(telecomProvider, "Telekommunikationsanbieter", "Ein Anbieter, der die Netzwerkverbindung für Videoanrufe bereitstellt.")
+    System_Ext(encryptionService, "Verschlüsselungsdienst", "Ein Dienst, der die Verschlüsselung der Videoanrufe durchführt.")
+
+    Rel(user, videoanrufSystem, "Nutzt")
+    Rel(videoanrufSystem, telecomProvider, "Verbindet sich mit")
+    Rel(videoanrufSystem, encryptionService, "Verwendet zur Verschlüsselung von")

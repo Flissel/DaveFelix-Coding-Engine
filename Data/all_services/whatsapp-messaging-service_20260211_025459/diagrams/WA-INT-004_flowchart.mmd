@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Ist Smartwatch verbunden?}
+    B -->|Ja| C[App-Daten synchronisieren]
+    B -->|Nein| D[Smartwatch verbinden]
+    D --> C
+    C --> E{Daten aktualisieren?}
+    E -->|Ja| F[Daten abrufen]
+    E -->|Nein| G[App verwenden]
+    F --> G
+    G --> H[Benachrichtigungen anzeigen]
+    H --> I[Ende]

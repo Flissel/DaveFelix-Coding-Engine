@@ -1,0 +1,18 @@
+flowchart TD
+    A[Start] --> B[Gruppenadministration]
+    B --> C{Funktionen}
+    C -->|Erstellen| D[Gruppe erstellen]
+    C -->|Bearbeiten| E[Gruppe bearbeiten]
+    C -->|Löschen| F[Gruppe löschen]
+    C -->|Mitglieder verwalten| G[Mitglieder hinzufügen/entfernen]
+    C -->|Rechte verwalten| H[Rechte zuweisen/entziehen]
+    D --> I[Gruppe erfolgreich erstellt]
+    E --> J[Gruppe erfolgreich bearbeitet]
+    F --> K[Gruppe erfolgreich gelöscht]
+    G --> L[Mitglieder erfolgreich verwaltet]
+    H --> M[Rechte erfolgreich verwaltet]
+    I --> N[Ende]
+    J --> N
+    K --> N
+    L --> N
+    M --> N

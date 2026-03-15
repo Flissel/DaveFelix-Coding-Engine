@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant OldDevice as Altes Gerät
+    participant NewDevice as Neues Gerät
+    participant System as System
+
+    User->>OldDevice: Chatverlauf anfordern
+    OldDevice->>System: Anfrage zur Übertragung des Chatverlaufs
+    System-->>OldDevice: Chatverlauf bereitstellen
+    OldDevice->>NewDevice: Chatverlauf übertragen
+    NewDevice-->>User: Chatverlauf erfolgreich empfangen

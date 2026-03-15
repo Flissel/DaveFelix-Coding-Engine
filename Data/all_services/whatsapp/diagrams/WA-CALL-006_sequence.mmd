@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant MessageService as Nachrichtenservice
+
+    User->>System: Anruf ablehnen
+    System->>User: Schnelle Antwort anzeigen
+    User->>MessageService: Nachricht senden
+    MessageService-->>User: Bestätigung der Nachricht
+    System-->>User: Anruf abgelehnt

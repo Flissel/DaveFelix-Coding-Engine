@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant App as Schneller App
+    participant System as System
+
+    User->>App: App starten
+    App->>System: Anfrage für schnellen Start
+    System-->>App: Bestätigung für schnellen Start
+    App-->>User: App bereit zur Nutzung

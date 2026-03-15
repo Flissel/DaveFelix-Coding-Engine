@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Schriftgroesse System Context Diagram
+
+    Person(user, "User", "A user who interacts with the Schriftgroesse system.")
+    System(schriftgroesseSystem, "Schriftgroesse System", "A system that supports adjustable font sizes.")
+
+    Rel(user, schriftgroesseSystem, "Uses")

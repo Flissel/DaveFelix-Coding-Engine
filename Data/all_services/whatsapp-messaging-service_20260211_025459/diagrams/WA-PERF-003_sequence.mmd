@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User
+    participant System
+    participant MessageQueue
+
+    User->>System: Send message
+    System->>MessageQueue: Queue message
+    MessageQueue-->>System: Acknowledge message
+    System->>User: Confirm message sent
+    System->>MessageQueue: Retrieve messages
+    MessageQueue-->>System: Deliver messages
+    System->>User: Synchronize messages

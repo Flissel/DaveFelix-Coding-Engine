@@ -1,0 +1,105 @@
+{
+  "route": "/profile/qr",
+  "screen_name": "QR-Code Profil",
+  "description": "",
+  "user_stories": [
+    "US-010",
+    "US-096"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "QR-Code Profil",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "size": "large",
+        "variant": "circle",
+        "showEditIcon": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "QR-Code generieren",
+        "variant": "primary",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "QR-Code teilen",
+        "variant": "secondary",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Business-Profil bearbeiten",
+        "variant": "outline",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-005",
+      "component_name": "BottomNav",
+      "props": {
+        "variant": "labeled",
+        "activeTab": "profile"
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "hidden"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/profile",
+    "GET /api/v1/users/{userId}/qr-code"
+  ],
+  "state_shape": {
+    "userProfile": "object",
+    "qrCodeData": "string",
+    "isLoading": "boolean",
+    "error": "string|null"
+  }
+}

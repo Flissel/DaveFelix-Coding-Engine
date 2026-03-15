@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Benutzer wählt Kontakt aus}
+    B -->|Ja| C[Kontaktdaten anzeigen]
+    B -->|Nein| D[Prozess beenden]
+    C --> E{Teilen über}
+    E -->|E-Mail| F[Kontaktdaten per E-Mail senden]
+    E -->|Nachricht| G[Kontaktdaten per Nachricht senden]
+    E -->|Soziale Medien| H[Kontaktdaten über soziale Medien teilen]
+    F --> I[Teilen erfolgreich]
+    G --> I
+    H --> I
+    I --> J[Prozess beenden]

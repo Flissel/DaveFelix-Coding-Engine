@@ -1,0 +1,14 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A[User] -->|Uses| B[Mediensuche System]
+    B -->|Filters by Media Type| C[Media Database]
+    B -->|Provides Search Results| D[Search Engine]
+    
+    subgraph External Systems
+        E[User Interface]
+        F[Authentication Service]
+    end
+
+    A -->|Interacts with| E
+    E -->|Authenticates| F
+    F -->|Validates User| A

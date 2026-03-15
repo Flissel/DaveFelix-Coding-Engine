@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B{Sprache erkennen}
+    B -->|Rechts-nach-links| C[Layout anpassen]
+    B -->|Links-nach-rechts| D[Standardlayout verwenden]
+    C --> E[Textausrichtung ändern]
+    D --> E
+    E --> F[Schriftarten anpassen]
+    F --> G[UI-Elemente anpassen]
+    G --> H{Testen}
+    H -->|Bestanden| I[Deployment]
+    H -->|Fehlgeschlagen| J[Fehlerbehebung]
+    J --> B
+    I --> K[Ende]

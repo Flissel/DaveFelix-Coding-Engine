@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant Client as Client Application
+    participant Server as Server
+    participant Encryption as Encryption Service
+
+    User->>Client: Send message
+    Client->>Encryption: Encrypt message
+    Encryption-->>Client: Return encrypted message
+    Client->>Server: Send encrypted message
+    Server->>Encryption: Decrypt message
+    Encryption-->>Server: Return decrypted message
+    Server->>User: Deliver message

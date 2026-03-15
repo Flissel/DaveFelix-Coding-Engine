@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant User1 as Nutzer 1
+    participant User2 as Nutzer 2
+    participant User3 as Nutzer 3
+    participant System as System
+
+    User1->>System: Initiate group call
+    System-->>User1: Confirm call setup
+    User2->>System: Join group call
+    System-->>User2: Confirm joined
+    User3->>System: Join group call
+    System-->>User3: Confirm joined
+    System-->>User1: Notify participants joined
+    System-->>User2: Notify participants joined
+    System-->>User3: Notify participants joined
+    User1->>System: Start video/audio stream
+    System-->>User1: Stream started
+    User2->>System: Start video/audio stream
+    System-->>User2: Stream started
+    User3->>System: Start video/audio stream
+    System-->>User3: Stream started

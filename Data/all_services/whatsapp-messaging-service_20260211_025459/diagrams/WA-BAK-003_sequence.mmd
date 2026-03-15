@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as User
+    participant System as System
+
+    User->>System: Request chat export
+    System->>User: Confirm request received
+    System->>Database: Retrieve chat data
+    Database-->>System: Send chat data
+    System->>User: Provide exported chat file

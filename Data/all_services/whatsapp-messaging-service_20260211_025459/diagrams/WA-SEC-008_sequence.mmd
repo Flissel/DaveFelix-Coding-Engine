@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Service as Dienst
+
+    User->>System: Anruf tätigen
+    System->>Service: IP-Adresse anfordern
+    Service-->>System: IP-Adresse zurückgeben
+    System->>System: IP-Adresse verschleiern
+    System-->>User: Anruf mit verschleierter IP-Adresse

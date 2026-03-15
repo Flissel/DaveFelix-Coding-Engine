@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Nachrichtensuche System Context Diagram
+
+    Person(user, "User", "A person searching for news articles")
+    System(nachrichtensuche, "Nachrichtensuche", "A system that provides full-text search in news articles")
+
+    Rel(user, nachrichtensuche, "Uses", "Searches for news articles using full-text search")

@@ -1,0 +1,13 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    %% C4 Context Diagram
+    C4Context
+        title End-to-End Verschlüsselung System Architecture
+
+        Person(End User, "End User", "A user who sends and receives messages.")
+        System(Encryption System, "End-to-End Verschlüsselung System", "System that encrypts messages end-to-end.")
+
+        Person --> System : Sends messages
+        System --> Person : Sends encrypted messages
+        System --> System : Encrypts messages
+        System --> System : Decrypts messages

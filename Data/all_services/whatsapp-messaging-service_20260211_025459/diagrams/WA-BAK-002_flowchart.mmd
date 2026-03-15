@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[Backup-Anfrage erhalten]
+    B --> C{Verschlüsselung erforderlich?}
+    C -->|Ja| D[Backup-Daten verschlüsseln]
+    C -->|Nein| E[Backup-Daten speichern]
+    D --> F[Backup-Daten speichern]
+    E --> F
+    F --> G[Backup erfolgreich abgeschlossen]
+    G --> H[Benachrichtigung an Benutzer]
+    H --> I[Ende]

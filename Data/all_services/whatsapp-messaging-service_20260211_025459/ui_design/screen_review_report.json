@@ -1,0 +1,113 @@
+{
+  "screens_reviewed": 20,
+  "dimension_scores": {
+    "wireframe_quality": 1.0,
+    "component_coverage": 1.0,
+    "story_coverage": 1.0,
+    "layout_coherence": 0.7,
+    "data_completeness": 0.9875
+  },
+  "overall_score": 0.9375,
+  "targets": {
+    "wireframe_quality": 0.8,
+    "component_coverage": 0.9,
+    "story_coverage": 0.85,
+    "layout_coherence": 0.8,
+    "data_completeness": 0.75
+  },
+  "issues_count": 13,
+  "issues": [
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-001",
+      "description": "1 component overlap(s) in SCREEN-001",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "data_completeness",
+      "screen_id": "SCREEN-002",
+      "description": "1 non-standard endpoint(s) in SCREEN-002",
+      "fix_hint": "Use format: 'GET /api/resource' or '/api/resource'"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-003",
+      "description": "3 component overlap(s) in SCREEN-003",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-005",
+      "description": "1 component overlap(s) in SCREEN-005",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-009",
+      "description": "2 component overlap(s) in SCREEN-009",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-010",
+      "description": "1 component overlap(s) in SCREEN-010",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-011",
+      "description": "3 component overlap(s) in SCREEN-011",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-012",
+      "description": "1 component overlap(s) in SCREEN-012",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-014",
+      "description": "2 component overlap(s) in SCREEN-014",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-017",
+      "description": "2 component overlap(s) in SCREEN-017",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-018",
+      "description": "2 component overlap(s) in SCREEN-018",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-019",
+      "description": "4 component overlap(s) in SCREEN-019",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    },
+    {
+      "severity": "minor",
+      "dimension": "layout_coherence",
+      "screen_id": "SCREEN-020",
+      "description": "2 component overlap(s) in SCREEN-020",
+      "fix_hint": "Adjust x,y,w,h to resolve overlaps"
+    }
+  ],
+  "needs_improvement": true
+}

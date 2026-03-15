@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B[Benutzerdaten erfassen]
+    B --> C[Kontext analysieren]
+    C --> D[Sticker-Datenbank abfragen]
+    D --> E[Sticker-Vorschläge generieren]
+    E --> F[Sticker-Vorschläge anzeigen]
+    F --> G[Benutzerfeedback einholen]
+    G --> H{Feedback positiv?}
+    H -->|Ja| I[Sticker verwenden]
+    H -->|Nein| J[Prozess anpassen]
+    J --> C
+    I --> K[Ende]
+    F --> K

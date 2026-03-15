@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Ist Info-Sichtbarkeit konfigurierbar?}
+    B -- Ja --> C[Konfiguration der Sichtbarkeit]
+    B -- Nein --> D[System anpassen]
+    C --> E{Info/Status-Text sichtbar?}
+    E -- Ja --> F[Info/Status-Text anzeigen]
+    E -- Nein --> G[Info/Status-Text ausblenden]
+    F --> H[Ende]
+    G --> H
+    D --> H

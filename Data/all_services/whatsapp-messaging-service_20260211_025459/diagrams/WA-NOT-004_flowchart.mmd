@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Ist der Nicht-Stoeren-Modus aktiviert?}
+    B -- Ja --> C[System in Nicht-Stoeren-Modus]
+    B -- Nein --> D[System im normalen Modus]
+    C --> E[Benachrichtigungen werden unterdrückt]
+    D --> F[Benachrichtigungen werden angezeigt]
+    E --> G[Ende]
+    F --> G

@@ -1,0 +1,28 @@
+classDiagram
+    class Speichernutzung {
+        +Uebersicht anzeigen()
+        +Verwaltung starten()
+    }
+
+    class Speicher {
+        +speicherplatz: float
+        +verwendeterSpeicher: float
+        +verfuegbarerSpeicher: float
+        +speicherStatus(): String
+    }
+
+    class Nutzer {
+        +nutzerID: String
+        +nutzerName: String
+        +speicherAnfrage(): void
+    }
+
+    class Verwaltung {
+        +speicherHinzufuegen(speicher: Speicher): void
+        +speicherEntfernen(speicher: Speicher): void
+        +nutzerVerwalten(nutzer: Nutzer): void
+    }
+
+    Speichernutzung --> Speicher
+    Speichernutzung --> Nutzer
+    Speichernutzung --> Verwaltung

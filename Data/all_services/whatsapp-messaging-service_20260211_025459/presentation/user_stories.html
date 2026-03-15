@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Stories for whatsapp-messaging-service">
+    <title>User Stories - whatsapp-messaging-service</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme:'neutral'});</script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #5f6368;
+            --background-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --success-color: #34a853;
+            --warning-color: #fbbc04;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        nav {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header .meta {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        section h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .card .meta {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement-card {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .story-card {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .test-card {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .priority-must {
+            border-left-color: var(--error-color);
+        }
+
+        .priority-should {
+            border-left-color: var(--warning-color);
+        }
+
+        .priority-could {
+            border-left-color: var(--success-color);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.25rem;
+            background-color: var(--border-color);
+        }
+
+        .tag-must { background-color: #fce8e6; color: var(--error-color); }
+        .tag-should { background-color: #fef7e0; color: #e37400; }
+        .tag-could { background-color: #e6f4ea; color: #137333; }
+        .tag-wont { background-color: #f1f3f4; color: var(--secondary-color); }
+
+        .diagram-container {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: var(--surface-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-card .label {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 0;
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+        }
+
+        .toc {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc h4 {
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .toc li {
+            margin: 0.25rem 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            header, nav, footer {
+                display: none;
+            }
+
+            main {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>whatsapp-messaging-service</h1>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html" class="">Overview</a></li><li><a href="requirements.html" class="">Requirements</a></li><li><a href="user_stories.html" class="active">User Stories</a></li><li><a href="diagrams.html" class="">Diagrams</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            
+            <div class="page-header">
+                <h2>User Stories</h2>
+                <p class="meta">Generated on 2026-02-12 17:16</p>
+            </div>
+        <section id="user_stories"><h3>User Stories (133)</h3>
+                <div class="card story-card">
+                    <h4>US-001: Telefonnummer-Registrierung</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> mich mit meiner Telefonnummer registrieren und verifizieren</p>
+                    <p><strong>So that</strong> damit ich schnell und sicher Zugriff auf die Plattform erhalte</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich befinde mich im Registrierungsprozess und gebe eine gültige Telefonnummer ein&#x27;, &#x27;when&#x27;: &#x27;ich die Registrierung absende und den Verifizierungscode korrekt eingebe&#x27;, &#x27;then&#x27;: &#x27;wird mein Konto erstellt und als verifiziert markiert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich gebe eine ungültige Telefonnummer ein&#x27;, &#x27;when&#x27;: &#x27;ich die Registrierung absende&#x27;, &#x27;then&#x27;: &#x27;erhalte ich eine verständliche Fehlermeldung und kann die Nummer korrigieren&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich habe einen Verifizierungscode erhalten&#x27;, &#x27;when&#x27;: &#x27;ich einen falschen oder abgelaufenen Code eingebe&#x27;, &#x27;then&#x27;: &#x27;wird die Verifizierung abgelehnt und ich kann einen neuen Code anfordern&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-002: Zwei-Faktor-Authentifizierung</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen</p>
+                    <p><strong>So that</strong> mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und befindet sich in den Sicherheitseinstellungen&#x27;, &#x27;when&#x27;: &#x27;er die 2FA aktiviert und eine 6-stellige PIN bestätigt&#x27;, &#x27;then&#x27;: &#x27;wird 2FA erfolgreich aktiviert und der Nutzer erhält eine Bestätigung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;2FA ist aktiviert und der Nutzer meldet sich mit korrekten Zugangsdaten an&#x27;, &#x27;when&#x27;: &#x27;er die angeforderte 6-stellige PIN korrekt eingibt&#x27;, &#x27;then&#x27;: &#x27;erhält der Nutzer Zugriff auf sein Konto&#x27;}</li><li>{&#x27;given&#x27;: &#x27;2FA ist aktiviert&#x27;, &#x27;when&#x27;: &#x27;der Nutzer eine PIN mit weniger oder mehr als 6 Ziffern eingibt&#x27;, &#x27;then&#x27;: &#x27;wird die Eingabe abgelehnt und eine verständliche Fehlermeldung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-003: Biometrische Entsperrung</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> die App mit Fingerabdruck oder Face ID entsperren</p>
+                    <p><strong>So that</strong> sich schnell und sicher anmelden zu koennen, ohne Passwoerter eingeben zu muessen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer hat in den Einstellungen die biometrische Entsperrung aktiviert und ein biometrisches Merkmal ist auf dem Geraet hinterlegt&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die App oeffnet&#x27;, &#x27;then&#x27;: &#x27;wird der Nutzer erfolgreich per Fingerabdruck oder Face ID authentifiziert und zur Startseite weitergeleitet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die biometrische Entsperrung ist aktiviert und die biometrische Pruefung schlaegt fehl&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Authentifizierungsversuch wiederholt oder abbricht&#x27;, &#x27;then&#x27;: &#x27;wird eine alternative Anmeldung per PIN/Passwort angeboten&#x27;}</li><li>{&#x27;given&#x27;: &#x27;das Geraet unterstuetzt keine biometrische Authentifizierung oder es sind keine biometrischen Daten hinterlegt&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht die biometrische Entsperrung zu aktivieren&#x27;, &#x27;then&#x27;: &#x27;wird eine informative Meldung angezeigt und die Aktivierung ist nicht moeglich&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-004: Multi-Device Support</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> den Dienst gleichzeitig auf mehreren Geräten nutzen</p>
+                    <p><strong>So that</strong> um Nachrichten nahtlos und plattformübergreifend zu senden und zu empfangen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist auf einem Smartphone angemeldet&#x27;, &#x27;when&#x27;: &#x27;er sich zusätzlich auf einem Desktop-Gerät anmeldet&#x27;, &#x27;then&#x27;: &#x27;beide Geräte bleiben gleichzeitig aktiv und zeigen denselben Nachrichtenstatus&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist auf zwei Geräten gleichzeitig angemeldet&#x27;, &#x27;when&#x27;: &#x27;er eine Nachricht auf einem Gerät sendet oder liest&#x27;, &#x27;then&#x27;: &#x27;wird der Status auf dem anderen Gerät in Echtzeit synchronisiert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;das zulässige Geräte-Limit ist erreicht&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, ein weiteres Gerät anzumelden&#x27;, &#x27;then&#x27;: &#x27;wird die Anmeldung abgelehnt und eine verständliche Fehlermeldung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-005: Passkey-Unterstuetzung</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> sich per Passkey ohne Passwort anmelden</p>
+                    <p><strong>So that</strong> um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer hat einen Passkey für sein Konto registriert und ein kompatibles Gerät&#x27;, &#x27;when&#x27;: &#x27;er die Anmeldung per Passkey startet und die Geräteauthentifizierung bestätigt&#x27;, &#x27;then&#x27;: &#x27;wird er erfolgreich und ohne Passworteingabe angemeldet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer besitzt mehrere Passkeys für dasselbe Konto&#x27;, &#x27;when&#x27;: &#x27;er die Anmeldung per Passkey startet&#x27;, &#x27;then&#x27;: &#x27;wird eine Auswahl der verfügbaren Passkeys angezeigt und der gewählte Passkey ermöglicht die Anmeldung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die Passkey-Validierung schlägt fehl oder wird abgebrochen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Anmeldevorgang fortsetzt&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und eine alternative Anmeldemethode angeboten&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-006: Profilbild</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> ein Profilbild hochladen und verwalten</p>
+                    <p><strong>So that</strong> damit mein Profil professionell wirkt und ich leichter erkannt werde</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Benutzer ist angemeldet und befindet sich in den Profileinstellungen&#x27;, &#x27;when&#x27;: &#x27;er ein gueltiges Bildformat auswaehlt und hochlaedt&#x27;, &#x27;then&#x27;: &#x27;wird das Profilbild gespeichert und sofort im Profil angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Benutzer hat bereits ein Profilbild&#x27;, &#x27;when&#x27;: &#x27;er ein neues Profilbild hochlaedt&#x27;, &#x27;then&#x27;: &#x27;wird das alte Profilbild ersetzt und nur das neue Bild angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Benutzer waehlt eine Datei mit ungueltigem Format oder zu grosser Dateigroesse&#x27;, &#x27;when&#x27;: &#x27;er den Upload startet&#x27;, &#x27;then&#x27;: &#x27;erhaelt er eine klare Fehlermeldung und das bisherige Profilbild bleibt unveraendert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-007: Anzeigename</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen konfigurierbaren Anzeigenamen für das Profil festlegen und ändern</p>
+                    <p><strong>So that</strong> damit Kunden eine professionelle und vertrauenswürdige Identität sehen und die Kommunikation klar zuordnen können</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Profiladministrator ist im Profilbereich angemeldet&#x27;, &#x27;when&#x27;: &#x27;er einen gültigen Anzeigenamen eingibt und speichert&#x27;, &#x27;then&#x27;: &#x27;wird der Anzeigename gespeichert und bei zukünftigen Nachrichten und Profilansichten angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Profiladministrator ist im Profilbereich angemeldet&#x27;, &#x27;when&#x27;: &#x27;er einen leeren oder zu langen Anzeigenamen speichert&#x27;, &#x27;then&#x27;: &#x27;wird eine Validierungsfehlermeldung angezeigt und der vorherige Anzeigename bleibt unverändert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Profiladministrator ist im Profilbereich angemeldet&#x27;, &#x27;when&#x27;: &#x27;er einen Anzeigenamen ändert und die Änderung bestätigt&#x27;, &#x27;then&#x27;: &#x27;ist der neue Anzeigename plattformübergreifend verfügbar und wird innerhalb der definierten Performance-Zeit aktualisiert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-008: Info/Status Text</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen</p>
+                    <p><strong>So that</strong> damit Kunden schnell relevante Informationen erhalten und die Kommunikation professioneller wirkt</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich im Profilbereich und ist angemeldet&#x27;, &#x27;when&#x27;: &#x27;er einen Info-/Status-Text innerhalb des erlaubten Längenlimits speichert&#x27;, &#x27;then&#x27;: &#x27;wird der Text im Profil angezeigt und ist nach erneutem Öffnen des Profils weiterhin sichtbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer gibt einen Text ein, der das maximale Längenlimit überschreitet&#x27;, &#x27;when&#x27;: &#x27;er versucht zu speichern&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und der Text wird nicht gespeichert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer löscht den bestehenden Info-/Status-Text&#x27;, &#x27;when&#x27;: &#x27;er speichert die Änderung&#x27;, &#x27;then&#x27;: &#x27;wird kein Info-/Status-Text im Profil angezeigt und die Änderung bleibt bestehen&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-009: Telefonnummer anzeigen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> die hinterlegte Telefonnummer im Profil anzeigen</p>
+                    <p><strong>So that</strong> damit Kunden ihn schnell kontaktieren können und die Kommunikation zuverlässig erfolgt</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Profilinhaber ist angemeldet und eine gültige Telefonnummer ist im Profil hinterlegt&#x27;, &#x27;when&#x27;: &#x27;er das Profil aufruft&#x27;, &#x27;then&#x27;: &#x27;wird die Telefonnummer im Profil angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Profilinhaber ist angemeldet und keine Telefonnummer ist im Profil hinterlegt&#x27;, &#x27;when&#x27;: &#x27;er das Profil aufruft&#x27;, &#x27;then&#x27;: &#x27;wird ein Hinweis angezeigt, dass keine Telefonnummer verfügbar ist&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein nicht autorisierter Nutzer versucht auf die Profilansicht zuzugreifen&#x27;, &#x27;when&#x27;: &#x27;der Zugriff ohne Berechtigung erfolgt&#x27;, &#x27;then&#x27;: &#x27;wird die Telefonnummer nicht angezeigt und ein Zugriff verweigert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-010: QR-Code Profil</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen scanbaren QR-Code zu meinem Profil anzeigen und herunterladen</p>
+                    <p><strong>So that</strong> damit Kunden mich schnell und plattformübergreifend hinzufügen können</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein verifiziertes Business-Profil ist vorhanden&#x27;, &#x27;when&#x27;: &#x27;ich die Profilseite öffne&#x27;, &#x27;then&#x27;: &#x27;wird ein scanbarer QR-Code für das Profil angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der QR-Code wird angezeigt&#x27;, &#x27;when&#x27;: &#x27;ich den Code mit einem Standard-QR-Scanner scanne&#x27;, &#x27;then&#x27;: &#x27;öffnet sich der Link zum Profil und das Hinzufügen wird angeboten&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der QR-Code wird angezeigt&#x27;, &#x27;when&#x27;: &#x27;ich den Download auslöse&#x27;, &#x27;then&#x27;: &#x27;wird der QR-Code in einem gängigen Bildformat gespeichert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;das Profil ist deaktiviert oder nicht verfügbar&#x27;, &#x27;when&#x27;: &#x27;ich den QR-Code aufrufe&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und kein QR-Code generiert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-011: Textnachricht senden</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Textnachricht in Echtzeit an einen Kontakt senden</p>
+                    <p><strong>So that</strong> um schnell und zuverlässig zu kommunizieren und eine sofortige Antwort zu ermöglichen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Endnutzer ist angemeldet und hat eine stabile Internetverbindung&#x27;, &#x27;when&#x27;: &#x27;er eine Textnachricht an einen gültigen Kontakt sendet&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht in Echtzeit zugestellt und als gesendet sowie beim Empfänger als empfangen angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Endnutzer ist angemeldet&#x27;, &#x27;when&#x27;: &#x27;er eine leere oder nur aus Leerzeichen bestehende Nachricht senden möchte&#x27;, &#x27;then&#x27;: &#x27;wird das Senden verhindert und eine verständliche Validierungsmeldung angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Endnutzer ist angemeldet&#x27;, &#x27;when&#x27;: &#x27;während des Sendens die Netzwerkverbindung unterbrochen wird&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht als nicht zugestellt markiert und ein erneuter Sendeversuch ermöglicht&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-012: Sprachnachricht</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Sprachnachricht aufnehmen und senden</p>
+                    <p><strong>So that</strong> um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist in einem Chat und das Mikrofon ist freigegeben&#x27;, &#x27;when&#x27;: &#x27;der Nutzer eine Sprachnachricht aufnimmt und auf „Senden“ tippt&#x27;, &#x27;then&#x27;: &#x27;wird die Sprachnachricht gesendet und im Chat als zugestellt angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist in einem Chat&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Aufnahme startet und vor dem Senden abbricht&#x27;, &#x27;then&#x27;: &#x27;wird keine Sprachnachricht gesendet und es erscheint kein Nachrichtenentwurf im Chat&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist in einem Chat und die Netzwerkverbindung ist unterbrochen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer eine Sprachnachricht senden moechte&#x27;, &#x27;then&#x27;: &#x27;erhaelt der Nutzer eine Fehlermeldung und die Sprachnachricht wird nicht als zugestellt angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-013: Nachricht loeschen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine gesendete oder empfangene Nachricht loeschen</p>
+                    <p><strong>So that</strong> den Chat uebersichtlich halten und Datenschutzanforderungen erfuellen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;eine Nachricht ist in einem Chat vorhanden und der Nutzer hat Zugriffsrechte&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Nachricht loescht und die Aktion bestaetigt&#x27;, &#x27;then&#x27;: &#x27;die Nachricht wird aus dem Chat entfernt und eine Bestaetigung wird angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer versucht eine Nachricht zu loeschen, die bereits geloescht ist&#x27;, &#x27;when&#x27;: &#x27;die Loeschaktion ausgefuehrt wird&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine informative Meldung und nimmt keine weiteren Aenderungen vor&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Loeschanfrage wird gesendet, waehrend die Verbindung unterbrochen ist&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Nachricht loeschen will&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine Fehlermeldung an und die Nachricht bleibt unveraendert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-014: Nachricht bearbeiten</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine bereits gesendete Nachricht bearbeiten</p>
+                    <p><strong>So that</strong> Fehler zu korrigieren und eine professionelle, zuverlässige Kommunikation sicherzustellen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;eine gesendete Nachricht ist im Chatverlauf vorhanden und wurde innerhalb des erlaubten Bearbeitungszeitraums gesendet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Nachricht bearbeitet und speichert&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht aktualisiert angezeigt und als bearbeitet gekennzeichnet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine gesendete Nachricht ist im Chatverlauf vorhanden, aber der Bearbeitungszeitraum ist abgelaufen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, die Nachricht zu bearbeiten&#x27;, &#x27;then&#x27;: &#x27;wird die Bearbeitung verweigert und eine verständliche Hinweisnachricht angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine gesendete Nachricht ist im Chatverlauf vorhanden&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Bearbeitung speichert, aber die Verbindung ist unterbrochen&#x27;, &#x27;then&#x27;: &#x27;wird die Änderung nicht übernommen und es wird eine Fehlermeldung mit Wiederholungsoption angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-015: Nachricht weiterleiten</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine empfangene Nachricht an einen oder mehrere Kontakte weiterleiten</p>
+                    <p><strong>So that</strong> damit Informationen schnell und sicher geteilt werden koennen und die Kommunikation effizient bleibt</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich in einem geoeffneten Chat mit einer empfangenen Nachricht&#x27;, &#x27;when&#x27;: &#x27;er die Funktion „Weiterleiten“ auswaehlt und einen oder mehrere Empfaenger bestimmt&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht an die ausgewaehlten Empfaenger weitergeleitet und im Chat als weitergeleitet gekennzeichnet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer hat „Weiterleiten“ ausgewaehlt, aber keinen Empfaenger ausgewählt&#x27;, &#x27;when&#x27;: &#x27;er den Versand bestaetigt&#x27;, &#x27;then&#x27;: &#x27;erhaelt er eine Hinweisnachricht, dass mindestens ein Empfaenger ausgewaehlt werden muss, und die Nachricht wird nicht gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die Weiterleitung wird gestartet und es besteht eine Netzwerkstoerung&#x27;, &#x27;when&#x27;: &#x27;das System die Nachricht nicht zustellen kann&#x27;, &#x27;then&#x27;: &#x27;wird der Nutzer ueber den Fehler informiert und kann die Weiterleitung erneut versuchen&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-016: Nachricht zitieren</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine spezifische Nachricht in einem Chat zitieren und darauf antworten</p>
+                    <p><strong>So that</strong> den Gesprächskontext klar nachvollziehbar zu halten und Missverständnisse zu vermeiden</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich in einem bestehenden Chat mit mehreren Nachrichten&#x27;, &#x27;when&#x27;: &#x27;der Nutzer wählt eine Nachricht aus und sendet eine Antwort&#x27;, &#x27;then&#x27;: &#x27;die Antwort wird mit einem sichtbaren Zitatverweis auf die ausgewählte Nachricht gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die ausgewählte Nachricht ist sehr alt oder liegt außerhalb des aktuellen Sichtbereichs&#x27;, &#x27;when&#x27;: &#x27;der Nutzer zitiert diese Nachricht&#x27;, &#x27;then&#x27;: &#x27;das System zeigt den Zitatausschnitt korrekt an und verlinkt zur Originalnachricht&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die zitierte Nachricht wurde zwischenzeitlich gelöscht oder ist aufgrund von Berechtigungen nicht mehr verfügbar&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, sie zu zitieren oder die Antwort zu senden&#x27;, &#x27;then&#x27;: &#x27;das System verhindert das Zitieren und zeigt eine verständliche Fehlermeldung an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-017: Reaktionen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> auf eine Nachricht mit einem Emoji reagieren</p>
+                    <p><strong>So that</strong> um meine Antwort schnell und intuitiv auszudruecken und die Kommunikation zu vereinfachen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;eine Nachricht ist in einem Chat sichtbar&#x27;, &#x27;when&#x27;: &#x27;der Nutzer waehlt ein Emoji aus der Reaktionsauswahl aus&#x27;, &#x27;then&#x27;: &#x27;das Emoji wird an der Nachricht angezeigt und die Reaktion des Nutzers wird gespeichert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer hat bereits auf eine Nachricht reagiert&#x27;, &#x27;when&#x27;: &#x27;der Nutzer waehlt ein anderes Emoji fuer dieselbe Nachricht&#x27;, &#x27;then&#x27;: &#x27;die vorherige Reaktion wird ersetzt und nur das neue Emoji wird angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Nachricht ist geloescht oder der Nutzer hat keine Zugriffsrechte&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht zu reagieren&#x27;, &#x27;then&#x27;: &#x27;die Reaktion wird nicht gespeichert und der Nutzer erhaelt eine verständliche Fehlermeldung&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-018: Verschwindende Nachrichten</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> selbstloeschende Nachrichten mit einer festgelegten Ablaufzeit senden</p>
+                    <p><strong>So that</strong> private Kommunikation zu ermoeglichen und Datenschutz zu erhoehen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer erstellt eine Nachricht und waehlt eine gueltige Ablaufzeit&#x27;, &#x27;when&#x27;: &#x27;die Nachricht gesendet wird&#x27;, &#x27;then&#x27;: &#x27;die Nachricht wird dem Empfaenger zugestellt und nach Ablaufzeit automatisch geloescht&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer waehlt eine Ablaufzeit ausserhalb der zulaessigen Grenzen&#x27;, &#x27;when&#x27;: &#x27;er versucht die Nachricht zu senden&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine Fehlermeldung und verhindert das Senden&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine selbstloeschende Nachricht wurde gesendet&#x27;, &#x27;when&#x27;: &#x27;der Empfaenger sie nach Ablaufzeit oeffnen moechte&#x27;, &#x27;then&#x27;: &#x27;die Nachricht ist nicht mehr verfügbar und wird als abgelaufen angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-019: Einmal-Ansicht Medien</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> View-Once-Medien in einem Chat einmalig ansehen</p>
+                    <p><strong>So that</strong> damit sensible Inhalte nur einmal sichtbar sind und der Datenschutz gewahrt bleibt</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein View-Once-Medium wurde empfangen und ist noch ungesehen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer das Medium oeffnet&#x27;, &#x27;then&#x27;: &#x27;das Medium wird angezeigt und als gesehen markiert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein View-Once-Medium wurde bereits angesehen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, das Medium erneut zu oeffnen&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine Meldung an, dass das Medium nicht mehr verfuegbar ist&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die Wiedergabe des View-Once-Mediums wird unterbrochen&#x27;, &#x27;when&#x27;: &#x27;die Verbindung bricht waehrend des Ansehens ab&#x27;, &#x27;then&#x27;: &#x27;das Medium wird als gesehen markiert und kann nicht erneut geladen werden&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-020: Chat sperren</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren</p>
+                    <p><strong>So that</strong> um Datenschutz und Sicherheit der Gespraeche zu erhoehen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und befindet sich in einem aktiven Chat&#x27;, &#x27;when&#x27;: &#x27;er die Funktion &quot;Chat sperren&quot; auswaehlt und die zusaetzliche Authentifizierung erfolgreich bestaetigt&#x27;, &#x27;then&#x27;: &#x27;wird der Chat gesperrt und der Zugriff ist nur nach erneuter Authentifizierung moeglich&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und hat die zusaetzliche Authentifizierung aktiviert&#x27;, &#x27;when&#x27;: &#x27;er versucht, einen gesperrten Chat ohne erfolgreiche Authentifizierung zu oeffnen&#x27;, &#x27;then&#x27;: &#x27;wird der Zugriff verweigert und es erscheint ein Hinweis zur erforderlichen Authentifizierung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer startet den Sperrvorgang eines Chats&#x27;, &#x27;when&#x27;: &#x27;die zusaetzliche Authentifizierung fehlschlaegt oder abgebrochen wird&#x27;, &#x27;then&#x27;: &#x27;bleibt der Chat ungesperrt und es wird eine Fehlermeldung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-021: Broadcast-Listen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Broadcast-Liste erstellen und an mehrere Empfänger gleichzeitig eine Massen-Nachricht senden</p>
+                    <p><strong>So that</strong> damit ich Kunden schnell, zuverlässig und plattformübergreifend informieren kann, ohne Datenschutz und Sicherheit zu gefährden</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich bin als Kommunikations-Administrator angemeldet und habe eine Liste mit gültigen Empfängern erstellt&#x27;, &#x27;when&#x27;: &#x27;ich eine Massen-Nachricht an die Broadcast-Liste sende&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht an alle Empfänger der Liste zugestellt und der Versandstatus pro Empfänger angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Broadcast-Liste enthält Empfänger, die den Erhalt von Nachrichten abgelehnt haben&#x27;, &#x27;when&#x27;: &#x27;ich eine Massen-Nachricht sende&#x27;, &#x27;then&#x27;: &#x27;werden nur die optierten Empfänger übersprungen und ich erhalte eine Zusammenfassung der nicht zugestellten Empfänger&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich versuche eine Massen-Nachricht ohne Empfänger oder mit leerer Broadcast-Liste zu senden&#x27;, &#x27;when&#x27;: &#x27;ich den Versand auslöse&#x27;, &#x27;then&#x27;: &#x27;wird der Versand verhindert und eine klare Fehlermeldung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-022: Formatierte Texte</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> Nachrichten mit grundlegender Textformatierung verfassen und senden</p>
+                    <p><strong>So that</strong> um professionell und klar mit Kunden zu kommunizieren</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Business-Nutzer erstellt eine neue Nachricht im Editor&#x27;, &#x27;when&#x27;: &#x27;er Text mit unterstützten Formatierungen wie Fett, Kursiv oder Aufzählungen versieht und sendet&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht beim Empfänger mit der gewählten Formatierung korrekt angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Business-Nutzer fügt eine Nachricht mit unvollständiger oder verschachtelter Formatierung ein&#x27;, &#x27;when&#x27;: &#x27;die Nachricht gespeichert oder gesendet wird&#x27;, &#x27;then&#x27;: &#x27;bereinigt das System die Formatierung automatisch oder weist auf die fehlerhafte Syntax hin, ohne die Nachricht zu verlieren&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Business-Nutzer verwendet nicht unterstützte Formatierungszeichen&#x27;, &#x27;when&#x27;: &#x27;die Nachricht gesendet wird&#x27;, &#x27;then&#x27;: &#x27;werden nicht unterstützte Formatierungen ignoriert oder als Klartext dargestellt und die Nachricht wird dennoch zugestellt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-023: Erwaehnung (@mention)</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren</p>
+                    <p><strong>So that</strong> um die Aufmerksamkeit gezielt zu steuern und eine schnelle, zuverlaessige Kommunikation im Chat zu erreichen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein Gruppenchat mit mehreren Teilnehmern ist geoeffnet&#x27;, &#x27;when&#x27;: &quot;der Nutzer tippt &#x27;@&#x27; und waehlt einen Teilnehmer aus der vorgeschlagenen Liste aus&quot;, &#x27;then&#x27;: &#x27;die Nachricht enthaelt die @-Erwaehnung und der erwaehnte Teilnehmer erhaelt eine Benachrichtigung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Gruppenchat ist geoeffnet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer gibt eine @-Erwaehnung mit einem nicht vorhandenen Benutzernamen ein&#x27;, &#x27;then&#x27;: &#x27;die Erwaehnung wird nicht aufgeloest und das System zeigt einen Hinweis zur Auswahl eines gueltigen Teilnehmers&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Gruppenchat ist geoeffnet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, eine Person zu erwaehnen, die nicht Mitglied des Gruppenchats ist&#x27;, &#x27;then&#x27;: &#x27;die Erwaehnung wird blockiert und es erfolgt keine Benachrichtigung&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-024: Standort teilen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen Standort in einer Unterhaltung teilen</p>
+                    <p><strong>So that</strong> damit der Empfaenger den Standort schnell finden kann und die Kommunikation effizienter wird</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich in einer aktiven Unterhaltung und hat Standortfreigabe zugelassen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer einen Standort auswaehlt und sendet&#x27;, &#x27;then&#x27;: &#x27;wird der Standort als Nachricht mit Kartenvorschau an den Empfaenger zugestellt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer hat keine Standortberechtigung erteilt&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, einen Standort zu teilen&#x27;, &#x27;then&#x27;: &#x27;fordert das System zur Erteilung der Berechtigung auf und sendet keinen Standort&#x27;}</li><li>{&#x27;given&#x27;: &#x27;keine Netzwerkverbindung ist verfuegbar&#x27;, &#x27;when&#x27;: &#x27;der Nutzer einen Standort senden moechte&#x27;, &#x27;then&#x27;: &#x27;erhaelt der Nutzer eine Fehlermeldung und die Nachricht wird nicht als gesendet markiert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-025: Kontakt teilen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen Kontakt aus meiner Kontaktliste in einem Chat teilen</p>
+                    <p><strong>So that</strong> damit der Empfaenger die Kontaktdaten schnell und sicher erhalten und weiterverwenden kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich befinde mich in einem bestehenden Chat und habe Zugriff auf meine Kontaktliste&#x27;, &#x27;when&#x27;: &#x27;ich waehle einen Kontakt aus und bestaetige das Teilen&#x27;, &#x27;then&#x27;: &#x27;der Kontakt wird als strukturierte Kontaktkarte im Chat gesendet und ist fuer den Empfaenger sichtbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich versuche einen Kontakt zu teilen, fuer den keine Telefonnummer oder zentrale Kontaktdaten vorhanden sind&#x27;, &#x27;when&#x27;: &#x27;ich den Versand bestaetige&#x27;, &#x27;then&#x27;: &#x27;das System verhindert das Senden und zeigt eine aussagekraeftige Meldung an&#x27;}</li><li>{&#x27;given&#x27;: &#x27;meine Netzwerkverbindung ist instabil oder unterbrochen&#x27;, &#x27;when&#x27;: &#x27;ich einen Kontakt teile&#x27;, &#x27;then&#x27;: &#x27;das System informiert ueber den fehlgeschlagenen Versand und bietet eine erneute Uebertragung an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-026: Gruppe erstellen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen neuen Gruppenchat erstellen</p>
+                    <p><strong>So that</strong> mit mehreren Kontakten effizient und sicher kommunizieren zu können</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und befindet sich in der Chat-Übersicht&#x27;, &#x27;when&#x27;: &#x27;er einen Gruppennamen eingibt, mindestens zwei Kontakte auswählt und die Erstellung bestätigt&#x27;, &#x27;then&#x27;: &#x27;wird der Gruppenchat erstellt und in der Chat-Übersicht angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist im Erstellungsdialog für einen Gruppenchat&#x27;, &#x27;when&#x27;: &#x27;er versucht, einen Gruppennamen ohne mindestens zwei Kontakte zu bestätigen&#x27;, &#x27;then&#x27;: &#x27;wird die Erstellung verhindert und eine verständliche Hinweisnachricht angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist im Erstellungsdialog für einen Gruppenchat&#x27;, &#x27;when&#x27;: &#x27;die Erstellung aufgrund eines Systemfehlers fehlschlägt&#x27;, &#x27;then&#x27;: &#x27;erhält der Nutzer eine Fehlermeldung und es wird kein Gruppenchat angelegt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-027: Gruppenadministration</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> Gruppen verwalten und Mitgliederrechte zentral konfigurieren</p>
+                    <p><strong>So that</strong> um sichere und regelkonforme Kommunikation zu gewährleisten und Missbrauch effizient zu verhindern</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;eine bestehende Gruppe mit Mitgliedern und der Administrator ist angemeldet&#x27;, &#x27;when&#x27;: &#x27;er Rollen und Berechtigungen für mehrere Mitglieder aktualisiert&#x27;, &#x27;then&#x27;: &#x27;werden die Änderungen sofort gespeichert und in der Gruppenansicht korrekt angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Gruppe mit aktivierter Moderation&#x27;, &#x27;when&#x27;: &#x27;ein Mitglied eine Nachricht sendet, die gegen Moderationsregeln verstößt&#x27;, &#x27;then&#x27;: &#x27;wird die Nachricht blockiert und der Administrator erhält eine Benachrichtigung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Gruppe mit vielen Mitgliedern&#x27;, &#x27;when&#x27;: &#x27;der Administrator die Mitgliederliste filtert und nach Kriterien sucht&#x27;, &#x27;then&#x27;: &#x27;werden die Ergebnisse performant und vollständig angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Administrator versucht eine Gruppe zu löschen, die noch aktive Abhängigkeiten hat&#x27;, &#x27;when&#x27;: &#x27;er die Löschung bestätigt&#x27;, &#x27;then&#x27;: &#x27;erhält er eine verständliche Fehlermeldung und die Gruppe bleibt unverändert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-028: Gruppeneinstellungen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> konfigurierbare Gruppeneinstellungen anlegen und anpassen</p>
+                    <p><strong>So that</strong> damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Gruppenadministrator ist angemeldet und hat Zugriff auf eine bestehende Gruppe&#x27;, &#x27;when&#x27;: &#x27;er die Gruppeneinstellungen öffnet und Änderungen speichert&#x27;, &#x27;then&#x27;: &#x27;werden die neuen Einstellungen sofort wirksam und allen Gruppenmitgliedern korrekt angewendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Gruppenadministrator versucht, eine ungültige Einstellungskombination zu speichern&#x27;, &#x27;when&#x27;: &#x27;er die Änderungen speichert&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und keine Änderung übernommen&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Nutzer ohne Administrationsrechte ist Mitglied der Gruppe&#x27;, &#x27;when&#x27;: &#x27;er versucht, Gruppeneinstellungen zu ändern&#x27;, &#x27;then&#x27;: &#x27;wird der Zugriff verweigert und die Einstellungen bleiben unverändert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-029: Einladungslink</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen Einladungslink für eine Gruppe erstellen und teilen</p>
+                    <p><strong>So that</strong> damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Gruppenadministrator ist angemeldet und hat Berechtigung Einladungen zu erstellen&#x27;, &#x27;when&#x27;: &#x27;er einen Einladungslink für die Gruppe generiert&#x27;, &#x27;then&#x27;: &#x27;wird ein eindeutiger, gültiger Link angezeigt und kann kopiert oder geteilt werden&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein gültiger Einladungslink wurde geteilt&#x27;, &#x27;when&#x27;: &#x27;ein nicht angemeldeter Nutzer den Link öffnet&#x27;, &#x27;then&#x27;: &#x27;wird er zur Anmeldung/Registrierung geführt und nach erfolgreicher Anmeldung der Gruppe beitreten&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Einladungslink ist abgelaufen oder wurde deaktiviert&#x27;, &#x27;when&#x27;: &#x27;ein Nutzer den Link öffnet&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und kein Beitritt erfolgt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-030: Gruppe verlassen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen</p>
+                    <p><strong>So that</strong> um die Privatsphäre zu wahren und die Bedienung schnell und unkompliziert zu halten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist Mitglied einer Gruppe und hat die Gruppenansicht geöffnet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Aktion „Gruppe verlassen“ bestätigt&#x27;, &#x27;then&#x27;: &#x27;wird der Nutzer aus der Gruppe entfernt und es wird keine Benachrichtigung an andere Gruppenmitglieder gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist kein Mitglied der Gruppe&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht, die Gruppe zu verlassen&#x27;, &#x27;then&#x27;: &#x27;zeigt das System eine verständliche Meldung an und nimmt keine Änderungen vor&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Unterbrechung der Netzwerkverbindung während des Verlassens&#x27;, &#x27;when&#x27;: &#x27;die Anfrage nicht erfolgreich abgeschlossen werden kann&#x27;, &#x27;then&#x27;: &#x27;bleibt die Mitgliedschaft unverändert und der Nutzer erhält eine Fehlermeldung mit der Option, es erneut zu versuchen&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-031: Community</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Community mit mehreren Gruppen erstellen und verwalten</p>
+                    <p><strong>So that</strong> um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Administrator hat die Berechtigung zur Community-Verwaltung&#x27;, &#x27;when&#x27;: &#x27;er eine neue Community anlegt und mindestens zwei Gruppen hinzufuegt&#x27;, &#x27;then&#x27;: &#x27;wird die Community gespeichert und alle hinzugefuegten Gruppen sind der Community zugeordnet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine bestehende Community mit mehreren Gruppen&#x27;, &#x27;when&#x27;: &#x27;der Administrator eine weitere Gruppe hinzufuegt oder eine bestehende Gruppe entfernt&#x27;, &#x27;then&#x27;: &#x27;werden die Aenderungen sofort in der Community-Struktur angezeigt und gespeichert&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Administrator versucht eine Gruppe einer Community hinzuzufuegen, fuer die er keine Berechtigung hat&#x27;, &#x27;when&#x27;: &#x27;er den Zuordnungsvorgang ausfuehrt&#x27;, &#x27;then&#x27;: &#x27;wird die Zuordnung verweigert und eine klare Fehlermeldung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-032: Kanaele</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden</p>
+                    <p><strong>So that</strong> um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Business-Kunde ist authentifiziert und verfügt über Berechtigungen zur Kanalverwaltung&#x27;, &#x27;when&#x27;: &#x27;er einen One-Way-Broadcast-Kanal erstellt und eine Nachricht veröffentlicht&#x27;, &#x27;then&#x27;: &#x27;die Nachricht wird allen Abonnenten zugestellt und Empfänger können nicht antworten&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein One-Way-Broadcast-Kanal existiert&#x27;, &#x27;when&#x27;: &#x27;ein Empfänger versucht, auf eine Broadcast-Nachricht zu antworten&#x27;, &#x27;then&#x27;: &#x27;das System blockiert die Antwort und zeigt einen Hinweis an, dass Antworten nicht erlaubt sind&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein One-Way-Broadcast-Kanal existiert&#x27;, &#x27;when&#x27;: &#x27;eine Nachricht mit unvollständigen Pflichtfeldern (z. B. leerem Inhalt) gesendet werden soll&#x27;, &#x27;then&#x27;: &#x27;das System verhindert das Senden und gibt eine verständliche Fehlermeldung aus&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-033: Umfragen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen</p>
+                    <p><strong>So that</strong> schnell Meinungen einholen zu koennen und Entscheidungen effizient zu treffen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich in einem Gruppen- oder Einzelchat&#x27;, &#x27;when&#x27;: &#x27;er eine Umfrage mit Frage und mindestens zwei Antwortoptionen erstellt und sendet&#x27;, &#x27;then&#x27;: &#x27;wird die Umfrage im Chat angezeigt und andere Teilnehmer koennen abstimmen&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer befindet sich in einem Chat&#x27;, &#x27;when&#x27;: &#x27;er versucht eine Umfrage ohne Frage oder mit weniger als zwei Antwortoptionen zu senden&#x27;, &#x27;then&#x27;: &#x27;wird das Senden blockiert und eine verständliche Fehlermeldung angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Umfrage wurde im Chat geteilt&#x27;, &#x27;when&#x27;: &#x27;ein Teilnehmer abstimmt&#x27;, &#x27;then&#x27;: &#x27;wird die Stimme gespeichert und die aktuellen Ergebnisse werden aktualisiert angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-034: Events planen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen</p>
+                    <p><strong>So that</strong> damit die Gruppe Termine koordiniert und die Teilnahme verlässlich organisiert werden kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich bin als Gruppenadministrator eingeloggt und befinde mich in einer Gruppe&#x27;, &#x27;when&#x27;: &#x27;ich ein Event mit gültigem Titel, Datum, Uhrzeit und optionalem Ort speichere&#x27;, &#x27;then&#x27;: &#x27;das Event wird in der Gruppenansicht angezeigt und eine Benachrichtigung wird an alle Gruppenmitglieder gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich erstelle ein Event&#x27;, &#x27;when&#x27;: &#x27;ich lasse ein Pflichtfeld wie Titel oder Datum leer&#x27;, &#x27;then&#x27;: &#x27;das System verhindert das Speichern und zeigt eine verständliche Validierungsfehlermeldung an&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Event wurde erstellt&#x27;, &#x27;when&#x27;: &#x27;ein Gruppenmitglied auf das Event zugreift&#x27;, &#x27;then&#x27;: &#x27;es sieht die Details und kann seine Teilnahme zusagen oder absagen&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-035: Sprachanruf</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen verschlüsselten Sprachanruf starten</p>
+                    <p><strong>So that</strong> vertrauliche und sichere Kommunikation über verschiedene Plattformen hinweg zu gewährleisten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Endnutzer ist angemeldet und beide Gesprächspartner sind online&#x27;, &#x27;when&#x27;: &#x27;der Endnutzer einen Sprachanruf initiiert&#x27;, &#x27;then&#x27;: &#x27;wird der Anruf aufgebaut und die Audioübertragung ist Ende-zu-Ende verschlüsselt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Endnutzer ist angemeldet und der Empfänger hat die App geschlossen&#x27;, &#x27;when&#x27;: &#x27;der Endnutzer einen Sprachanruf initiiert&#x27;, &#x27;then&#x27;: &#x27;erhält der Empfänger eine Benachrichtigung und kann den verschlüsselten Anruf annehmen&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Netzwerkstörung tritt während des Anrufaufbaus auf&#x27;, &#x27;when&#x27;: &#x27;der Endnutzer einen Sprachanruf startet&#x27;, &#x27;then&#x27;: &#x27;wird eine verständliche Fehlermeldung angezeigt und der Anruf wird nicht unverschlüsselt aufgebaut&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-036: Videoanruf</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen verschluesselten Videoanruf starten und fuehren</p>
+                    <p><strong>So that</strong> um vertraulich und sicher in Echtzeit kommunizieren zu koennen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Endnutzer und der Gegenueber sind online und haben die App geoeffnet&#x27;, &#x27;when&#x27;: &#x27;der Endnutzer einen Videoanruf initiiert und der Gegenueber annimmt&#x27;, &#x27;then&#x27;: &#x27;wird eine Ende-zu-Ende-verschluesselte Videoverbindung hergestellt und Audio/Video ist fuer beide Seiten verfuegbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Endnutzer initiiert einen Videoanruf und die Gegenseite nimmt nicht an&#x27;, &#x27;when&#x27;: &#x27;die definierte Timeout-Dauer erreicht ist&#x27;, &#x27;then&#x27;: &#x27;erhaelt der Endnutzer eine Benachrichtigung, dass der Anruf nicht angenommen wurde, und die Verbindung wird beendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Endnutzer startet einen Videoanruf bei instabiler Netzwerkverbindung&#x27;, &#x27;when&#x27;: &#x27;die Verschluesselung nicht aufgebaut werden kann&#x27;, &#x27;then&#x27;: &#x27;wird der Anruf abgebrochen und eine Fehlermeldung zur fehlgeschlagenen sicheren Verbindung angezeigt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-037: Gruppenanruf</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen</p>
+                    <p><strong>So that</strong> um effizient und in Echtzeit mit mehreren Personen plattformuebergreifend zu kommunizieren</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und hat eine stabile Internetverbindung&#x27;, &#x27;when&#x27;: &#x27;er einen Gruppenanruf mit mehreren Kontakten startet&#x27;, &#x27;then&#x27;: &#x27;der Anruf wird aufgebaut und alle eingeladenen Teilnehmenden erhalten eine Einladung auf ihren Plattformen&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Teilnehmender nimmt die Einladung an&#x27;, &#x27;when&#x27;: &#x27;er dem Gruppenanruf beitritt&#x27;, &#x27;then&#x27;: &#x27;sein Audio/Video ist fuer die anderen Teilnehmenden verfuegbar und die Verbindung bleibt stabil&#x27;}</li><li>{&#x27;given&#x27;: &#x27;mindestens ein eingeladener Kontakt ist offline oder nicht erreichbar&#x27;, &#x27;when&#x27;: &#x27;der Gruppenanruf gestartet wird&#x27;, &#x27;then&#x27;: &#x27;der Anruf wird dennoch fuer die erreichbaren Teilnehmenden aufgebaut und unerreichbare Kontakte werden als nicht verfuegbar gekennzeichnet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer hat keine Berechtigung oder es liegt ein Verbindungsfehler vor&#x27;, &#x27;when&#x27;: &#x27;er versucht, einen Gruppenanruf zu starten&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine verständliche Fehlermeldung und der Anruf wird nicht gestartet&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-038: Bildschirmfreigabe</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> waehrend eines laufenden Anrufs seinen Bildschirm freigeben</p>
+                    <p><strong>So that</strong> Inhalte schnell und sicher teilen zu koennen, um die Kommunikation zu vereinfachen und Entscheidungen zu beschleunigen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein laufender Anruf zwischen zwei registrierten Nutzern&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Option „Bildschirm freigeben“ aktiviert und eine Quelle auswaehlt&#x27;, &#x27;then&#x27;: &#x27;der ausgewaehlte Bildschirm wird dem Gegenueber ohne spuerbare Verzoegerung angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein laufender Anruf und eine aktive Bildschirmfreigabe&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Freigabe beendet&#x27;, &#x27;then&#x27;: &#x27;die Bildschirmfreigabe stoppt sofort und der Anruf laeuft weiter&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein laufender Anruf&#x27;, &#x27;when&#x27;: &#x27;die Bildschirmfreigabe wegen fehlender Berechtigung oder Systemeinschraenkung nicht gestartet werden kann&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine klare Fehlermeldung an und bietet eine sichere alternative Aktion an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-039: Anruflink</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen Anruflink fuer einen geplanten Anruf erstellen und teilen</p>
+                    <p><strong>So that</strong> damit Kunden den Anruf einfach und sicher zum geplanten Zeitpunkt erreichen koennen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein geplanter Anruf mit gueltigen Zeit- und Teilnehmerdaten existiert&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Anruflink erstellt&#x27;, &#x27;then&#x27;: &#x27;wird ein eindeutiger, teilbarer Anruflink generiert und angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Anruflink wurde generiert&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Link oeffnet oder an einen Kunden sendet&#x27;, &#x27;then&#x27;: &#x27;ist der Link plattformuebergreifend nutzbar und fuehrt zur Anrufbereitstellung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein geplanter Anruf wurde geloescht oder ist abgelaufen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht einen Anruflink zu erstellen oder zu verwenden&#x27;, &#x27;then&#x27;: &#x27;zeigt das System eine Fehlermeldung an und erstellt keinen Link&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-040: Anruf ablehnen mit Nachricht</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden</p>
+                    <p><strong>So that</strong> ich kann den Anrufer schnell informieren und professionell kommunizieren, ohne den Anruf anzunehmen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein eingehender Anruf wird angezeigt und Schnellantworten sind konfiguriert&#x27;, &#x27;when&#x27;: &#x27;ich wähle eine Schnellantwort und lehne den Anruf ab&#x27;, &#x27;then&#x27;: &#x27;der Anruf wird abgelehnt und die ausgewählte Nachricht wird sofort an den Anrufer gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein eingehender Anruf wird angezeigt&#x27;, &#x27;when&#x27;: &#x27;ich lehne den Anruf ab, ohne eine Schnellantwort auszuwählen&#x27;, &#x27;then&#x27;: &#x27;der Anruf wird abgelehnt und es wird keine Nachricht gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein eingehender Anruf wird angezeigt und die Nachrichtenübermittlung ist nicht verfügbar&#x27;, &#x27;when&#x27;: &#x27;ich wähle eine Schnellantwort und lehne den Anruf ab&#x27;, &#x27;then&#x27;: &#x27;der Anruf wird abgelehnt und das System zeigt eine Fehlermeldung zur nicht zustellbaren Nachricht an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-041: Anrufverlauf</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> den Anrufverlauf einsehen und nach Datum filtern</p>
+                    <p><strong>So that</strong> um vergangene Anrufe schnell nachzuvollziehen und Kommunikationsverlaesse sicher zu dokumentieren</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und es existieren gespeicherte Anrufe&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Anrufverlauf oeffnet&#x27;, &#x27;then&#x27;: &#x27;zeigt das System eine chronologische Liste mit Anrufdatum, -uhrzeit, Richtung und Teilnehmer&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer hat einen Datumsfilter gesetzt&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Filter anwendet&#x27;, &#x27;then&#x27;: &#x27;zeigt das System nur Anrufe innerhalb des ausgewaehlten Zeitraums&#x27;}</li><li>{&#x27;given&#x27;: &#x27;es existieren keine Anrufe fuer den ausgewaehlten Zeitraum&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Anrufverlauf oeffnet&#x27;, &#x27;then&#x27;: &#x27;zeigt das System eine leere Liste mit einem Hinweis, dass keine Anrufe vorhanden sind&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-042: Status erstellen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> einen 24-Stunden-Status-Update erstellen und veröffentlichen</p>
+                    <p><strong>So that</strong> damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich bin angemeldet und habe eine stabile Internetverbindung&#x27;, &#x27;when&#x27;: &#x27;ich erstelle einen Status mit Medien oder Text und tippe auf „Veroeffentlichen“&#x27;, &#x27;then&#x27;: &#x27;der Status wird gespeichert, angezeigt und ist fuer 24 Stunden sichtbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich habe keine Inhalte hinzugefuegt&#x27;, &#x27;when&#x27;: &#x27;ich versuche, den Status zu veroeffentlichen&#x27;, &#x27;then&#x27;: &#x27;das System zeigt eine Validierungsnachricht an und verhindert die Veroeffentlichung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die Verbindung wird beim Speichern unterbrochen&#x27;, &#x27;when&#x27;: &#x27;ich veroeffentliche den Status&#x27;, &#x27;then&#x27;: &#x27;das System informiert mich ueber den Fehler und bietet das erneute Speichern an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-043: Status anzeigen</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> den Kontakt-Status in der Kontaktliste und im Chat anzeigen</p>
+                    <p><strong>So that</strong> um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein registrierter Nutzer ist eingeloggt und hat Kontakte mit freigegebenem Status&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Kontaktliste oder einen Chat öffnet&#x27;, &#x27;then&#x27;: &#x27;wird der aktuelle Kontakt-Status korrekt und in Echtzeit angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Kontakt hat die Statusanzeige deaktiviert oder der Nutzer hat keine Berechtigung&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Kontaktliste oder den Chat öffnet&#x27;, &#x27;then&#x27;: &#x27;wird kein Status angezeigt und stattdessen ein neutraler Hinweis ausgegeben&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Netzwerkstörung verhindert den Statusabruf&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Kontaktliste oder den Chat öffnet&#x27;, &#x27;then&#x27;: &#x27;wird ein Lade- bzw. Fehlerhinweis angezeigt und der Rest der Ansicht bleibt nutzbar&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-044: Status-Antwort</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> auf einen Status mit einer Antwort reagieren</p>
+                    <p><strong>So that</strong> um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein veröffentlichter Status ist sichtbar&#x27;, &#x27;when&#x27;: &#x27;der Nutzer eine Antwort eingibt und sendet&#x27;, &#x27;then&#x27;: &#x27;die Antwort wird dem Status zugeordnet gespeichert und dem Absender zugestellt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Status ist abgelaufen oder nicht mehr verfügbar&#x27;, &#x27;when&#x27;: &#x27;der Nutzer versucht zu antworten&#x27;, &#x27;then&#x27;: &#x27;das System verhindert die Antwort und zeigt eine verständliche Meldung an&#x27;}</li><li>{&#x27;given&#x27;: &#x27;eine Netzwerkinstabilität tritt beim Senden auf&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Antwort abschickt&#x27;, &#x27;then&#x27;: &#x27;das System zeigt einen Fehler an und ermöglicht einen erneuten Sendeversuch ohne Datenverlust&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-045: Status-Datenschutz</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren</p>
+                    <p><strong>So that</strong> ich meine Privatsphäre wahren und Kontrolle über meine Statusinformationen behalten kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich bin angemeldet und befinde mich in den Status-Datenschutzeinstellungen&#x27;, &#x27;when&#x27;: &#x27;ich wähle eine Sichtbarkeitsoption und speichere die Einstellung&#x27;, &#x27;then&#x27;: &#x27;wird die Status-Sichtbarkeit gemäß meiner Auswahl angewendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich habe bestimmte Kontakte ausgeschlossen&#x27;, &#x27;when&#x27;: &#x27;ein ausgeschlossener Kontakt meinen Status aufruft&#x27;, &#x27;then&#x27;: &#x27;ist mein Status für diesen Kontakt nicht sichtbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;es besteht eine temporäre Netzwerkunterbrechung&#x27;, &#x27;when&#x27;: &#x27;ich versuche die Status-Sichtbarkeit zu speichern&#x27;, &#x27;then&#x27;: &#x27;erhalte ich eine verständliche Fehlermeldung und die bisherige Einstellung bleibt unverändert&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-046: Status stumm schalten</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> den Status eines Kontakts stummschalten</p>
+                    <p><strong>So that</strong> benachrichtigungsfreie Nutzung bei gleichzeitiger Wahrung von Datenschutz und einer ruhigen Bedienung</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein Kontakt ist in der Kontaktliste vorhanden und Statusbenachrichtigungen sind aktiv&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Option „Status stummschalten“ für diesen Kontakt aktiviert&#x27;, &#x27;then&#x27;: &#x27;werden keine Statusbenachrichtigungen dieses Kontakts mehr angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Kontakt ist stummgeschaltet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer die Stummschaltung wieder deaktiviert&#x27;, &#x27;then&#x27;: &#x27;werden Statusbenachrichtigungen dieses Kontakts wieder angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer versucht einen Kontakt zu stummschalten, der nicht mehr existiert oder nicht erreichbar ist&#x27;, &#x27;when&#x27;: &#x27;die Aktion ausgeführt wird&#x27;, &#x27;then&#x27;: &#x27;zeigt das System eine verständliche Fehlermeldung an und nimmt keine Änderung vor&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-047: Bilder senden</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> ein Bild in einem Chat senden</p>
+                    <p><strong>So that</strong> damit ich Informationen visuell schnell und zuverlässig teilen kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ich habe eine aktive Unterhaltung geöffnet und eine stabile Internetverbindung&#x27;, &#x27;when&#x27;: &#x27;ich ein unterstütztes Bild auswähle und auf Senden tippe&#x27;, &#x27;then&#x27;: &#x27;wird das Bild übertragen und in der Unterhaltung beim Empfänger angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich wähle eine Datei aus, die kein unterstütztes Bildformat hat&#x27;, &#x27;when&#x27;: &#x27;ich versuche, die Datei zu senden&#x27;, &#x27;then&#x27;: &#x27;wird der Versand blockiert und ich erhalte eine verständliche Fehlermeldung&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ich habe eine schwache oder unterbrochene Verbindung&#x27;, &#x27;when&#x27;: &#x27;ich versuche, ein Bild zu senden&#x27;, &#x27;then&#x27;: &#x27;wird mir ein Fehler angezeigt und ich kann den Versand erneut versuchen, ohne dass die App abstürzt&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-048: Videos senden</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> ein Video in einer Nachricht senden</p>
+                    <p><strong>So that</strong> um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und befindet sich in einem Chat&#x27;, &#x27;when&#x27;: &#x27;der Nutzer wählt ein unterstütztes Videoformat aus und sendet es&#x27;, &#x27;then&#x27;: &#x27;das Video wird erfolgreich hochgeladen und an den Empfänger zugestellt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer versucht, ein Video zu senden, das die maximale Dateigröße überschreitet&#x27;, &#x27;when&#x27;: &#x27;der Nutzer den Versand startet&#x27;, &#x27;then&#x27;: &#x27;das System blockiert den Versand und zeigt eine verständliche Fehlermeldung mit zulässigen Limits an&#x27;}</li><li>{&#x27;given&#x27;: &#x27;die Netzwerkverbindung ist instabil oder der Upload wird unterbrochen&#x27;, &#x27;when&#x27;: &#x27;der Nutzer das Video sendet&#x27;, &#x27;then&#x27;: &#x27;das System informiert über den fehlgeschlagenen Versand und bietet eine erneute Übertragung an&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-049: Dokumente senden</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> beliebige Dokumente an einen Empfaenger senden</p>
+                    <p><strong>So that</strong> damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und hat einen Empfaenger ausgewaehlt&#x27;, &#x27;when&#x27;: &#x27;er ein Dokument auswaehlt und den Versand ausloest&#x27;, &#x27;then&#x27;: &#x27;wird das Dokument erfolgreich gesendet und als zugestellt angezeigt&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet und hat einen Empfaenger ausgewaehlt&#x27;, &#x27;when&#x27;: &#x27;er ein sehr grosses Dokument sendet, das innerhalb der definierten Systemgrenzen liegt&#x27;, &#x27;then&#x27;: &#x27;wird der Versand ohne spuerbare Verzoegerung abgeschlossen&#x27;}</li><li>{&#x27;given&#x27;: &#x27;der Nutzer ist angemeldet&#x27;, &#x27;when&#x27;: &#x27;er versucht, ein Dokument zu senden, das die Systemgrenzen ueberschreitet&#x27;, &#x27;then&#x27;: &#x27;erhaelt er eine klare Fehlermeldung mit Hinweis auf die Ursache und moegliche Loesung&#x27;}</li></ul></div>
+                <div class="card story-card">
+                    <h4>US-050: Bildbearbeitung</h4>
+                    <p><strong>As a</strong> </p>
+                    <p><strong>I want</strong> vor dem Senden eines Bildes grundlegende Bearbeitungen wie Zuschneiden, Drehen oder Markieren durchführen</p>
+                    <p><strong>So that</strong> Bilder schnell und intuitiv anpassen zu können, um Inhalte klar zu kommunizieren und die Nachrichtenzustellung effizient abzuschließen</p>
+            <p><strong>Acceptance Criteria:</strong></p><ul><li>{&#x27;given&#x27;: &#x27;ein Nutzer hat ein Bild zum Versand ausgewählt&#x27;, &#x27;when&#x27;: &#x27;er eine Bearbeitung (z. B. Zuschneiden oder Drehen) durchführt und das Bild sendet&#x27;, &#x27;then&#x27;: &#x27;wird das bearbeitete Bild gesendet und die Änderungen sind im gesendeten Bild sichtbar&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Nutzer hat ein Bild zum Versand ausgewählt&#x27;, &#x27;when&#x27;: &#x27;er keine Bearbeitung vornimmt und das Bild sendet&#x27;, &#x27;then&#x27;: &#x27;wird das Originalbild unverändert gesendet&#x27;}</li><li>{&#x27;given&#x27;: &#x27;ein Nutzer hat ein Bild zum Versand ausgewählt&#x27;, &#x27;when&#x27;: &#x27;er eine nicht unterstützte Bearbeitung versucht oder ein ungültiges Bildformat verwendet&#x27;, &#x27;then&#x27;: &#x27;erhält er eine verständliche Fehlermeldung und kann den Versand nicht abschließen, bis ein gültiges Bild vorliegt&#x27;}</li></ul></div></section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Generated by RE System - 2026-02-12 17:16:27</p>
+        </div>
+    </footer>
+</body>
+</html>

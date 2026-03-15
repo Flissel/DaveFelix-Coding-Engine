@@ -1,0 +1,17 @@
+flowchart TD
+    Start([Start: Telefonnummer-Registrierung])
+    S1[User oeffnet Registrierungsbildschirm]
+    Start --> S1
+    S2{User gibt Mobilnummer ein und klickt 'Code senden'}
+    S1 --> S2
+    E2[/Ungueltige oder falsch formatierte Telefonnummer -> Validierungsmeldung anzeigen/]
+    S2 -.-> E2
+    S3[User sieht Hinweis 'Code gesendet' und Eingabefeld fuer Code]
+    S2 --> S3
+    S4{User gibt Verifizierungscode ein und klickt 'Verifizieren'}
+    S3 --> S4
+    E4[/Falscher oder abgelaufener Code -> Fehlermeldung und Option 'Neuen Code senden'/]
+    S4 -.-> E4
+    S5[User wird bestaetigt und Konto wird erstellt]
+    S4 --> S5
+    S5 --> End([End])

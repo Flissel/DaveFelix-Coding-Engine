@@ -1,0 +1,14 @@
+C4Context
+    title System Context - WhatsApp Messaging Service
+    Person(user, "User", "Mobile app user")
+    Person(contact, "Contact", "Other users")
+    System(whatsapp, "WhatsApp Messaging Service", "Real-time messaging platform")
+    System_Ext(sms, "SMS Gateway", "Phone verification")
+    System_Ext(push, "Push Service", "Mobile notifications")
+    System_Ext(biometric, "Biometric Service", "Device authentication")
+    
+    Rel(user, whatsapp, "Sends messages, manages profile")
+    Rel(contact, whatsapp, "Receives messages, interacts")
+    Rel(whatsapp, sms, "Sends verification codes")
+    Rel(whatsapp, push, "Sends push notifications")
+    Rel(whatsapp, biometric, "Validates biometric auth")

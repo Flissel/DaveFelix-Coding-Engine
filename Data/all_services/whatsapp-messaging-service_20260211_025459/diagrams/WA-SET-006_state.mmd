@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> Übersicht
+    [*] --> Verwaltung
+
+    Übersicht --> Speichernutzung
+    Verwaltung --> Speichernutzung
+
+    Speichernutzung --> Übersicht : zurück zur Übersicht
+    Speichernutzung --> Verwaltung : zurück zur Verwaltung

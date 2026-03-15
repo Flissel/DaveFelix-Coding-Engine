@@ -1,0 +1,31 @@
+classDiagram
+    class User {
+        +String username
+        +String profilePicture
+        +Visibility visibilitySetting
+    }
+
+    class Visibility {
+        +String name
+        +String description
+    }
+
+    class PublicVisibility {
+        +String name = "Public"
+        +String description = "Visible to everyone"
+    }
+
+    class PrivateVisibility {
+        +String name = "Private"
+        +String description = "Visible only to the user"
+    }
+
+    class FriendsVisibility {
+        +String name = "Friends"
+        +String description = "Visible only to friends"
+    }
+
+    User --> Visibility : has
+    Visibility <|-- PublicVisibility
+    Visibility <|-- PrivateVisibility
+    Visibility <|-- FriendsVisibility

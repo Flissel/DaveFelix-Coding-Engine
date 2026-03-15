@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Warenkorb-System
+
+    User->>System: Warenkorb öffnen
+    System-->>User: Warenkorb anzeigen
+    User->>System: Artikel hinzufügen
+    System-->>User: Artikel im Warenkorb aktualisieren
+    User->>System: Artikel entfernen
+    System-->>User: Warenkorb aktualisieren
+    User->>System: Bestellung abschließen
+    System-->>User: Bestellbestätigung anzeigen

@@ -1,0 +1,27 @@
+classDiagram
+    class DesktopApp {
+        +start()
+        +stop()
+        +update()
+    }
+    
+    class User {
+        +login()
+        +logout()
+        +register()
+    }
+    
+    class File {
+        +open()
+        +save()
+        +delete()
+    }
+    
+    class Settings {
+        +changePreferences()
+        +resetToDefault()
+    }
+
+    User "1" -- "0..*" DesktopApp : uses
+    DesktopApp "1" -- "0..*" File : manages
+    DesktopApp "1" -- "1" Settings : configures

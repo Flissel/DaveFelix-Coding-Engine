@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Email as E-Mail Dienst
+
+    User->>System: Abwesenheitsnachricht aktivieren
+    System->>User: Bestätigung der Aktivierung
+    User->>System: Abwesenheitsnachricht konfigurieren
+    System->>User: Konfiguration speichern
+    System->>Email: Abwesenheitsnachricht senden
+    Email-->>User: E-Mail Bestätigung der Abwesenheitsnachricht

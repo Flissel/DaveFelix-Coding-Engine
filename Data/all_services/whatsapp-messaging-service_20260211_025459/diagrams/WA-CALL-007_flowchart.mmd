@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Anruf erhalten?}
+    B -- Ja --> C[Anrufdaten speichern]
+    B -- Nein --> D[Warten auf Anruf]
+    D --> B
+    C --> E{Anruf beenden?}
+    E -- Ja --> F[Anrufverlauf aktualisieren]
+    E -- Nein --> G[Anruf fortsetzen]
+    G --> E
+    F --> H[Ende]

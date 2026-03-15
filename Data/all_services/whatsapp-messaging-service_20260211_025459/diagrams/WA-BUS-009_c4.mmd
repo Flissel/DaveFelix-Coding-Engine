@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Business-Statistiken System Context Diagram
+
+    Person(customer, "Business User", "A user from a business who needs statistics.")
+    System(system, "Business-Statistiken", "Provides basic message statistics for businesses.")
+
+    System_Ext(externalSystem, "External Data Source", "Provides data for generating statistics.")
+
+    Rel(customer, system, "Uses")
+    Rel(system, externalSystem, "Fetches data from")

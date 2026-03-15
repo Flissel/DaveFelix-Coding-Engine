@@ -1,0 +1,15 @@
+classDiagram
+    class Benutzer {
+        +String telefonnummer
+        +boolean verifiziert
+        +registrieren()
+        +verifizieren()
+    }
+
+    class Registrierung {
+        +String code
+        +sendCode()
+        +validateCode()
+    }
+
+    Benutzer "1" -- "1" Registrierung : registriert

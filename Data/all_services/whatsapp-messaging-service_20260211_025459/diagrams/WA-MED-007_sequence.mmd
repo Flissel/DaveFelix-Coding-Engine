@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant ChatSystem as Chat-System
+    participant Camera as Kamera
+
+    User->>ChatSystem: Anfrage für Kamerazugriff
+    ChatSystem->>Camera: Zugriff auf Kamera anfordern
+    Camera-->>ChatSystem: Kamerazugriff gewährt
+    ChatSystem-->>User: Kamerazugriff bereitgestellt
+    User->>Camera: Kamera aktivieren
+    Camera-->>User: Kamera aktiviert

@@ -1,0 +1,22 @@
+stateDiagram-v2
+    [*] --> not_member
+    not_member --> invited : invite_via_link [group_exists] / create_invitation_record
+    not_member --> pending_approval : request_to_join [group_requires_approval] / notify_admins
+    not_member --> active : direct_add [admin_privileges] / send_welcome_notification
+    invited --> active : accept_invitation [invitation_valid] / send_welcome_notification
+    invited --> not_member : decline_invitation / cleanup_invitation
+    invited --> not_member : invitation_expired / cleanup_invitation
+    pending_approval --> active : approve_request [admin_privileges] / send_welcome_notification
+    pending_approval --> not_member : reject_request [admin_privileges] / notify_rejection
+    pending_approval --> not_member : cancel_request / cleanup_request
+    active --> left : leave_group / cleanup_member_data
+    active --> removed : remove_member [admin_privileges] / cleanup_member_data
+    active --> banned : ban_member [admin_privileges] / add_to_ban_list
+    active --> suspended : suspend_member [admin_privileges] / restrict_permissions
+    suspended --> active : unsuspend_member [admin_privileges] / restore_permissions
+    suspended --> left : leave_group / cleanup_member_data
+    suspended --> removed : remove_member [admin_privileges] / cleanup_member_data
+    suspended --> banned : ban_member [admin_privileges] / add_to_ban_list
+    left --> [*]
+    removed --> [*]
+    banned --> [*]

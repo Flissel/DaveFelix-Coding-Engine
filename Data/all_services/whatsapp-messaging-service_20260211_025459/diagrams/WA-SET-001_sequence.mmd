@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Settings as Einstellungen
+
+    User->>Settings: Ändern der Sichtbarkeit des Online-Status
+    Settings->>System: Konfiguration speichern
+    System-->>User: Bestätigung der Änderungen
+    User->>System: Anmelden
+    System-->>User: Zeigt Online-Status
+    User->>System: Abmelden
+    System-->>User: Aktualisierung des Online-Status

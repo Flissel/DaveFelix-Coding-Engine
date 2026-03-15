@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Formatierte Texte
+
+    Person(user, "User", "A person who uses the text formatting system.")
+    
+    System(formatierteTexte, "Formatierte Texte", "A system that supports basic text formatting.")
+
+    Rel(user, formatierteTexte, "Uses")

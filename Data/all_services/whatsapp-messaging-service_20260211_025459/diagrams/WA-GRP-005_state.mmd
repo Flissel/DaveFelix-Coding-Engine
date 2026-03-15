@@ -1,0 +1,4 @@
+stateDiagram-v2
+    [*] --> InGroup
+    InGroup --> LeavingGroup : Request to leave
+    LeavingGroup --> [*] : Leave group without notification

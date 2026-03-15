@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Group as Gruppe
+
+    User->>System: Anfrage für Gruppeneinladung
+    System->>Group: Generiere Einladungslink
+    Group-->>System: Einladungslink erstellt
+    System-->>User: Sende Einladungslink
+    User->>System: Klicke auf Einladungslink
+    System->>Group: Benutzer beitreten
+    Group-->>System: Benutzer erfolgreich hinzugefügt
+    System-->>User: Bestätigung des Beitritts

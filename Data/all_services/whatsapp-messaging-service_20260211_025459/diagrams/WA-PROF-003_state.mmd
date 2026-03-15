@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> DisplayInfoText : Info/Status Text available
+    DisplayInfoText --> Idle : User dismisses
+    DisplayInfoText --> UpdateInfoText : User requests update
+    UpdateInfoText --> DisplayInfoText : Info/Status Text updated
+    UpdateInfoText --> Idle : User cancels update

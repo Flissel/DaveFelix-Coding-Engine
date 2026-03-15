@@ -1,0 +1,18 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Sends Message| B[Messaging System]
+    A -->|Adds Emoji Reaction| B
+    B -->|Stores Message and Reactions| C[Database]
+    B -->|Notifies| D[Notification Service]
+    
+    subgraph "External Systems"
+        E[User Interface] -->|Displays Messages and Reactions| B
+        F[Third-party Emoji Service] -->|Provides Emoji| B
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px;
+    style B fill:#bbf,stroke:#333,stroke-width:2px;
+    style C fill:#fff,stroke:#333,stroke-width:2px;
+    style D fill:#ffb,stroke:#333,stroke-width:2px;
+    style E fill:#fbb,stroke:#333,stroke-width:2px;
+    style F fill:#bfb,stroke:#333,stroke-width:2px;

@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Status-Anfrage erhalten?}
+    B -- Ja --> C[Antwort generieren]
+    B -- Nein --> D[Warten auf Anfrage]
+    C --> E{Antwort erfolgreich?}
+    E -- Ja --> F[Antwort senden]
+    E -- Nein --> G[Fehlerbehandlung]
+    F --> H[Ende]
+    G --> H
+    D --> B

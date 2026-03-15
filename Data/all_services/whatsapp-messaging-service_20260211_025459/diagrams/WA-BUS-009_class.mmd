@@ -1,0 +1,19 @@
+classDiagram
+    class Business {
+        +String name
+        +String id
+        +List<Statistic> statistics
+        +addStatistic(stat: Statistic)
+        +getStatistics(): List<Statistic>
+    }
+
+    class Statistic {
+        +String type
+        +Date date
+        +int value
+        +getType(): String
+        +getDate(): Date
+        +getValue(): int
+    }
+
+    Business "1" -- "*" Statistic : contains

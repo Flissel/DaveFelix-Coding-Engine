@@ -1,0 +1,122 @@
+{
+  "route": "/profile/status",
+  "screen_name": "Info/Status Text",
+  "description": "",
+  "user_stories": [
+    "US-008",
+    "US-042",
+    "US-043",
+    "US-044",
+    "US-045",
+    "US-046",
+    "US-083"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Status",
+        "variant": "default",
+        "showBackButton": true
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "circle",
+        "size": "large",
+        "showStatusIndicator": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "placeholder": "Was machst du gerade?",
+        "multiline": true,
+        "maxLength": 139
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "Status für alle sichtbar"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "Status-Antworten stumm schalten"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Status speichern",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Status löschen",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, padding 16px, gap 20px, max-width 400px",
+  "data_sources": [],
+  "state_shape": {
+    "statusText": "string",
+    "isPublicVisible": "boolean",
+    "isMuted": "boolean",
+    "isLoading": "boolean",
+    "userAvatar": "string"
+  }
+}

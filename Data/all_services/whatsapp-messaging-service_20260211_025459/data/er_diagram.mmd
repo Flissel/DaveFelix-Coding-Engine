@@ -1,0 +1,492 @@
+erDiagram
+    user {
+        uuid user_id
+        string phone_number
+        datetime phone_verified_at
+        enum status
+        datetime created_at
+        datetime updated_at
+    }
+    user_profile {
+        uuid profile_id
+        uuid user_id FK
+        string display_name
+        string status_text
+        string profile_image_url
+        boolean show_phone_number
+        string qr_code_value
+        datetime qr_code_generated_at
+        datetime created_at
+        datetime updated_at
+    }
+    user_device {
+        uuid device_id
+        uuid user_id FK
+        string device_name
+        enum device_platform
+        datetime last_active_at
+        datetime created_at
+        datetime updated_at
+    }
+    auth_credential {
+        uuid credential_id
+        uuid user_id FK
+        enum credential_type
+        text credential_data
+        boolean is_enabled
+        datetime created_at
+        datetime updated_at
+    }
+    chat {
+        uuid chat_id
+        string chat_name
+        boolean is_locked
+        enum lock_method
+        datetime created_at
+        datetime updated_at
+    }
+    message {
+        uuid message_id
+        uuid chat_id FK
+        string sender_user_id
+        enum message_type
+        text content_text
+        uuid parent_message_id FK
+        boolean is_forwarded
+        boolean is_deleted
+        boolean is_edited
+        datetime edited_at
+        datetime expires_at
+        datetime created_at
+        datetime updated_at
+    }
+    message_media {
+        uuid media_id
+        uuid message_id FK
+        enum media_type
+        string media_url
+        boolean is_view_once
+        datetime created_at
+        datetime updated_at
+    }
+    message_reaction {
+        uuid reaction_id
+        uuid message_id FK
+        string reacting_user_id
+        string emoji
+        datetime created_at
+        datetime updated_at
+    }
+    group_chat {
+        uuid group_chat_id
+        string group_name
+        text group_description
+        string invite_link_url
+        boolean invite_link_enabled
+        boolean setting_admin_only_posting
+        boolean setting_allow_member_invite
+        datetime created_at
+        datetime updated_at
+    }
+    group_member {
+        uuid group_member_id
+        uuid group_chat_id FK
+        uuid user_id FK
+        enum role
+        boolean left_silently
+        datetime left_at
+        datetime created_at
+        datetime updated_at
+    }
+    message_mention {
+        uuid mention_id
+        uuid message_id FK
+        uuid mentioned_user_id FK
+        integer position_start
+        integer position_end
+        datetime created_at
+        datetime updated_at
+    }
+    Community {
+        uuid community_id
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+    Group {
+        uuid group_id
+        uuid community_id FK
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+    Channel {
+        uuid channel_id
+        uuid group_id FK
+        string name
+        boolean is_one_way_broadcast
+        datetime created_at
+        datetime updated_at
+    }
+    Poll {
+        uuid poll_id
+        enum chat_context_type
+        uuid chat_context_id
+        text question_text
+        datetime created_at
+        datetime updated_at
+    }
+    Call {
+        uuid call_id
+        enum call_type
+        boolean is_group_call
+        boolean is_encrypted
+        boolean screen_share_enabled
+        datetime scheduled_at
+        string call_link_url
+        string quick_reject_message
+        datetime created_at
+        datetime updated_at
+    }
+    contact {
+        uuid contact_id
+        string display_name
+        string phone_number
+        boolean status_muted
+        datetime created_at
+        datetime updated_at
+    }
+    call_log {
+        uuid call_log_id
+        uuid contact_id FK
+        datetime started_at
+        datetime ended_at
+        integer duration_seconds
+        datetime created_at
+        datetime updated_at
+    }
+    status_update {
+        uuid status_update_id
+        uuid contact_id FK
+        text content_text
+        datetime expires_at
+        enum visibility
+        datetime created_at
+        datetime updated_at
+    }
+    status_reply {
+        uuid status_reply_id
+        uuid status_update_id FK
+        text reply_text
+        datetime created_at
+        datetime updated_at
+    }
+    media_item {
+        uuid media_item_id
+        uuid sender_contact_id FK
+        uuid status_update_id FK
+        enum media_type
+        string file_name
+        string file_url
+        integer size_bytes
+        boolean edited_flag
+        text edit_notes
+        datetime created_at
+        datetime updated_at
+    }
+    media_attachment {
+        uuid attachment_id
+        uuid message_id FK
+        enum media_type
+        string file_url
+        enum source_library
+        boolean is_hd
+        integer duration_seconds
+        datetime created_at
+        datetime updated_at
+    }
+    encryption_session {
+        uuid encryption_session_id
+        uuid chat_id
+        string security_code
+        enum verification_status
+        datetime verified_at
+        datetime created_at
+        datetime updated_at
+    }
+    contact_block {
+        uuid block_id
+        uuid blocker_user_id FK
+        uuid blocked_user_id FK
+        datetime created_at
+        datetime updated_at
+    }
+    report {
+        uuid report_id
+        uuid reporter_user_id FK
+        uuid target_message_id FK
+        uuid target_user_id FK
+        text reason
+        enum status
+        datetime created_at
+        datetime updated_at
+    }
+    notification_setting {
+        uuid notification_setting_id
+        uuid user_id FK
+        boolean push_enabled
+        boolean preview_enabled
+        boolean quick_reply_enabled
+        boolean do_not_disturb_enabled
+        boolean reaction_notifications_enabled
+        enum call_notification_mode
+        datetime created_at
+        datetime updated_at
+    }
+    whatsapp_user {
+        uuid user_id
+        string phone_number
+        string display_name
+        enum online_status_visibility
+        datetime created_at
+        datetime updated_at
+    }
+    label {
+        uuid label_id
+        uuid owner_user_id FK
+        string label_name
+        string color
+        datetime created_at
+        datetime updated_at
+    }
+    UserPrivacySetting {
+        uuid privacy_setting_id
+        uuid user_id FK
+        boolean read_receipt_enabled
+        enum profile_photo_visibility
+        enum status_text_visibility
+        enum group_invite_permission
+        datetime created_at
+        datetime updated_at
+    }
+    UserAppearanceSetting {
+        uuid appearance_setting_id
+        uuid user_id FK
+        string chat_background
+        boolean dark_mode_enabled
+        string language_code
+        datetime created_at
+        datetime updated_at
+    }
+    UserUsageSetting {
+        uuid usage_setting_id
+        uuid user_id FK
+        decimal storage_used_mb
+        decimal storage_limit_mb
+        boolean data_usage_control_enabled
+        datetime created_at
+        datetime updated_at
+    }
+    UserBackupSetting {
+        uuid backup_setting_id
+        uuid user_id FK
+        boolean cloud_backup_enabled
+        datetime last_backup_at
+        datetime created_at
+        datetime updated_at
+    }
+    backup {
+        uuid backup_id
+        uuid chat_id FK
+        boolean is_end_to_end_encrypted
+        datetime created_at
+        datetime updated_at
+    }
+    business_profile {
+        uuid business_profile_id
+        string display_name
+        enum verification_status
+        datetime created_at
+        datetime updated_at
+    }
+    quick_reply {
+        uuid quick_reply_id
+        uuid business_profile_id FK
+        string shortcut
+        text message_text
+        datetime created_at
+        datetime updated_at
+    }
+    auto_message {
+        uuid auto_message_id
+        uuid business_profile_id FK
+        enum message_type
+        text message_text
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+    business {
+        uuid business_id
+        string business_name
+        boolean api_access_enabled
+        datetime created_at
+        datetime updated_at
+    }
+    product {
+        uuid product_id
+        uuid business_id FK
+        string product_name
+        text description
+        decimal price_amount
+        string currency_code
+        datetime created_at
+        datetime updated_at
+    }
+    cart {
+        uuid cart_id
+        uuid business_id FK
+        enum status
+        decimal total_amount
+        string currency_code
+        datetime created_at
+        datetime updated_at
+    }
+    payment {
+        uuid payment_id
+        uuid cart_id FK
+        enum payment_status
+        decimal amount
+        string currency_code
+        string market_code
+        datetime created_at
+        datetime updated_at
+    }
+    business_statistic {
+        uuid stat_id
+        uuid business_id FK
+        date period_start
+        date period_end
+        integer messages_sent_count
+        integer messages_received_count
+        datetime created_at
+        datetime updated_at
+    }
+    integration_feature {
+        uuid integration_feature_id
+        enum feature_type
+        enum requirement_level
+        text description
+        datetime created_at
+        datetime updated_at
+    }
+    performance_requirement {
+        uuid performance_requirement_id
+        enum metric_type
+        enum requirement_level
+        text description
+        datetime created_at
+        datetime updated_at
+    }
+    ai_assistant {
+        uuid ai_assistant_id
+        string name
+        string provider
+        boolean is_enabled
+        datetime created_at
+        datetime updated_at
+    }
+    smart_reply {
+        uuid smart_reply_id
+        uuid ai_assistant_id FK
+        string language_code
+        text reply_text
+        string context_key
+        datetime created_at
+        datetime updated_at
+    }
+    locale {
+        uuid locale_id
+        string locale_code
+        boolean rtl_supported
+        string regional_date_format
+        string regional_number_format
+        datetime created_at
+        datetime updated_at
+    }
+    sticker_pack {
+        uuid sticker_pack_id
+        uuid locale_id FK
+        string name
+        text description
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+    sticker_suggestion {
+        uuid sticker_suggestion_id
+        uuid sticker_pack_id FK
+        uuid locale_id FK
+        string context_keyword
+        decimal confidence_score
+        datetime created_at
+        datetime updated_at
+    }
+    user ||--|| user_profile : "has_profile"
+    user ||--o{ user_device : "has_devices"
+    user ||--o{ auth_credential : "has_credentials"
+    chat ||--o{ message : "has_messages"
+    message ||--o{ message : "references_message"
+    message ||--o{ message_media : "has_media"
+    message ||--o{ message_reaction : "has_reactions"
+    user ||--o{ message : "sends"
+    group_chat ||--o{ message : "contains"
+    group_chat ||--o{ group_member : "has_members"
+    user ||--o{ group_member : "member_of"
+    message ||--o{ message_mention : "has_mentions"
+    user ||--o{ message_mention : "is_mentioned_in"
+    Community ||--o{ Group : "has_groups"
+    Group ||--o{ Channel : "has_channels"
+    contact ||--o{ call_log : "has_call_history"
+    contact ||--o{ status_update : "creates_status"
+    status_update ||--o{ status_reply : "has_replies"
+    contact ||--o{ media_item : "sends_media"
+    status_update ||--o{ media_item : "includes_media"
+    message ||--o{ media_attachment : "has"
+    encryption_session ||--o{ message : "secures"
+    user ||--o{ contact_block : "blocks"
+    user ||--o{ report : "creates"
+    message ||--o{ report : "is_reported_in"
+    user ||--|| notification_setting : "has"
+    user ||--o{ call : "initiates"
+    whatsapp_user ||--o{ contact : "owns_contacts"
+    contact }o--|| whatsapp_user : "matches_user"
+    whatsapp_user ||--o{ label : "owns_labels"
+    contact_labels {
+        uuid contact_labels.contact_id FK
+        uuid contact_labels.label_id FK
+    }
+    contact ||--o{ contact_labels : ""
+    contact_labels }o--|| label : ""
+    contact ||--o{ message : "sends_messages"
+    User ||--|| UserPrivacySetting : "has_privacy_settings"
+    User ||--|| UserAppearanceSetting : "has_appearance_settings"
+    User ||--|| UserUsageSetting : "has_usage_settings"
+    User ||--|| UserBackupSetting : "has_backup_settings"
+    chat ||--o{ backup : "has_backups"
+    business_profile ||--o{ quick_reply : "has_quick_replies"
+    business_profile ||--o{ auto_message : "has_auto_messages"
+    business ||--o{ product : "offers"
+    business ||--o{ cart : "creates"
+    cart_products {
+        uuid cart_products.cart_id FK
+        uuid cart_products.product_id FK
+    }
+    cart ||--o{ cart_products : ""
+    cart_products }o--|| product : ""
+    cart ||--o{ payment : "has"
+    business ||--o{ business_statistic : "reports"
+    ai_assistant ||--o{ smart_reply : "generates"
+    locale ||--o{ sticker_pack : "localizes"
+    sticker_pack ||--o{ sticker_suggestion : "provides"
+    locale ||--o{ sticker_suggestion : "contextualizes"

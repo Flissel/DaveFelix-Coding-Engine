@@ -1,0 +1,27 @@
+classDiagram
+    class Bildbearbeitung {
+        +bearbeiteBild()
+        +speichereBild()
+        +ladeBild()
+    }
+
+    class Bild {
+        +dateiname: String
+        +format: String
+        +groesse: int
+    }
+
+    class Filter {
+        +anwendung()
+        +stärke: int
+    }
+
+    class Benutzer {
+        +name: String
+        +email: String
+        +passwort: String
+    }
+
+    Bildbearbeitung --> Bild : verwendet
+    Bildbearbeitung --> Filter : wendet an
+    Bildbearbeitung --> Benutzer : gehört zu

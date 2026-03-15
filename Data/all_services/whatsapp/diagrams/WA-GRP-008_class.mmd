@@ -1,0 +1,36 @@
+classDiagram
+    class Umfrage {
+        +String titel
+        +String beschreibung
+        +DateTime startDatum
+        +DateTime endDatum
+        +List<Frage> fragen
+        +void erstellen()
+        +void bearbeiten()
+        +void loeschen()
+    }
+
+    class Gruppe {
+        +String name
+        +List<Umfrage> umfragen
+        +void umfrageHinzufuegen(Umfrage umfrage)
+        +void umfrageEntfernen(Umfrage umfrage)
+    }
+
+    class Einzelchat {
+        +String benutzername
+        +List<Umfrage> umfragen
+        +void umfrageHinzufuegen(Umfrage umfrage)
+        +void umfrageEntfernen(Umfrage umfrage)
+    }
+
+    class Frage {
+        +String frageText
+        +List<String> antworten
+        +void hinzufuegenAntwort(String antwort)
+        +void entfernenAntwort(String antwort)
+    }
+
+    Umfrage --> Frage : enthält
+    Gruppe --> Umfrage : hat
+    Einzelchat --> Umfrage : hat

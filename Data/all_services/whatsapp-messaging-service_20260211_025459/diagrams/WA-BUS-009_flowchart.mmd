@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Daten sammeln}
+    B -->|Ja| C[Statistiken generieren]
+    B -->|Nein| D[Fehlerbehandlung]
+    C --> E{Statistiken analysieren}
+    E -->|Ja| F[Bericht erstellen]
+    E -->|Nein| G[Statistiken anpassen]
+    F --> H[Bericht bereitstellen]
+    G --> C
+    D --> A
+    H --> I[Ende]

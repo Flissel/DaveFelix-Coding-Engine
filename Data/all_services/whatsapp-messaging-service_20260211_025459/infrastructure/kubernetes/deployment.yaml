@@ -1,0 +1,47 @@
+# Kubernetes Deployment for whatsapp_messaging_service
+# Generated: 2026-02-12T17:16:27.029376
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whatsapp_messaging_service
+  labels:
+    app: whatsapp_messaging_service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: whatsapp_messaging_service
+  template:
+    metadata:
+      labels:
+        app: whatsapp_messaging_service
+    spec:
+      containers:
+        - name: whatsapp_messaging_service
+          image: whatsapp_messaging_service:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: whatsapp_messaging_service-config
+            - secretRef:
+                name: whatsapp_messaging_service-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5

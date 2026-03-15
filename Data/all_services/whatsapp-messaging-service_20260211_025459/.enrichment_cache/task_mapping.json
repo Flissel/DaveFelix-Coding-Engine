@@ -1,0 +1,5 @@
+{
+  "llm_used": false,
+  "error": "Client error '402 Payment Required' for url 'https://openrouter.ai/api/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402",
+  "mappings": {}
+}

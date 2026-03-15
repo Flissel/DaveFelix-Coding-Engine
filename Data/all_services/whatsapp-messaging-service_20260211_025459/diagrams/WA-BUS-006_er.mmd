@@ -1,0 +1,17 @@
+erDiagram
+    PRODUCT {
+        int id PK "Primary Key"
+        string name "Name of the product"
+        string description "Description of the product"
+        decimal price "Price of the product"
+        int stock "Available stock"
+    }
+
+    BUSINESS {
+        int id PK "Primary Key"
+        string name "Name of the business"
+        string address "Address of the business"
+        string contact_info "Contact information"
+    }
+
+    PRODUCT ||--o{ BUSINESS : offers

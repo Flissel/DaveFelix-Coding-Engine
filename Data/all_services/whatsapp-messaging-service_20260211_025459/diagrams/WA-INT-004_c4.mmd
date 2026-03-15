@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Watch-App System Context Diagram
+    Person(user, "User", "A user of the smartwatch app.")
+    System(watchApp, "Watch-App", "A smartwatch application that provides integration features.")
+    System_Ext(smartwatch, "Smartwatch", "The smartwatch device that runs the application.")
+    System_Ext(cloudService, "Cloud Service", "A cloud service for data synchronization and storage.")
+
+    Rel(user, watchApp, "Uses")
+    Rel(watchApp, smartwatch, "Runs on")
+    Rel(watchApp, cloudService, "Syncs data with")

@@ -1,0 +1,29 @@
+classDiagram
+    class FormattedText {
+        +String content
+        +List<Formatting> formattingOptions
+        +addFormatting(Formatting formatting)
+        +removeFormatting(Formatting formatting)
+    }
+
+    class Formatting {
+        +String type
+        +String value
+    }
+
+    class Bold {
+        +String type = "bold"
+    }
+
+    class Italic {
+        +String type = "italic"
+    }
+
+    class Underline {
+        +String type = "underline"
+    }
+
+    FormattedText o-- Formatting : contains
+    Formatting <|-- Bold
+    Formatting <|-- Italic
+    Formatting <|-- Underline

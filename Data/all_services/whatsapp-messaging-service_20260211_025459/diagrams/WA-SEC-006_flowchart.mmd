@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Zwei-Schritte-Verifizierung aktiv?}
+    B -- Ja --> C[Zusätzliche PIN anfordern]
+    B -- Nein --> D[Verifizierung ohne PIN]
+    C --> E[Benutzer gibt PIN ein]
+    E --> F{PIN korrekt?}
+    F -- Ja --> G[Zugriff gewähren]
+    F -- Nein --> H[Zugriff verweigern]
+    D --> G
+    H --> I[Ende]
+    G --> I

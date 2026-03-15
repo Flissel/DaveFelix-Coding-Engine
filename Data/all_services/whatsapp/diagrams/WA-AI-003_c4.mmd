@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Sticker-Vorschlaege System Context Diagram
+
+    Person(user, "Benutzer", "Interagiert mit dem System, um Sticker-Vorschläge zu erhalten.")
+    System(stickerSystem, "Sticker-Vorschlaege", "Ein System, das kontextbasierte Sticker-Vorschläge generiert.")
+
+    System_Ext(contextProvider, "Kontextanbieter", "Bietet kontextuelle Informationen für Sticker-Vorschläge.")
+    System_Ext(stickerDatabase, "Sticker-Datenbank", "Enthält eine Sammlung von Stickern für Vorschläge.")
+
+    Rel(user, stickerSystem, "Verwendet")
+    Rel(stickerSystem, contextProvider, "Fragt nach Kontextinformationen")
+    Rel(stickerSystem, stickerDatabase, "Zugriff auf Sticker-Daten")

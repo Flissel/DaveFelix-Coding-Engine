@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for "Zuletzt online"
+    
+    Person(user, "Benutzer", "Ein Benutzer, der den Online-Status anderer sehen möchte.")
+    System(zuletztOnline, "Zuletzt online", "Ein System, das konfigurierbare Online-Status-Sichtbarkeit bietet.")
+    
+    Rel(user, zuletztOnline, "Sieht den Online-Status")

@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Benutzer wählt Chat-Hintergrund}
+    B -->|Anpassbar| C[Benutzerdefinierte Hintergründe erstellen]
+    B -->|Vorgefertigte| D[Vorgefertigte Hintergründe auswählen]
+    C --> E[Hintergrund speichern]
+    D --> E
+    E --> F{Hintergrund anwenden?}
+    F -->|Ja| G[Hintergrund wird angewendet]
+    F -->|Nein| H[Zurück zur Auswahl]
+    G --> I[Chat mit neuem Hintergrund]
+    H --> B
+    I --> J[Ende]

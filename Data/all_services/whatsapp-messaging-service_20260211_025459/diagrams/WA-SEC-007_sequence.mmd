@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Spam-Erkennungssystem
+    participant Email as E-Mail-Server
+
+    User->>Email: Send Email
+    Email->>System: Forward Email for Analysis
+    System->>System: Analyze Email Content
+    System->>System: Check Spam Criteria
+    alt Spam Detected
+        System->>Email: Mark as Spam
+        Email->>User: Notify User (Spam Detected)
+    else Not Spam
+        System->>Email: Deliver Email
+        Email->>User: Notify User (Email Delivered)
+    end

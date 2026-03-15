@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Config as Konfiguration
+
+    User->>System: Anfrage zur Lesebestätigung
+    System->>Config: Konfiguration abrufen
+    Config-->>System: Lesebestätigungseinstellungen
+    System-->>User: Lesebestätigung anzeigen
+    User->>System: Lesebestätigung bestätigen
+    System-->>User: Bestätigung gespeichert

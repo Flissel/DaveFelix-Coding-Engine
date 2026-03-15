@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Ist 2FA aktiviert?}
+    B -- Ja --> C[Benutzer gibt 6-stellige PIN ein]
+    B -- Nein --> D[2FA aktivieren]
+    D --> C
+    C --> E{Ist die PIN korrekt?}
+    E -- Ja --> F[Zugriff gewährt]
+    E -- Nein --> G[Zugriff verweigert]
+    G --> H[Benutzer erneut versuchen]
+    H --> C

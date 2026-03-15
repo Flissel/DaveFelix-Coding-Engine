@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Transkriptionssystem
+
+    User->>System: Sprachnachricht senden
+    System->>User: Empfangsbestätigung senden
+    System->>System: Sprachnachricht transkribieren
+    System->>User: Transkription bereitstellen

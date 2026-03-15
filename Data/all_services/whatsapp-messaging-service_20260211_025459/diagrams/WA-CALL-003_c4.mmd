@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Gruppenanruf System Context Diagram
+
+    Person(user, "Benutzer", "Nutzer, der an Gruppenanrufen teilnimmt")
+    System(groepenanruf, "Gruppenanruf", "System zur Unterstützung von Gruppen-Sprach/Videoanrufen")
+    
+    System_Ext(telephony, "Telekommunikationsdienst", "Externes System für Sprach- und Videoübertragung")
+    System_Ext(userDevice, "Benutzergerät", "Gerät, das vom Benutzer für Anrufe verwendet wird (z.B. Smartphone, PC)")
+
+    Rel(user, groepenanruf, "Nimmt an Gruppenanrufen teil")
+    Rel(groepenanruf, telephony, "Verwendet für Sprach/Videoübertragung")
+    Rel(userDevice, groepenanruf, "Stellt Verbindung zum Gruppenanruf her")

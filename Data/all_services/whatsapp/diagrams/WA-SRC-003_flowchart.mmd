@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B{Suche nach Chats/Kontakten}
+    B -->|Ja| C[Suche eingeben]
+    B -->|Nein| D[Keine Suche]
+    C --> E{Ergebnisse gefunden?}
+    E -->|Ja| F[Ergebnisse anzeigen]
+    E -->|Nein| G[Keine Ergebnisse]
+    F --> H[Chat/Kontakt auswählen]
+    H --> I[Chat starten]
+    G --> J[Suche erneut versuchen]
+    D --> K[Ende]
+    J --> K
+    I --> K

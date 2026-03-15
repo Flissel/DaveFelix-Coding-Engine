@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> CallInitiated : Start Call
+    CallInitiated --> InCall : Accept Call
+    InCall --> CallEnded : End Call
+    CallEnded --> Idle : Return to Idle
+    InCall --> CallMissed : Missed Call
+    CallMissed --> Idle : Return to Idle

@@ -1,0 +1,180 @@
+{
+  "route": "/profile",
+  "screen_name": "Profil",
+  "description": "",
+  "user_stories": [
+    "US-010",
+    "US-096"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Profil",
+        "variant": "default",
+        "showBack": false
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "circle",
+        "size": "large",
+        "editable": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "label": "Name",
+        "placeholder": "Dein Name"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "label": "Telefonnummer",
+        "disabled": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "2FA aktiviert"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "Biometrische Anmeldung"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "QR-Code anzeigen"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Geräte verwalten"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Speichern"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-005",
+      "component_name": "BottomNav",
+      "props": {
+        "variant": "labeled",
+        "activeTab": "profile"
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "hidden"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "default",
+        "title": "2FA PIN eingeben"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa",
+    "POST /api/v1/users/{userId}/2fa",
+    "DELETE /api/v1/users/{userId}/2fa",
+    "GET /api/v1/biometric/credentials",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "GET /api/v1/devices"
+  ],
+  "state_shape": {
+    "user": "object",
+    "name": "string",
+    "phoneNumber": "string",
+    "twoFactorEnabled": "boolean",
+    "biometricEnabled": "boolean",
+    "devices": "array",
+    "showQRModal": "boolean",
+    "show2FAModal": "boolean",
+    "isLoading": "boolean",
+    "error": "string"
+  }
+}

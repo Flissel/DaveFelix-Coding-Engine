@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Konfiguration der Benachrichtigungsvorschau anfordern
+    System-->>User: Benachrichtigungsvorschau anzeigen
+    User->>System: Änderungen an der Vorschau vornehmen
+    System-->>User: Aktualisierte Benachrichtigungsvorschau anzeigen
+    User->>System: Benachrichtigungsvorschau speichern
+    System-->>User: Bestätigung der Speicherung

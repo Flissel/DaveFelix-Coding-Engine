@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> InitialState
+    InitialState --> Configured : Configure Anzeigename
+    Configured --> Displaying : Anzeigename set
+    Displaying --> Configured : Update Anzeigename
+    Displaying --> [*] : Reset Anzeigename

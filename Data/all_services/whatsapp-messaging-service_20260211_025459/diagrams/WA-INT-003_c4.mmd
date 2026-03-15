@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Widgets
+    Person(user, "User", "A user who interacts with the home screen widgets.")
+    System(widgetsSystem, "Widgets System", "The system that provides home screen widgets.")
+    System_Ext(externalSystem, "External Data Source", "An external system that provides data for the widgets.")
+
+    Rel(user, widgetsSystem, "Uses")
+    Rel(widgetsSystem, externalSystem, "Fetches data from")

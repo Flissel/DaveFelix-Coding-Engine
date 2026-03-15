@@ -1,0 +1,53 @@
+flowchart LR
+    subgraph Tasks
+        TASK-001[Telefonnummer-Regist]
+        TASK-002[Telefonnummer-Regist]
+        TASK-003[Zwei-Faktor-Authenti]
+        TASK-004[Biometrische Entsper]
+        TASK-005[Multi-Device Support]
+        TASK-006([Security & Auth Test])
+        TASK-007((Dokumentation Authen))
+        TASK-008((Auth-Flows UX/UI def))
+        TASK-009[Backend: Telefon-Reg]
+        TASK-010[Frontend: Telefon-Re]
+        TASK-011[Backend: 2FA & Multi]
+        TASK-012[Frontend: 2FA & Gerä]
+        TASK-013[Biometrische Entsper]
+        TASK-014([End-to-End Tests für])
+        TASK-015((Auth-Flow Design & A))
+        TASK-016((DevOps Setup SMS/OTP))
+        TASK-017[Backend: Telefon-Reg]
+        TASK-018[Backend: Biometrie &]
+        TASK-019[Frontend: Telefon-Re]
+        TASK-020[Frontend: Biometrie ]
+    end
+
+    TASK-001 --> TASK-002
+    TASK-001 --> TASK-003
+    TASK-002 --> TASK-004
+    TASK-001 --> TASK-005
+    TASK-003 --> TASK-005
+    TASK-002 --> TASK-006
+    TASK-003 --> TASK-006
+    TASK-004 --> TASK-006
+    TASK-005 --> TASK-006
+    TASK-001 --> TASK-007
+    TASK-003 --> TASK-007
+    TASK-004 --> TASK-007
+    TASK-005 --> TASK-007
+    TASK-001 --> TASK-010
+    TASK-002 --> TASK-010
+    TASK-002 --> TASK-011
+    TASK-001 --> TASK-012
+    TASK-004 --> TASK-012
+    TASK-001 --> TASK-013
+    TASK-004 --> TASK-013
+    TASK-003 --> TASK-014
+    TASK-005 --> TASK-014
+    TASK-006 --> TASK-014
+    TASK-001 --> TASK-016
+    TASK-001 --> TASK-017
+    TASK-002 --> TASK-017
+    TASK-001 --> TASK-018
+    TASK-003 --> TASK-019
+    TASK-004 --> TASK-020

@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Neues Gerät?}
+    B -- Ja --> C[Chatverlauf abrufen]
+    B -- Nein --> D[Chatverlauf bleibt auf altem Gerät]
+    C --> E[Übertragung starten]
+    E --> F{Übertragung erfolgreich?}
+    F -- Ja --> G[Chatverlauf auf neues Gerät übertragen]
+    F -- Nein --> H[Fehlerbehebung]
+    H --> E
+    G --> I[Übertragung abgeschlossen]
+    I --> J[Ende]

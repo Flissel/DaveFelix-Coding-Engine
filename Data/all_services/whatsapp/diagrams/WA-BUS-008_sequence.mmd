@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant WhatsApp as WhatsApp
+    participant PaymentGateway as Zahlungsdienstleister
+    participant Merchant as Haendler
+
+    User->>WhatsApp: Initiate payment
+    WhatsApp->>PaymentGateway: Process payment request
+    PaymentGateway-->>WhatsApp: Payment confirmation
+    WhatsApp->>Merchant: Notify payment success
+    Merchant-->>User: Confirm payment received

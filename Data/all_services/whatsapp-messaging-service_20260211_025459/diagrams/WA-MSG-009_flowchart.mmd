@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Unterstützt das System View-Once Medien?}
+    B -- Ja --> C[Medien anzeigen]
+    B -- Nein --> D[Fehler: Unterstützung erforderlich]
+    C --> E[Medien abspielen]
+    E --> F[Medien nach einmaliger Ansicht löschen]
+    F --> G[Ende]
+    D --> G

@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Gruppenadministration System Context Diagram
+
+    Person(admin, "Administrator", "Verwaltet Gruppen und Benutzer")
+    Person(user, "Benutzer", "Nutzt die Gruppenfunktionen")
+
+    System(system, "Gruppenadministration", "Bietet umfangreiche Gruppenadmin-Funktionen")
+
+    Rel(admin, system, "Verwaltet")
+    Rel(user, system, "Nutzt")

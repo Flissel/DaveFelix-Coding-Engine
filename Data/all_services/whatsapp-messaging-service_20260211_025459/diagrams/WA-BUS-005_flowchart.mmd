@@ -1,0 +1,7 @@
+flowchart TD
+    A[Start] --> B{Erstkontakt?}
+    B -- Ja --> C[Automatische Begrüssung senden]
+    B -- Nein --> D[Keine Aktion]
+    C --> E[Begrüssung erfolgreich gesendet]
+    D --> E
+    E --> F[Ende]

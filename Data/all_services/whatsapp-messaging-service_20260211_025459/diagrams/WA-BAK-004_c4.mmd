@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Chatverlauf uebertragen - System Architecture
+
+    Person(user, "Benutzer", "Der Benutzer, der den Chatverlauf übertragen möchte.")
+    System(system, "Chatverlauf Übertragungs-System", "Das System, das den Chatverlauf auf ein neues Gerät überträgt.")
+    System_Ext(oldDevice, "Altes Gerät", "Das Gerät, von dem der Chatverlauf übertragen wird.")
+    System_Ext(newDevice, "Neues Gerät", "Das Gerät, auf das der Chatverlauf übertragen wird.")
+
+    Rel(user, system, "Überträgt Chatverlauf")
+    Rel(system, oldDevice, "Zugriff auf Chatverlauf")
+    Rel(system, newDevice, "Überträgt Chatverlauf")

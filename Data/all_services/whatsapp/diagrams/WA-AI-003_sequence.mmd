@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Context as Kontext
+
+    User->>System: Anfrage für Sticker-Vorschläge
+    System->>Context: Kontextdaten abrufen
+    Context-->>System: Kontextdaten zurückgeben
+    System->>System: Sticker-Vorschläge generieren
+    System-->>User: Kontextbasierte Sticker-Vorschläge anzeigen

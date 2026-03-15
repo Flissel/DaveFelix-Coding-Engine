@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+    participant Recipient as Empfänger
+
+    Nutzer->>System: Nachricht erstellen
+    System->>Nutzer: Bestätigung der Nachricht
+    Nutzer->>System: Nachricht weiterleiten
+    System->>Empfänger: Nachricht weiterleiten
+    System->>Nutzer: Bestätigung der Weiterleitung

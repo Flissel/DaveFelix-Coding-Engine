@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Verifizierung für Businesses?}
+    B -- Ja --> C[Business-Daten sammeln]
+    B -- Nein --> D[Verifizierung nicht erforderlich]
+    C --> E[Identitätsprüfung durchführen]
+    E --> F{Identität bestätigt?}
+    F -- Ja --> G[Business als verifiziert markieren]
+    F -- Nein --> H[Verifizierung ablehnen]
+    G --> I[Benachrichtigung an Business senden]
+    H --> I
+    D --> J[Ende]
+    I --> J

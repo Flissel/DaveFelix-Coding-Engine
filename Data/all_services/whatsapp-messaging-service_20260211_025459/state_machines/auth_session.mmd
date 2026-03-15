@@ -1,0 +1,37 @@
+stateDiagram-v2
+    [*] --> unauthenticated
+    unauthenticated --> pending_primary_auth : initiate_login / create_session_token
+    unauthenticated --> pending_passkey : initiate_passkey_auth [passkey_available] / request_passkey_challenge
+    pending_primary_auth --> pending_2fa : primary_auth_success [2fa_enabled] / send_2fa_code
+    pending_primary_auth --> pending_biometric : primary_auth_success [biometric_enabled_and_no_2fa] / request_biometric_verification
+    pending_primary_auth --> device_verification_required : primary_auth_success [new_device_detected] / send_device_verification_code
+    pending_primary_auth --> authenticated : primary_auth_success [no_additional_auth_required] / establish_session
+    pending_primary_auth --> auth_failed : primary_auth_failed / increment_failed_attempts
+    pending_2fa --> pending_biometric : 2fa_success [biometric_enabled] / request_biometric_verification
+    pending_2fa --> authenticated : 2fa_success [no_biometric_required] / establish_session
+    pending_2fa --> auth_failed : 2fa_failed / increment_failed_attempts
+    pending_2fa --> pending_2fa : resend_2fa_code [resend_limit_not_exceeded] / send_2fa_code
+    pending_biometric --> authenticated : biometric_success / establish_session
+    pending_biometric --> auth_failed : biometric_failed / increment_failed_attempts
+    pending_biometric --> pending_primary_auth : fallback_to_password / clear_biometric_attempt
+    pending_passkey --> authenticated : passkey_success / establish_session
+    pending_passkey --> auth_failed : passkey_failed / increment_failed_attempts
+    pending_passkey --> pending_primary_auth : fallback_to_password / clear_passkey_attempt
+    device_verification_required --> pending_2fa : device_verified [2fa_enabled] / register_device_and_send_2fa
+    device_verification_required --> authenticated : device_verified [no_additional_auth_required] / register_device_and_establish_session
+    device_verification_required --> auth_failed : device_verification_failed / increment_failed_attempts
+    authenticated --> multi_device_conflict : concurrent_login_detected [multi_device_limit_exceeded] / notify_device_conflict
+    authenticated --> session_expired : session_timeout / invalidate_session_token
+    authenticated --> locked : suspicious_activity_detected / lock_session_and_notify
+    authenticated --> terminated : logout / cleanup_session
+    multi_device_conflict --> authenticated : resolve_conflict_continue / terminate_other_sessions
+    multi_device_conflict --> terminated : resolve_conflict_terminate / terminate_current_session
+    session_expired --> pending_primary_auth : reauthenticate / create_new_session_token
+    session_expired --> pending_biometric : quick_reauth [biometric_enabled_and_recent_session] / request_biometric_verification
+    session_expired --> terminated : abandon_session / cleanup_expired_session
+    locked --> pending_primary_auth : unlock_session [unlock_conditions_met] / reset_security_flags
+    locked --> terminated : force_terminate / cleanup_locked_session
+    auth_failed --> locked : max_attempts_reached / lock_account_temporarily
+    auth_failed --> pending_primary_auth : retry_auth [retry_attempts_available] / reset_auth_state
+    auth_failed --> terminated : abandon_auth / cleanup_failed_session
+    terminated --> [*]

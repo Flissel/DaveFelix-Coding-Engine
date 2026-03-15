@@ -1,0 +1,19 @@
+flowchart TD
+    Start([Start: Telefonnummer-Registrierung])
+    S1[User oeffnet die Registrierungsseite]
+    Start --> S1
+    S2{User gibt Telefonnummer ein und sendet Registrierung ab}
+    S1 --> S2
+    E2[/Ungueltige oder unvollstaendige Telefonnummer fuehrt zu Fehlermeldung und verhindert Registrierung/]
+    S2 -.-> E2
+    S3{System zeigt Hinweis zur Code-Zustellung und Eingabefeld fuer Verifizierungscode}
+    S2 --> S3
+    E3[/Nachrichtenzustellung nicht moeglich; System informiert und bietet erneuten Versand spaeter an/]
+    S3 -.-> E3
+    S4{User gibt Verifizierungscode ein und bestaetigt}
+    S3 --> S4
+    E4[/Falscher oder abgelaufener Code wird abgelehnt; Option zum erneuten Anfordern wird angezeigt/]
+    S4 -.-> E4
+    S5[System bestaetigt Verifizierung und erstellt Konto]
+    S4 --> S5
+    S5 --> End([End])

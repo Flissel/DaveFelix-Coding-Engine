@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Gruppeneinstellungen System Architecture
+
+    Person(user, "User", "A user who configures group settings")
+    System(system, "Gruppeneinstellungen", "A system that supports configurable group settings")
+    
+    System_Ext(externalSystem, "External System", "An external system that interacts with Gruppeneinstellungen")
+
+    Rel(user, system, "Uses")
+    Rel(system, externalSystem, "Integrates with")

@@ -1,0 +1,2647 @@
+{
+  "project_name": "whatsapp-messaging-service",
+  "screens": [
+    {
+      "route": "/",
+      "screen_name": "Start",
+      "description": "",
+      "user_stories": [
+        "US-111"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "variant": "transparent",
+            "title": "Welcome"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Get Started",
+            "size": "large"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Sign In",
+            "size": "medium"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 20px, gap 16px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa",
+        "GET /api/v1/biometric/credentials"
+      ],
+      "state_shape": {
+        "isLoading": "boolean",
+        "hasExistingAuth": "boolean",
+        "biometricAvailable": "boolean"
+      }
+    },
+    {
+      "route": "/onboarding",
+      "screen_name": "Onboarding",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "placeholder": "Telefonnummer eingeben",
+            "variant": "outline",
+            "type": "tel"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Telefonnummer verifizieren"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "ghost",
+            "text": "Code erneut senden"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "placeholder": "6-stellige PIN eingeben",
+            "variant": "outline",
+            "type": "password"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "2FA aktivieren"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Biometrische Anmeldung einrichten"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "secondary",
+            "text": "Später einrichten"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+      "data_sources": [
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify",
+        "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+        "POST /api/v1/users/{userId}/2fa",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "POST /api/v1/devices"
+      ],
+      "state_shape": {
+        "currentStep": "string",
+        "phoneNumber": "string",
+        "registrationId": "string",
+        "otpCode": "string",
+        "twoFactorPin": "string",
+        "isLoading": "boolean",
+        "error": "string",
+        "userId": "string"
+      }
+    },
+    {
+      "route": "/chats",
+      "screen_name": "Chats",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Chats",
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "placeholder": "Search chats...",
+            "variant": "outline"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-006",
+          "component_name": "ChatListItem",
+          "props": {
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "circle"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-005",
+          "component_name": "BottomNav",
+          "props": {
+            "variant": "labeled"
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "hidden"
+          }
+        }
+      ],
+      "layout": "flex column, full height, header-main-footer structure",
+      "data_sources": [],
+      "state_shape": {
+        "chats": "array",
+        "searchQuery": "string",
+        "selectedChat": "object|null",
+        "isLoading": "boolean"
+      }
+    },
+    {
+      "route": "/profile",
+      "screen_name": "Profil",
+      "description": "",
+      "user_stories": [
+        "US-010",
+        "US-096"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Profil",
+            "variant": "default",
+            "showBack": false
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "circle",
+            "size": "large",
+            "editable": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "label": "Name",
+            "placeholder": "Dein Name"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "label": "Telefonnummer",
+            "disabled": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "2FA aktiviert"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "Biometrische Anmeldung"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "QR-Code anzeigen"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Geräte verwalten"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Speichern"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-005",
+          "component_name": "BottomNav",
+          "props": {
+            "variant": "labeled",
+            "activeTab": "profile"
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "hidden"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "default",
+            "title": "2FA PIN eingeben"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa",
+        "POST /api/v1/users/{userId}/2fa",
+        "DELETE /api/v1/users/{userId}/2fa",
+        "GET /api/v1/biometric/credentials",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "GET /api/v1/devices"
+      ],
+      "state_shape": {
+        "user": "object",
+        "name": "string",
+        "phoneNumber": "string",
+        "twoFactorEnabled": "boolean",
+        "biometricEnabled": "boolean",
+        "devices": "array",
+        "showQRModal": "boolean",
+        "show2FAModal": "boolean",
+        "isLoading": "boolean",
+        "error": "string"
+      }
+    },
+    {
+      "route": "/settings",
+      "screen_name": "Einstellungen",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Einstellungen",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "2FA aktivieren",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Biometrische Anmeldung",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Telefonnummer registrieren",
+            "variant": "outline"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Geräte verwalten",
+            "variant": "outline"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Biometrische Daten löschen",
+            "variant": "danger"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "alert",
+            "title": "2FA PIN eingeben"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, gap 24px, max-width 400px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa",
+        "POST /api/v1/users/{userId}/2fa",
+        "DELETE /api/v1/users/{userId}/2fa",
+        "GET /api/v1/biometric/credentials",
+        "DELETE /api/v1/biometric/credentials/{credentialId}",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "GET /api/v1/devices"
+      ],
+      "state_shape": {
+        "twoFactorEnabled": "boolean",
+        "biometricEnabled": "boolean",
+        "biometricCredentials": "array",
+        "devices": "array",
+        "showTwoFactorModal": "boolean",
+        "twoFactorPin": "string",
+        "isLoading": "boolean"
+      }
+    },
+    {
+      "route": "/onboarding/phone",
+      "screen_name": "Telefonnummer-Registrierung",
+      "description": "",
+      "user_stories": [
+        "US-001",
+        "US-009"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "variant": "default",
+            "title": "Telefonnummer verifizieren",
+            "showBackButton": true
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "type": "tel",
+            "placeholder": "+49 123 456 789",
+            "label": "Telefonnummer"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6,
+            "label": "Bestätigungscode"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Code senden",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Bestätigen",
+            "fullWidth": true,
+            "disabled": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "ghost",
+            "text": "Code erneut senden"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+      "data_sources": [
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify",
+        "POST /api/v1/phone-registrations/{registrationId}/resend-otp"
+      ],
+      "state_shape": {
+        "phoneNumber": "string",
+        "registrationId": "string",
+        "otpCode": "string",
+        "isLoading": "boolean",
+        "step": "string",
+        "error": "string",
+        "canResendOtp": "boolean",
+        "resendTimer": "number"
+      }
+    },
+    {
+      "route": "/onboarding/passkey",
+      "screen_name": "Passkey-Einrichtung",
+      "description": "",
+      "user_stories": [
+        "US-005"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Passkey einrichten",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Passkey erstellen",
+            "variant": "primary",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Später einrichten",
+            "variant": "ghost",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 24px, gap 24px",
+      "data_sources": [
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "GET /api/v1/biometric/credentials"
+      ],
+      "state_shape": {
+        "isLoading": "boolean",
+        "registrationChallenge": "object",
+        "error": "string|null",
+        "passkeySupported": "boolean"
+      }
+    },
+    {
+      "route": "/onboarding/2fa",
+      "screen_name": "2FA-Setup",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "variant": "default",
+            "title": "2FA Setup",
+            "showBackButton": true
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "placeholder": "Enter phone number",
+            "type": "tel"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6,
+            "placeholder": "Enter verification code"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Send Code",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "secondary",
+            "text": "Resend Code",
+            "disabled": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Verify & Continue",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "ghost",
+            "text": "Skip for now"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+      "data_sources": [
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify",
+        "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+        "POST /api/v1/users/{userId}/2fa"
+      ],
+      "state_shape": {
+        "phoneNumber": "string",
+        "registrationId": "string",
+        "otpCode": "string",
+        "isCodeSent": "boolean",
+        "isVerifying": "boolean",
+        "canResend": "boolean",
+        "resendTimer": "number",
+        "error": "string|null"
+      }
+    },
+    {
+      "route": "/chats/:id",
+      "screen_name": "Chat-Detail",
+      "description": "",
+      "user_stories": [
+        "US-020",
+        "US-078",
+        "US-087",
+        "US-092",
+        "US-094",
+        "US-095",
+        "US-121"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "variant": "default",
+            "title": "Chat Name",
+            "showBackButton": true,
+            "showMenuButton": true
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "circle",
+            "size": "small"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-007",
+          "component_name": "MessageBubble",
+          "props": {
+            "variant": "sent"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-007",
+          "component_name": "MessageBubble",
+          "props": {
+            "variant": "received"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-007",
+          "component_name": "MessageBubble",
+          "props": {
+            "variant": "system"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "placeholder": "Nachricht eingeben...",
+            "multiline": true
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "icon": "send"
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "default",
+            "title": "Chat-Optionen"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "Chat sperren"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Chat archivieren"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Chat anpinnen"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Chat exportieren"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, full height, header fixed top, main scrollable, footer fixed bottom",
+      "data_sources": [],
+      "state_shape": {
+        "chatId": "string",
+        "messages": "array",
+        "currentMessage": "string",
+        "isTyping": "boolean",
+        "chatSettings": "object",
+        "showOptionsModal": "boolean",
+        "isLocked": "boolean",
+        "isPinned": "boolean",
+        "isArchived": "boolean"
+      }
+    },
+    {
+      "route": "/profile/photo",
+      "screen_name": "Profilbild",
+      "description": "",
+      "user_stories": [
+        "US-006",
+        "US-082"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Profilbild",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "size": "large",
+            "variant": "circle",
+            "editable": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Foto auswählen"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Foto aufnehmen"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Profilbild für alle sichtbar",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Speichern",
+            "fullWidth": true
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px",
+      "data_sources": [],
+      "state_shape": {
+        "profileImage": "File | null",
+        "imageUrl": "string | null",
+        "isVisible": "boolean",
+        "isLoading": "boolean",
+        "hasChanges": "boolean"
+      }
+    },
+    {
+      "route": "/profile/name",
+      "screen_name": "Anzeigename",
+      "description": "",
+      "user_stories": [
+        "US-007"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Anzeigename",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "placeholder": "Anzeigename eingeben",
+            "variant": "outline",
+            "maxLength": 50
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Speichern",
+            "variant": "primary",
+            "disabled": false
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px",
+      "data_sources": [],
+      "state_shape": {
+        "displayName": "string",
+        "isValid": "boolean",
+        "isLoading": "boolean",
+        "error": "string | null"
+      }
+    },
+    {
+      "route": "/profile/status",
+      "screen_name": "Info/Status Text",
+      "description": "",
+      "user_stories": [
+        "US-008",
+        "US-042",
+        "US-043",
+        "US-044",
+        "US-045",
+        "US-046",
+        "US-083"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Status",
+            "variant": "default",
+            "showBackButton": true
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "circle",
+            "size": "large",
+            "showStatusIndicator": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "variant": "outline",
+            "placeholder": "Was machst du gerade?",
+            "multiline": true,
+            "maxLength": 139
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "Status für alle sichtbar"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "Status-Antworten stumm schalten"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Status speichern",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Status löschen",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, gap 20px, max-width 400px",
+      "data_sources": [],
+      "state_shape": {
+        "statusText": "string",
+        "isPublicVisible": "boolean",
+        "isMuted": "boolean",
+        "isLoading": "boolean",
+        "userAvatar": "string"
+      }
+    },
+    {
+      "route": "/profile/phone",
+      "screen_name": "Telefonnummer anzeigen",
+      "description": "",
+      "user_stories": [
+        "US-009",
+        "US-001",
+        "US-043"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Telefonnummer",
+            "variant": "default",
+            "showBackButton": true
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "circle",
+            "size": "large",
+            "icon": "phone"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "variant": "default",
+            "label": "2FA aktiviert",
+            "disabled": false
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "outline",
+            "text": "Telefonnummer ändern"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "danger",
+            "text": "Telefonnummer entfernen"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa"
+      ],
+      "state_shape": {
+        "phoneNumber": "string",
+        "is2FAEnabled": "boolean",
+        "isLoading": "boolean",
+        "error": "string|null"
+      }
+    },
+    {
+      "route": "/profile/qr",
+      "screen_name": "QR-Code Profil",
+      "description": "",
+      "user_stories": [
+        "US-010",
+        "US-096"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "QR-Code Profil",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "size": "large",
+            "variant": "circle",
+            "showEditIcon": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "QR-Code generieren",
+            "variant": "primary",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "QR-Code teilen",
+            "variant": "secondary",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Business-Profil bearbeiten",
+            "variant": "outline",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-005",
+          "component_name": "BottomNav",
+          "props": {
+            "variant": "labeled",
+            "activeTab": "profile"
+          },
+          "position": "footer",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "hidden"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/profile",
+        "GET /api/v1/users/{userId}/qr-code"
+      ],
+      "state_shape": {
+        "userProfile": "object",
+        "qrCodeData": "string",
+        "isLoading": "boolean",
+        "error": "string|null"
+      }
+    },
+    {
+      "route": "/settings/security",
+      "screen_name": "Sicherheit & Anmeldung",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Sicherheit & Anmeldung",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Zwei-Faktor-Authentifizierung",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Biometrische Anmeldung",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Telefonnummer ändern",
+            "variant": "outline"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Registrierte Geräte verwalten",
+            "variant": "outline"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "title": "2FA einrichten",
+            "variant": "default"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "length": 6,
+            "variant": "numeric"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "placeholder": "Neue Telefonnummer",
+            "variant": "outline"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, gap 20px, max-width 600px",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa",
+        "POST /api/v1/users/{userId}/2fa",
+        "DELETE /api/v1/users/{userId}/2fa",
+        "GET /api/v1/biometric/credentials",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "GET /api/v1/devices",
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify"
+      ],
+      "state_shape": {
+        "twoFactorEnabled": "boolean",
+        "biometricEnabled": "boolean",
+        "phoneNumber": "string",
+        "devices": "array",
+        "biometricCredentials": "array",
+        "showTwoFactorModal": "boolean",
+        "showPhoneChangeModal": "boolean",
+        "otpValue": "string",
+        "newPhoneNumber": "string",
+        "registrationId": "string"
+      }
+    },
+    {
+      "route": "/settings/devices",
+      "screen_name": "Multi-Device",
+      "description": "",
+      "user_stories": [
+        "US-004"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Geräte verwalten",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Multi-Device aktivieren",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Neues Gerät hinzufügen",
+            "variant": "primary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Entfernen",
+            "variant": "danger"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "title": "Gerät hinzufügen",
+            "variant": "default"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, max-width 600px, centered",
+      "data_sources": [
+        "GET /api/v1/devices",
+        "POST /api/v1/devices",
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify"
+      ],
+      "state_shape": {
+        "devices": "array",
+        "isMultiDeviceEnabled": "boolean",
+        "showAddDeviceModal": "boolean",
+        "registrationId": "string",
+        "otpCode": "string",
+        "isLoading": "boolean"
+      }
+    },
+    {
+      "route": "/settings/notifications",
+      "screen_name": "Benachrichtigungen",
+      "description": "",
+      "user_stories": [
+        "US-065"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Benachrichtigungen",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Push-Benachrichtigungen",
+            "variant": "default",
+            "id": "push_notifications"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Neue Nachrichten",
+            "variant": "default",
+            "id": "new_messages"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Gruppennachrichten",
+            "variant": "default",
+            "id": "group_messages"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Anrufe",
+            "variant": "default",
+            "id": "calls"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Speichern",
+            "variant": "primary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, gap 24px, max-width 400px",
+      "data_sources": [
+        "POST /api/v1/devices",
+        "GET /api/v1/devices"
+      ],
+      "state_shape": {
+        "pushNotifications": "boolean",
+        "newMessages": "boolean",
+        "groupMessages": "boolean",
+        "calls": "boolean",
+        "isLoading": "boolean",
+        "deviceId": "string"
+      }
+    },
+    {
+      "route": "/onboarding/phone/verify",
+      "screen_name": "Verifizierungscode",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Verifizierung",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6,
+            "placeholder": "000000"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "primary",
+            "text": "Verifizieren",
+            "disabled": false
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "variant": "ghost",
+            "text": "Code erneut senden",
+            "disabled": false
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, gap-4, padding-4",
+      "data_sources": [
+        "POST /api/v1/phone-registrations/{registrationId}/verify",
+        "POST /api/v1/phone-registrations/{registrationId}/resend-otp"
+      ],
+      "state_shape": {
+        "otpCode": "string",
+        "registrationId": "string",
+        "isVerifying": "boolean",
+        "isResending": "boolean",
+        "error": "string|null",
+        "phoneNumber": "string"
+      }
+    },
+    {
+      "route": "/settings/security/2fa",
+      "screen_name": "2FA verwalten",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "2FA verwalten",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "2FA aktiviert",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "variant": "numeric",
+            "length": 6,
+            "placeholder": "6-stellige PIN eingeben"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "PIN bestätigen",
+            "variant": "primary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Biometrische Authentifizierung",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Biometrie einrichten",
+            "variant": "secondary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "2FA deaktivieren",
+            "variant": "danger"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "alert",
+            "title": "2FA deaktivieren?",
+            "message": "Möchten Sie die Zwei-Faktor-Authentifizierung wirklich deaktivieren?"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, gap-4, padding-4, max-width 400px, centered",
+      "data_sources": [
+        "GET /api/v1/users/{userId}/2fa",
+        "POST /api/v1/users/{userId}/2fa",
+        "DELETE /api/v1/users/{userId}/2fa",
+        "GET /api/v1/biometric/credentials",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials"
+      ],
+      "state_shape": {
+        "is2FAEnabled": "boolean",
+        "isBiometricEnabled": "boolean",
+        "pinInput": "string",
+        "showConfirmModal": "boolean",
+        "biometricCredentials": "array",
+        "isLoading": "boolean"
+      }
+    },
+    {
+      "route": "/settings/security/biometrics",
+      "screen_name": "Biometrische Entsperrung",
+      "description": "",
+      "user_stories": [
+        "US-003"
+      ],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Biometrische Entsperrung",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Fingerabdruck aktivieren",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Gesichtserkennung aktivieren",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Fingerabdruck einrichten",
+            "variant": "primary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Gesichtserkennung einrichten",
+            "variant": "primary"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Biometrische Daten löschen",
+            "variant": "danger"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "title": "Biometrische Daten löschen?",
+            "variant": "alert"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, padding 16px, gap 24px, max-width 400px",
+      "data_sources": [
+        "GET /api/v1/biometric/credentials",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "DELETE /api/v1/biometric/credentials/{credentialId}"
+      ],
+      "state_shape": {
+        "biometricCredentials": "array",
+        "fingerprintEnabled": "boolean",
+        "faceRecognitionEnabled": "boolean",
+        "isLoading": "boolean",
+        "showDeleteModal": "boolean",
+        "registrationChallenge": "object"
+      }
+    },
+    {
+      "route": "/settings/security/passkeys",
+      "screen_name": "Passkeys verwalten",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Passkeys",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Neuen Passkey hinzufügen",
+            "variant": "primary",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Passkey erstellen",
+            "variant": "primary"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Abbrechen",
+            "variant": "outline"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Löschen",
+            "variant": "danger"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "default",
+            "title": "Passkey hinzufügen"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "variant": "alert",
+            "title": "Passkey löschen"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, full-width, padding 16px",
+      "data_sources": [
+        "GET /api/v1/biometric/credentials",
+        "POST /api/v1/biometric/registration-options",
+        "POST /api/v1/biometric/credentials",
+        "DELETE /api/v1/biometric/credentials/{credentialId}"
+      ],
+      "state_shape": {
+        "passkeys": "array",
+        "isLoading": "boolean",
+        "showAddModal": "boolean",
+        "showDeleteModal": "boolean",
+        "selectedPasskey": "object|null",
+        "error": "string|null"
+      }
+    },
+    {
+      "route": "/settings/devices/add",
+      "screen_name": "Geraet hinzufügen",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Gerät hinzufügen",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "label": "Gerätename",
+            "placeholder": "Mein neues Gerät",
+            "variant": "outline",
+            "required": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-002",
+          "component_name": "TextInput",
+          "props": {
+            "label": "Telefonnummer",
+            "placeholder": "+49 123 456789",
+            "variant": "outline",
+            "type": "tel",
+            "required": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-003",
+          "component_name": "OTPInput",
+          "props": {
+            "label": "Bestätigungscode",
+            "variant": "numeric",
+            "length": 6,
+            "hidden": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Code anfordern",
+            "variant": "primary",
+            "fullWidth": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Code erneut senden",
+            "variant": "ghost",
+            "hidden": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Gerät hinzufügen",
+            "variant": "primary",
+            "fullWidth": true,
+            "disabled": true
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 20px, gap 16px",
+      "data_sources": [
+        "POST /api/v1/phone-registrations",
+        "POST /api/v1/phone-registrations/{registrationId}/verify",
+        "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+        "POST /api/v1/devices"
+      ],
+      "state_shape": {
+        "deviceName": "string",
+        "phoneNumber": "string",
+        "otpCode": "string",
+        "registrationId": "string",
+        "isOtpSent": "boolean",
+        "isVerifying": "boolean",
+        "isRegistering": "boolean",
+        "errors": "object"
+      }
+    },
+    {
+      "route": "/settings/devices/:id",
+      "screen_name": "Geraete-Details",
+      "description": "",
+      "user_stories": [],
+      "components": [
+        {
+          "component_id": "COMP-004",
+          "component_name": "TopBar",
+          "props": {
+            "title": "Gerät Details",
+            "showBackButton": true,
+            "variant": "default"
+          },
+          "position": "header",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-008",
+          "component_name": "Avatar",
+          "props": {
+            "variant": "rounded",
+            "size": "large",
+            "icon": "device"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "Biometrische Authentifizierung",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-009",
+          "component_name": "ToggleSwitch",
+          "props": {
+            "label": "2FA aktiviert",
+            "variant": "default"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-001",
+          "component_name": "Button",
+          "props": {
+            "text": "Gerät entfernen",
+            "variant": "danger"
+          },
+          "position": "main",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        },
+        {
+          "component_id": "COMP-010",
+          "component_name": "ModalDialog",
+          "props": {
+            "title": "Gerät entfernen",
+            "message": "Möchten Sie dieses Gerät wirklich entfernen?",
+            "variant": "alert"
+          },
+          "position": "modal",
+          "responsive": {
+            "mobile": "visible",
+            "desktop": "visible"
+          }
+        }
+      ],
+      "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+      "data_sources": [
+        "GET /api/v1/devices",
+        "GET /api/v1/biometric/credentials",
+        "GET /api/v1/users/{userId}/2fa",
+        "DELETE /api/v1/biometric/credentials/{credentialId}",
+        "DELETE /api/v1/users/{userId}/2fa"
+      ],
+      "state_shape": {
+        "device": "object",
+        "biometricEnabled": "boolean",
+        "twoFactorEnabled": "boolean",
+        "showDeleteModal": "boolean",
+        "loading": "boolean",
+        "error": "string|null"
+      }
+    }
+  ],
+  "missing_components": [
+    "Logo",
+    "AppIcon",
+    "WelcomeText",
+    "FeatureHighlight",
+    "StepIndicator",
+    "OnboardingHeader",
+    "ProgressBar",
+    "InformationCard",
+    "ChatList",
+    "SearchBar",
+    "QRCodeDisplay",
+    "DeviceList",
+    "ProfileImage",
+    "SettingsSection",
+    "SettingsItem",
+    "DeviceListItem",
+    "Text/Label component for instructions",
+    "Timer component for resend countdown",
+    "Icon",
+    "Text",
+    "Card",
+    "ProgressIndicator",
+    "InfoCard",
+    "Timer",
+    "PhoneNumberFormatter",
+    "MessageInput",
+    "ChatHeader",
+    "MessageList",
+    "TypingIndicator",
+    "FileUploadButton",
+    "EmojiPicker",
+    "ImagePicker",
+    "CameraCapture",
+    "ProfileImageUploader",
+    "Label",
+    "FormField",
+    "ValidationMessage",
+    "StatusList",
+    "StatusItem",
+    "StatusPrivacySelector",
+    "StatusTextCounter",
+    "PhoneNumberDisplay",
+    "SettingsCard",
+    "StatusIndicator",
+    "ProfileForm",
+    "ShareSheet",
+    "SettingsListItem",
+    "SecuritySection",
+    "SectionHeader",
+    "LoadingSpinner",
+    "BiometricSetupGuide",
+    "SecurityInfoCard",
+    "BiometricStatusIndicator",
+    "PasskeyListItem",
+    "EmptyState",
+    "ErrorMessage",
+    "FormContainer",
+    "DeviceInfoCard",
+    "InfoText"
+  ],
+  "component_usage_count": {
+    "COMP-004": 22,
+    "COMP-001": 58,
+    "COMP-002": 13,
+    "COMP-003": 9,
+    "COMP-006": 1,
+    "COMP-008": 8,
+    "COMP-005": 3,
+    "COMP-009": 22,
+    "COMP-010": 10,
+    "COMP-007": 3
+  }
+}

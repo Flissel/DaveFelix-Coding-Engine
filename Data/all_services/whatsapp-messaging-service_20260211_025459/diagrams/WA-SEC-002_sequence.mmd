@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant ManualVerifier as ManuellerVerifizierer
+
+    User->>System: Anfrage zur Sicherheitscode-Verifizierung
+    System->>User: Fordert Eingabe des Sicherheitscodes an
+    User->>System: Gibt Sicherheitscode ein
+    System->>ManualVerifier: Leitet Sicherheitscode zur manuellen Verifizierung weiter
+    ManualVerifier->>System: Bestätigt oder verweigert den Sicherheitscode
+    System->>User: Informiert über Verifizierungsergebnis

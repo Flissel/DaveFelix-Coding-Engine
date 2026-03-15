@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Uses| B[Chatverlauf Übertragen System]
+    B -->|Transfers chat history| C[New Device]
+    B -->|Retrieves chat history| D[Old Device]
+    
+    subgraph "External Systems"
+        E[Chat Service]
+    end
+    
+    B -->|Interacts with| E

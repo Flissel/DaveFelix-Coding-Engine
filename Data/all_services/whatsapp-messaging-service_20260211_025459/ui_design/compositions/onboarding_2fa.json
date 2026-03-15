@@ -1,0 +1,122 @@
+{
+  "route": "/onboarding/2fa",
+  "screen_name": "2FA-Setup",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "variant": "default",
+        "title": "2FA Setup",
+        "showBackButton": true
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "placeholder": "Enter phone number",
+        "type": "tel"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6,
+        "placeholder": "Enter verification code"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Send Code",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "secondary",
+        "text": "Resend Code",
+        "disabled": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Verify & Continue",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "ghost",
+        "text": "Skip for now"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+  "data_sources": [
+    "POST /api/v1/phone-registrations",
+    "POST /api/v1/phone-registrations/{registrationId}/verify",
+    "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+    "POST /api/v1/users/{userId}/2fa"
+  ],
+  "state_shape": {
+    "phoneNumber": "string",
+    "registrationId": "string",
+    "otpCode": "string",
+    "isCodeSent": "boolean",
+    "isVerifying": "boolean",
+    "canResend": "boolean",
+    "resendTimer": "number",
+    "error": "string|null"
+  }
+}

@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> uploading
+    uploading --> available : upload_completed [upload_successful] / notify_recipient
+    uploading --> failed : upload_failed [upload_error_occurred] / log_error
+    available --> downloading : download_started [recipient_authorized] / start_download_timer
+    available --> expired : expiry_time_reached [ttl_exceeded] / cleanup_media_file
+    downloading --> viewed : media_opened [download_completed] / mark_as_viewed
+    downloading --> available : download_cancelled [download_interrupted] / reset_download_state
+    downloading --> failed : download_failed [download_error_occurred] / log_download_error
+    viewed --> deleted : view_completed [view_once_media] / delete_media_file
+    failed --> uploading : retry_upload [retry_attempts_available] / reset_upload_state
+    failed --> deleted : cleanup_failed_media [max_retries_exceeded] / cleanup_failed_upload
+    deleted --> [*]
+    expired --> [*]

@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant Sender as Sender
+    participant System as System
+    participant Receiver1 as Receiver 1
+    participant Receiver2 as Receiver 2
+    participant ReceiverN as Receiver N
+
+    Sender->>System: Send Broadcast Message
+    System->>Receiver1: Deliver Message
+    System->>Receiver2: Deliver Message
+    System->>ReceiverN: Deliver Message
+    Receiver1-->>System: Acknowledge Receipt
+    Receiver2-->>System: Acknowledge Receipt
+    ReceiverN-->>System: Acknowledge Receipt

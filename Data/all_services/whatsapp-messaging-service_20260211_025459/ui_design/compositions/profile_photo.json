@@ -1,0 +1,101 @@
+{
+  "route": "/profile/photo",
+  "screen_name": "Profilbild",
+  "description": "",
+  "user_stories": [
+    "US-006",
+    "US-082"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Profilbild",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "size": "large",
+        "variant": "circle",
+        "editable": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Foto auswählen"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Foto aufnehmen"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Profilbild für alle sichtbar",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Speichern",
+        "fullWidth": true
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px",
+  "data_sources": [],
+  "state_shape": {
+    "profileImage": "File | null",
+    "imageUrl": "string | null",
+    "isVisible": "boolean",
+    "isLoading": "boolean",
+    "hasChanges": "boolean"
+  }
+}

@@ -1,0 +1,13 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title GIF System Context Diagram
+
+    Person(user, "User", "A user who searches and sends GIFs.")
+    System(gifSystem, "GIF System", "A system that supports GIF search and sending.")
+
+    System_Ext(gifAPI, "GIF API", "External API for GIF search and retrieval.")
+    System_Ext(emailService, "Email Service", "External service for sending GIFs via email.")
+
+    Rel(user, gifSystem, "Uses")
+    Rel(gifSystem, gifAPI, "Fetches GIFs from")
+    Rel(gifSystem, emailService, "Sends GIFs via")

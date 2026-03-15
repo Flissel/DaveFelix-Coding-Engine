@@ -1,0 +1,75 @@
+# GitHub Actions CI/CD for whatsapp_messaging_service (node.js)
+# Generated: 2026-02-12T17:16:27.029376
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: whatsapp_messaging_service_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.Js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:unit
+        env:
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/whatsapp_messaging_service_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/whatsapp_messaging_service_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Build
+        run: npm run build
+
+  build-image:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t whatsapp_messaging_service:${{ github.sha }} .
+
+      - name: Push to registry
+        run: |
+          echo "TODO: Configure container registry push"

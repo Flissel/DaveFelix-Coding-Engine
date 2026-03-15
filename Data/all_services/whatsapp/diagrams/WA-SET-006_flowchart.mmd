@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[Übersicht der Speichernutzung]
+    B --> C{Verwaltung der Speichernutzung}
+    C -->|Ja| D[Speicherplatz hinzufügen]
+    C -->|Nein| E[Speicherplatz entfernen]
+    D --> F[Speicherplatz erfolgreich hinzugefügt]
+    E --> G[Speicherplatz erfolgreich entfernt]
+    F --> H[Aktualisierte Übersicht anzeigen]
+    G --> H
+    H --> I[Ende]

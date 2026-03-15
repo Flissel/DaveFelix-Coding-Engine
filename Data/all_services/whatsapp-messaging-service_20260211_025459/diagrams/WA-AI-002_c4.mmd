@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Smart Reply System Context Diagram
+
+    Person(user, "User", "A user who interacts with the Smart Reply system.")
+    System(smartReplySystem, "Smart Reply System", "Provides intelligent reply suggestions.")
+    System_Ext(emailClient, "Email Client", "The application where users compose and read emails.")
+    System_Ext(aiModel, "AI Model", "The machine learning model that generates reply suggestions.")
+
+    Rel(user, emailClient, "Uses")
+    Rel(emailClient, smartReplySystem, "Requests reply suggestions")
+    Rel(smartReplySystem, aiModel, "Fetches suggestions from")
+    Rel(aiModel, smartReplySystem, "Provides suggestions to")

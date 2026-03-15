@@ -1,0 +1,373 @@
+{
+  "timestamp": "2026-02-04T19:28:18.930919",
+  "quality_score": 0.0,
+  "summary": {
+    "total_issues": 19,
+    "requirements_reviewed": 126,
+    "user_stories_reviewed": 126,
+    "test_cases_reviewed": 1130,
+    "by_severity": {
+      "critical": 0,
+      "high": 8,
+      "medium": 11,
+      "low": 0,
+      "info": 0
+    },
+    "by_category": {
+      "consistency": 0,
+      "completeness": 10,
+      "testability": 7,
+      "traceability": 2,
+      "clarity": 0,
+      "feasibility": 0
+    }
+  },
+  "issues": [
+    {
+      "id": "CI-001",
+      "category": "completeness",
+      "severity": "high",
+      "title": "Fehlende Fehlerbehandlung bei Registrierung/Verifizierung",
+      "description": "Es ist nicht definiert, wie das System auf fehlgeschlagene SMS/OTP-Zustellung, falsche Codes, abgelaufene Tokens oder Nummern, die bereits registriert sind, reagiert.",
+      "affected_artifacts": [
+        "WA-AUTH-001",
+        "WA-AUTH-002"
+      ],
+      "suggestion": "Fehlerf\u00e4lle definieren (Retry-Strategien, Sperrung nach Fehlversuchen, Fallback-Kan\u00e4le, eindeutige Fehlermeldungen).",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-002",
+      "category": "completeness",
+      "severity": "medium",
+      "title": "Unklare Begriffe und Parameter",
+      "description": "Mehrere Anforderungen enthalten unbestimmte Begriffe wie \u201eumfangreiche Gruppenadmin-Funktionen\u201c, \u201egrundlegende Textformatierung\u201c, \u201ekonfigurierbar\u201c oder \u201eechtzeit\u201c ohne Pr\u00e4zisierung.",
+      "affected_artifacts": [
+        "WA-GRP-002",
+        "WA-GRP-003",
+        "WA-MSG-012",
+        "WA-MSG-001",
+        "WA-PROF-002"
+      ],
+      "suggestion": "Begriffe definieren (z.B. erlaubte Formatierungen, konkrete Admin-Rechte, Ziel-Latenz).",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-003",
+      "category": "completeness",
+      "severity": "high",
+      "title": "Fehlende Sicherheitsanforderungen",
+      "description": "Es fehlen Anforderungen zu Verschl\u00fcsselung, Schl\u00fcsselmanagement, Ger\u00e4tebindung, Session-Management und Schutz vor Account-\u00dcbernahme.",
+      "affected_artifacts": [
+        "WA-AUTH-001",
+        "WA-AUTH-002",
+        "WA-AUTH-003",
+        "WA-AUTH-004",
+        "WA-MSG-001",
+        "WA-MSG-008",
+        "WA-MSG-009"
+      ],
+      "suggestion": "NFRs zu Ende-zu-Ende-Verschl\u00fcsselung, Transportverschl\u00fcsselung, Session-Timeouts, Ger\u00e4teverwaltung und Wiederherstellung hinzuf\u00fcgen.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-004",
+      "category": "completeness",
+      "severity": "medium",
+      "title": "Fehlende Daten- und Mediengrenzen",
+      "description": "Es fehlen Beschr\u00e4nkungen f\u00fcr Profilbildgr\u00f6\u00dfe/-format, Nachrichtenl\u00e4nge, Audioformat/L\u00e4nge, Mediengr\u00f6\u00dfen und QR-Code Inhalt.",
+      "affected_artifacts": [
+        "WA-PROF-001",
+        "WA-MSG-001",
+        "WA-MSG-002",
+        "WA-PROF-005"
+      ],
+      "suggestion": "Grenzwerte und akzeptierte Formate definieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-005",
+      "category": "completeness",
+      "severity": "high",
+      "title": "Unvollst\u00e4ndige User Journeys f\u00fcr Multi-Device",
+      "description": "Mehrger\u00e4te-Nutzung ist gefordert, aber Onboarding, Ger\u00e4tekopplung, Synchronisation, Konfliktl\u00f6sung und Abmeldung sind nicht beschrieben.",
+      "affected_artifacts": [
+        "WA-AUTH-004"
+      ],
+      "suggestion": "Flows f\u00fcr Ger\u00e4te hinzuf\u00fcgen/entfernen, Sync-Strategie und Konfliktaufl\u00f6sung definieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-006",
+      "category": "completeness",
+      "severity": "medium",
+      "title": "Fehlende Edge Cases f\u00fcr Nachrichtenfunktionen",
+      "description": "Es ist unklar, wie sich Bearbeiten, L\u00f6schen, Reaktionen und Zitate bei bereits gelesenen, weitergeleiteten oder verschwundenen Nachrichten verhalten.",
+      "affected_artifacts": [
+        "WA-MSG-003",
+        "WA-MSG-004",
+        "WA-MSG-006",
+        "WA-MSG-007",
+        "WA-MSG-008"
+      ],
+      "suggestion": "Verhalten bei gelesenen/weitergeleiteten/abgelaufenen Nachrichten spezifizieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-007",
+      "category": "completeness",
+      "severity": "medium",
+      "title": "Fehlende Integrationspunkte",
+      "description": "Teilen von Standort/Kontakten erfordert OS- und API-Integrationen, die nicht spezifiziert sind.",
+      "affected_artifacts": [
+        "WA-MSG-014",
+        "WA-MSG-015"
+      ],
+      "suggestion": "Integrationen mit Karten-/Geolocation-Services und Kontakt-Provider definieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-008",
+      "category": "completeness",
+      "severity": "high",
+      "title": "Fehlende Gruppenberechtigungen und Rollenmodelle",
+      "description": "Gruppenadministration und -einstellungen nennen keine Rollen, Rechte oder Standardwerte.",
+      "affected_artifacts": [
+        "WA-GRP-002",
+        "WA-GRP-003"
+      ],
+      "suggestion": "Rollen (Admin/Moderator/Member) und konkrete Berechtigungen definieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-009",
+      "category": "completeness",
+      "severity": "high",
+      "title": "Fehlende Datenschutz- und Aufbewahrungsregeln",
+      "description": "Es gibt keine Angaben zu Datenaufbewahrung, L\u00f6schung, Export oder Sichtbarkeit von Telefonnummern/Profilinfos.",
+      "affected_artifacts": [
+        "WA-PROF-004",
+        "WA-MSG-008",
+        "WA-AUTH-001"
+      ],
+      "suggestion": "Policies f\u00fcr Sichtbarkeit, Retention, L\u00f6schung und Export definieren.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-010",
+      "category": "completeness",
+      "severity": "medium",
+      "title": "Fehlende Verf\u00fcgbarkeit/Leistungsziele",
+      "description": "Echtzeit-Messaging erfordert Latenz-, Durchsatz- und Verf\u00fcgbarkeitsziele, die fehlen.",
+      "affected_artifacts": [
+        "WA-MSG-001",
+        "WA-MSG-002",
+        "WA-MSG-011"
+      ],
+      "suggestion": "NFRs zu Latenz, Verf\u00fcgbarkeit und Skalierung hinzuf\u00fcgen.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-011",
+      "category": "testability",
+      "severity": "high",
+      "title": "Missing acceptance criteria for all user stories",
+      "description": "No explicit acceptance criteria are provided for any US, making requirements non-measurable and hard to test.",
+      "affected_artifacts": [
+        "US-001",
+        "US-002",
+        "US-003",
+        "US-004",
+        "US-005",
+        "US-006",
+        "US-007",
+        "US-008",
+        "US-009",
+        "US-010",
+        "US-011",
+        "US-012",
+        "US-013",
+        "US-014",
+        "US-015",
+        "US-016",
+        "US-017",
+        "US-018",
+        "US-019",
+        "US-020"
+      ],
+      "suggestion": "Add clear, measurable acceptance criteria for each story (inputs, expected outputs, constraints, error handling).",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-012",
+      "category": "testability",
+      "severity": "medium",
+      "title": "Untestable/subjective terms in user stories",
+      "description": "Phrases like 'securely', 'quickly', 'easily recognizable', 'seamlessly', and 'schneller und sicherer' are subjective without metrics.",
+      "affected_artifacts": [
+        "US-001",
+        "US-003",
+        "US-004",
+        "US-005",
+        "US-006",
+        "US-011",
+        "US-012",
+        "US-018",
+        "US-019",
+        "US-020"
+      ],
+      "suggestion": "Define measurable criteria (e.g., authentication strength, response times, max steps).",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-013",
+      "category": "testability",
+      "severity": "medium",
+      "title": "Insufficient boundary definitions for registration inputs",
+      "description": "TCs cover min/max length but do not define valid phone format, country codes, or allowed characters, making boundaries unclear.",
+      "affected_artifacts": [
+        "US-001",
+        "TC-002",
+        "TC-004",
+        "TC-005"
+      ],
+      "suggestion": "Specify phone number format rules, min/max length, and allowed characters.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-014",
+      "category": "testability",
+      "severity": "medium",
+      "title": "2FA PIN rules not fully specified",
+      "description": "PIN format/constraints (leading zeros allowed, reuse policy, lockout rules) are not defined; tests assume but do not confirm requirements.",
+      "affected_artifacts": [
+        "US-002",
+        "TC-017"
+      ],
+      "suggestion": "Define PIN constraints, lockout threshold, retry limits, and error messaging.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-015",
+      "category": "testability",
+      "severity": "medium",
+      "title": "Biometric fallback conditions vague",
+      "description": "Fallback timing/trigger (after how many failures, user cancellation) and supported methods are not clearly specified.",
+      "affected_artifacts": [
+        "US-003",
+        "TC-020",
+        "TC-021",
+        "TC-025",
+        "TC-026",
+        "TC-027"
+      ],
+      "suggestion": "Define failure thresholds, allowed fallback methods, and user flow states.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-016",
+      "category": "testability",
+      "severity": "medium",
+      "title": "Multi-device support lacks scope and constraints",
+      "description": "No specification for max devices, session management, or conflict resolution; tests only cover two devices and simple session persistence.",
+      "affected_artifacts": [
+        "US-004",
+        "TC-028",
+        "TC-029",
+        "TC-030"
+      ],
+      "suggestion": "Define device/session limits, concurrent actions behavior, and session timeout rules.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-017",
+      "category": "testability",
+      "severity": "medium",
+      "title": "Missing negative scenarios for message operations",
+      "description": "No tests for failures (e.g., delete/edit/forward not allowed, permissions, expired messages) which are critical for testability.",
+      "affected_artifacts": [
+        "US-013",
+        "US-014",
+        "US-015",
+        "US-016",
+        "US-017",
+        "US-018",
+        "US-019",
+        "US-020"
+      ],
+      "suggestion": "Add negative tests for permission errors, invalid states, and edge conditions.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-018",
+      "category": "traceability",
+      "severity": "high",
+      "title": "Orphan requirements",
+      "description": "Multiple requirements have no linked user stories, breaking REQ\u2192US traceability.",
+      "affected_artifacts": [
+        "WA-MSG-011",
+        "WA-MSG-012",
+        "WA-MSG-013",
+        "WA-MSG-014",
+        "WA-MSG-015",
+        "WA-GRP-001",
+        "WA-GRP-002",
+        "WA-GRP-003",
+        "WA-GRP-004",
+        "WA-GRP-005"
+      ],
+      "suggestion": "Create user stories for each orphan requirement and link them explicitly.",
+      "auto_fixable": false,
+      "fixed": false
+    },
+    {
+      "id": "CI-019",
+      "category": "traceability",
+      "severity": "high",
+      "title": "User stories without test coverage",
+      "description": "Several user stories are not linked to any test cases, breaking US\u2192TC traceability.",
+      "affected_artifacts": [
+        "US-005",
+        "US-006",
+        "US-007",
+        "US-008",
+        "US-009",
+        "US-010",
+        "US-011",
+        "US-012",
+        "US-013",
+        "US-014",
+        "US-015",
+        "US-016",
+        "US-017",
+        "US-018",
+        "US-019",
+        "US-020"
+      ],
+      "suggestion": "Define test cases for each listed user story and link them.",
+      "auto_fixable": false,
+      "fixed": false
+    }
+  ],
+  "recommendations": [
+    "Conduct additional requirement elicitation to fill identified gaps",
+    "Refine acceptance criteria to be more specific and measurable"
+  ]
+}

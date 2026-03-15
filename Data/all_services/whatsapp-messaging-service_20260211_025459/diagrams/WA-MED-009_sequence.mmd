@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Gallery as Geraete-Galerie
+
+    User->>System: Anfrage für Galerie-Zugriff
+    System->>Gallery: Zugriff auf Geraete-Galerie anfordern
+    Gallery-->>System: Zugriff gewährt
+    System-->>User: Galerie angezeigt

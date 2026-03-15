@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Community System Context Diagram
+
+    Person(user, "User", "A user of the community system")
+    System(system, "Community System", "Supports multiple communities with various groups")
+
+    System_Ext(externalSystem, "External System", "An external service that interacts with the community system")
+
+    Rel(user, system, "Uses")
+    Rel(system, externalSystem, "Interacts with")

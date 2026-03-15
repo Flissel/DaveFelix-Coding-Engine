@@ -1,0 +1,27 @@
+stateDiagram-v2
+    [*] --> draft
+    draft --> sending : send [content_valid] / validate_message
+    sending --> sent : send_success / store_message
+    sending --> failed : send_failed / log_error
+    sent --> delivered : delivery_confirmed / update_delivery_status
+    delivered --> read : message_read / update_read_status
+    sent --> editing : edit_request [edit_allowed] / lock_message
+    delivered --> editing : edit_request [edit_allowed] / lock_message
+    read --> editing : edit_request [edit_allowed] / lock_message
+    editing --> edited : edit_complete [content_valid] / update_content
+    editing --> sent : edit_cancelled / unlock_message
+    edited --> delivered : delivery_confirmed / update_delivery_status
+    edited --> read : message_read / update_read_status
+    sent --> deleting : delete_request [delete_allowed] / mark_for_deletion
+    delivered --> deleting : delete_request [delete_allowed] / mark_for_deletion
+    read --> deleting : delete_request [delete_allowed] / mark_for_deletion
+    edited --> deleting : delete_request [delete_allowed] / mark_for_deletion
+    deleting --> deleted : delete_confirmed / remove_message
+    sent --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message
+    delivered --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message
+    read --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message
+    edited --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message
+    failed --> sending : retry_send [retry_allowed] / reset_send_attempt
+    failed --> deleted : abandon_send / cleanup_failed_message
+    deleted --> [*]
+    expired --> [*]

@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Wer darf hinzufügen?}
+    B -->|Admin| C[Admin fügt Mitglieder hinzu]
+    B -->|Benutzer| D[Benutzeranfrage zur Hinzufügung]
+    D --> E{Genehmigung?}
+    E -->|Ja| F[Benutzer wird hinzugefügt]
+    E -->|Nein| G[Anfrage abgelehnt]
+    C --> H[Mitglieder erfolgreich hinzugefügt]
+    F --> H
+    G --> H
+    H --> I[Ende]

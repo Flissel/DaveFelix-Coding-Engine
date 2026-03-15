@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> RequestPIN : Start Zwei-Schritte-Verifizierung
+    RequestPIN --> EnterPIN : User prompted for PIN
+    EnterPIN --> VerifyPIN : User submits PIN
+    VerifyPIN --> Success : PIN is correct
+    VerifyPIN --> Failure : PIN is incorrect
+    Failure --> EnterPIN : Retry
+    Success --> [*] : End Zwei-Schritte-Verifizierung

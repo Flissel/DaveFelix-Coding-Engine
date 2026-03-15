@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Favoriten-Kontakte?}
+    B -- Ja --> C[Favoriten-Kontakte anzeigen]
+    B -- Nein --> D[Keine Favoriten-Kontakte]
+    C --> E[Favoriten-Kontakte hinzufügen]
+    E --> F[Favoriten-Kontakte verwalten]
+    F --> G[Favoriten-Kontakte löschen]
+    G --> H[Ende]
+    D --> H

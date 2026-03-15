@@ -1,0 +1,11 @@
+{
+    "status": "idle",
+    "engine_running": false,
+    "engine_pid": null,
+    "started_at": null,
+    "stopped_at": null,
+    "requirements_file": null,
+    "output_dir": null,
+    "iterations": 0,
+    "last_error": null
+}

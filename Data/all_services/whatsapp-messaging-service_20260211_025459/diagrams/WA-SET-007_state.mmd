@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Monitoring : Start Monitoring
+    Monitoring --> DataUsage : Track Data Usage
+    DataUsage --> Alert : Data Limit Reached
+    Alert --> Monitoring : Acknowledge Alert
+    Monitoring --> [*] : Stop Monitoring

@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Sending : Request to send notification
+    Sending --> Delivered : Notification delivered successfully
+    Sending --> Failed : Notification delivery failed
+    Delivered --> Idle : Acknowledge receipt
+    Failed --> Idle : Retry sending notification

@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Chat auswählen}
+    B -->|Einzelner Chat| C[Exportoptionen anzeigen]
+    C --> D{Exportformat wählen}
+    D -->|PDF| E[Chat als PDF exportieren]
+    D -->|TXT| F[Chat als TXT exportieren]
+    D -->|CSV| G[Chat als CSV exportieren]
+    E --> H[Export erfolgreich]
+    F --> H
+    G --> H
+    H --> I[Benachrichtigung senden]
+    I --> J[Ende]

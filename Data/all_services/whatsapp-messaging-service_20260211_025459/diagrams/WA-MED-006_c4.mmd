@@ -1,0 +1,11 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title System Context Diagram for GIFs
+
+    Person(user, "User", "A user who searches and sends GIFs.")
+    System(gifsSystem, "GIF System", "A system that supports GIF search and sending.")
+
+    Person(gifProvider, "GIF Provider", "An external service that provides GIFs.")
+    
+    Rel(user, gifsSystem, "Uses")
+    Rel(gifsSystem, gifProvider, "Fetches GIFs from")

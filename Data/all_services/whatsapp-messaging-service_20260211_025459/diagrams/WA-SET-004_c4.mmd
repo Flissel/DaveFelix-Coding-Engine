@@ -1,0 +1,8 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title System Context Diagram for Info-Sichtbarkeit
+
+    Person(user, "User", "A user who interacts with the system to configure info/status visibility.")
+    System(infoSichtbarkeit, "Info-Sichtbarkeit", "A system that provides configurable info/status text visibility.")
+
+    Rel(user, infoSichtbarkeit, "Uses", "Configures info/status visibility settings")

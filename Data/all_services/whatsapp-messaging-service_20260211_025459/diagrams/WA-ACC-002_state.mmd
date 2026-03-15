@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Default
+    Default --> Small
+    Default --> Medium
+    Default --> Large
+    Small --> Medium : Increase
+    Small --> Large : Increase
+    Medium --> Small : Decrease
+    Medium --> Large : Increase
+    Large --> Medium : Decrease
+    Large --> Small : Decrease

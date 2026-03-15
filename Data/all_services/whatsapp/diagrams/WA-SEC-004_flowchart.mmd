@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Kontakt auswählen}
+    B -->|Ja| C[Blockieren]
+    B -->|Nein| D[Abbrechen]
+    C --> E[Bestätigung anzeigen]
+    E --> F[Kontakt blockiert]
+    D --> F
+    F --> G[Ende]

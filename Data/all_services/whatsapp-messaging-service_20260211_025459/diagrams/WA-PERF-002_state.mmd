@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Initializing
+    Initializing --> Ready : App Loaded
+    Ready --> Running : User Interaction
+    Running --> Paused : User Pauses
+    Paused --> Running : User Resumes
+    Running --> Exiting : User Exits
+    Exiting --> [*] : App Closed

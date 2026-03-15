@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Regionale Formate System Architecture
+
+    Person(customer, "Kunde", "Nutzen das System zur Auswahl regionaler Formate.")
+    System(system, "Regionale Formate System", "Ein System, das regionale Formate respektiert.")
+
+    Rel(customer, system, "Interagiert mit")
+
+    System_Ext(externalSystem, "Externe Datenquelle", "Bietet Informationen über regionale Formate.")
+    Rel(system, externalSystem, "Erhält Daten von")
+
+    System_Ext(legalRequirements, "Rechtliche Vorgaben", "Stellt sicher, dass die regionalen Formate den gesetzlichen Anforderungen entsprechen.")
+    Rel(system, legalRequirements, "Überprüft Anforderungen gegen")

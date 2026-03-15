@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Contact as Kontakt
+
+    User->>System: Blockieren eines Kontakts
+    System->>Contact: Benachrichtigung über Blockierung
+    Contact-->>System: Bestätigung der Blockierung
+    System-->>User: Bestätigung der Blockierung

@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as User
+    participant WebApp as Web Application
+    participant Server as Server
+
+    User->>WebApp: Access Web Version
+    WebApp->>Server: Request Data
+    Server-->>WebApp: Send Data
+    WebApp-->>User: Display Data

@@ -1,0 +1,12 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A[User] -->|Interacts with| B[Gruppeneinstellungen System]
+    B -->|Sends configuration| C[Configuration Database]
+    B -->|Retrieves settings| D[Settings Management Service]
+    B -->|Notifies changes| E[Notification Service]
+
+    subgraph External Systems
+        C
+        D
+        E
+    end

@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> Start
+    Start --> SelectDate: Datum auswählen
+    SelectDate --> ValidateDate: Datum validieren
+    ValidateDate --> Valid: Datum gültig
+    ValidateDate --> Invalid: Datum ungültig
+    Valid --> SearchResults: Ergebnisse anzeigen
+    Invalid --> SelectDate: Datum erneut auswählen
+    SearchResults --> [*]: Suche abgeschlossen

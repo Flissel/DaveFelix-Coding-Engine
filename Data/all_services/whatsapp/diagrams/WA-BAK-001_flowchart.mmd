@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Ist Chat-Backup aktiviert?}
+    B -- Ja --> C[Backup-Daten sammeln]
+    B -- Nein --> D[Chat-Backup aktivieren]
+    D --> C
+    C --> E[Backup in die Cloud hochladen]
+    E --> F{Backup erfolgreich?}
+    F -- Ja --> G[Backup abgeschlossen]
+    F -- Nein --> H[Fehlerbehandlung]
+    H --> C
+    G --> I[Ende]

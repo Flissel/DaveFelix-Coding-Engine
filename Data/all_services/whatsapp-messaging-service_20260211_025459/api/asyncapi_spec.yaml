@@ -1,0 +1,5855 @@
+asyncapi: 2.6.0
+info:
+  title: whatsapp-messaging-service Realtime API
+  version: 1.0.0
+  description: 'WebSocket API specification.
+
+
+    Generated: 2026-02-11T17:26:26.746441'
+servers:
+  production:
+    url: wss://api.example.com/ws
+    protocol: websocket
+channels:
+  profile/info-text:
+    description: Real-time profile info/status text updates
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ProfileInfoTextUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/UpdateProfileInfoText'
+  chat/messages:
+    description: End-to-end encrypted chat message delivery
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/EncryptedMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendEncryptedMessage'
+  chat/acks:
+    description: End-to-end encrypted message acknowledgments
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/EncryptedMessageAck'
+    publish:
+      message:
+        $ref: '#/components/messages/SendEncryptedAck'
+  chat/voice:
+    description: Real-time voice message delivery for conversations
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/VoiceMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendVoiceMessage'
+  chat/voice/ack:
+    description: Acknowledgments for voice message delivery
+    subscribe:
+      message:
+        $ref: '#/components/messages/VoiceMessageAck'
+    publish:
+      message:
+        $ref: '#/components/messages/VoiceMessageDelivered'
+  chat/messages/ack:
+    description: Acknowledgments for message creation with self-destruct metadata
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatMessageAccepted'
+    publish:
+      message:
+        $ref: '#/components/messages/SendChatMessageWithClientId'
+  chat/forward:
+    description: Forwarding of existing messages to other recipients or conversations
+    parameters:
+      to_conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/MessageForwarded'
+    publish:
+      message:
+        $ref: '#/components/messages/ForwardMessage'
+  chat/forward/ack:
+    description: Acknowledgment for forwarding requests
+    subscribe:
+      message:
+        $ref: '#/components/messages/ForwardMessageAck'
+  chat/reactions:
+    description: Real-time reaction updates for messages
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ReactionOnOwnMessage'
+    publish:
+      message:
+        $ref: '#/components/messages/AddReaction'
+  chat/reactions/ack:
+    description: Acknowledgment for reaction requests
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ReactionAck'
+  chat/messages/expired:
+    description: Notifications when self-destructing messages are deleted
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatMessageExpired'
+  chat/lock:
+    description: Real-time chat lock state and authentication flow
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatLockStatusChanged'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestChatLock'
+  chat/lock/auth:
+    description: Additional authentication challenge/response for locking chats
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatLockAuthChallenge'
+    publish:
+      message:
+        $ref: '#/components/messages/SubmitChatLockAuth'
+  chat/lock/ack:
+    description: Acknowledgments for lock/unlock requests
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatLockRequestAck'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestChatUnlock'
+  broadcast/messages:
+    description: Real-time broadcast delivery to multiple recipients
+    subscribe:
+      message:
+        $ref: '#/components/messages/BroadcastMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeBroadcastMessage'
+  chat/mentions:
+    description: Real-time @mention notifications in group chats
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/MentionNotification'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeMention'
+  chat/groups:
+    description: Group chat creation and lifecycle events
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupCreated'
+    publish:
+      message:
+        $ref: '#/components/messages/CreateGroup'
+  chat/groups/ack:
+    description: Acknowledgments for group creation requests
+    subscribe:
+      message:
+        $ref: '#/components/messages/CreateGroupAck'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeGroupCreate'
+  group/membership:
+    description: Group membership management
+    parameters:
+      group_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/LeaveGroupAck'
+    publish:
+      message:
+        $ref: '#/components/messages/LeaveGroup'
+  broadcast/{channel_id}:
+    description: One-way broadcast channel delivering server-originated messages to
+      all subscribed clients
+    parameters:
+      channel_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/BroadcastMessage'
+  chat/polls:
+    description: Real-time poll features in group and direct chats
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/PollCreated'
+    publish:
+      message:
+        $ref: '#/components/messages/CreatePoll'
+  chat/polls/votes:
+    description: Real-time poll voting updates
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+      poll_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/PollVoteUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/VotePoll'
+  chat/polls/status:
+    description: Poll lifecycle updates
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+      poll_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/PollClosed'
+    publish:
+      message:
+        $ref: '#/components/messages/ClosePoll'
+  group/events:
+    description: Real-time event planning updates within a group
+    parameters:
+      group_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupEventUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/UpsertGroupEvent'
+  group/events/ack:
+    description: Acknowledgments for event create/update/delete operations
+    parameters:
+      group_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupEventAck'
+    publish:
+      message:
+        $ref: '#/components/messages/DeleteGroupEvent'
+  group/events/rsvp:
+    description: Real-time RSVP updates for group events
+    parameters:
+      group_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupEventRsvpUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetGroupEventRsvp'
+  group/events/reminders:
+    description: Real-time event reminders for group events
+    parameters:
+      group_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupEventReminder'
+    publish:
+      message:
+        $ref: '#/components/messages/SetGroupEventReminder'
+  call/signaling:
+    description: Signaling for encrypted voice calls (SDP/ICE exchange and call control)
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallSignalReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendCallSignal'
+  call/crypto:
+    description: End-to-end encryption key exchange metadata for video calls
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CryptoSignalReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendCryptoSignal'
+  call/ack:
+    description: Acknowledgements for call actions to ensure fast response
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallActionAck'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestAck'
+  call/session:
+    description: Call session lifecycle and encrypted call setup
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallSessionEvent'
+    publish:
+      message:
+        $ref: '#/components/messages/CallSessionCommand'
+  call/signal:
+    description: Signaling exchange routed via server to avoid exposing peer IPs
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallSignalReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendCallSignal'
+  call/groups/{call_id}/control:
+    description: Group call lifecycle and participant management
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GroupCallEvent'
+    publish:
+      message:
+        $ref: '#/components/messages/GroupCallCommand'
+  call/groups/{call_id}/signal:
+    description: WebRTC signaling for group call media negotiation
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/SignalReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendSignal'
+  call/groups/{call_id}/ack:
+    description: Acknowledgments for critical group call actions
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CommandAck'
+    publish:
+      message:
+        $ref: '#/components/messages/AckRequest'
+  call/screen-share:
+    description: Screen sharing control and signaling during a call
+    parameters:
+      call_id:
+        schema:
+          type: string
+      share_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ScreenShareEvent'
+    publish:
+      message:
+        $ref: '#/components/messages/ScreenShareCommand'
+  call/screen-share/ack:
+    description: Acknowledgments for screen share commands
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ScreenShareAck'
+  call/link:
+    description: Real-time updates for scheduled call access links
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallLinkUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestCallLink'
+  call/link/ack:
+    description: Acknowledgment of call link requests
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallLinkRequestAck'
+    publish:
+      message:
+        $ref: '#/components/messages/AckReceipt'
+  call/decision:
+    description: Real-time call decision signaling
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallDeclined'
+    publish:
+      message:
+        $ref: '#/components/messages/DeclineCallWithMessage'
+  call/history:
+    description: Real-time call history updates for a user
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallHistoryEntryAdded'
+    publish:
+      message:
+        $ref: '#/components/messages/CallHistoryRequest'
+  call/history/snapshot:
+    description: Snapshot delivery of call history for a user
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallHistorySnapshot'
+    publish:
+      message:
+        $ref: '#/components/messages/CallHistoryAck'
+  status/updates:
+    description: Real-time 24-hour status update creation and delivery
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/StatusCreated'
+    publish:
+      message:
+        $ref: '#/components/messages/CreateStatus'
+  status/ack:
+    description: Acknowledgment for status creation requests
+    subscribe:
+      message:
+        $ref: '#/components/messages/CreateStatusAck'
+  user/presence:
+    description: Real-time online status updates with visibility rules applied
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/PresenceStatusUpdated'
+  status/response:
+    description: Real-time status request and response handling
+    subscribe:
+      message:
+        $ref: '#/components/messages/StatusResponseReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestStatus'
+  user/status/visibility:
+    description: Manage and receive updates to status visibility settings
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/StatusVisibilityUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetStatusVisibility'
+  user/status:
+    description: Real-time delivery of status changes honoring visibility rules
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/UserStatusChanged'
+    publish:
+      message:
+        $ref: '#/components/messages/SetUserStatus'
+  user/status/visibility/ack:
+    description: Acknowledgments for status visibility updates
+    subscribe:
+      message:
+        $ref: '#/components/messages/SetStatusVisibilityAck'
+    publish:
+      message:
+        $ref: '#/components/messages/SetStatusVisibilityAckRequest'
+  contacts/status-mute:
+    description: Manage muting of contact status updates
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ContactStatusMuteChanged'
+    publish:
+      message:
+        $ref: '#/components/messages/SetContactStatusMute'
+  contacts/status-mute/ack:
+    description: Acknowledgment for contact status mute requests
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ContactStatusMuteAck'
+    publish:
+      message:
+        $ref: '#/components/messages/AckContactStatusMute'
+  chat/stickers:
+    description: Real-time sticker delivery in chats
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/StickerMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendStickerMessage'
+  chat/camera/session:
+    description: Control and state events for camera usage within a chat
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CameraSessionStatus'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestCameraSession'
+  chat/camera/control:
+    description: Client control actions for an active camera session
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CameraControlAck'
+    publish:
+      message:
+        $ref: '#/components/messages/CameraControlAction'
+  chat/camera/signal:
+    description: WebRTC signaling for direct camera streaming in chat
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/CameraSignal'
+    publish:
+      message:
+        $ref: '#/components/messages/SendCameraSignal'
+  crypto/keys:
+    description: End-to-end encryption key exchange and rotation
+    subscribe:
+      message:
+        $ref: '#/components/messages/PublicKeyReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/PublishPublicKey'
+  app/lock:
+    description: Real-time app lock state management
+    subscribe:
+      message:
+        $ref: '#/components/messages/AppLockStateChanged'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestAppLock'
+  app/lock/auth:
+    description: Authentication flow for app unlock
+    subscribe:
+      message:
+        $ref: '#/components/messages/AuthChallenge'
+    publish:
+      message:
+        $ref: '#/components/messages/SubmitAuthResponse'
+  app/lock/ack:
+    description: Acknowledgments for lock/auth operations
+    subscribe:
+      message:
+        $ref: '#/components/messages/AppLockAck'
+    publish:
+      message:
+        $ref: '#/components/messages/ClientRequestWithId'
+  moderation/reports:
+    description: Real-time reporting of messages and contacts
+    subscribe:
+      message:
+        $ref: '#/components/messages/ReportStatusUpdate'
+    publish:
+      message:
+        $ref: '#/components/messages/SubmitReport'
+  moderation/reports/ack:
+    description: Acknowledgment for report submission
+    subscribe:
+      message:
+        $ref: '#/components/messages/ReportSubmitted'
+    publish:
+      message:
+        $ref: '#/components/messages/SubmitReportAckRequest'
+  call/privacy:
+    description: Privacy and relay status events to confirm IP masking
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/IpMaskingStatus'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestIpMasking'
+  call/acks:
+    description: Acknowledgments for signaling/relay operations
+    parameters:
+      call_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/SignalAck'
+    publish:
+      message:
+        $ref: '#/components/messages/AckSignalReceived'
+  notifications/push:
+    description: Reliable push notification delivery
+    subscribe:
+      message:
+        $ref: '#/components/messages/PushNotificationReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/PushNotificationAck'
+  notifications/push/acks:
+    description: Server confirms acknowledgment processing
+    subscribe:
+      message:
+        $ref: '#/components/messages/PushNotificationAckConfirmed'
+  user/notifications/preview:
+    description: Real-time delivery of notification previews
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/NotificationPreviewReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeNotificationPreview'
+  user/notifications/preview/config:
+    description: Real-time configuration of notification preview settings
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/NotificationPreviewConfigUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/UpdateNotificationPreviewConfig'
+  notifications/messages:
+    description: Benachrichtigungen zu eingehenden Nachrichten inkl. Schnellantwort
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/NotificationMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendQuickReply'
+  notifications/acks:
+    description: Bestätigungen für Schnellantworten
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/QuickReplyAcknowledged'
+    publish:
+      message:
+        $ref: '#/components/messages/AckQuickReplyReceived'
+  call/notifications/settings:
+    description: Real-time call notification settings updates per user
+    subscribe:
+      message:
+        $ref: '#/components/messages/CallNotificationSettingsUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/UpdateCallNotificationSettings'
+  contacts/sync:
+    description: Real-time contact synchronization control and status
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ContactSyncStatus'
+    publish:
+      message:
+        $ref: '#/components/messages/StartContactSync'
+  contacts/matches:
+    description: Real-time delivery of matched contacts
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ContactMatchFound'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeContactMatches'
+  message/search:
+    description: Real-time Volltext-Suche in Nachrichten
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/MessageSearchResults'
+    publish:
+      message:
+        $ref: '#/components/messages/SearchMessages'
+  search/chats:
+    description: Real-time search for chats and contacts
+    subscribe:
+      message:
+        $ref: '#/components/messages/SearchResults'
+    publish:
+      message:
+        $ref: '#/components/messages/SearchRequest'
+  search/ack:
+    description: Acknowledgment for search requests
+    subscribe:
+      message:
+        $ref: '#/components/messages/SearchAck'
+    publish:
+      message:
+        $ref: '#/components/messages/SearchAckRequest'
+  user/presence-settings:
+    description: Manage configurable visibility of online status
+    subscribe:
+      message:
+        $ref: '#/components/messages/PresenceVisibilityUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/UpdatePresenceVisibility'
+  user/presence-ack:
+    description: Acknowledgments for presence settings updates
+    subscribe:
+      message:
+        $ref: '#/components/messages/PresenceVisibilityUpdateAck'
+    publish:
+      message:
+        $ref: '#/components/messages/PresenceVisibilityUpdateRequest'
+  user/info-visibility:
+    description: Real-time updates for configurable info/status text visibility settings
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/InfoVisibilityUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetInfoVisibility'
+  user/info-visibility/ack:
+    description: Acknowledgment for visibility setting updates
+    subscribe:
+      message:
+        $ref: '#/components/messages/InfoVisibilityUpdateAck'
+  chat/background:
+    description: Real-time synchronization of chat background settings
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatBackgroundUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetChatBackground'
+  chat/background/ack:
+    description: Acknowledgment for background change requests
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/SetChatBackgroundAck'
+    publish:
+      message:
+        $ref: '#/components/messages/SetChatBackgroundWithAck'
+  backup/chat:
+    description: Real-time chat backup and restore operations in the cloud
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatBackupStatus'
+    publish:
+      message:
+        $ref: '#/components/messages/StartChatBackup'
+  backup/chat/ack:
+    description: Acknowledgment for backup or restore requests
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatBackupAck'
+    publish:
+      message:
+        $ref: '#/components/messages/StartChatRestore'
+  chat/export:
+    description: Real-time export of a single chat conversation
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ExportChatProgress'
+    publish:
+      message:
+        $ref: '#/components/messages/ExportChatRequest'
+  chat/export/ack:
+    description: Acknowledgments and completion notifications for chat export
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ExportChatReady'
+    publish:
+      message:
+        $ref: '#/components/messages/ExportChatCancel'
+  chat/export/errors:
+    description: Error notifications for chat export
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ExportChatFailed'
+    publish:
+      message:
+        $ref: '#/components/messages/ExportChatAck'
+  chat/history:
+    description: Transfer chat history to a newly registered device
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatHistoryChunk'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestChatHistory'
+  chat/history/ack:
+    description: Acknowledgment and completion events for chat history transfer
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatHistoryTransferComplete'
+    publish:
+      message:
+        $ref: '#/components/messages/AckChatHistoryChunk'
+  chat/archive:
+    description: Real-time chat archiving actions and status updates
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatArchiveStatusChanged'
+    publish:
+      message:
+        $ref: '#/components/messages/SetChatArchiveStatus'
+  chat/archive/ack:
+    description: Acknowledgment for archive requests
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatArchiveStatusAck'
+  chat/pins:
+    description: Real-time updates for pinned chats
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/ChatPinnedUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetChatPinned'
+  chat/pins/ack:
+    description: Acknowledgments for pin/unpin requests
+    subscribe:
+      message:
+        $ref: '#/components/messages/SetChatPinnedAck'
+  user/away:
+    description: Manage and receive updates for automatic away messages
+    parameters:
+      user_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/AwayMessageUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/SetAwayMessage'
+  chat/auto-reply:
+    description: Automatic away reply events generated by the system
+    subscribe:
+      message:
+        $ref: '#/components/messages/AutoReplySent'
+  chat/greetings:
+    description: Automatic greeting messages on first contact
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/GreetingMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeGreetingReceived'
+  business/stats:
+    description: Real-time business message statistics
+    parameters:
+      business_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/BusinessStatsUpdated'
+    publish:
+      message:
+        $ref: '#/components/messages/RequestBusinessStats'
+  business/stats/ack:
+    description: Acknowledgments for statistics requests
+    parameters:
+      business_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/BusinessStatsRequestAck'
+    publish:
+      message:
+        $ref: '#/components/messages/BusinessStatsRequestWithId'
+  voice/transcription:
+    description: Real-time transcription lifecycle for voice messages
+    subscribe:
+      message:
+        $ref: '#/components/messages/TranscriptionCompleted'
+    publish:
+      message:
+        $ref: '#/components/messages/StartTranscription'
+  voice/transcription/status:
+    description: Status and progress updates for transcription jobs
+    subscribe:
+      message:
+        $ref: '#/components/messages/TranscriptionProgress'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeTranscription'
+  voice/transcription/errors:
+    description: Failure notifications for transcription jobs
+    subscribe:
+      message:
+        $ref: '#/components/messages/TranscriptionFailed'
+    publish:
+      message:
+        $ref: '#/components/messages/RetryTranscription'
+  sync/changes:
+    description: Efficient delivery of incremental state changes
+    parameters:
+      scope_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/SyncChangesReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SyncAck'
+  sync/request:
+    description: Client-initiated sync requests for missing or initial data
+    parameters:
+      scope_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/SyncResponse'
+    publish:
+      message:
+        $ref: '#/components/messages/SyncRequest'
+  ai/chat/{conversation_id}/messages:
+    description: Real-time AI assistant chat messages
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/AIChatMessageReceived'
+    publish:
+      message:
+        $ref: '#/components/messages/SendAIChatMessage'
+  ai/chat/{conversation_id}/events:
+    description: Real-time AI assistant status and control events
+    parameters:
+      conversation_id:
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/AIChatEvent'
+    publish:
+      message:
+        $ref: '#/components/messages/AcknowledgeMessage'
+components:
+  messages:
+    ProfileInfoTextUpdated:
+      name: ProfileInfoTextUpdated
+      title: Broadcast when a user's info/status text is updated
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User ID whose info text changed
+          info_text:
+            type: string
+            description: Updated short info/status text
+          updated_at:
+            type: string
+            format: date-time
+            description: Update timestamp
+    UpdateProfileInfoText:
+      name: UpdateProfileInfoText
+      title: Update the user's own info/status text
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User ID making the update
+          info_text:
+            type: string
+            description: New short info/status text
+    ChatMessageReceived:
+      name: ChatMessageReceived
+      title: Incoming message from another user (may be self-destructing)
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          sender_id:
+            type: string
+            description: Sender user ID
+          content:
+            type: string
+            description: Message content
+          timestamp:
+            type: string
+            format: date-time
+            description: Message creation time
+          self_destruct:
+            type: boolean
+            description: Whether the message is self-destructing
+          expires_at:
+            type: string
+            format: date-time
+            description: When the message will be deleted (if self_destruct=true)
+    SendTextMessage:
+      name: SendTextMessage
+      title: Send a new text message
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Target conversation ID
+          content:
+            type: string
+            description: Text message content
+          client_message_id:
+            type: string
+            description: Client-generated id for de-duplication
+    MessageSendAck:
+      name: MessageSendAck
+      title: Server acknowledgment for sent message
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated id
+          message_id:
+            type: string
+            description: Server-assigned message ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Send status
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+          error:
+            type: string
+            description: Error details if rejected
+    VoiceMessageReceived:
+      name: VoiceMessageReceived
+      title: Incoming voice message from another user
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          sender_id:
+            type: string
+            description: Sender user ID
+          audio_url:
+            type: string
+            description: URL to the stored audio blob
+          duration_ms:
+            type: number
+            description: Audio duration in milliseconds
+          mime_type:
+            type: string
+            description: Audio MIME type (e.g., audio/ogg)
+          timestamp:
+            type: string
+            format: date-time
+    SendVoiceMessage:
+      name: SendVoiceMessage
+      title: Send a new voice message
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          audio_payload:
+            type: string
+            description: Base64-encoded audio data
+          duration_ms:
+            type: number
+          mime_type:
+            type: string
+          client_message_id:
+            type: string
+            description: Client-generated ID for de-duplication
+    VoiceMessageAck:
+      name: VoiceMessageAck
+      title: Server acknowledgment for a sent voice message
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated ID
+          message_id:
+            type: string
+            description: Server-assigned message ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            description: Rejection reason if status is rejected
+          timestamp:
+            type: string
+            format: date-time
+    VoiceMessageDelivered:
+      name: VoiceMessageDelivered
+      title: Client delivery receipt for a received voice message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+          conversation_id:
+            type: string
+          received_at:
+            type: string
+            format: date-time
+    ChatMessageDeleted:
+      name: ChatMessageDeleted
+      title: Notification that a message was deleted
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID containing the message
+          deleted_by:
+            type: string
+            description: User ID who performed the deletion
+          timestamp:
+            type: string
+            format: date-time
+            description: Deletion time
+    DeleteChatMessage:
+      name: DeleteChatMessage
+      title: Request deletion of a message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID containing the message
+          reason:
+            type: string
+            description: Optional deletion reason
+            nullable: true
+    DeleteChatMessageAck:
+      name: DeleteChatMessageAck
+      title: Acknowledgment for delete request
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID containing the message
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of deletion request
+          error_code:
+            type: string
+            description: Error code if rejected
+            nullable: true
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    DeleteChatMessageAckRequest:
+      name: DeleteChatMessageAckRequest
+      title: Optional client request to receive delete acknowledgments
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation ID to scope acknowledgments
+    ChatMessageEdited:
+      name: ChatMessageEdited
+      title: Notification that an existing message was edited
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          editor_id:
+            type: string
+            description: User ID who edited the message
+          content:
+            type: string
+            description: Updated message content
+          edited_at:
+            type: string
+            format: date-time
+            description: Edit timestamp
+          version:
+            type: integer
+            description: Monotonic message version
+    EditChatMessage:
+      name: EditChatMessage
+      title: Request to edit an existing message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          content:
+            type: string
+            description: New message content
+          base_version:
+            type: integer
+            description: Client's last known version for concurrency control
+    EditChatMessageAck:
+      name: EditChatMessageAck
+      title: Acknowledgment of an edit request
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+          conversation_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            description: Optional rejection reason
+          version:
+            type: integer
+            description: New message version if accepted
+          edited_at:
+            type: string
+            format: date-time
+    EditChatMessageAckRequest:
+      name: EditChatMessageAckRequest
+      title: Client request for explicit ack channel subscription (optional)
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+    MessageForwarded:
+      name: MessageForwarded
+      title: Notification that a message was forwarded
+      payload:
+        type: object
+        properties:
+          forward_id:
+            type: string
+            description: Unique forward operation ID
+          original_message_id:
+            type: string
+            description: ID of the original message
+          from_conversation_id:
+            type: string
+            description: Source conversation ID
+          to_conversation_id:
+            type: string
+            description: Target conversation ID
+          forwarded_by:
+            type: string
+            description: User ID who forwarded the message
+          timestamp:
+            type: string
+            format: date-time
+            description: Forward timestamp
+    ForwardMessage:
+      name: ForwardMessage
+      title: Request to forward an existing message
+      payload:
+        type: object
+        properties:
+          original_message_id:
+            type: string
+            description: ID of the message to forward
+          from_conversation_id:
+            type: string
+            description: Source conversation ID
+          to_conversation_id:
+            type: string
+            description: Target conversation ID
+          note:
+            type: string
+            description: Optional annotation for the forwarded message
+    ForwardMessageAck:
+      name: ForwardMessageAck
+      title: Acknowledgment of a forward request
+      payload:
+        type: object
+        properties:
+          forward_id:
+            type: string
+            description: Unique forward operation ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Forward request status
+          reason:
+            type: string
+            description: Failure reason if rejected
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment timestamp
+    SendChatMessage:
+      name: SendChatMessage
+      title: Send a new message with optional self-destruct timer
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          content:
+            type: string
+          type:
+            type: string
+            enum:
+            - text
+            - image
+            - file
+          self_destruct:
+            type: boolean
+            description: Enable self-destruct for this message
+          ttl_seconds:
+            type: integer
+            description: Time-to-live in seconds before deletion if self_destruct=true
+    ChatMessageAck:
+      name: ChatMessageAck
+      title: Server acknowledgment of a sent message
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated ID
+          message_id:
+            type: string
+            description: Server-assigned message ID
+          conversation_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            nullable: true
+          reply_to_message_id:
+            type: string
+            nullable: true
+          timestamp:
+            type: string
+            format: date-time
+    RequestAck:
+      name: RequestAck
+      title: Optional client request for acknowledgement tracking
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated id to track
+          action:
+            type: string
+            enum:
+            - DeclineCallWithMessage
+          call_id:
+            type: string
+            description: Unique call ID
+    MessageReactionUpdated:
+      name: MessageReactionUpdated
+      title: Reaction added or removed on a message
+      payload:
+        type: object
+        properties:
+          reaction_id:
+            type: string
+            description: Unique reaction event ID
+          message_id:
+            type: string
+            description: Target message ID
+          user_id:
+            type: string
+            description: User who reacted
+          emoji:
+            type: string
+            description: Emoji character or shortcode
+          action:
+            type: string
+            enum:
+            - add
+            - remove
+            description: Reaction action
+          timestamp:
+            type: string
+            format: date-time
+    ReactToMessage:
+      name: ReactToMessage
+      title: Add or remove an emoji reaction on a message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Target message ID
+          emoji:
+            type: string
+            description: Emoji character or shortcode
+          action:
+            type: string
+            enum:
+            - add
+            - remove
+            description: Reaction action
+          client_request_id:
+            type: string
+            description: Client-generated id for acknowledgment correlation
+    ReactionAck:
+      name: ReactionAck
+      title: Acknowledgment for a reaction request
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated id for correlation
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          error:
+            type: string
+            description: Error message if rejected
+          timestamp:
+            type: string
+            format: date-time
+    ChatMessageExpired:
+      name: ChatMessageExpired
+      title: A self-destructing message has been removed
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          expired_at:
+            type: string
+            format: date-time
+            description: Timestamp of deletion
+          reason:
+            type: string
+            enum:
+            - ttl_elapsed
+            description: Reason for deletion
+    ChatMessageAccepted:
+      name: ChatMessageAccepted
+      title: Server acceptance of a sent message including computed expiration
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated temporary ID
+          message_id:
+            type: string
+            description: Server-assigned message ID
+          timestamp:
+            type: string
+            format: date-time
+          self_destruct:
+            type: boolean
+          expires_at:
+            type: string
+            format: date-time
+            description: Computed expiration time if self_destruct=true
+    SendChatMessageWithClientId:
+      name: SendChatMessageWithClientId
+      title: Send a new message with a client-generated ID to receive an acknowledgment
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated temporary ID
+          conversation_id:
+            type: string
+          content:
+            type: string
+          type:
+            type: string
+            enum:
+            - text
+            - image
+            - file
+          self_destruct:
+            type: boolean
+          ttl_seconds:
+            type: integer
+            description: Time-to-live in seconds before deletion if self_destruct=true
+    ChatLockStatusChanged:
+      name: ChatLockStatusChanged
+      title: Server notifies clients of chat lock/unlock state changes
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat/conversation ID
+          locked:
+            type: boolean
+            description: Current lock state
+          locked_by:
+            type: string
+            description: User ID who initiated the change
+          reason:
+            type: string
+            description: Optional reason for lock/unlock
+          timestamp:
+            type: string
+            format: date-time
+    RequestChatLock:
+      name: RequestChatLock
+      title: Client requests to lock a chat (may require extra authentication)
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          client_request_id:
+            type: string
+            description: Idempotency token
+    ChatLockAuthChallenge:
+      name: ChatLockAuthChallenge
+      title: Server requests additional authentication to lock a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          challenge_id:
+            type: string
+          auth_method:
+            type: string
+            enum:
+            - password
+            - otp
+            - webauthn
+          expires_at:
+            type: string
+            format: date-time
+    SubmitChatLockAuth:
+      name: SubmitChatLockAuth
+      title: Client submits authentication response to complete chat lock
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          challenge_id:
+            type: string
+          auth_payload:
+            type: string
+            description: Opaque auth response (e.g., OTP, signed assertion)
+          client_request_id:
+            type: string
+    ChatLockRequestAck:
+      name: ChatLockRequestAck
+      title: Server acknowledgment for lock/unlock/auth requests
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          client_request_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            - pending_auth
+          error_code:
+            type: string
+          error_message:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    RequestChatUnlock:
+      name: RequestChatUnlock
+      title: Client requests to unlock a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          client_request_id:
+            type: string
+    BroadcastMessageReceived:
+      name: BroadcastMessageReceived
+      title: Incoming broadcast message from the system
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique broadcast message ID
+          sender_id:
+            type: string
+            description: Originator ID (system or user)
+          title:
+            type: string
+            description: Broadcast message title
+          content:
+            type: string
+            description: Broadcast message content
+          priority:
+            type: string
+            enum:
+            - low
+            - normal
+            - high
+            - urgent
+            description: Delivery priority
+          timestamp:
+            type: string
+            format: date-time
+            description: Time of broadcast emission
+          expires_at:
+            type: string
+            format: date-time
+            description: Optional expiration timestamp
+    AcknowledgeBroadcastMessage:
+      name: AcknowledgeBroadcastMessage
+      title: Client acknowledgment of received broadcast
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Broadcast message ID being acknowledged
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt timestamp
+          status:
+            type: string
+            enum:
+            - received
+            - read
+            description: Acknowledgment status
+    MentionNotification:
+      name: MentionNotification
+      title: Notifies a user when they are @mentioned in a group chat
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Unique notification ID
+          conversation_id:
+            type: string
+            description: Group chat ID
+          message_id:
+            type: string
+            description: Message containing the @mention
+          mentioning_user_id:
+            type: string
+            description: User who mentioned
+          mentioned_user_id:
+            type: string
+            description: User who was mentioned
+          content_preview:
+            type: string
+            description: Preview of message content
+          timestamp:
+            type: string
+            format: date-time
+            description: Mention time
+    AcknowledgeMention:
+      name: AcknowledgeMention
+      title: Client acknowledges receipt of a mention notification
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Notification ID being acknowledged
+          ack_timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    GroupCreated:
+      name: GroupCreated
+      title: Server notifies that a group chat has been created
+      payload:
+        type: object
+        properties:
+          group_id:
+            type: string
+            description: Unique group chat ID
+          name:
+            type: string
+            description: Group name
+          creator_id:
+            type: string
+            description: User ID of the creator
+          member_ids:
+            type: array
+            items:
+              type: string
+            description: Initial member user IDs
+          created_at:
+            type: string
+            format: date-time
+            description: Creation timestamp
+    CreateGroup:
+      name: CreateGroup
+      title: Request creation of a new group chat
+      payload:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Desired group name
+          member_ids:
+            type: array
+            items:
+              type: string
+            description: User IDs to add to the group
+          client_request_id:
+            type: string
+            description: Client-generated id for idempotency and tracking
+    CreateGroupAck:
+      name: CreateGroupAck
+      title: Acknowledgment of CreateGroup request
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated id to correlate the request
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the request
+          group_id:
+            type: string
+            description: Created group ID when accepted
+          error_code:
+            type: string
+            description: Error code when rejected
+          error_message:
+            type: string
+            description: Human-readable error message
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    AcknowledgeGroupCreate:
+      name: AcknowledgeGroupCreate
+      title: Optional client acknowledgment of receipt of CreateGroupAck
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated id to correlate the request
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt time
+    LeaveGroupAck:
+      name: LeaveGroupAck
+      title: Acknowledgment that the client has left the group without notifications
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request correlation ID
+          group_id:
+            type: string
+            description: Group ID that was left
+          user_id:
+            type: string
+            description: User ID that left the group
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the leave request
+          timestamp:
+            type: string
+            format: date-time
+            description: Server timestamp of processing
+          reason:
+            type: string
+            description: Optional error reason if rejected
+    LeaveGroup:
+      name: LeaveGroup
+      title: Request to leave a group without notifying other members
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request correlation ID
+          group_id:
+            type: string
+            description: Group ID to leave
+    BroadcastMessage:
+      name: BroadcastMessage
+      title: Server-sent broadcast message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique broadcast message ID
+          channel_id:
+            type: string
+            description: Broadcast channel identifier
+          title:
+            type: string
+            description: Message title or topic
+          payload:
+            type: object
+            description: Broadcast payload data
+          timestamp:
+            type: string
+            format: date-time
+            description: Time of broadcast
+          priority:
+            type: string
+            enum:
+            - low
+            - normal
+            - high
+            description: Delivery priority
+    PollCreated:
+      name: PollCreated
+      title: A new poll was created in the conversation
+      payload:
+        type: object
+        properties:
+          poll_id:
+            type: string
+            description: Unique poll ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          creator_id:
+            type: string
+            description: User who created the poll
+          question:
+            type: string
+            description: Poll question
+          options:
+            type: array
+            items:
+              type: object
+              fields:
+                option_id:
+                  type: string
+                  description: Option ID
+                text:
+                  type: string
+                  description: Option text
+                vote_count:
+                  type: integer
+                  description: Initial vote count
+          multi_select:
+            type: boolean
+            description: Whether multiple options can be selected
+          expires_at:
+            type: string
+            format: date-time
+            description: Poll expiration time
+          created_at:
+            type: string
+            format: date-time
+            description: Creation time
+    CreatePoll:
+      name: CreatePoll
+      title: Create a new poll in the conversation
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation ID
+          question:
+            type: string
+            description: Poll question
+          options:
+            type: array
+            items:
+              type: string
+              description: Option text
+          multi_select:
+            type: boolean
+            description: Allow multiple selections
+          expires_at:
+            type: string
+            format: date-time
+            description: Poll expiration time
+    PollVoteUpdated:
+      name: PollVoteUpdated
+      title: Vote counts updated for a poll
+      payload:
+        type: object
+        properties:
+          poll_id:
+            type: string
+            description: Poll ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          option_id:
+            type: string
+            description: Option ID
+          vote_count:
+            type: integer
+            description: Updated vote count
+          voter_id:
+            type: string
+            description: User who voted
+          updated_at:
+            type: string
+            format: date-time
+            description: Update time
+    VotePoll:
+      name: VotePoll
+      title: Cast or update a vote on a poll
+      payload:
+        type: object
+        properties:
+          poll_id:
+            type: string
+            description: Poll ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          selected_option_ids:
+            type: array
+            items:
+              type: string
+              description: Selected option ID
+    PollClosed:
+      name: PollClosed
+      title: A poll was closed or expired
+      payload:
+        type: object
+        properties:
+          poll_id:
+            type: string
+            description: Poll ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          closed_by:
+            type: string
+            description: User who closed the poll or system
+          closed_at:
+            type: string
+            format: date-time
+            description: Closure time
+          final_results:
+            type: array
+            items:
+              type: object
+              fields:
+                option_id:
+                  type: string
+                  description: Option ID
+                vote_count:
+                  type: integer
+                  description: Final vote count
+    ClosePoll:
+      name: ClosePoll
+      title: Close an active poll
+      payload:
+        type: object
+        properties:
+          poll_id:
+            type: string
+            description: Poll ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+    GroupEventUpdated:
+      name: GroupEventUpdated
+      title: Event created or updated in the group
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+            description: Unique event ID
+          group_id:
+            type: string
+            description: Group ID
+          title:
+            type: string
+            description: Event title
+          description:
+            type: string
+            description: Event description
+          start_time:
+            type: string
+            format: date-time
+          end_time:
+            type: string
+            format: date-time
+          location:
+            type: string
+            description: Event location or virtual link
+          organizer_id:
+            type: string
+            description: Organizer user ID
+          updated_at:
+            type: string
+            format: date-time
+          version:
+            type: integer
+            description: Event version for concurrency control
+    UpsertGroupEvent:
+      name: UpsertGroupEvent
+      title: Create or update a group event
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+            description: Event ID for update; omit for create
+          group_id:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+          start_time:
+            type: string
+            format: date-time
+          end_time:
+            type: string
+            format: date-time
+          location:
+            type: string
+          expected_version:
+            type: integer
+            description: Last known version to prevent conflicts
+          request_id:
+            type: string
+            description: Client-generated idempotency key
+    GroupEventAck:
+      name: GroupEventAck
+      title: Acknowledgment for event operation
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          event_id:
+            type: string
+          reason:
+            type: string
+            description: Error reason if rejected
+          current_version:
+            type: integer
+            description: Current event version
+    DeleteGroupEvent:
+      name: DeleteGroupEvent
+      title: Request deletion of a group event
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+          group_id:
+            type: string
+          expected_version:
+            type: integer
+          request_id:
+            type: string
+    GroupEventRsvpUpdated:
+      name: GroupEventRsvpUpdated
+      title: RSVP status updated by a participant
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+          group_id:
+            type: string
+          user_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - going
+            - maybe
+            - declined
+          updated_at:
+            type: string
+            format: date-time
+    SetGroupEventRsvp:
+      name: SetGroupEventRsvp
+      title: Set RSVP status for a group event
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+          group_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - going
+            - maybe
+            - declined
+          request_id:
+            type: string
+    GroupEventReminder:
+      name: GroupEventReminder
+      title: Reminder notification for an upcoming event
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+          group_id:
+            type: string
+          title:
+            type: string
+          start_time:
+            type: string
+            format: date-time
+          reminder_time:
+            type: string
+            format: date-time
+    SetGroupEventReminder:
+      name: SetGroupEventReminder
+      title: Configure reminder time for an event
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+          group_id:
+            type: string
+          reminder_time:
+            type: string
+            format: date-time
+          request_id:
+            type: string
+    CallSignalReceived:
+      name: CallSignalReceived
+      title: Server-relayed signaling message with no direct peer IPs
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Call identifier
+          from_user_id:
+            type: string
+            description: Sender user ID
+          type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+            description: Signal type
+          payload:
+            type: object
+            description: SDP/ICE payload with server-masked candidates
+          timestamp:
+            type: string
+            format: date-time
+    SendCallSignal:
+      name: SendCallSignal
+      title: Client sends signaling to server for relay/masking
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          to_user_id:
+            type: string
+          type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+          payload:
+            type: object
+            description: SDP/ICE payload without exposing client IP to peer
+    CallCryptoEvent:
+      name: CallCryptoEvent
+      title: Server-to-client crypto events for encrypted call setup
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          event_type:
+            type: string
+            enum:
+            - key_exchange
+            - key_exchange_complete
+            - encryption_verified
+            - encryption_failed
+          payload:
+            type: object
+            description: Key material or verification data (e.g., public keys, fingerprints)
+          timestamp:
+            type: string
+            format: date-time
+    SendCallCrypto:
+      name: SendCallCrypto
+      title: Client-to-server crypto messages for encrypted call setup
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          event_type:
+            type: string
+            enum:
+            - key_exchange
+            - verify_encryption
+          payload:
+            type: object
+          client_message_id:
+            type: string
+    CallMessageAck:
+      name: CallMessageAck
+      title: Acknowledgment of previously sent message
+      payload:
+        type: object
+        properties:
+          client_message_id:
+            type: string
+            description: Client-generated id being acknowledged
+          call_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - processed
+            - failed
+          error:
+            type: string
+            description: Error detail if failed
+          timestamp:
+            type: string
+            format: date-time
+    AckReceived:
+      name: AckReceived
+      title: Client acknowledgment of received server message (optional reliability)
+      payload:
+        type: object
+        properties:
+          server_message_id:
+            type: string
+          call_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - received
+          timestamp:
+            type: string
+            format: date-time
+    CallSessionEvent:
+      name: CallSessionEvent
+      title: Server notifications about call session state
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Unique call session ID
+          event:
+            type: string
+            enum:
+            - incoming
+            - accepted
+            - rejected
+            - ended
+            - failed
+          from_user_id:
+            type: string
+            description: Caller user ID
+          to_user_id:
+            type: string
+            description: Callee user ID
+          timestamp:
+            type: string
+            format: date-time
+          reason:
+            type: string
+            description: Failure or end reason
+            nullable: true
+    CallSessionCommand:
+      name: CallSessionCommand
+      title: Client commands for call lifecycle
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            enum:
+            - invite
+            - accept
+            - reject
+            - end
+          call_id:
+            type: string
+            description: Call session ID
+            nullable: true
+          to_user_id:
+            type: string
+            description: Target user ID
+            nullable: true
+          timestamp:
+            type: string
+            format: date-time
+    CryptoSignalReceived:
+      name: CryptoSignalReceived
+      title: E2E encryption negotiation data from remote peer
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          from_user_id:
+            type: string
+          type:
+            type: string
+            enum:
+            - key-offer
+            - key-answer
+            - key-rotate
+            - key-ack
+          key_id:
+            type: string
+            description: Identifier for the negotiated key
+          payload:
+            type: string
+            description: Encrypted key exchange payload
+          timestamp:
+            type: string
+            format: date-time
+    SendCryptoSignal:
+      name: SendCryptoSignal
+      title: Send E2E encryption negotiation data
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          type:
+            type: string
+            enum:
+            - key-offer
+            - key-answer
+            - key-rotate
+            - key-ack
+          key_id:
+            type: string
+          payload:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    CallAckReceived:
+      name: CallAckReceived
+      title: Server acknowledgment for delivered messages
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          message_id:
+            type: string
+            description: Client-generated message ID
+          status:
+            type: string
+            enum:
+            - delivered
+            - failed
+          timestamp:
+            type: string
+            format: date-time
+    SendCallAck:
+      name: SendCallAck
+      title: Client acknowledgment for received messages
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          message_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - received
+            - processed
+          timestamp:
+            type: string
+            format: date-time
+    GroupCallEvent:
+      name: GroupCallEvent
+      title: Server notifications about group call state
+      payload:
+        type: object
+        properties:
+          event:
+            type: string
+            enum:
+            - call_created
+            - call_started
+            - call_ended
+            - participant_joined
+            - participant_left
+            - participant_invited
+            - participant_rejected
+            - participant_muted
+            - participant_unmuted
+            - video_enabled
+            - video_disabled
+          call_id:
+            type: string
+          participant_id:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+          reason:
+            type: string
+    GroupCallCommand:
+      name: GroupCallCommand
+      title: Client commands for group call control
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            enum:
+            - create_call
+            - join_call
+            - leave_call
+            - end_call
+            - invite_participant
+            - accept_invite
+            - reject_invite
+            - mute_self
+            - unmute_self
+            - enable_video
+            - disable_video
+          call_id:
+            type: string
+          participants:
+            type: array
+            items:
+              type: string
+          device_id:
+            type: string
+    SignalReceived:
+      name: SignalReceived
+      title: Incoming signaling data from server
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          from_participant_id:
+            type: string
+          type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+            - renegotiate
+          sdp:
+            type: string
+          candidate:
+            type: object
+          timestamp:
+            type: string
+            format: date-time
+    SendSignal:
+      name: SendSignal
+      title: Send signaling data to server
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          to_participant_id:
+            type: string
+          type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+            - renegotiate
+          sdp:
+            type: string
+          candidate:
+            type: object
+    CommandAck:
+      name: CommandAck
+      title: Server acknowledgment for a command
+      payload:
+        type: object
+        properties:
+          command_id:
+            type: string
+          call_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    AckRequest:
+      name: AckRequest
+      title: Client command with request for acknowledgment
+      payload:
+        type: object
+        properties:
+          command_id:
+            type: string
+          call_id:
+            type: string
+          command:
+            type: string
+    ScreenShareEvent:
+      name: ScreenShareEvent
+      title: Server-to-client screen share state and signaling events
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            enum:
+            - share_started
+            - share_stopped
+            - share_paused
+            - share_resumed
+            - share_error
+            - signal_offer
+            - signal_answer
+            - signal_candidate
+            description: Type of screen share event
+          call_id:
+            type: string
+            description: Call identifier
+          share_id:
+            type: string
+            description: Screen share session identifier
+          owner_id:
+            type: string
+            description: User ID of the screen share owner
+          timestamp:
+            type: string
+            format: date-time
+            description: Event time
+          sdp:
+            type: string
+            description: SDP payload for offer/answer
+            optional: true
+          candidate:
+            type: object
+            description: ICE candidate payload
+            optional: true
+            properties:
+              candidate:
+                type: string
+              sdpMid:
+                type: string
+              sdpMLineIndex:
+                type: number
+          error_code:
+            type: string
+            optional: true
+          error_message:
+            type: string
+            optional: true
+    ScreenShareCommand:
+      name: ScreenShareCommand
+      title: Client-to-server screen share control and signaling commands
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            enum:
+            - start_share
+            - stop_share
+            - pause_share
+            - resume_share
+            - signal_offer
+            - signal_answer
+            - signal_candidate
+            description: Command type
+          call_id:
+            type: string
+            description: Call identifier
+          share_id:
+            type: string
+            description: Screen share session identifier
+          sdp:
+            type: string
+            description: SDP payload for offer/answer
+            optional: true
+          candidate:
+            type: object
+            description: ICE candidate payload
+            optional: true
+            properties:
+              candidate:
+                type: string
+              sdpMid:
+                type: string
+              sdpMLineIndex:
+                type: number
+          request_id:
+            type: string
+            description: Client-generated id for acknowledgment
+    ScreenShareAck:
+      name: ScreenShareAck
+      title: Acknowledgment for screen share commands
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated id from the command
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            optional: true
+          timestamp:
+            type: string
+            format: date-time
+    CallLinkUpdated:
+      name: CallLinkUpdated
+      title: Server notifies participants that a call link was created or changed
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Scheduled call ID
+          link_url:
+            type: string
+            description: Shareable call link URL
+          action:
+            type: string
+            enum:
+            - created
+            - refreshed
+            - revoked
+            description: Type of link change
+          expires_at:
+            type: string
+            format: date-time
+            description: Link expiration timestamp
+          updated_at:
+            type: string
+            format: date-time
+            description: Update timestamp
+    RequestCallLink:
+      name: RequestCallLink
+      title: Client requests creation or refresh of a call link for a scheduled call
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Scheduled call ID
+          action:
+            type: string
+            enum:
+            - create
+            - refresh
+            - revoke
+            description: Requested link action
+          request_id:
+            type: string
+            description: Client-generated idempotency/trace ID
+    CallLinkRequestAck:
+      name: CallLinkRequestAck
+      title: Server acknowledgment for call link request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated idempotency/trace ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the request
+          reason:
+            type: string
+            description: Rejection reason if any
+          processed_at:
+            type: string
+            format: date-time
+            description: Processing timestamp
+    AckReceipt:
+      name: AckReceipt
+      title: Client confirms receipt of server update (optional)
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Scheduled call ID
+          event_id:
+            type: string
+            description: Server event ID
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt timestamp
+    CallDeclined:
+      name: CallDeclined
+      title: Notification that a call was declined with an optional message
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Unique call ID
+          decliner_id:
+            type: string
+            description: User ID who declined the call
+          message:
+            type: string
+            description: Optional decline message
+          timestamp:
+            type: string
+            format: date-time
+    DeclineCallWithMessage:
+      name: DeclineCallWithMessage
+      title: Decline an incoming call with a message
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+            description: Unique call ID
+          message:
+            type: string
+            description: Optional decline message
+          client_request_id:
+            type: string
+            description: Client-generated id for fast acknowledgement
+    CallActionAck:
+      name: CallActionAck
+      title: Acknowledgement for call actions such as decline
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated id being acknowledged
+          call_id:
+            type: string
+            description: Unique call ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Ack status
+          timestamp:
+            type: string
+            format: date-time
+    CallHistoryEntryAdded:
+      name: CallHistoryEntryAdded
+      title: A new call record was added to the user's history
+      payload:
+        type: object
+        properties:
+          entry_id:
+            type: string
+            description: Unique call history entry ID
+          call_id:
+            type: string
+            description: Unique call session ID
+          direction:
+            type: string
+            enum:
+            - incoming
+            - outgoing
+          status:
+            type: string
+            enum:
+            - answered
+            - missed
+            - rejected
+            - failed
+            - canceled
+          counterparty_id:
+            type: string
+            description: Other participant user ID
+          started_at:
+            type: string
+            format: date-time
+          ended_at:
+            type: string
+            format: date-time
+          duration_ms:
+            type: integer
+            description: Call duration in milliseconds
+    CallHistoryRequest:
+      name: CallHistoryRequest
+      title: Request a snapshot of call history for synchronization
+      payload:
+        type: object
+        properties:
+          since:
+            type: string
+            format: date-time
+            description: Return entries updated since this timestamp
+          limit:
+            type: integer
+            description: Maximum number of entries to return
+    CallHistorySnapshot:
+      name: CallHistorySnapshot
+      title: A batch of call history entries for initial or incremental sync
+      payload:
+        type: object
+        properties:
+          entries:
+            type: array
+            description: List of call history entries
+            items:
+              type: object
+              fields:
+                entry_id:
+                  type: string
+                call_id:
+                  type: string
+                direction:
+                  type: string
+                  enum:
+                  - incoming
+                  - outgoing
+                status:
+                  type: string
+                  enum:
+                  - answered
+                  - missed
+                  - rejected
+                  - failed
+                  - canceled
+                counterparty_id:
+                  type: string
+                started_at:
+                  type: string
+                  format: date-time
+                ended_at:
+                  type: string
+                  format: date-time
+                duration_ms:
+                  type: integer
+                updated_at:
+                  type: string
+                  format: date-time
+    CallHistoryAck:
+      name: CallHistoryAck
+      title: Acknowledge receipt of a snapshot
+      payload:
+        type: object
+        properties:
+          snapshot_id:
+            type: string
+            description: Snapshot correlation ID
+          received_at:
+            type: string
+            format: date-time
+    StatusCreated:
+      name: StatusCreated
+      title: Broadcast when a user creates a new 24-hour status update
+      payload:
+        type: object
+        properties:
+          status_id:
+            type: string
+            description: Unique status ID
+          author_id:
+            type: string
+            description: User who created the status
+          content_type:
+            type: string
+            enum:
+            - text
+            - image
+            - video
+            description: Status content type
+          content_url:
+            type: string
+            description: URL to media content if applicable
+          text:
+            type: string
+            description: Text content if applicable
+          created_at:
+            type: string
+            format: date-time
+          expires_at:
+            type: string
+            format: date-time
+    CreateStatus:
+      name: CreateStatus
+      title: Create a new 24-hour status update
+      payload:
+        type: object
+        properties:
+          content_type:
+            type: string
+            enum:
+            - text
+            - image
+            - video
+          content_url:
+            type: string
+            description: URL to media content if applicable
+          text:
+            type: string
+            description: Text content if applicable
+          client_request_id:
+            type: string
+            description: Client-generated idempotency key
+    CreateStatusAck:
+      name: CreateStatusAck
+      title: Acknowledgment of status creation
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated idempotency key
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          status_id:
+            type: string
+            description: Created status ID if accepted
+          error_code:
+            type: string
+            description: Error code if rejected
+          error_message:
+            type: string
+            description: Human-readable error if rejected
+    ContactStatusUpdated:
+      name: ContactStatusUpdated
+      title: Status update for a contact
+      payload:
+        type: object
+        properties:
+          contact_id:
+            type: string
+            description: Unique contact/user ID
+          status:
+            type: string
+            enum:
+            - online
+            - offline
+            - away
+            - busy
+            description: Current presence status
+          last_seen_at:
+            type: string
+            format: date-time
+            description: Last seen timestamp when applicable
+    StatusResponseReceived:
+      name: StatusResponseReceived
+      title: Server response to a status request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Correlation ID for the status request
+          status:
+            type: string
+            description: Status value returned by the system
+            enum:
+            - ok
+            - degraded
+            - error
+            - unknown
+          details:
+            type: string
+            description: Optional human-readable status details
+          timestamp:
+            type: string
+            format: date-time
+            description: Time the status response was generated
+    RequestStatus:
+      name: RequestStatus
+      title: Client requests a status response
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated correlation ID
+          target:
+            type: string
+            description: Optional target subsystem or component
+    StatusVisibilityUpdated:
+      name: StatusVisibilityUpdated
+      title: Notifies clients when a user's status visibility settings change
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User whose settings changed
+          visibility:
+            type: string
+            enum:
+            - everyone
+            - contacts
+            - custom
+            - nobody
+            description: Current visibility level
+          allowed_user_ids:
+            type: array
+            items:
+              type: string
+            description: Explicitly allowed users (if visibility=custom)
+          blocked_user_ids:
+            type: array
+            items:
+              type: string
+            description: Explicitly blocked users (optional)
+          timestamp:
+            type: string
+            format: date-time
+    SetStatusVisibility:
+      name: SetStatusVisibility
+      title: Update status visibility settings
+      payload:
+        type: object
+        properties:
+          visibility:
+            type: string
+            enum:
+            - everyone
+            - contacts
+            - custom
+            - nobody
+          allowed_user_ids:
+            type: array
+            items:
+              type: string
+            description: Required if visibility=custom
+          blocked_user_ids:
+            type: array
+            items:
+              type: string
+            description: Optional list of blocked users
+    UserStatusChanged:
+      name: UserStatusChanged
+      title: Status update visible to the subscribing client per privacy rules
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User whose status changed
+          status:
+            type: string
+            enum:
+            - online
+            - offline
+            - away
+            - busy
+          last_active_at:
+            type: string
+            format: date-time
+            description: Last active timestamp when permitted by visibility
+          visibility_applied:
+            type: string
+            enum:
+            - visible
+            - redacted
+            description: Indicates whether status details are visible or redacted
+          timestamp:
+            type: string
+            format: date-time
+    SetUserStatus:
+      name: SetUserStatus
+      title: Update own status (server enforces visibility for recipients)
+      payload:
+        type: object
+        properties:
+          status:
+            type: string
+            enum:
+            - online
+            - offline
+            - away
+            - busy
+          last_active_at:
+            type: string
+            format: date-time
+    SetStatusVisibilityAck:
+      name: SetStatusVisibilityAck
+      title: Acknowledgment of visibility update request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          success:
+            type: boolean
+          error_code:
+            type: string
+          error_message:
+            type: string
+          timestamp:
+            type: string
+            format: date-time
+    SetStatusVisibilityAckRequest:
+      name: SetStatusVisibilityAckRequest
+      title: Optional client correlation for ack delivery
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+    ContactStatusMuteChanged:
+      name: ContactStatusMuteChanged
+      title: Notifies client that a contact's status mute setting changed
+      payload:
+        type: object
+        properties:
+          contact_id:
+            type: string
+            description: Contact user ID
+          muted:
+            type: boolean
+            description: Whether status updates are muted for this contact
+          changed_by:
+            type: string
+            description: User ID who performed the change
+          timestamp:
+            type: string
+            format: date-time
+            description: Change time
+    SetContactStatusMute:
+      name: SetContactStatusMute
+      title: Mute or unmute status updates for a contact
+      payload:
+        type: object
+        properties:
+          contact_id:
+            type: string
+            description: Contact user ID
+          muted:
+            type: boolean
+            description: Set true to mute, false to unmute
+          request_id:
+            type: string
+            description: Client-generated id for acknowledgment correlation
+    ContactStatusMuteAck:
+      name: ContactStatusMuteAck
+      title: Acknowledges SetContactStatusMute request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client request id
+          success:
+            type: boolean
+            description: Whether the operation succeeded
+          error_code:
+            type: string
+            description: Error code if failed
+          error_message:
+            type: string
+            description: Error message if failed
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    AckContactStatusMute:
+      name: AckContactStatusMute
+      title: Optional client acknowledgment of server push
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+            description: Server event id
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt time
+    StickerMessageReceived:
+      name: StickerMessageReceived
+      title: Incoming sticker message from another user
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          sender_id:
+            type: string
+            description: Sender user ID
+          sticker_id:
+            type: string
+            description: Sticker asset ID
+          sticker_pack_id:
+            type: string
+            description: Sticker pack ID
+          timestamp:
+            type: string
+            format: date-time
+            description: Server timestamp
+    SendStickerMessage:
+      name: SendStickerMessage
+      title: Send a sticker message
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          sticker_id:
+            type: string
+          sticker_pack_id:
+            type: string
+          client_message_id:
+            type: string
+            description: Client-generated ID for idempotency
+    CameraSessionStatus:
+      name: CameraSessionStatus
+      title: Server notifies about camera session state changes
+      payload:
+        type: object
+        properties:
+          session_id:
+            type: string
+            description: Unique camera session ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          user_id:
+            type: string
+            description: User whose camera state changed
+          state:
+            type: string
+            enum:
+            - requested
+            - active
+            - stopped
+            - denied
+            - error
+          reason:
+            type: string
+            description: Optional failure reason
+            nullable: true
+          timestamp:
+            type: string
+            format: date-time
+    RequestCameraSession:
+      name: RequestCameraSession
+      title: Client requests to start camera access in a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+          device_id:
+            type: string
+            description: Selected camera device ID
+          resolution:
+            type: object
+            properties:
+              width:
+                type: integer
+              height:
+                type: integer
+            required:
+            - width
+            - height
+          fps:
+            type: integer
+            description: Requested frames per second
+    CameraControlAck:
+      name: CameraControlAck
+      title: Acknowledgment of control action
+      payload:
+        type: object
+        properties:
+          action_id:
+            type: string
+            description: Client-generated action ID
+          session_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            nullable: true
+          timestamp:
+            type: string
+            format: date-time
+    CameraControlAction:
+      name: CameraControlAction
+      title: Client requests a control action for the camera session
+      payload:
+        type: object
+        properties:
+          action_id:
+            type: string
+          session_id:
+            type: string
+          action:
+            type: string
+            enum:
+            - stop
+            - pause
+            - resume
+            - switch_device
+          device_id:
+            type: string
+            description: New device for switch_device
+            nullable: true
+    CameraSignal:
+      name: CameraSignal
+      title: Incoming signaling data from another participant
+      payload:
+        type: object
+        properties:
+          session_id:
+            type: string
+          from_user_id:
+            type: string
+          signal_type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+          payload:
+            type: object
+            description: SDP or ICE candidate payload
+          timestamp:
+            type: string
+            format: date-time
+    SendCameraSignal:
+      name: SendCameraSignal
+      title: Send WebRTC signaling data to establish camera stream
+      payload:
+        type: object
+        properties:
+          session_id:
+            type: string
+          signal_type:
+            type: string
+            enum:
+            - offer
+            - answer
+            - ice
+          payload:
+            type: object
+    PublicKeyReceived:
+      name: PublicKeyReceived
+      title: Recipient public key delivered for E2EE
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: Recipient user ID
+          key_id:
+            type: string
+            description: Public key identifier
+          public_key:
+            type: string
+            description: Recipient public key (base64)
+          algorithm:
+            type: string
+            description: Key algorithm, e.g., X25519
+          timestamp:
+            type: string
+            format: date-time
+    PublishPublicKey:
+      name: PublishPublicKey
+      title: Client publishes or rotates its public key
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: Sender user ID
+          key_id:
+            type: string
+            description: Public key identifier
+          public_key:
+            type: string
+            description: Sender public key (base64)
+          algorithm:
+            type: string
+            description: Key algorithm, e.g., X25519
+    EncryptedMessageReceived:
+      name: EncryptedMessageReceived
+      title: Incoming encrypted message payload
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          sender_id:
+            type: string
+            description: Sender user ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          ciphertext:
+            type: string
+            description: Encrypted payload (base64)
+          nonce:
+            type: string
+            description: Nonce/IV used for encryption (base64)
+          algorithm:
+            type: string
+            description: Content encryption algorithm, e.g., AES-GCM
+          key_id:
+            type: string
+            description: Key identifier used for encryption
+          timestamp:
+            type: string
+            format: date-time
+          signature:
+            type: string
+            description: Optional message signature (base64)
+    SendEncryptedMessage:
+      name: SendEncryptedMessage
+      title: Send a new encrypted message
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation ID
+          ciphertext:
+            type: string
+            description: Encrypted payload (base64)
+          nonce:
+            type: string
+            description: Nonce/IV used for encryption (base64)
+          algorithm:
+            type: string
+            description: Content encryption algorithm, e.g., AES-GCM
+          key_id:
+            type: string
+            description: Key identifier used for encryption
+          type:
+            type: string
+            enum:
+            - text
+            - image
+            - file
+            description: Encrypted content type
+          signature:
+            type: string
+            description: Optional message signature (base64)
+    EncryptedMessageAck:
+      name: EncryptedMessageAck
+      title: Delivery/read acknowledgment for encrypted messages
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Acknowledged message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          status:
+            type: string
+            enum:
+            - delivered
+            - read
+            description: Ack status
+          ack_timestamp:
+            type: string
+            format: date-time
+          signature:
+            type: string
+            description: Optional acknowledgment signature (base64)
+    SendEncryptedAck:
+      name: SendEncryptedAck
+      title: Client sends delivery/read acknowledgment
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Acknowledged message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          status:
+            type: string
+            enum:
+            - delivered
+            - read
+            description: Ack status
+          signature:
+            type: string
+            description: Optional acknowledgment signature (base64)
+    AppLockStateChanged:
+      name: AppLockStateChanged
+      title: Server notifies clients about lock/unlock state changes
+      payload:
+        type: object
+        properties:
+          state:
+            type: string
+            enum:
+            - locked
+            - unlocked
+            - pending
+            description: Current app lock state
+          reason:
+            type: string
+            description: Reason for state change
+          timestamp:
+            type: string
+            format: date-time
+            description: Event time
+    RequestAppLock:
+      name: RequestAppLock
+      title: Client requests to lock the app
+      payload:
+        type: object
+        properties:
+          reason:
+            type: string
+            description: Reason for locking
+    AuthChallenge:
+      name: AuthChallenge
+      title: Server issues authentication challenge
+      payload:
+        type: object
+        properties:
+          challenge_id:
+            type: string
+            description: Unique challenge identifier
+          method:
+            type: string
+            enum:
+            - pin
+            - password
+            - biometric
+            - mfa
+            description: Authentication method
+          timestamp:
+            type: string
+            format: date-time
+            description: Challenge time
+    SubmitAuthResponse:
+      name: SubmitAuthResponse
+      title: Client submits authentication response to unlock
+      payload:
+        type: object
+        properties:
+          challenge_id:
+            type: string
+            description: Challenge identifier being پاسخ to
+          method:
+            type: string
+            enum:
+            - pin
+            - password
+            - biometric
+            - mfa
+            description: Authentication method used
+          credential:
+            type: string
+            description: Credential payload (e.g., PIN/password token)
+    AppLockAck:
+      name: AppLockAck
+      title: Server acknowledgment for lock/auth requests
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the request
+          error_code:
+            type: string
+            description: Error code if rejected
+          message:
+            type: string
+            description: Human-readable status message
+          timestamp:
+            type: string
+            format: date-time
+            description: Ack time
+    ClientRequestWithId:
+      name: ClientRequestWithId
+      title: Wrapper to send a request with an ID for acknowledgment correlation
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request identifier
+          type:
+            type: string
+            enum:
+            - lock
+            - auth
+            description: Request type
+    ReportStatusUpdate:
+      name: ReportStatusUpdate
+      title: Status update for a submitted report
+      payload:
+        type: object
+        properties:
+          report_id:
+            type: string
+            description: Unique report ID
+          status:
+            type: string
+            enum:
+            - received
+            - in_review
+            - action_taken
+            - dismissed
+            description: Current report status
+          updated_at:
+            type: string
+            format: date-time
+            description: Status update timestamp
+    SubmitReport:
+      name: SubmitReport
+      title: Submit a report for a message or contact
+      payload:
+        type: object
+        properties:
+          report_type:
+            type: string
+            enum:
+            - message
+            - contact
+            description: Type of entity being reported
+          target_id:
+            type: string
+            description: ID of the message or contact being reported
+          reason:
+            type: string
+            description: Reason for reporting
+          details:
+            type: string
+            description: Additional report details
+          timestamp:
+            type: string
+            format: date-time
+            description: Client-side submission time
+    ReportSubmitted:
+      name: ReportSubmitted
+      title: Acknowledgment that a report was received by the server
+      payload:
+        type: object
+        properties:
+          report_id:
+            type: string
+            description: Unique report ID
+          received_at:
+            type: string
+            format: date-time
+            description: Server receipt timestamp
+    SubmitReportAckRequest:
+      name: SubmitReportAckRequest
+      title: Optional client request to ensure acknowledgment delivery
+      payload:
+        type: object
+        properties:
+          client_request_id:
+            type: string
+            description: Client-generated request ID for idempotency
+    IpMaskingStatus:
+      name: IpMaskingStatus
+      title: Server notifies that IP masking/relay is active for a call
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - failed
+            description: Masking status
+          relay_region:
+            type: string
+            description: Relay region identifier
+          timestamp:
+            type: string
+            format: date-time
+    RequestIpMasking:
+      name: RequestIpMasking
+      title: Client requests relay-based connection to hide IP address
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          preferred_region:
+            type: string
+            description: Preferred relay region
+    SignalAck:
+      name: SignalAck
+      title: Acknowledgment of signaling message processing
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          message_id:
+            type: string
+          status:
+            type: string
+            enum:
+            - ok
+            - error
+          error_code:
+            type: string
+          error_message:
+            type: string
+    AckSignalReceived:
+      name: AckSignalReceived
+      title: Client acknowledges receipt of server signal
+      payload:
+        type: object
+        properties:
+          call_id:
+            type: string
+          message_id:
+            type: string
+          received_at:
+            type: string
+            format: date-time
+    PushNotificationReceived:
+      name: PushNotificationReceived
+      title: Server delivers a push notification to the client
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Unique notification ID
+          title:
+            type: string
+            description: Notification title
+          body:
+            type: string
+            description: Notification body text
+          category:
+            type: string
+            description: Notification category or type
+          payload:
+            type: object
+            description: Additional notification data
+          priority:
+            type: string
+            enum:
+            - low
+            - normal
+            - high
+            description: Delivery priority
+          timestamp:
+            type: string
+            format: date-time
+            description: Server send time
+          ttl_seconds:
+            type: integer
+            description: Time-to-live in seconds
+    PushNotificationAck:
+      name: PushNotificationAck
+      title: Client acknowledges receipt to ensure reliable delivery
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Acknowledged notification ID
+          received_at:
+            type: string
+            format: date-time
+            description: Client receive timestamp
+          status:
+            type: string
+            enum:
+            - received
+            - displayed
+            - failed
+            description: Receipt status
+          failure_reason:
+            type: string
+            description: Reason for failure if status=failed
+    PushNotificationAckConfirmed:
+      name: PushNotificationAckConfirmed
+      title: Server confirms that the acknowledgment was processed
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Notification ID
+          ack_id:
+            type: string
+            description: Acknowledgment ID
+          processed_at:
+            type: string
+            format: date-time
+            description: Server processing timestamp
+    NotificationPreviewReceived:
+      name: NotificationPreviewReceived
+      title: Preview of a notification based on current user configuration
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Unique notification ID
+          preview_id:
+            type: string
+            description: Unique preview ID
+          title:
+            type: string
+            description: Preview title
+          body:
+            type: string
+            description: Preview body content
+          sender:
+            type: string
+            description: Originator of the notification
+          category:
+            type: string
+            description: Notification category
+          priority:
+            type: string
+            enum:
+            - low
+            - normal
+            - high
+            - critical
+            description: Notification priority
+          timestamp:
+            type: string
+            format: date-time
+            description: Time the preview was generated
+          config_version:
+            type: string
+            description: Applied preview configuration version
+    AcknowledgeNotificationPreview:
+      name: AcknowledgeNotificationPreview
+      title: Acknowledge receipt of a notification preview
+      payload:
+        type: object
+        properties:
+          preview_id:
+            type: string
+            description: Preview ID being acknowledged
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt timestamp
+    NotificationPreviewConfigUpdated:
+      name: NotificationPreviewConfigUpdated
+      title: Server confirms updated preview configuration
+      payload:
+        type: object
+        properties:
+          config_version:
+            type: string
+            description: New configuration version
+          show_sender:
+            type: boolean
+            description: Whether sender information is shown
+          show_body:
+            type: boolean
+            description: Whether body text is shown
+          max_body_length:
+            type: integer
+            description: Maximum length of preview body
+          allowed_categories:
+            type: array
+            items:
+              type: string
+            description: Categories allowed for preview display
+          updated_at:
+            type: string
+            format: date-time
+            description: Time configuration was updated
+    UpdateNotificationPreviewConfig:
+      name: UpdateNotificationPreviewConfig
+      title: Client updates notification preview configuration
+      payload:
+        type: object
+        properties:
+          show_sender:
+            type: boolean
+            description: Whether to show sender information
+          show_body:
+            type: boolean
+            description: Whether to show body text
+          max_body_length:
+            type: integer
+            description: Maximum length of preview body
+          allowed_categories:
+            type: array
+            items:
+              type: string
+            description: Categories allowed for preview display
+    NotificationMessageReceived:
+      name: NotificationMessageReceived
+      title: Eingehende Benachrichtigung zu einer Nachricht
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Eindeutige ID der Benachrichtigung
+          message_id:
+            type: string
+            description: Eindeutige ID der Nachricht
+          conversation_id:
+            type: string
+            description: Zugehörige Konversation
+          sender_id:
+            type: string
+            description: Absender der Nachricht
+          preview:
+            type: string
+            description: Kurzvorschau des Inhalts
+          timestamp:
+            type: string
+            format: date-time
+          quick_reply_allowed:
+            type: boolean
+            description: Gibt an, ob Schnellantwort möglich ist
+    SendQuickReply:
+      name: SendQuickReply
+      title: Schnellantwort direkt aus der Benachrichtigung senden
+      payload:
+        type: object
+        properties:
+          notification_id:
+            type: string
+            description: Referenz auf die Benachrichtigung
+          conversation_id:
+            type: string
+            description: Zugehörige Konversation
+          content:
+            type: string
+            description: Inhalt der Schnellantwort
+          client_msg_id:
+            type: string
+            description: Client-seitige Nachricht-ID zur Idempotenz
+    QuickReplyAcknowledged:
+      name: QuickReplyAcknowledged
+      title: Serverbestätigung der Schnellantwort
+      payload:
+        type: object
+        properties:
+          client_msg_id:
+            type: string
+            description: Client-seitige Nachricht-ID
+          message_id:
+            type: string
+            description: Server-seitige Nachricht-ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            description: Fehlergrund bei Ablehnung
+          timestamp:
+            type: string
+            format: date-time
+    AckQuickReplyReceived:
+      name: AckQuickReplyReceived
+      title: Client bestätigt Empfang der Serverbestätigung
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+          received_at:
+            type: string
+            format: date-time
+    ReactionOnOwnMessage:
+      name: ReactionOnOwnMessage
+      title: Notification that another user reacted to the client's message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: ID of the message that received the reaction
+          reactor_id:
+            type: string
+            description: User ID of the reactor
+          reaction:
+            type: string
+            description: Reaction type, e.g., emoji shortcode
+          timestamp:
+            type: string
+            format: date-time
+            description: Time when the reaction was applied
+    AddReaction:
+      name: AddReaction
+      title: Add a reaction to a message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: ID of the message to react to
+          reaction:
+            type: string
+            description: Reaction type, e.g., emoji shortcode
+    CallNotificationSettingsUpdated:
+      name: CallNotificationSettingsUpdated
+      title: Server notifies clients when call notification settings change
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User whose settings were updated
+          call_notifications_enabled:
+            type: boolean
+            description: Master toggle for call notifications
+          ringtone_enabled:
+            type: boolean
+            description: Whether ringtone sound is enabled
+          vibration_enabled:
+            type: boolean
+            description: Whether vibration is enabled
+          do_not_disturb:
+            type: boolean
+            description: Whether call notifications are suppressed
+          updated_at:
+            type: string
+            format: date-time
+            description: Timestamp of last update
+    UpdateCallNotificationSettings:
+      name: UpdateCallNotificationSettings
+      title: Client updates separate call notification settings
+      payload:
+        type: object
+        properties:
+          call_notifications_enabled:
+            type: boolean
+          ringtone_enabled:
+            type: boolean
+          vibration_enabled:
+            type: boolean
+          do_not_disturb:
+            type: boolean
+          client_request_id:
+            type: string
+            description: Idempotency token for update requests
+    ContactSyncStatus:
+      name: ContactSyncStatus
+      title: Server updates for contact sync progress and completion
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Unique sync operation ID
+          status:
+            type: string
+            enum:
+            - queued
+            - in_progress
+            - completed
+            - failed
+          processed:
+            type: integer
+            description: Number of contacts processed
+          matched:
+            type: integer
+            description: Number of contacts matched to WhatsApp users
+          failed:
+            type: integer
+            description: Number of contacts that failed processing
+          timestamp:
+            type: string
+            format: date-time
+          error_code:
+            type: string
+            description: Error code if failed
+            nullable: true
+    StartContactSync:
+      name: StartContactSync
+      title: Client initiates a contact sync
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Client-generated sync ID for idempotency
+          device_id:
+            type: string
+            description: Device identifier
+          contacts:
+            type: array
+            description: Contacts to be matched
+            items:
+              type: object
+              properties:
+                contact_id:
+                  type: string
+                  description: Local contact identifier
+                phones:
+                  type: array
+                  items:
+                    type: string
+                emails:
+                  type: array
+                  items:
+                    type: string
+                display_name:
+                  type: string
+              required:
+              - contact_id
+    ContactMatchFound:
+      name: ContactMatchFound
+      title: Server sends matched WhatsApp users for contacts
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Associated sync operation ID
+          matches:
+            type: array
+            items:
+              type: object
+              properties:
+                contact_id:
+                  type: string
+                  description: Local contact identifier
+                whatsapp_user_id:
+                  type: string
+                  description: Matched WhatsApp user ID
+                confidence:
+                  type: number
+                  description: Match confidence score
+              required:
+              - contact_id
+              - whatsapp_user_id
+          timestamp:
+            type: string
+            format: date-time
+    AcknowledgeContactMatches:
+      name: AcknowledgeContactMatches
+      title: Client acknowledges receipt of contact matches
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Associated sync operation ID
+          received_count:
+            type: integer
+            description: Number of matches received
+    MessageSearchResults:
+      name: MessageSearchResults
+      title: Suchergebnisse für eine Volltext-Suche
+      payload:
+        type: object
+        properties:
+          search_id:
+            type: string
+            description: Eindeutige ID der Suchanfrage
+          conversation_id:
+            type: string
+            description: Konversation, in der gesucht wurde
+          query:
+            type: string
+            description: Suchbegriff(e)
+          results:
+            type: array
+            items:
+              type: object
+              properties:
+                message_id:
+                  type: string
+                  description: Gefundene Nachrichten-ID
+                sender_id:
+                  type: string
+                  description: Absender-ID
+                content_snippet:
+                  type: string
+                  description: Ausschnitt mit Treffer
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: Zeitstempel der Nachricht
+                score:
+                  type: number
+                  description: Relevanzscore
+              required:
+              - message_id
+              - sender_id
+              - content_snippet
+              - timestamp
+              - score
+          page:
+            type: integer
+            description: Seitennummer
+          page_size:
+            type: integer
+            description: Anzahl pro Seite
+          total_results:
+            type: integer
+            description: Gesamtanzahl Treffer
+          has_more:
+            type: boolean
+            description: Weitere Treffer verfügbar
+    SearchMessages:
+      name: SearchMessages
+      title: Startet eine Volltext-Suche in Nachrichten
+      payload:
+        type: object
+        properties:
+          search_id:
+            type: string
+            description: Client-seitig generierte Such-ID zur Korrelation
+          conversation_id:
+            type: string
+            description: Konversation, in der gesucht wird
+          query:
+            type: string
+            description: Suchbegriff(e)
+          page:
+            type: integer
+            description: Seitennummer
+            default: 1
+          page_size:
+            type: integer
+            description: Anzahl pro Seite
+            default: 20
+          highlight:
+            type: boolean
+            description: Ob Treffer hervorgehoben werden sollen
+            default: true
+    SearchResults:
+      name: SearchResults
+      title: Search results for chats/contacts
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID to correlate results
+          results:
+            type: array
+            description: Matched chats and contacts
+            items:
+              type: object
+              properties:
+                result_type:
+                  type: string
+                  enum:
+                  - chat
+                  - contact
+                  description: Type of result
+                id:
+                  type: string
+                  description: Chat ID or Contact ID
+                name:
+                  type: string
+                  description: Chat name or Contact display name
+                snippet:
+                  type: string
+                  description: Optional preview text
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: Last activity or update time
+              required:
+              - result_type
+              - id
+              - name
+          next_offset:
+            type: integer
+            description: Offset for pagination, if more results are available
+          is_final:
+            type: boolean
+            description: Indicates whether this is the final result set
+    SearchRequest:
+      name: SearchRequest
+      title: Submit a search query for chats/contacts
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          query:
+            type: string
+            description: Search string
+          filters:
+            type: object
+            description: Optional filters
+            properties:
+              result_types:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - chat
+                  - contact
+              limit:
+                type: integer
+                description: Maximum number of results to return
+              offset:
+                type: integer
+                description: Pagination offset
+    SearchAck:
+      name: SearchAck
+      title: Acknowledgment of search request processing
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Processing status
+          error:
+            type: string
+            description: Error message if rejected
+    SearchAckRequest:
+      name: SearchAckRequest
+      title: Optional client request for explicit acknowledgment
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+    PresenceStatusUpdated:
+      name: PresenceStatusUpdated
+      title: Server notifies client about a user's online status if visible
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User whose status changed
+          status:
+            type: string
+            enum:
+            - online
+            - offline
+            - away
+            - busy
+            description: Current presence status
+          last_seen_at:
+            type: string
+            format: date-time
+            description: Last seen timestamp (only if visibility allows)
+          visibility_applied:
+            type: string
+            enum:
+            - public
+            - contacts
+            - private
+            - custom
+            description: Visibility rule used to determine what is shown
+          timestamp:
+            type: string
+            format: date-time
+            description: Event emission time
+    PresenceVisibilityUpdated:
+      name: PresenceVisibilityUpdated
+      title: Server confirms visibility setting changes
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User who changed settings
+          visibility:
+            type: string
+            enum:
+            - public
+            - contacts
+            - private
+            - custom
+            description: New visibility setting
+          allowed_user_ids:
+            type: array
+            items:
+              type: string
+            description: Explicitly allowed users (only for custom)
+          blocked_user_ids:
+            type: array
+            items:
+              type: string
+            description: Explicitly blocked users (optional)
+          updated_at:
+            type: string
+            format: date-time
+    UpdatePresenceVisibility:
+      name: UpdatePresenceVisibility
+      title: Client updates online status visibility settings
+      payload:
+        type: object
+        properties:
+          visibility:
+            type: string
+            enum:
+            - public
+            - contacts
+            - private
+            - custom
+            description: Desired visibility setting
+          allowed_user_ids:
+            type: array
+            items:
+              type: string
+            description: Users allowed to see status (required for custom)
+          blocked_user_ids:
+            type: array
+            items:
+              type: string
+            description: Users blocked from seeing status (optional)
+    PresenceVisibilityUpdateAck:
+      name: PresenceVisibilityUpdateAck
+      title: Acknowledgment of settings update request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the update
+          error_code:
+            type: string
+            description: Error code if rejected
+          error_message:
+            type: string
+            description: Human-readable error message if rejected
+          timestamp:
+            type: string
+            format: date-time
+    PresenceVisibilityUpdateRequest:
+      name: PresenceVisibilityUpdateRequest
+      title: Client sends update request with correlation ID
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          visibility:
+            type: string
+            enum:
+            - public
+            - contacts
+            - private
+            - custom
+          allowed_user_ids:
+            type: array
+            items:
+              type: string
+          blocked_user_ids:
+            type: array
+            items:
+              type: string
+    InfoVisibilityUpdated:
+      name: InfoVisibilityUpdated
+      title: Server notifies client of visibility setting changes
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User whose settings changed
+          visibility:
+            type: object
+            description: Visibility settings for info/status texts
+            properties:
+              status_text:
+                type: string
+                enum:
+                - visible
+                - hidden
+                - contacts_only
+                description: Status text visibility level
+              info_text:
+                type: string
+                enum:
+                - visible
+                - hidden
+                - contacts_only
+                description: Info text visibility level
+          updated_at:
+            type: string
+            format: date-time
+            description: Time of update
+    SetInfoVisibility:
+      name: SetInfoVisibility
+      title: Client updates visibility settings for info/status texts
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User updating settings
+          visibility:
+            type: object
+            description: New visibility settings
+            properties:
+              status_text:
+                type: string
+                enum:
+                - visible
+                - hidden
+                - contacts_only
+              info_text:
+                type: string
+                enum:
+                - visible
+                - hidden
+                - contacts_only
+          request_id:
+            type: string
+            description: Client request correlation ID
+    InfoVisibilityUpdateAck:
+      name: InfoVisibilityUpdateAck
+      title: Server acknowledgment of visibility update request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client request correlation ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          reason:
+            type: string
+            description: Reason for rejection, if any
+          processed_at:
+            type: string
+            format: date-time
+    ChatBackgroundUpdated:
+      name: ChatBackgroundUpdated
+      title: Background settings updated for a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat or conversation ID
+          background_id:
+            type: string
+            description: Selected background identifier
+          background_type:
+            type: string
+            enum:
+            - color
+            - image
+            - gradient
+            description: Type of background
+          value:
+            type: string
+            description: Color code, image URL, or gradient definition
+          updated_by:
+            type: string
+            description: User ID who made the change
+          timestamp:
+            type: string
+            format: date-time
+            description: Update time
+    SetChatBackground:
+      name: SetChatBackground
+      title: Request to set or change chat background
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat or conversation ID
+          background_id:
+            type: string
+            description: Selected background identifier
+          background_type:
+            type: string
+            enum:
+            - color
+            - image
+            - gradient
+            description: Type of background
+          value:
+            type: string
+            description: Color code, image URL, or gradient definition
+    SetChatBackgroundAck:
+      name: SetChatBackgroundAck
+      title: Acknowledgment of background change request
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat or conversation ID
+          request_id:
+            type: string
+            description: Client-generated request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the request
+          reason:
+            type: string
+            description: Reason for rejection if any
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    SetChatBackgroundWithAck:
+      name: SetChatBackgroundWithAck
+      title: Request to set chat background with acknowledgment
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat or conversation ID
+          request_id:
+            type: string
+            description: Client-generated request ID
+          background_id:
+            type: string
+            description: Selected background identifier
+          background_type:
+            type: string
+            enum:
+            - color
+            - image
+            - gradient
+            description: Type of background
+          value:
+            type: string
+            description: Color code, image URL, or gradient definition
+    ChatBackupStatus:
+      name: ChatBackupStatus
+      title: Server-sent status updates for backup or restore jobs
+      payload:
+        type: object
+        properties:
+          job_id:
+            type: string
+            description: Backup or restore job ID
+          conversation_id:
+            type: string
+            description: Conversation being processed
+          operation:
+            type: string
+            enum:
+            - backup
+            - restore
+            description: Type of operation
+          status:
+            type: string
+            enum:
+            - queued
+            - in_progress
+            - completed
+            - failed
+            description: Current job status
+          progress_percent:
+            type: number
+            description: Progress percentage from 0 to 100
+          timestamp:
+            type: string
+            format: date-time
+            description: Status timestamp
+          error_code:
+            type: string
+            description: Error code if failed
+          error_message:
+            type: string
+            description: Error message if failed
+    StartChatBackup:
+      name: StartChatBackup
+      title: Request a cloud backup of chat data
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation to back up
+          include_media:
+            type: boolean
+            description: Whether to include media in backup
+          scope:
+            type: string
+            enum:
+            - full
+            - incremental
+            description: Backup scope
+    ChatBackupAck:
+      name: ChatBackupAck
+      title: Acknowledgment from server for a backup or restore request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          job_id:
+            type: string
+            description: Assigned job ID
+          accepted:
+            type: boolean
+            description: Whether the request was accepted
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+          reason:
+            type: string
+            description: Reason if not accepted
+    StartChatRestore:
+      name: StartChatRestore
+      title: Request a restore of chat data from cloud backup
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation to restore
+          backup_id:
+            type: string
+            description: Backup snapshot ID to restore from
+          request_id:
+            type: string
+            description: Client-generated request ID for acknowledgment tracking
+    ExportChatProgress:
+      name: ExportChatProgress
+      title: Progress update for an ongoing chat export
+      payload:
+        type: object
+        properties:
+          export_id:
+            type: string
+            description: Unique export job ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          status:
+            type: string
+            enum:
+            - queued
+            - in_progress
+            description: Current export status
+          progress_pct:
+            type: number
+            description: Progress percentage from 0 to 100
+          timestamp:
+            type: string
+            format: date-time
+            description: Status update time
+    ExportChatRequest:
+      name: ExportChatRequest
+      title: Request export of a single chat conversation
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          format:
+            type: string
+            enum:
+            - json
+            - csv
+            - pdf
+            description: Desired export format
+          include_attachments:
+            type: boolean
+            description: Whether to include attachments
+    ExportChatReady:
+      name: ExportChatReady
+      title: Chat export completed and ready for download
+      payload:
+        type: object
+        properties:
+          export_id:
+            type: string
+            description: Unique export job ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          download_url:
+            type: string
+            description: Signed URL for downloading the export
+          expires_at:
+            type: string
+            format: date-time
+            description: Download URL expiration time
+          timestamp:
+            type: string
+            format: date-time
+            description: Completion time
+    ExportChatCancel:
+      name: ExportChatCancel
+      title: Cancel an ongoing chat export
+      payload:
+        type: object
+        properties:
+          export_id:
+            type: string
+            description: Unique export job ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          reason:
+            type: string
+            description: Optional cancellation reason
+    ExportChatFailed:
+      name: ExportChatFailed
+      title: Chat export failed
+      payload:
+        type: object
+        properties:
+          export_id:
+            type: string
+            description: Unique export job ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          error_code:
+            type: string
+            description: Machine-readable error code
+          error_message:
+            type: string
+            description: Human-readable error details
+          timestamp:
+            type: string
+            format: date-time
+            description: Failure time
+    ExportChatAck:
+      name: ExportChatAck
+      title: Acknowledge receipt of export readiness or failure
+      payload:
+        type: object
+        properties:
+          export_id:
+            type: string
+            description: Unique export job ID
+          conversation_id:
+            type: string
+            description: Chat conversation ID
+          ack_type:
+            type: string
+            enum:
+            - ready_received
+            - failed_received
+            description: Acknowledged event type
+          timestamp:
+            type: string
+            format: date-time
+            description: Acknowledgment time
+    ChatHistoryChunk:
+      name: ChatHistoryChunk
+      title: Server sends a chunk of chat history
+      payload:
+        type: object
+        properties:
+          transfer_id:
+            type: string
+            description: Unique transfer session ID
+          conversation_id:
+            type: string
+            description: Conversation identifier
+          chunk_index:
+            type: integer
+            description: Zero-based chunk index
+          total_chunks:
+            type: integer
+            description: Total number of chunks
+          messages:
+            type: array
+            description: Messages in this chunk
+            items:
+              type: object
+              properties:
+                message_id:
+                  type: string
+                sender_id:
+                  type: string
+                content:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - text
+                  - image
+                  - file
+                timestamp:
+                  type: string
+                  format: date-time
+    RequestChatHistory:
+      name: RequestChatHistory
+      title: Client requests chat history for a conversation
+      payload:
+        type: object
+        properties:
+          device_id:
+            type: string
+            description: New device identifier
+          conversation_id:
+            type: string
+            description: Conversation identifier
+          since_timestamp:
+            type: string
+            format: date-time
+            description: Optional lower bound for history sync
+          page_size:
+            type: integer
+            description: Preferred messages per chunk
+    ChatHistoryTransferComplete:
+      name: ChatHistoryTransferComplete
+      title: Server indicates history transfer completion
+      payload:
+        type: object
+        properties:
+          transfer_id:
+            type: string
+          conversation_id:
+            type: string
+          message_count:
+            type: integer
+          completed_at:
+            type: string
+            format: date-time
+    AckChatHistoryChunk:
+      name: AckChatHistoryChunk
+      title: Client acknowledges receipt of a history chunk
+      payload:
+        type: object
+        properties:
+          transfer_id:
+            type: string
+          conversation_id:
+            type: string
+          chunk_index:
+            type: integer
+          received_at:
+            type: string
+            format: date-time
+    ChatArchiveStatusChanged:
+      name: ChatArchiveStatusChanged
+      title: Notification that a chat's archive status has changed
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Unique chat/conversation ID
+          archived:
+            type: boolean
+            description: Whether the chat is archived
+          changed_by:
+            type: string
+            description: User ID who performed the action
+          timestamp:
+            type: string
+            format: date-time
+            description: When the status changed
+    SetChatArchiveStatus:
+      name: SetChatArchiveStatus
+      title: Archive or unarchive a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Unique chat/conversation ID
+          archived:
+            type: boolean
+            description: true to archive, false to unarchive
+          request_id:
+            type: string
+            description: Client-generated id for acknowledgment
+    ChatArchiveStatusAck:
+      name: ChatArchiveStatusAck
+      title: Server acknowledgment of archive/unarchive request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated id from request
+          conversation_id:
+            type: string
+            description: Unique chat/conversation ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Result of the request
+          reason:
+            type: string
+            description: Rejection reason if any
+          timestamp:
+            type: string
+            format: date-time
+            description: When the acknowledgment was generated
+    ChatPinnedUpdated:
+      name: ChatPinnedUpdated
+      title: Server notifies that a chat pin state changed
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: ID of the conversation
+          pinned:
+            type: boolean
+            description: Whether the chat is pinned
+          pinned_by:
+            type: string
+            description: User ID who performed the pin action
+          timestamp:
+            type: string
+            format: date-time
+    SetChatPinned:
+      name: SetChatPinned
+      title: Client requests to pin or unpin a chat
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: ID of the conversation
+          pinned:
+            type: boolean
+            description: Desired pin state
+          request_id:
+            type: string
+            description: Client-generated request ID for acknowledgment
+    SetChatPinnedAck:
+      name: SetChatPinnedAck
+      title: Server acknowledgment for pin/unpin request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+          error_code:
+            type: string
+            description: Error code when rejected
+          error_message:
+            type: string
+            description: Error details when rejected
+          timestamp:
+            type: string
+            format: date-time
+    AwayMessageUpdated:
+      name: AwayMessageUpdated
+      title: Server confirms or broadcasts updated away message settings
+      payload:
+        type: object
+        properties:
+          user_id:
+            type: string
+            description: User ID whose away message was updated
+          enabled:
+            type: boolean
+            description: Whether automatic away messages are enabled
+          message:
+            type: string
+            description: Away message text
+          updated_at:
+            type: string
+            format: date-time
+            description: Timestamp of the update
+    SetAwayMessage:
+      name: SetAwayMessage
+      title: Enable/disable and set automatic away message
+      payload:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+            description: Enable or disable automatic away messages
+          message:
+            type: string
+            description: Away message text
+    AutoReplySent:
+      name: AutoReplySent
+      title: Server notifies that an automatic away reply was sent to a user
+      payload:
+        type: object
+        properties:
+          auto_reply_id:
+            type: string
+            description: Unique auto-reply ID
+          conversation_id:
+            type: string
+            description: Conversation where the auto-reply was sent
+          sender_id:
+            type: string
+            description: User who triggered the auto-reply by messaging
+          away_user_id:
+            type: string
+            description: User whose away message was sent
+          message:
+            type: string
+            description: Auto-reply content
+          timestamp:
+            type: string
+            format: date-time
+    GreetingMessageReceived:
+      name: GreetingMessageReceived
+      title: Automatic greeting sent by the system upon first contact
+      payload:
+        type: object
+        properties:
+          greeting_id:
+            type: string
+            description: Unique greeting message ID
+          conversation_id:
+            type: string
+            description: Conversation ID where the greeting is delivered
+          sender_id:
+            type: string
+            description: System or bot sender ID
+          content:
+            type: string
+            description: Greeting text content
+          timestamp:
+            type: string
+            format: date-time
+            description: Time the greeting was sent
+          first_contact:
+            type: boolean
+            description: Indicates this greeting is for first contact
+    AcknowledgeGreetingReceived:
+      name: AcknowledgeGreetingReceived
+      title: Client acknowledgment of greeting receipt
+      payload:
+        type: object
+        properties:
+          greeting_id:
+            type: string
+            description: Greeting message ID being acknowledged
+          conversation_id:
+            type: string
+            description: Conversation ID
+          timestamp:
+            type: string
+            format: date-time
+            description: Client receipt time
+    BusinessStatsUpdated:
+      name: BusinessStatsUpdated
+      title: Updated message statistics for a business
+      payload:
+        type: object
+        properties:
+          business_id:
+            type: string
+            description: Unique business ID
+          window:
+            type: string
+            enum:
+            - hour
+            - day
+            - week
+            - month
+            description: Aggregation window
+          messages_total:
+            type: integer
+            description: Total number of messages in the window
+          messages_inbound:
+            type: integer
+            description: Number of inbound messages
+          messages_outbound:
+            type: integer
+            description: Number of outbound messages
+          active_conversations:
+            type: integer
+            description: Active conversations in the window
+          timestamp:
+            type: string
+            format: date-time
+            description: Time the statistics snapshot was generated
+    RequestBusinessStats:
+      name: RequestBusinessStats
+      title: Request current message statistics for a business
+      payload:
+        type: object
+        properties:
+          business_id:
+            type: string
+            description: Unique business ID
+          window:
+            type: string
+            enum:
+            - hour
+            - day
+            - week
+            - month
+            description: Aggregation window
+    BusinessStatsRequestAck:
+      name: BusinessStatsRequestAck
+      title: Acknowledgment of a statistics request
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          status:
+            type: string
+            enum:
+            - accepted
+            - rejected
+            description: Acknowledgment status
+          reason:
+            type: string
+            description: Reason if rejected
+          timestamp:
+            type: string
+            format: date-time
+    BusinessStatsRequestWithId:
+      name: BusinessStatsRequestWithId
+      title: Request stats with a client-generated ID for acknowledgment
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request ID
+          business_id:
+            type: string
+            description: Unique business ID
+          window:
+            type: string
+            enum:
+            - hour
+            - day
+            - week
+            - month
+    TranscriptionCompleted:
+      name: TranscriptionCompleted
+      title: Final transcription result for a voice message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          transcript:
+            type: string
+            description: Full transcribed text
+          language:
+            type: string
+            description: Detected language (BCP-47)
+          confidence:
+            type: number
+            description: Overall confidence score (0-1)
+          timestamp:
+            type: string
+            format: date-time
+    StartTranscription:
+      name: StartTranscription
+      title: Request transcription for a voice message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          audio_url:
+            type: string
+            description: URL to the audio file
+          language_hint:
+            type: string
+            description: Optional language hint (BCP-47)
+    TranscriptionProgress:
+      name: TranscriptionProgress
+      title: Progress update for an ongoing transcription
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          status:
+            type: string
+            enum:
+            - queued
+            - processing
+            description: Current processing state
+          progress:
+            type: number
+            description: Progress percentage (0-100)
+          partial_transcript:
+            type: string
+            description: Optional partial transcript
+          timestamp:
+            type: string
+            format: date-time
+    AcknowledgeTranscription:
+      name: AcknowledgeTranscription
+      title: Client acknowledgment of received transcription result
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          received_at:
+            type: string
+            format: date-time
+    TranscriptionFailed:
+      name: TranscriptionFailed
+      title: Transcription failed for a voice message
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          error_code:
+            type: string
+            description: Machine-readable error code
+          error_message:
+            type: string
+            description: Human-readable error details
+          timestamp:
+            type: string
+            format: date-time
+    RetryTranscription:
+      name: RetryTranscription
+      title: Request a retry of a failed transcription
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique voice message ID
+          reason:
+            type: string
+            description: Optional reason for retry
+    SyncChangesReceived:
+      name: SyncChangesReceived
+      title: Batched delta updates for client state
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Unique synchronization batch ID
+          sequence:
+            type: integer
+            description: Monotonic sequence number for ordering
+          changes:
+            type: array
+            description: List of change operations
+            items:
+              type: object
+              fields:
+                entity:
+                  type: string
+                  description: Entity type
+                entity_id:
+                  type: string
+                  description: Entity identifier
+                op:
+                  type: string
+                  enum:
+                  - create
+                  - update
+                  - delete
+                  description: Operation type
+                payload:
+                  type: object
+                  description: Partial entity data for the change
+          timestamp:
+            type: string
+            format: date-time
+            description: Server timestamp of the batch
+    SyncAck:
+      name: SyncAck
+      title: Acknowledgment for received change batch
+      payload:
+        type: object
+        properties:
+          sync_id:
+            type: string
+            description: Acknowledged synchronization batch ID
+          sequence:
+            type: integer
+            description: Last processed sequence number
+          received_at:
+            type: string
+            format: date-time
+            description: Client receipt timestamp
+    SyncResponse:
+      name: SyncResponse
+      title: Response containing requested data or deltas
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Correlation ID for the request
+          from_sequence:
+            type: integer
+            description: Sequence number start of returned changes
+          to_sequence:
+            type: integer
+            description: Sequence number end of returned changes
+          changes:
+            type: array
+            description: Returned change operations
+            items:
+              type: object
+              fields:
+                entity:
+                  type: string
+                entity_id:
+                  type: string
+                op:
+                  type: string
+                  enum:
+                  - create
+                  - update
+                  - delete
+                payload:
+                  type: object
+    SyncRequest:
+      name: SyncRequest
+      title: Request changes since a given sequence or full sync
+      payload:
+        type: object
+        properties:
+          request_id:
+            type: string
+            description: Client-generated request correlation ID
+          since_sequence:
+            type: integer
+            description: Last known sequence number; omit for full sync
+          full_sync:
+            type: boolean
+            description: Whether to request a full state sync
+    AIChatMessageReceived:
+      name: AIChatMessageReceived
+      title: AI assistant or system message delivered to client
+      payload:
+        type: object
+        properties:
+          message_id:
+            type: string
+            description: Unique message ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          sender:
+            type: string
+            enum:
+            - assistant
+            - system
+            description: Message sender type
+          content:
+            type: string
+            description: Message content
+          timestamp:
+            type: string
+            format: date-time
+          status:
+            type: string
+            enum:
+            - final
+            - partial
+            description: Streaming status
+    SendAIChatMessage:
+      name: SendAIChatMessage
+      title: Send a user message to AI assistant
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation ID
+          message_id:
+            type: string
+            description: Client-generated message ID for idempotency
+          content:
+            type: string
+            description: User message content
+          timestamp:
+            type: string
+            format: date-time
+    AIChatEvent:
+      name: AIChatEvent
+      title: AI assistant lifecycle and status updates
+      payload:
+        type: object
+        properties:
+          event_id:
+            type: string
+            description: Unique event ID
+          conversation_id:
+            type: string
+            description: Conversation ID
+          event_type:
+            type: string
+            enum:
+            - thinking
+            - typing
+            - error
+            - message_ack
+            description: Event type
+          message_id:
+            type: string
+            description: Related message ID
+          detail:
+            type: string
+            description: Optional details or error message
+          timestamp:
+            type: string
+            format: date-time
+    AcknowledgeMessage:
+      name: AcknowledgeMessage
+      title: Acknowledge receipt of a message or event
+      payload:
+        type: object
+        properties:
+          conversation_id:
+            type: string
+            description: Conversation ID
+          message_id:
+            type: string
+            description: Message ID being acknowledged
+          status:
+            type: string
+            enum:
+            - received
+            - read
+            description: Acknowledgment status
+          timestamp:
+            type: string
+            format: date-time
+  schemas: {}

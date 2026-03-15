@@ -1,0 +1,21 @@
+flowchart TD
+    Start([Start: Passkey-Login])
+    S1[User oeffnet Login-Seite]
+    Start --> S1
+    S2{User waehlt 'Mit Passkey anmelden'}
+    S1 --> S2
+    S3[System zeigt Hinweis 'Kein Passkey vorhanden' und bietet alternative Login-Methoden]
+    S2 --> S3
+    E3[/Kein Passkey registriert/]
+    S3 -.-> E3
+    S4{System startet Passkey-Authentifizierung auf dem Geraet}
+    S3 --> S4
+    S5{User bestaetigt Geraeteauthentifizierung (Biometrie/PIN)}
+    S4 --> S5
+    S6[System meldet User erfolgreich an]
+    S5 --> S6
+    S7[System zeigt Fehlermeldung und bietet 'Erneut versuchen' oder alternative Login-Methode]
+    S6 --> S7
+    E7[/Passkey-Authentifizierung fehlgeschlagen oder abgebrochen/]
+    S7 -.-> E7
+    S7 --> End([End])

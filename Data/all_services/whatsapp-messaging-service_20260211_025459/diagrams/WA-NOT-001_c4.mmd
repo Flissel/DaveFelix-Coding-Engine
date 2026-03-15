@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ C4Context : { "title" : "Push-Benachrichtigungen System", "layout" : "LR" } }%%
+C4Context
+    Person(user, "Benutzer", "Interagiert mit der App, um Push-Benachrichtigungen zu erhalten.")
+    System(pushNotificationSystem, "Push-Benachrichtigungen System", "Liefert zuverlässige Push-Benachrichtigungen.")
+    System_Ext(notificationService, "Benachrichtigungsdienst", "Externer Dienst zur Verwaltung von Push-Benachrichtigungen.")
+    
+    Rel(user, pushNotificationSystem, "Verwendet")
+    Rel(pushNotificationSystem, notificationService, "Sendet Benachrichtigungen an")

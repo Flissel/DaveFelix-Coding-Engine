@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Chat auswählen}
+    B -->|Ja| C[Chat-Inhalt laden]
+    B -->|Nein| D[Prozess beenden]
+    C --> E{Archivierungsoption wählen}
+    E -->|Ja| F[Chat archivieren]
+    E -->|Nein| G[Prozess beenden]
+    F --> H[Bestätigung anzeigen]
+    H --> I[Prozess beenden]
+    D --> I
+    G --> I

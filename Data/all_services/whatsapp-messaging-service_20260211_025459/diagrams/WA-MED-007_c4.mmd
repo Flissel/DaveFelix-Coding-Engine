@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Kamera-Integration System Context Diagram
+
+    Person(user, "User", "A user who interacts with the chat system.")
+    System(kameraIntegration, "Kamera-Integration", "Provides direct camera access in chat.")
+
+    System_Ext(chatSystem, "Chat System", "The chat platform where users communicate.")
+    System_Ext(cameraService, "Camera Service", "External service providing camera access.")
+
+    Rel(user, chatSystem, "Uses")
+    Rel(chatSystem, kameraIntegration, "Integrates with")
+    Rel(kameraIntegration, cameraService, "Requests camera access from")

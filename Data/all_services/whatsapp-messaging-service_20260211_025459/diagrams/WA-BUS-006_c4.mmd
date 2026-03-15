@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Produktkatalog System Context Diagram
+
+    Person(customer, "Business Customer", "A business that uses the product catalog")
+    System(productCatalog, "Produktkatalog", "A system that provides a product catalog for businesses")
+    System_Ext(externalSystem, "External System", "An external system that provides product data")
+
+    Rel(customer, productCatalog, "Uses")
+    Rel(productCatalog, externalSystem, "Fetches product data from")

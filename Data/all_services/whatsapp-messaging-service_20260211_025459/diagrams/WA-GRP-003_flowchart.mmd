@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Gruppeneinstellungen konfigurierbar?}
+    B -->|Ja| C[Gruppeneinstellungen laden]
+    B -->|Nein| D[Standard Gruppeneinstellungen verwenden]
+    C --> E[Gruppeneinstellungen anpassen]
+    D --> E
+    E --> F{Einstellungen speichern?}
+    F -->|Ja| G[Einstellungen speichern]
+    F -->|Nein| H[Prozess beenden]
+    G --> I[Prozess beenden]
+    H --> I
+    I[Ende]

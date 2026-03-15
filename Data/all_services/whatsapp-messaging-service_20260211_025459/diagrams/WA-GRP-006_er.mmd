@@ -1,0 +1,14 @@
+erDiagram
+    COMMUNITY {
+        string id PK "Primary Key"
+        string name
+        string description
+    }
+    
+    GROUP {
+        string id PK "Primary Key"
+        string name
+        string community_id FK "Foreign Key"
+    }
+    
+    COMMUNITY ||--o{ GROUP : has

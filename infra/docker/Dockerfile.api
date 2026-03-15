@@ -1,0 +1,50 @@
+# Dockerfile.api - Coding Engine API Server
+#
+# Runs the FastAPI server with WebSocket support for real-time dashboard communication.
+# Supports Docker-in-Docker for container management.
+#
+# Build:
+#   docker build -t coding-engine-api -f infra/docker/Dockerfile.api .
+
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies including Docker CLI
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source code and entry scripts
+COPY src/ ./src/
+COPY run_society_hybrid.py ./
+COPY run_hybrid.py ./
+COPY run_job.py ./
+
+# Create data directories
+RUN mkdir -p /data/projects /data/logs
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV API_HOST=0.0.0.0
+ENV API_PORT=8000
+
+# Note: Running as root for Docker socket access
+# In production, consider using rootless Docker or socket proxy
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run API server
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

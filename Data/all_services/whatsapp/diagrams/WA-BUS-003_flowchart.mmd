@@ -1,0 +1,15 @@
+flowchart TD
+    A[Start] --> B{Schnellantworten vordefinieren}
+    B -->|Ja| C[Antworten in System integrieren]
+    B -->|Nein| D[Feedback sammeln]
+    D --> E{Feedback analysieren}
+    E -->|Positiv| F[Antworten anpassen]
+    E -->|Negativ| G[Neue Antworten erstellen]
+    F --> C
+    G --> C
+    C --> H[System testen]
+    H --> I{Test erfolgreich?}
+    I -->|Ja| J[Antworten bereitstellen]
+    I -->|Nein| K[Fehler beheben]
+    K --> H
+    J --> L[Ende]

@@ -1,0 +1,7 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Uses| B(Offline-Modus)
+    B -->|Accesses| C[Local Database]
+    B -->|Syncs with| D[Remote Server]
+    D -->|Provides| E[User Data]
+    D -->|Updates| F[Application Settings]

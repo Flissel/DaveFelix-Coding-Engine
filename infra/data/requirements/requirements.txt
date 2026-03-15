@@ -1,0 +1,10 @@
+Erstelle
+eine
+einfache
+React-Anwendung
+mit
+Counter-Komponente
+und
+modernem
+Dark
+Theme

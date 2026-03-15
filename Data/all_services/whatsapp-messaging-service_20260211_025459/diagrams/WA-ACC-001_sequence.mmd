@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Screenreader User
+    participant System as System
+
+    User->>System: Request screen content
+    System-->>User: Provide content in accessible format
+    User->>System: Navigate through content
+    System-->>User: Announce current position and options
+    User->>System: Request additional information
+    System-->>User: Provide detailed information
+    User->>System: Submit feedback on accessibility
+    System-->>User: Acknowledge feedback

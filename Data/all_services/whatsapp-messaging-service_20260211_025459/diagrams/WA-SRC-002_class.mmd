@@ -1,0 +1,29 @@
+classDiagram
+    class Mediensuche {
+        +filterMedientypen()
+    }
+
+    class Medientyp {
+        +name: String
+        +beschreibung: String
+    }
+
+    class Buch {
+        +autor: String
+        +isbn: String
+    }
+
+    class Film {
+        +regisseur: String
+        +dauer: Integer
+    }
+
+    class Musik {
+        +künstler: String
+        +album: String
+    }
+
+    Mediensuche --> Medientyp
+    Medientyp <|-- Buch
+    Medientyp <|-- Film
+    Medientyp <|-- Musik

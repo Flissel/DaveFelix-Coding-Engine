@@ -1,0 +1,10 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Biometrische Entsperrung System Context Diagram
+    Person(user, "Benutzer", "Ein Benutzer, der biometrische Authentifizierung verwendet.")
+    System(biometricSystem, "Biometrische Entsperrung", "Ein System zur Unterstützung biometrischer Authentifizierung (Fingerabdruck, Face ID).")
+    System_Ext(authenticationService, "Authentifizierungsdienst", "Ein externer Dienst zur Validierung biometrischer Daten.")
+    
+    Rel(user, biometricSystem, "Verwendet")
+    Rel(biometricSystem, authenticationService, "Sendet biometrische Daten zur Authentifizierung")
+    Rel(authenticationService, biometricSystem, "Sendet Authentifizierungsergebnisse zurück")

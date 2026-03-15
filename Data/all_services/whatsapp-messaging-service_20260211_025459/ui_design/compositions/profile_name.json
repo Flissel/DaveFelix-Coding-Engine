@@ -1,0 +1,60 @@
+{
+  "route": "/profile/name",
+  "screen_name": "Anzeigename",
+  "description": "",
+  "user_stories": [
+    "US-007"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Anzeigename",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "placeholder": "Anzeigename eingeben",
+        "variant": "outline",
+        "maxLength": 50
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Speichern",
+        "variant": "primary",
+        "disabled": false
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px",
+  "data_sources": [],
+  "state_shape": {
+    "displayName": "string",
+    "isValid": "boolean",
+    "isLoading": "boolean",
+    "error": "string | null"
+  }
+}

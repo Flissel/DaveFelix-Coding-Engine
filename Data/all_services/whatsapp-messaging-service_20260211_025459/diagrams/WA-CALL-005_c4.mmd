@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Anruflink System Context Diagram
+
+    Person(customer, "Kunde", "Ein Benutzer, der Anruflinks für geplante Anrufe erstellt.")
+    System(anruflinkSystem, "Anruflink System", "Ein System zur Erstellung und Verwaltung von Anruflinks.")
+
+    Person(admin, "Administrator", "Verwaltet das Anruflink System.")
+
+    System_Ext(thirdPartyService, "Drittanbieter Dienst", "Ein externer Dienst zur Integration von Anrufdiensten.")
+
+    Rel(customer, anruflinkSystem, "Erstellt Anruflinks")
+    Rel(admin, anruflinkSystem, "Verwaltet das System")
+    Rel(anruflinkSystem, thirdPartyService, "Nutzen von Anrufdiensten")

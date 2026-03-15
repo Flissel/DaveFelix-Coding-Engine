@@ -1,0 +1,12 @@
+stateDiagram-v2
+    [*] --> ChatAuswahl
+    ChatAuswahl --> Authentifizierung : Chat auswählen
+    Authentifizierung --> Authentifiziert : Authentifizierung erfolgreich
+    Authentifizierung --> AuthentifizierungFehlgeschlagen : Authentifizierung fehlgeschlagen
+    Authentifiziert --> ChatGesperrt : Chat sperren
+    ChatGesperrt --> ChatWiederherstellen : Chat wiederherstellen
+    ChatWiederherstellen --> AuthentifizierungWiederherstellen : Authentifizierung erforderlich
+    AuthentifizierungWiederherstellen --> Authentifiziert : Authentifizierung erfolgreich
+    AuthentifizierungWiederherstellen --> AuthentifizierungFehlgeschlagen : Authentifizierung fehlgeschlagen
+    ChatGesperrt --> [*]
+    AuthentifizierungFehlgeschlagen --> [*]

@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B[Benutzer wählt Bild aus]
+    B --> C[System überprüft Bildformat]
+    C -->|gültig| D[System sendet Bild]
+    C -->|ungültig| E[Fehlermeldung anzeigen]
+    D --> F[Bestätigung anzeigen]
+    E --> F
+    F --> G[Ende]

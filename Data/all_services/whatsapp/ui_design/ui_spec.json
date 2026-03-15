@@ -1,0 +1,964 @@
+{
+  "project_name": "unnamed_project",
+  "design_tokens": {
+    "colors": {
+      "primary": "#1E3A8A",
+      "primary-dark": "#1E2F6E",
+      "primary-light": "#4F6BD8",
+      "secondary": "#6B7280",
+      "background": "#F5F7FA",
+      "surface": "#FFFFFF",
+      "text-primary": "#111827",
+      "text-secondary": "#4B5563",
+      "error": "#DC2626",
+      "warning": "#F59E0B",
+      "success": "#10B981",
+      "info": "#2563EB"
+    },
+    "typography": {
+      "font-family": {
+        "base": "Inter, Helvetica, Arial, sans-serif",
+        "mono": "JetBrains Mono, Menlo, monospace"
+      },
+      "h1": {
+        "size": "2.5rem",
+        "weight": "700",
+        "line-height": "1.2"
+      },
+      "h2": {
+        "size": "2rem",
+        "weight": "600",
+        "line-height": "1.25"
+      },
+      "h3": {
+        "size": "1.5rem",
+        "weight": "600",
+        "line-height": "1.3"
+      },
+      "h4": {
+        "size": "1.25rem",
+        "weight": "600",
+        "line-height": "1.4"
+      },
+      "body": {
+        "size": "1rem",
+        "weight": "400",
+        "line-height": "1.5"
+      },
+      "body-small": {
+        "size": "0.875rem",
+        "weight": "400",
+        "line-height": "1.5"
+      },
+      "caption": {
+        "size": "0.75rem",
+        "weight": "400",
+        "line-height": "1.4"
+      }
+    },
+    "spacing": {
+      "xs": "0.25rem",
+      "sm": "0.5rem",
+      "md": "1rem",
+      "lg": "1.5rem",
+      "xl": "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem"
+    },
+    "breakpoints": {
+      "mobile": 320,
+      "mobile-lg": 480,
+      "tablet": 768,
+      "desktop": 1024,
+      "desktop-lg": 1280,
+      "desktop-xl": 1536
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px rgba(0, 0, 0, 0.1)",
+      "lg": "0 10px 15px rgba(0, 0, 0, 0.1)",
+      "xl": "0 20px 25px rgba(0, 0, 0, 0.15)"
+    },
+    "border_radius": {
+      "none": "0",
+      "sm": "0.125rem",
+      "md": "0.375rem",
+      "lg": "0.5rem",
+      "xl": "0.75rem",
+      "full": "9999px"
+    }
+  },
+  "components": [
+    {
+      "id": "COMP-001",
+      "name": "Button",
+      "component_type": "button",
+      "description": "Primary action button for form submissions and key actions",
+      "variants": [
+        "primary",
+        "secondary",
+        "outline",
+        "ghost",
+        "danger"
+      ],
+      "props": {
+        "size": "sm | md | lg",
+        "disabled": "boolean",
+        "loading": "boolean",
+        "icon": "ReactNode (optional)",
+        "onClick": "() => void",
+        "type": "button | submit"
+      },
+      "states": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "accessibility": {
+        "role": "button",
+        "aria-label": "Required for icon-only buttons",
+        "aria-disabled": "When disabled"
+      },
+      "example_usage": "<Button variant='primary' size='md' type='submit'>Weiter</Button>"
+    },
+    {
+      "id": "COMP-002",
+      "name": "TextInput",
+      "component_type": "input",
+      "description": "Single-line text input with label and helper/error text",
+      "variants": [
+        "default",
+        "filled",
+        "outline"
+      ],
+      "props": {
+        "label": "string",
+        "placeholder": "string",
+        "value": "string",
+        "onChange": "(value: string) => void",
+        "type": "text | password | email | tel",
+        "disabled": "boolean",
+        "error": "string (optional)",
+        "helperText": "string (optional)"
+      },
+      "states": [
+        "default",
+        "focus",
+        "filled",
+        "error",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "textbox",
+        "aria-label": "If label is visually hidden",
+        "aria-invalid": "When error"
+      },
+      "example_usage": "<TextInput label='E-Mail' placeholder='name@mail.com' />"
+    },
+    {
+      "id": "COMP-003",
+      "name": "PhoneInput",
+      "component_type": "input",
+      "description": "Phone number input with country selector and formatting",
+      "variants": [
+        "default",
+        "compact"
+      ],
+      "props": {
+        "label": "string",
+        "value": "string",
+        "onChange": "(value: string, country: string) => void",
+        "defaultCountry": "string (ISO code)",
+        "disabled": "boolean",
+        "error": "string (optional)"
+      },
+      "states": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "textbox",
+        "aria-label": "If label is visually hidden"
+      },
+      "example_usage": "<PhoneInput label='Mobilnummer' defaultCountry='DE' />"
+    },
+    {
+      "id": "COMP-004",
+      "name": "OTPInput",
+      "component_type": "input",
+      "description": "Multi-field input for one-time passcodes (e.g., 6-digit)",
+      "variants": [
+        "6-digit",
+        "4-digit"
+      ],
+      "props": {
+        "length": "number",
+        "value": "string",
+        "onChange": "(value: string) => void",
+        "autoFocus": "boolean",
+        "disabled": "boolean",
+        "error": "string (optional)"
+      },
+      "states": [
+        "default",
+        "focus",
+        "filled",
+        "error",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "group",
+        "aria-label": "One-time code input"
+      },
+      "example_usage": "<OTPInput length={6} onChange={setCode} />"
+    },
+    {
+      "id": "COMP-005",
+      "name": "AuthCard",
+      "component_type": "container",
+      "description": "Centered card layout for auth screens with logo/title slot",
+      "variants": [
+        "default",
+        "compact"
+      ],
+      "props": {
+        "title": "string",
+        "subtitle": "string (optional)",
+        "children": "ReactNode",
+        "logo": "ReactNode (optional)"
+      },
+      "states": [
+        "default"
+      ],
+      "accessibility": {
+        "role": "region",
+        "aria-labelledby": "Title id"
+      },
+      "example_usage": "<AuthCard title='Willkommen' subtitle='Bitte anmelden'>...</AuthCard>"
+    },
+    {
+      "id": "COMP-006",
+      "name": "ToggleSwitch",
+      "component_type": "switch",
+      "description": "Binary toggle for settings like 2FA activation",
+      "variants": [
+        "default",
+        "compact"
+      ],
+      "props": {
+        "checked": "boolean",
+        "onChange": "(checked: boolean) => void",
+        "disabled": "boolean",
+        "label": "string (optional)"
+      },
+      "states": [
+        "default",
+        "checked",
+        "focus",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "switch",
+        "aria-checked": "When checked"
+      },
+      "example_usage": "<ToggleSwitch checked={twoFA} onChange={setTwoFA} label='2FA aktivieren' />"
+    },
+    {
+      "id": "COMP-007",
+      "name": "Checkbox",
+      "component_type": "checkbox",
+      "description": "Checkbox for confirmations like Terms & Privacy",
+      "variants": [
+        "default"
+      ],
+      "props": {
+        "checked": "boolean",
+        "onChange": "(checked: boolean) => void",
+        "disabled": "boolean",
+        "label": "string"
+      },
+      "states": [
+        "default",
+        "checked",
+        "focus",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "checkbox",
+        "aria-checked": "When checked"
+      },
+      "example_usage": "<Checkbox label='Ich akzeptiere die AGB' />"
+    },
+    {
+      "id": "COMP-008",
+      "name": "PasskeyButton",
+      "component_type": "button",
+      "description": "Specialized button for Passkey login with platform icon",
+      "variants": [
+        "primary",
+        "outline"
+      ],
+      "props": {
+        "label": "string",
+        "providerIcon": "ReactNode (optional)",
+        "loading": "boolean",
+        "onClick": "() => void"
+      },
+      "states": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "accessibility": {
+        "role": "button",
+        "aria-label": "Passkey login button"
+      },
+      "example_usage": "<PasskeyButton label='Mit Passkey anmelden' />"
+    },
+    {
+      "id": "COMP-009",
+      "name": "BiometricPrompt",
+      "component_type": "modal",
+      "description": "Modal prompt for biometric authentication (Face ID / Fingerprint)",
+      "variants": [
+        "faceid",
+        "fingerprint"
+      ],
+      "props": {
+        "open": "boolean",
+        "type": "faceid | fingerprint",
+        "onCancel": "() => void",
+        "onRetry": "() => void"
+      },
+      "states": [
+        "open",
+        "loading",
+        "error"
+      ],
+      "accessibility": {
+        "role": "dialog",
+        "aria-modal": "true",
+        "aria-label": "Biometric authentication"
+      },
+      "example_usage": "<BiometricPrompt open type='faceid' onCancel={close} />"
+    },
+    {
+      "id": "COMP-010",
+      "name": "Alert",
+      "component_type": "feedback",
+      "description": "Inline alert for errors, success, or info messages",
+      "variants": [
+        "info",
+        "success",
+        "warning",
+        "error"
+      ],
+      "props": {
+        "title": "string (optional)",
+        "message": "string",
+        "icon": "ReactNode (optional)",
+        "dismissible": "boolean",
+        "onDismiss": "() => void"
+      },
+      "states": [
+        "default"
+      ],
+      "accessibility": {
+        "role": "alert",
+        "aria-live": "polite"
+      },
+      "example_usage": "<Alert variant='error' message='Code ungültig' />"
+    }
+  ],
+  "screens": [
+    {
+      "id": "SCREEN-001",
+      "name": "Phone Registration",
+      "route": "/register",
+      "layout": "centered",
+      "description": "Registration screen where new users enter their mobile phone number, receive an OTP verification code, and complete account creation with terms acceptance",
+      "components": [
+        "COMP-001",
+        "COMP-003",
+        "COMP-004",
+        "COMP-005",
+        "COMP-007",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 26
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 12,
+          "y": 3,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-003",
+          "name": "PhoneInput",
+          "x": 12,
+          "y": 10,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-004",
+          "name": "OTPInput",
+          "x": 12,
+          "y": 15,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-007",
+          "name": "Checkbox",
+          "x": 12,
+          "y": 20,
+          "w": 36,
+          "h": 2
+        },
+        {
+          "id": "COMP-001",
+          "name": "Button",
+          "x": 12,
+          "y": 24,
+          "w": 36,
+          "h": 3
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/send-otp",
+        "POST /api/auth/verify-otp",
+        "POST /api/auth/register"
+      ],
+      "parent_user_story": "US-001",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |  COMP-005 (AuthCard)                   |        |\n   3 |          |  +------------------------------------+|        |\n     |          |  | COMP-010 (Alert)                   ||        |\n   5 |          |  | \"Verification code sent!\"          ||        |\n     |          |  +------------------------------------+|        |\n   6 |          |                                        |        |\n     |          |      📱  Phone Registration            |        |\n   8 |          |      Create your account by            |        |\n     |          |      verifying your phone number       |        |\n  10 |          |  +------------------------------------+|        |\n     |          |  | COMP-003 (PhoneInput)              ||        |\n  12 |          |  | [+1 ▼] [  Enter phone number    ]  ||        |\n     |          |  +------------------------------------+|        |\n  13 |          |                                        |        |\n     |          |        [Send Code]                     |        |\n  15 |          |  +------------------------------------+|        |\n     |          |  | COMP-004 (OTPInput)                ||        |\n  17 |          |  | [ _ ] [ _ ] [ _ ] [ _ ] [ _ ] [ _ ]||        |\n     |          |  +------------------------------------+|        |\n  18 |          |                                        |        |\n     |          |     Didn't receive code? Resend        |        |\n  20 |          |  +------------------------------------+|        |\n     |          |  | COMP-007 (Checkbox)                ||        |\n  22 |          |  | [x] I agree to Terms & Privacy     ||        |\n     |          |  +------------------------------------+|        |\n  24 |          |  +------------------------------------+|        |\n     |          |  |     COMP-001 (Button)              ||        |\n  26 |          |  |   [ Verify & Create Account ]      ||        |\n     |          |  +------------------------------------+|        |\n  28 |          +----------------------------------------+        |\n     |                                                            |\n  30 +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-002",
+      "name": "Two-Factor Authentication Setup",
+      "route": "/auth/2fa-setup",
+      "layout": "centered",
+      "description": "Screen for enabling and configuring optional two-factor authentication with a 6-digit PIN, including toggle activation, phone number input, OTP verification, and status feedback.",
+      "components": [
+        "COMP-001",
+        "COMP-003",
+        "COMP-004",
+        "COMP-005",
+        "COMP-006",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 26
+        },
+        {
+          "id": "COMP-006",
+          "name": "ToggleSwitch",
+          "x": 14,
+          "y": 6,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 14,
+          "y": 9,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-003",
+          "name": "PhoneInput",
+          "x": 14,
+          "y": 13,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-001",
+          "name": "SendCodeButton",
+          "x": 14,
+          "y": 17,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-004",
+          "name": "OTPInput",
+          "x": 14,
+          "y": 21,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-001-B",
+          "name": "VerifyButton",
+          "x": 14,
+          "y": 25,
+          "w": 32,
+          "h": 3
+        }
+      ],
+      "data_requirements": [
+        "GET /api/auth/2fa/status",
+        "POST /api/auth/2fa/enable",
+        "POST /api/auth/2fa/disable",
+        "POST /api/auth/2fa/send-code",
+        "POST /api/auth/2fa/verify"
+      ],
+      "parent_user_story": "US-002",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |         COMP-005 (AuthCard)             |        |\n   4 |          |                                        |        |\n     |          |   🔒  Two-Factor Authentication        |        |\n   6 |          |                                        |        |\n     |          |   Enable 2FA   [====○] OFF             |        |\n   8 |          |                COMP-006 (ToggleSwitch) |        |\n     |          |                                        |        |\n   9 |          |   +----------------------------------+ |        |\n     |          |   | ℹ️  2FA adds an extra layer of   | |        |\n  11 |          |   |    security to your account.     | |        |\n     |          |   +----------------------------------+ |        |\n  12 |          |          COMP-010 (Alert)              |        |\n     |          |                                        |        |\n  13 |          |   +----------------------------------+ |        |\n     |          |   | 📱  +49 |  Enter phone number   | |        |\n  15 |          |   +----------------------------------+ |        |\n     |          |          COMP-003 (PhoneInput)         |        |\n  17 |          |                                        |        |\n     |          |   [========= Send Code ============]   |        |\n  19 |          |          COMP-001 (SendCodeButton)     |        |\n     |          |                                        |        |\n  21 |          |   Enter your 6-digit PIN:              |        |\n     |          |   [ _ ] [ _ ] [ _ ] [ _ ] [ _ ] [ _ ]  |        |\n  23 |          |          COMP-004 (OTPInput)            |        |\n     |          |                                        |        |\n  25 |          |   [======== Verify & Enable ========]  |        |\n     |          |          COMP-001-B (VerifyButton)      |        |\n  27 |          |                                        |        |\n     |          +----------------------------------------+        |\n  29 |                                                            |\n     +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-003",
+      "name": "Biometrische Entsperrung",
+      "route": "/auth/phone-signup",
+      "layout": "single-column-centered",
+      "description": "Phone registration screen with biometric unlock setup. Users can register with their phone number, verify via OTP, and enable fingerprint or Face ID for faster, password-free authentication.",
+      "components": [
+        "COMP-001",
+        "COMP-003",
+        "COMP-004",
+        "COMP-005",
+        "COMP-006",
+        "COMP-008",
+        "COMP-009",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 28
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 12,
+          "y": 3,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-003",
+          "name": "PhoneInput",
+          "x": 12,
+          "y": 7,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-004",
+          "name": "OTPInput",
+          "x": 12,
+          "y": 11,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-006",
+          "name": "ToggleSwitch",
+          "x": 12,
+          "y": 16,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-008",
+          "name": "PasskeyButton",
+          "x": 12,
+          "y": 20,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-001",
+          "name": "Button",
+          "x": 12,
+          "y": 24,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-009",
+          "name": "BiometricPrompt",
+          "x": 10,
+          "y": 8,
+          "w": 40,
+          "h": 16
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/phone/register",
+        "POST /api/auth/phone/verify-otp",
+        "POST /api/auth/biometric/enroll",
+        "GET /api/auth/biometric/capabilities",
+        "POST /api/auth/biometric/authenticate"
+      ],
+      "parent_user_story": "US-003",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |  COMP-005 (AuthCard)                   |        |\n   3 |          |  +------------------------------------+|        |\n     |          |  | COMP-010 (Alert)                   ||        |\n   5 |          |  | i  Biometrie verfuegbar! Aktiviere ||        |\n     |          |  |    Fingerabdruck / Face ID          ||        |\n   6 |          |  +------------------------------------+|        |\n     |          |                                        |        |\n   7 |          |  Telefonnummer                         |        |\n     |          |  +------------------------------------+|        |\n   8 |          |  | [+49] | Telefonnummer eingeben     ||        |\n     |          |  | COMP-003 (PhoneInput)               ||        |\n  10 |          |  +------------------------------------+|        |\n     |          |                                        |        |\n  11 |          |  Verifizierungscode                    |        |\n     |          |  +------------------------------------+|        |\n  12 |          |  | [_] [_] [_] [_] [_] [_]            ||        |\n     |          |  | COMP-004 (OTPInput)                 ||        |\n  14 |          |  +------------------------------------+|        |\n     |          |                                        |        |\n  16 |          |  +------------------------------------+|        |\n     |          |  | Biometrie aktivieren    [ Toggle ] ||        |\n  18 |          |  | COMP-006 (ToggleSwitch)             ||        |\n     |          |  +------------------------------------+|        |\n  20 |          |  +------------------------------------+|        |\n     |          |  | [FingerprintIcon] Mit Biometrie    ||        |\n  22 |          |  |  COMP-008 (PasskeyButton)           ||        |\n     |          |  +------------------------------------+|        |\n  24 |          |  +------------------------------------+|        |\n     |          |  |        Registrieren                ||        |\n  26 |          |  |  COMP-001 (Button)                  ||        |\n     |          |  +------------------------------------+|        |\n  28 |          |                                        |        |\n     |          +----------------------------------------+        |\n  30 +------------------------------------------------------------+\n     |                                                            |\n     |    +------------------------------------------------+      |\n     |    |  COMP-009 (BiometricPrompt) - Modal Overlay    |      |\n     |    |                                                |      |\n     |    |          [Fingerprint / FaceID Icon]           |      |\n     |    |                                                |      |\n     |    |    Bestaetigen Sie Ihre Identitaet mit         |      |\n     |    |    Fingerabdruck oder Face ID                  |      |\n     |    |                                                |      |\n     |    |    [Bestaetigen]         [Abbrechen]           |      |\n     |    +------------------------------------------------+      |\n     +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-004",
+      "name": "Mobilnummer eingeben",
+      "route": "/auth/phone-signup/enter",
+      "layout": "centered",
+      "description": "Phone number entry screen for registration, enabling multi-device support by associating the user's phone number with their account for seamless cross-device usage.",
+      "components": [
+        "COMP-001",
+        "COMP-003",
+        "COMP-005",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 3,
+          "w": 40,
+          "h": 20
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 14,
+          "y": 5,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-003",
+          "name": "PhoneInput",
+          "x": 14,
+          "y": 12,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-001",
+          "name": "Button",
+          "x": 14,
+          "y": 18,
+          "w": 32,
+          "h": 3
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/phone-signup/send-otp",
+        "GET /api/auth/session/devices"
+      ],
+      "parent_user_story": "US-004",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |                                                            |\n     |          +----------------------------------------+        |\n   4 |          |          COMP-005 (AuthCard)            |        |\n     |          |    +--------------------------------+   |        |\n   6 |          |    | COMP-010 (Alert)                |   |        |\n     |          |    | ℹ️ Geben Sie Ihre Mobilnummer   |   |        |\n   8 |          |    | ein, um auf allen Geräten       |   |        |\n     |          |    | nahtlos weiterzuarbeiten.       |   |        |\n  10 |          |    +--------------------------------+   |        |\n     |          |                                        |        |\n  12 |          |    +--------------------------------+   |        |\n     |          |    | COMP-003 (PhoneInput)           |   |        |\n  14 |          |    | [+49 ▼] [  Mobilnummer       ]  |   |        |\n     |          |    +--------------------------------+   |        |\n  16 |          |                                        |        |\n     |          |                                        |        |\n  18 |          |    +--------------------------------+   |        |\n     |          |    |    COMP-001 (Button)            |   |        |\n  20 |          |    |       [ Weiter ]                |   |        |\n     |          |    +--------------------------------+   |        |\n  22 |          |                                        |        |\n     |          +----------------------------------------+        |\n  24 |                                                            |\n     +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-005",
+      "name": "Code verifizieren",
+      "route": "/auth/phone-signup/verify",
+      "layout": "centered",
+      "description": "Phone verification screen where users enter an OTP code sent to their phone, with the option to register a passkey for future passwordless sign-in",
+      "components": [
+        "COMP-004",
+        "COMP-005",
+        "COMP-001",
+        "COMP-008",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 3,
+          "w": 40,
+          "h": 22
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 14,
+          "y": 5,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-004",
+          "name": "OTPInput",
+          "x": 14,
+          "y": 9,
+          "w": 32,
+          "h": 4
+        },
+        {
+          "id": "COMP-001",
+          "name": "VerifyButton",
+          "x": 14,
+          "y": 14,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-008",
+          "name": "PasskeyButton",
+          "x": 14,
+          "y": 19,
+          "w": 32,
+          "h": 3
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/phone-signup/verify",
+        "POST /api/auth/passkey/register",
+        "POST /api/auth/phone-signup/resend-otp"
+      ],
+      "parent_user_story": "US-005",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |                                                            |\n     |          +----------------------------------------+        |\n   4 |          |            COMP-005 (AuthCard)         |        |\n     |          |    +--------------------------------+  |        |\n   6 |          |    | COMP-010 (Alert)               |  |        |\n     |          |    | i  Code wurde an +49...42 ge-  |  |        |\n   8 |          |    |    sendet.                      |  |        |\n     |          |    +--------------------------------+  |        |\n  10 |          |                                        |        |\n     |          |    +--+  +--+  +--+  +--+  +--+  +--+  |        |\n  12 |          |    |  |  |  |  |  |  |  |  |  |  |  |  |        |\n     |          |    +--+  +--+  +--+  +--+  +--+  +--+  |        |\n  14 |          |       COMP-004 (OTPInput)              |        |\n     |          |    +--------------------------------+  |        |\n  16 |          |    |      Code verifizieren         |  |        |\n     |          |    |      COMP-001 (VerifyButton)   |  |        |\n  18 |          |    +--------------------------------+  |        |\n     |          |         ─ ─ ─ ─ oder ─ ─ ─ ─          |        |\n  20 |          |    +--------------------------------+  |        |\n     |          |    |  [K] Mit Passkey anmelden      |  |        |\n  22 |          |    |  COMP-008 (PasskeyButton)      |  |        |\n     |          |    +--------------------------------+  |        |\n  24 |          |                                        |        |\n     |          |     Code nicht erhalten? Erneut senden |        |\n  26 |          +----------------------------------------+        |\n     |                                                            |\n  28 +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-006",
+      "name": "Profile Picture Upload",
+      "route": "/auth/login",
+      "layout": "centered",
+      "description": "Login screen with profile picture upload and management functionality for registered users to personalize their account",
+      "components": [
+        "COMP-001",
+        "COMP-002",
+        "COMP-005",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 22
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 12,
+          "y": 3,
+          "w": 36,
+          "h": 2
+        },
+        {
+          "id": "COMP-002",
+          "name": "EmailInput",
+          "x": 14,
+          "y": 14,
+          "w": 32,
+          "h": 2
+        },
+        {
+          "id": "COMP-001",
+          "name": "UploadButton",
+          "x": 20,
+          "y": 11,
+          "w": 20,
+          "h": 2
+        },
+        {
+          "id": "COMP-001-2",
+          "name": "LoginButton",
+          "x": 14,
+          "y": 20,
+          "w": 32,
+          "h": 2
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/login",
+        "POST /api/users/profile-picture",
+        "GET /api/users/profile-picture",
+        "DELETE /api/users/profile-picture"
+      ],
+      "parent_user_story": "US-006",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |  COMP-005 (AuthCard)                   |        |\n   3 |          |  +------------------------------------+|        |\n     |          |  | COMP-010 (Alert)                   ||        |\n   5 |          |  | \"Upload successful!\" / Error msg   ||        |\n     |          |  +------------------------------------+|        |\n   6 |          |                                        |        |\n     |          |         +------------------+           |        |\n   7 |          |         |                  |           |        |\n     |          |         |   [Profile Pic]  |           |        |\n   8 |          |         |    (circular     |           |        |\n     |          |         |     avatar       |           |        |\n   9 |          |         |     preview)     |           |        |\n     |          |         |                  |           |        |\n  10 |          |         +------------------+           |        |\n     |          |                                        |        |\n  11 |          |        [Upload Photo]                  |        |\n     |          |         COMP-001 (UploadButton)        |        |\n  13 |          |                                        |        |\n     |          |    +--------------------------------+  |        |\n  14 |          |    | Email                          |  |        |\n     |          |    | COMP-002 (EmailInput)          |  |        |\n  16 |          |    +--------------------------------+  |        |\n     |          |                                        |        |\n  17 |          |    +--------------------------------+  |        |\n     |          |    | Password                       |  |        |\n  19 |          |    +--------------------------------+  |        |\n     |          |                                        |        |\n  20 |          |    [===========Login===============]   |        |\n     |          |     COMP-001-2 (LoginButton)           |        |\n  22 |          |                                        |        |\n     |          +----------------------------------------+        |\n  24 |                                                            |\n     +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-007",
+      "name": "Passkey-Login",
+      "route": "/auth/login/passkey",
+      "layout": "centered",
+      "description": "Passkey login screen where registered users authenticate via biometric/passkey prompt and can set or update their configurable display name before completing login",
+      "components": [
+        "COMP-001",
+        "COMP-002",
+        "COMP-005",
+        "COMP-008",
+        "COMP-009",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 22
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 12,
+          "y": 3,
+          "w": 36,
+          "h": 2
+        },
+        {
+          "id": "COMP-002",
+          "name": "DisplayNameInput",
+          "x": 12,
+          "y": 8,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-008",
+          "name": "PasskeyButton",
+          "x": 12,
+          "y": 14,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-001",
+          "name": "UpdateNameButton",
+          "x": 12,
+          "y": 18,
+          "w": 36,
+          "h": 3
+        },
+        {
+          "id": "COMP-009",
+          "name": "BiometricPrompt",
+          "x": 14,
+          "y": 6,
+          "w": 32,
+          "h": 14
+        }
+      ],
+      "data_requirements": [
+        "GET /api/auth/user/display-name",
+        "PUT /api/auth/user/display-name",
+        "POST /api/auth/login/passkey/start",
+        "POST /api/auth/login/passkey/finish"
+      ],
+      "parent_user_story": "US-007",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 |                                                            |\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |  COMP-005 (AuthCard)                   |        |\n   3 |          |  +------------------------------------+|        |\n     |          |  | COMP-010 (Alert)                   ||        |\n   5 |          |  | \"Welcome back! Update your name.\"  ||        |\n     |          |  +------------------------------------+|        |\n   6 |          |                                        |        |\n     |          |     🔐  Passkey Login                  |        |\n   8 |          |  +------------------------------------+|        |\n     |          |  | COMP-002 (DisplayNameInput)        ||        |\n  10 |          |  | Label: \"Display Name\"              ||        |\n     |          |  | [  Enter your display name...    ] ||        |\n  11 |          |  +------------------------------------+|        |\n     |          |                                        |        |\n  12 |          |  Tip: This name will be shown to       |        |\n     |          |  others instead of your account ID.    |        |\n  14 |          |  +------------------------------------+|        |\n     |          |  | COMP-008 (PasskeyButton)           ||        |\n  16 |          |  | [🔑  Sign in with Passkey        ] ||        |\n     |          |  +------------------------------------+|        |\n  18 |          |  +------------------------------------+|        |\n     |          |  | COMP-001 (UpdateNameButton)        ||        |\n  20 |          |  | [   Save Display Name             ] ||        |\n     |          |  +------------------------------------+|        |\n  22 |          |                                        |        |\n     |          +----------------------------------------+        |\n  24 |                                                            |\n     |         +----------------------------------+               |\n  26 |         | COMP-009 (BiometricPrompt)        |  (modal,     |\n     |         |  ┌────────────────────────────┐   |   shown on   |\n  28 |         |  │   👆 Biometric Verify       │   |   passkey    |\n     |         |  │                            │   |   trigger)   |\n  30 |         |  │  Confirm your identity      │   |              |\n     |         |  │  using fingerprint / Face ID │   |              |\n  32 |         |  │                            │   |              |\n     |         |  │  [Cancel]       [Confirm]  │   |              |\n  34 |         |  └────────────────────────────┘   |              |\n     |         +----------------------------------+               |\n  36 |                                                            |",
+      "wireframe_mermaid": ""
+    },
+    {
+      "id": "SCREEN-008",
+      "name": "Telefonnummer-Login",
+      "route": "/auth/login/phone",
+      "layout": "centered",
+      "description": "Phone number login screen where registered users can authenticate via phone number and OTP verification, with an option to add or update a short info/status text for their profile",
+      "components": [
+        "COMP-001",
+        "COMP-002",
+        "COMP-003",
+        "COMP-004",
+        "COMP-005",
+        "COMP-010"
+      ],
+      "component_layout": [
+        {
+          "id": "COMP-005",
+          "name": "AuthCard",
+          "x": 10,
+          "y": 2,
+          "w": 40,
+          "h": 26
+        },
+        {
+          "id": "COMP-003",
+          "name": "PhoneInput",
+          "x": 14,
+          "y": 8,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-004",
+          "name": "OTPInput",
+          "x": 14,
+          "y": 12,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-002",
+          "name": "InfoStatusTextInput",
+          "x": 14,
+          "y": 16,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-001",
+          "name": "SubmitButton",
+          "x": 14,
+          "y": 21,
+          "w": 32,
+          "h": 3
+        },
+        {
+          "id": "COMP-010",
+          "name": "Alert",
+          "x": 14,
+          "y": 25,
+          "w": 32,
+          "h": 2
+        }
+      ],
+      "data_requirements": [
+        "POST /api/auth/phone/send-otp",
+        "POST /api/auth/phone/verify-otp",
+        "PUT /api/profile/info-status"
+      ],
+      "parent_user_story": "US-008",
+      "wireframe_ascii": "     0    5   10   15   20   25   30   35   40   45   50   55   60\n   0 +------------------------------------------------------------+\n     |                                                            |\n   2 |          +----------------------------------------+        |\n     |          |           COMP-005 (AuthCard)           |        |\n   4 |          |                                        |        |\n     |          |        📱 Telefonnummer-Login           |        |\n   6 |          |     Melden Sie sich mit Ihrer           |        |\n     |          |     Telefonnummer an                    |        |\n   8 |          |    +--------------------------------+   |        |\n     |          |    | COMP-003 (PhoneInput)          |   |        |\n  10 |          |    | [+49] [Telefonnummer eingeben] |   |        |\n     |          |    +--------------------------------+   |        |\n  12 |          |    +--------------------------------+   |        |\n     |          |    | COMP-004 (OTPInput)            |   |        |\n  14 |          |    | [_] [_] [_] [_] [_] [_]        |   |        |\n     |          |    +--------------------------------+   |        |\n  16 |          |    +--------------------------------+   |        |\n     |          |    | COMP-002 (InfoStatusTextInput)  |   |        |\n  18 |          |    | [Info/Status Text eingeben...] |   |        |\n     |          |    +--------------------------------+   |        |\n  20 |          |                                        |        |\n  21 |          |    +--------------------------------+   |        |\n     |          |    |    COMP-001 (SubmitButton)      |   |        |\n  23 |          |    |    [ Anmelden & Speichern ]     |   |        |\n     |          |    +--------------------------------+   |        |\n  25 |          |    +--------------------------------+   |        |\n     |          |    | COMP-010 (Alert)                |   |        |\n  27 |          |    | ⚠ Status/Fehlermeldung hier     |   |        |\n     |          |    +--------------------------------+   |        |\n  28 |          +----------------------------------------+        |\n     |                                                            |\n  30 +------------------------------------------------------------+",
+      "wireframe_mermaid": ""
+    }
+  ],
+  "responsive_strategy": "mobile-first",
+  "theme_support": true,
+  "dark_mode": true
+}

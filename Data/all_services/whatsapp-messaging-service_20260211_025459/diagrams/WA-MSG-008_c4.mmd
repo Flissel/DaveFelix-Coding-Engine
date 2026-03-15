@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Verschwindende Nachrichten System Context Diagram
+
+    Person(user, "User", "A user who sends and receives self-destructing messages.")
+    System(vnSystem, "Verschwindende Nachrichten", "A system that supports self-destructing messages.")
+
+    Rel(user, vnSystem, "Sends and receives self-destructing messages")

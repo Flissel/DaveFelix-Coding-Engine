@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Call as Anruf
+
+    User->>Call: Startet Anruf
+    Call->>User: Anruf verbunden
+    User->>System: Aktiviert Bildschirmfreigabe
+    System->>User: Bildschirmfreigabe gestartet
+    User->>Call: Teilt Bildschirm
+    Call->>User: Bildschirmfreigabe empfangen
+    User->>System: Beendet Bildschirmfreigabe
+    System->>User: Bildschirmfreigabe gestoppt

@@ -1,0 +1,12 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Interacts with| B[Profilbild-Sichtbarkeit System]
+    B -->|Stores configuration| C[Database]
+    B -->|Sends notifications| D[Notification Service]
+    A -->|Views profile| E[Profile Service]
+    
+    subgraph "External Systems"
+        C
+        D
+        E
+    end

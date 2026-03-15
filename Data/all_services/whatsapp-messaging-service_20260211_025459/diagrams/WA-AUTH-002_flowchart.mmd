@@ -1,0 +1,14 @@
+flowchart TD
+    A[Start] --> B{Benutzeranmeldung}
+    B -->|Erfolgreich| C{2FA aktiv?}
+    B -->|Fehlgeschlagen| D[Anmeldung fehlgeschlagen]
+    C -->|Ja| E[6-stellige PIN anfordern]
+    C -->|Nein| F[Anmeldung erfolgreich]
+    E --> G{PIN eingeben}
+    G -->|Richtig| F
+    G -->|Falsch| H[PIN ungültig]
+    H --> I{Erneut versuchen?}
+    I -->|Ja| E
+    I -->|Nein| D
+    D --> J[Ende]
+    F --> J

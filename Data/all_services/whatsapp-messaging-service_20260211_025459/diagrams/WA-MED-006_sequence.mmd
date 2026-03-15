@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant System as System
+    participant GIFService as GIF Service
+
+    User->>System: Search for GIF
+    System->>GIFService: Request GIFs based on search query
+    GIFService-->>System: Return list of GIFs
+    System-->>User: Display GIFs
+    User->>System: Select GIF to send
+    System->>GIFService: Send selected GIF
+    GIFService-->>System: Confirm GIF sent
+    System-->>User: Confirm GIF sent successfully

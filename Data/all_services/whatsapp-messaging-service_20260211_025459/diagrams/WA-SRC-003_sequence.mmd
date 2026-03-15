@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant ChatDB as Chat-Datenbank
+
+    User->>System: Suche nach Chats/Kontakten
+    System->>ChatDB: Anfrage nach Chats/Kontakten
+    ChatDB-->>System: Rückgabe der Suchergebnisse
+    System-->>User: Anzeige der Suchergebnisse

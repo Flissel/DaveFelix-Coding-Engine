@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Blockieren von Kontakten?}
+    B -- Ja --> C[Kontakt auswählen]
+    C --> D[Blockierungsgrund angeben]
+    D --> E[Blockierung bestätigen]
+    E --> F[Kontakt wird blockiert]
+    F --> G[Benachrichtigung senden]
+    G --> H[Ende]
+    B -- Nein --> H

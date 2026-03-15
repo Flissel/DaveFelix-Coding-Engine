@@ -1,0 +1,293 @@
+erDiagram
+    User {
+uuid user_id
+string phone_number
+    }
+    PhoneVerification {
+uuid verification_id
+string phone_number
+boolean verified
+    }
+    AuthMethod {
+uuid method_id
+string type
+boolean enabled
+    }
+    Device {
+uuid device_id
+string device_name
+    }
+    Profile {
+uuid profile_id
+string display_name
+string status_text
+string profile_image_url
+string qr_code_value
+    }
+    Message {
+uuid message_id
+uuid chat_id
+uuid sender_id
+string message_type
+string content
+date sent_at
+boolean is_deleted
+boolean is_edited
+boolean is_view_once
+date expires_at
+    }
+    Reaction {
+uuid reaction_id
+uuid message_id
+uuid user_id
+string emoji
+date created_at
+    }
+    Chat {
+uuid chat_id
+string name
+boolean is_locked
+    }
+    Media {
+uuid media_id
+uuid message_id
+string media_type
+string uri
+    }
+    Forwarding {
+uuid forward_id
+uuid original_message_id
+uuid forwarded_message_id
+date forwarded_at
+    }
+    GroupChat {
+uuid group_id
+string name
+string settings
+string admin_functions
+    }
+    Broadcast {
+uuid broadcast_id
+uuid message_id
+    }
+    InvitationLink {
+uuid link_id
+uuid group_id
+string url
+    }
+    Community {
+uuid community_id
+string name
+    }
+    Group {
+uuid group_id
+string name
+    }
+    Channel {
+uuid channel_id
+boolean is_broadcast
+    }
+    Poll {
+uuid poll_id
+string question
+    }
+    Call {
+uuid call_id
+string call_type
+boolean is_encrypted
+    }
+    CallHistory {
+uuid call_history_id
+    }
+    Status {
+uuid status_id
+date expires_at
+    }
+    StatusVisibilitySetting {
+uuid visibility_id
+string visibility_level
+    }
+    MediaItem {
+uuid media_id
+string media_type
+    }
+    SecuritySetting {
+uuid security_id
+boolean e2e_enabled
+boolean verification_enabled
+boolean app_lock_enabled
+    }
+    BlockedContact {
+uuid block_id
+string contact_identifier
+    }
+    Contact {
+uuid contact_id
+string display_name
+    }
+    Report {
+uuid report_id
+string reported_type
+string reason
+    }
+    Notification {
+uuid notification_id
+string type
+string preview_text
+    }
+    Label {
+uuid label_id
+string name
+    }
+    UserSettings {
+uuid settings_id
+boolean read_receipts_enabled
+string chat_background
+boolean dark_mode_enabled
+string language
+    }
+    PrivacySetting {
+uuid privacy_id
+string profile_photo_visibility
+string info_status_visibility
+string group_invite_permission
+    }
+    StorageUsage {
+uuid storage_id
+decimal used_mb
+date managed_on
+    }
+    DataUsage {
+uuid data_usage_id
+decimal consumed_mb
+date period_start
+    }
+    CloudBackup {
+uuid backup_id
+boolean enabled
+date last_backup_on
+    }
+    Backup {
+uuid backupId
+boolean isEndToEndEncrypted
+date createdAt
+    }
+    ChatExport {
+uuid exportId
+date exportedAt
+    }
+    ChatTransfer {
+uuid transferId
+string targetDeviceId
+date transferredAt
+    }
+    BusinessProfile {
+uuid businessProfileId
+boolean isVerified
+boolean hasQuickReplies
+boolean hasAwayMessage
+boolean hasGreetingMessage
+    }
+    Business {
+uuid business_id
+string name
+    }
+    ProductCatalog {
+uuid catalog_id
+string title
+    }
+    ShoppingCart {
+uuid cart_id
+string status
+    }
+    Payment {
+uuid payment_id
+decimal amount
+    }
+    BusinessStatistic {
+uuid stat_id
+string metric_name
+integer metric_value
+    }
+    PerformanceRequirement {
+string requirement_id
+string name
+string category
+    }
+    IntegrationFeature {
+string feature_id
+string name
+boolean mandatory
+    }
+    ApplicationPlatform {
+string platform_id
+string type
+    }
+    AIAssistantIntegration {
+uuid integration_id
+string name
+boolean enabled
+    }
+    SmartReplySuggestion {
+uuid suggestion_id
+string text
+decimal confidence
+    }
+    StickerSuggestion {
+uuid suggestion_id
+string context
+uuid sticker_id
+    }
+    Locale {
+uuid locale_id
+string language_code
+boolean rtl_supported
+string regional_format
+    }
+    StickerPack {
+uuid pack_id
+string name
+string region
+    }
+    User ||--|| PhoneVerification : "verifies"
+    User ||--o{ AuthMethod : "uses"
+    User ||--o{ Device : "has"
+    User ||--|| Profile : "has"
+    Chat ||--o{ Message : "contains"
+    Message ||--o{ Reaction : "has"
+    Message ||--o{ Media : "has"
+    Message ||--|| Message : "quotes"
+    Message ||--o{ Forwarding : "is_forwarded_via"
+    User ||--o{ Message : "sends"
+    Message ||--|| User : "mentions"
+    GroupChat ||--|| User : "members"
+    GroupChat ||--o{ InvitationLink : "has"
+    Broadcast ||--|| User : "recipients"
+    Community ||--o{ Group : "contains"
+    Group ||--o{ Channel : "has"
+    Group ||--o{ Poll : "hosts"
+    CallHistory ||--o{ Call : "contains"
+    Status ||--|| StatusVisibilitySetting : "has"
+    Status ||--|| MediaItem : "includes"
+    Chat ||--|| SecuritySetting : "secured_by"
+    Report }o--|| Message : "reports"
+    Report }o--|| Contact : "reports"
+    Notification }o--|| Message : "about"
+    Notification }o--|| Call : "about"
+    User ||--o{ Contact : "manages"
+    Contact ||--|| Label : "tagged_with"
+    User ||--o{ Chat : "participates_in"
+    UserSettings ||--|| PrivacySetting : "includes"
+    UserSettings ||--|| StorageUsage : "tracks"
+    UserSettings ||--|| DataUsage : "tracks"
+    UserSettings ||--|| CloudBackup : "configures"
+    Chat ||--o{ Backup : "hasBackups"
+    Chat ||--o{ ChatExport : "hasExports"
+    Chat ||--o{ ChatTransfer : "hasTransfers"
+    Business ||--|| ProductCatalog : "owns"
+    Business ||--o{ ShoppingCart : "receives"
+    ShoppingCart ||--|| Payment : "paid_by"
+    Business ||--o{ BusinessStatistic : "has"
+    PerformanceRequirement ||--|| ApplicationPlatform : "applies_to"
+    IntegrationFeature ||--|| ApplicationPlatform : "available_on"
+    Locale ||--o{ StickerPack : "offers"

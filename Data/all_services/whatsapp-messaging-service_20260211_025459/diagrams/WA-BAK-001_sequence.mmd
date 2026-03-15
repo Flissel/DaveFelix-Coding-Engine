@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as User
+    participant App as Chat Application
+    participant Cloud as Cloud Storage
+
+    User->>App: Initiate Backup
+    App->>Cloud: Upload Chat Data
+    Cloud-->>App: Confirm Upload
+    App-->>User: Backup Successful

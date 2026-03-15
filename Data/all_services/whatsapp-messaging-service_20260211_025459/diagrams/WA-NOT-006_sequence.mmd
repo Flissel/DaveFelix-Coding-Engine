@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Settings as Einstellungen
+
+    User->>System: Anrufbenachrichtigungen aktivieren
+    System->>Settings: Einstellungen abrufen
+    Settings-->>System: Aktuelle Einstellungen zurückgeben
+    System-->>User: Anrufbenachrichtigungen aktiviert
+    User->>Settings: Einstellungen ändern
+    Settings-->>User: Änderungen gespeichert
+    User->>System: Anrufbenachrichtigungen deaktivieren
+    System->>Settings: Einstellungen aktualisieren
+    Settings-->>System: Einstellungen aktualisiert
+    System-->>User: Anrufbenachrichtigungen deaktiviert

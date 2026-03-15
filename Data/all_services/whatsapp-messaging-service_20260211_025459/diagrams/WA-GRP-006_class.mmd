@@ -1,0 +1,25 @@
+classDiagram
+    class Community {
+        +String name
+        +String description
+        +List<Group> groups
+        +addGroup(Group group)
+        +removeGroup(Group group)
+    }
+
+    class Group {
+        +String name
+        +String description
+        +List<Member> members
+        +addMember(Member member)
+        +removeMember(Member member)
+    }
+
+    class Member {
+        +String username
+        +String email
+        +String role
+    }
+
+    Community "1" -- "0..*" Group : contains
+    Group "1" -- "0..*" Member : includes

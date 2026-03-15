@@ -1,0 +1,15 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Verifiziertes Business System Architecture
+
+    Person(customer, "Kunde", "Ein Benutzer, der ein Business verifizieren möchte.")
+    Person(admin, "Administrator", "Ein Benutzer, der das System verwaltet.")
+    
+    System(verifiziertesBusiness, "Verifiziertes Business", "Ein System zur Verifizierung von Businesses.")
+
+    System_Ext(externalService, "Externer Verifizierungsdienst", "Ein externer Dienst zur Überprüfung von Business-Daten.")
+
+    Rel(customer, verifiziertesBusiness, "Verifiziert Business anfordern")
+    Rel(admin, verifiziertesBusiness, "Verwaltet das System")
+    Rel(verifiziertesBusiness, externalService, "Sendet Verifizierungsanfragen")
+    Rel(externalService, verifiziertesBusiness, "Sendet Verifizierungsergebnisse zurück")

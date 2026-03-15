@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "Chat Anpinnen System Context", "description": "System architecture for enabling pinning of important chats." } }%%
+C4Context
+    Person(user, "User", "A user who interacts with the chat system.")
+    System(chatSystem, "Chat Anpinnen System", "Allows users to pin important chats.")
+    System_Ext(chatService, "Chat Service", "External chat service that manages chat data.")
+    
+    Rel(user, chatSystem, "Uses")
+    Rel(chatSystem, chatService, "Fetches and stores chat data")

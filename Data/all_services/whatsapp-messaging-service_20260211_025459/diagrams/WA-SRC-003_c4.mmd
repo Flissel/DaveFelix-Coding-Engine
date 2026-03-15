@@ -1,0 +1,6 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A[User] -->|Uses| B(Chat-Suche)
+    B -->|Fetches| C[Chat Database]
+    B -->|Fetches| D[Contact Database]
+    A -->|Receives Results| B

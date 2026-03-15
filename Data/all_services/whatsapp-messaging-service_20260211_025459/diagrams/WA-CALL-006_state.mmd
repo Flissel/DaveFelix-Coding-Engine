@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> AnrufEntgegengenommen
+    AnrufEntgegengenommen --> AnrufAblehnen
+    AnrufAblehnen --> NachrichtErstellen
+    NachrichtErstellen --> NachrichtGesendet
+    NachrichtGesendet --> [*]
+
+    AnrufEntgegengenommen --> AnrufAnnehmen : Anruf annehmen
+    AnrufAblehnen --> [*] : Anruf abbrechen

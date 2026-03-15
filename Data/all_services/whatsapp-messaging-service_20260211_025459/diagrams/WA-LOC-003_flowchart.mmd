@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Regionale Sticker-Packs?}
+    B -- Ja --> C[Sticker-Packs erstellen]
+    B -- Nein --> D[Standard Sticker-Packs verwenden]
+    C --> E[Sticker-Packs testen]
+    D --> E
+    E --> F{Test erfolgreich?}
+    F -- Ja --> G[Sticker-Packs bereitstellen]
+    F -- Nein --> H[Fehlerbehebung]
+    H --> C
+    G --> I[Ende]

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User as User
+    participant System as GIF System
+    participant Database as GIF Database
+
+    User->>System: Search for GIF
+    System->>Database: Query GIFs based on search term
+    Database-->>System: Return GIF results
+    System-->>User: Display GIF results
+
+    User->>System: Select GIF to send
+    System->>Database: Save selected GIF for sending
+    Database-->>System: Confirm GIF saved
+    System-->>User: GIF ready to send
+
+    User->>System: Send GIF
+    System->>Database: Log sent GIF
+    Database-->>System: Confirm GIF sent
+    System-->>User: Confirm GIF sent successfully

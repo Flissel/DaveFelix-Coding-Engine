@@ -1,0 +1,9 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title System Context Diagram for Kanaele
+    Person(customer, "Customer", "A user who consumes the one-way broadcast channels.")
+    System(kanaele, "Kanaele", "A system that supports one-way broadcast channels.")
+    System_Ext(broadcastService, "Broadcast Service", "External service that provides broadcast capabilities.")
+
+    Rel(customer, kanaele, "Uses", "HTTP")
+    Rel(kanaele, broadcastService, "Integrates with", "API")

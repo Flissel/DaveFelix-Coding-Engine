@@ -1,0 +1,7 @@
+flowchart TD
+    A[Benachrichtigung erhalten] --> B{Antwort erforderlich?}
+    B -- Ja --> C[Antwort direkt aus Benachrichtigung ermöglichen]
+    B -- Nein --> D[Keine Aktion erforderlich]
+    C --> E[Antwort senden]
+    D --> F[Prozess beenden]
+    E --> F

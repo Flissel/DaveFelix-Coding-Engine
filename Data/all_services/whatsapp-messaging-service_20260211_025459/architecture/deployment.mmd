@@ -1,0 +1,54 @@
+graph TB
+    subgraph "AWS Cloud"
+        subgraph "EKS Cluster"
+            subgraph "API Gateway Namespace"
+                A[Kong Gateway Pod]
+            end
+            
+            subgraph "Services Namespace"
+                B[Auth Service Pods]
+                C[Profile Service Pods]
+                D[Messaging Service Pods]
+                E[Chat Service Pods]
+                F[WebSocket Service Pods]
+                G[Media Service Pods]
+                H[Notification Worker Pods]
+            end
+            
+            subgraph "Data Namespace"
+                I[PostgreSQL StatefulSet]
+                J[Redis StatefulSet]
+                K[Kafka StatefulSet]
+            end
+        end
+        
+        subgraph "AWS Services"
+            L[S3 Bucket]
+            M[Application Load Balancer]
+            N[CloudWatch]
+            O[Route 53]
+        end
+        
+        subgraph "External"
+            P[GitHub Actions]
+            Q[Docker Registry]
+        end
+    end
+    
+    O --> M
+    M --> A
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    B --> I
+    C --> I
+    D --> I
+    E --> I
+    F --> J
+    G --> L
+    H --> K
+    P --> Q
+    Q --> EKS

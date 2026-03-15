@@ -1,0 +1,18 @@
+flowchart TD
+    A[Start] --> B{Ist das Business registriert?}
+    B -- Ja --> C{Sind die Dokumente vollständig?}
+    B -- Nein --> D[Business registrieren]
+    D --> B
+
+    C -- Ja --> E[Verifizierung durchführen]
+    C -- Nein --> F[Dokumente anfordern]
+    F --> C
+
+    E --> G[Verifizierung erfolgreich]
+    E --> H[Verifizierung fehlgeschlagen]
+    
+    G --> I[Business verifiziert]
+    H --> J[Fehlerbericht erstellen]
+    
+    I --> K[Ende]
+    J --> K

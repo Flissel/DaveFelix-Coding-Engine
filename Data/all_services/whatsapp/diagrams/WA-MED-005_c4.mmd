@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Sticker System Context Diagram
+
+    Person(user, "User", "A person using the chat application.")
+    System(stickerSystem, "Sticker System", "A system that supports stickers in chats.")
+
+    System_Ext(chatApp, "Chat Application", "The application where users send messages.")
+    System_Ext(stickerRepo, "Sticker Repository", "A repository of stickers available for use.")
+
+    Rel(user, chatApp, "Uses")
+    Rel(chatApp, stickerSystem, "Integrates with")
+    Rel(stickerSystem, stickerRepo, "Fetches stickers from")

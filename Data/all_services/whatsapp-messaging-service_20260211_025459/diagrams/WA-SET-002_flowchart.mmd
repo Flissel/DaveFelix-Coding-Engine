@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Ist Lesebestaetigung konfigurierbar?}
+    B -- Ja --> C[Lesebestaetigung aktivieren]
+    B -- Nein --> D[System anpassen]
+    D --> E[Lesebestaetigung implementieren]
+    E --> C
+    C --> F[Lesebestaetigung bereitstellen]
+    F --> G[Ende]

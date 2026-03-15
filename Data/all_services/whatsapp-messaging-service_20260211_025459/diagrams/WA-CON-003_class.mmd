@@ -1,0 +1,21 @@
+classDiagram
+    class Favoriten {
+        +String id
+        +String name
+        +String phoneNumber
+        +String email
+        +void addFavorit()
+        +void removeFavorit()
+        +List<Favoriten> getFavoriten()
+    }
+
+    class User {
+        +String userId
+        +String username
+        +String password
+        +void login()
+        +void logout()
+        +List<Favoriten> getUserFavoriten()
+    }
+
+    User "1" -- "0..*" Favoriten : has

@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Encryption as Verschlüsselung
+
+    User->>System: Initiate Video Call
+    System->>Encryption: Encrypt Video Stream
+    Encryption-->>System: Encrypted Video Stream
+    System-->>User: Start Video Call with Encrypted Stream
+    User->>System: Send Video Data
+    System->>Encryption: Encrypt Video Data
+    Encryption-->>System: Encrypted Video Data
+    System-->>User: Transmit Encrypted Video Data
+    User->>System: End Video Call
+    System-->>Encryption: Terminate Encryption
+    Encryption-->>System: Encryption Terminated
+    System-->>User: Video Call Ended

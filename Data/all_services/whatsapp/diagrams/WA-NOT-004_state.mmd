@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Aktiviert
+    [*] --> Deaktiviert
+
+    Aktiviert --> Deaktiviert : Deaktivieren
+    Deaktiviert --> Aktiviert : Aktivieren
+
+    Aktiviert --> Wartend : Warten
+    Wartend --> Aktiviert : Fortfahren
+    Wartend --> Deaktiviert : Deaktivieren

@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+    participant Message as Nachricht
+
+    Nutzer->>System: Sendet Nachricht
+    System->>Nachricht: Zeigt Nachricht an
+    Nutzer->>System: Wählt Emoji-Reaktion
+    System->>Nachricht: Aktualisiert Emoji-Reaktion
+    System->>Nutzer: Bestätigt Reaktion

@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> LightMode
+    [*] --> DarkMode
+
+    LightMode --> DarkMode : Switch to Dark Mode
+    DarkMode --> LightMode : Switch to Light Mode

@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Bildbearbeitungssystem
+
+    User->>System: Bild hochladen
+    System->>User: Bild erfolgreich hochgeladen
+    User->>System: Bild bearbeiten (z.B. zuschneiden, filtern)
+    System->>User: Bildbearbeitung abgeschlossen
+    User->>System: Bild senden
+    System->>User: Bild erfolgreich gesendet

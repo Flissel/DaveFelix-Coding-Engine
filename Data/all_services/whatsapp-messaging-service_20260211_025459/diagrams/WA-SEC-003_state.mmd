@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Authentifizierung
+    Authentifizierung --> Authentifiziert : Erfolgreiche Authentifizierung
+    Authentifizierung --> Nicht Authentifiziert : Fehlgeschlagene Authentifizierung
+    Nicht Authentifiziert --> Authentifizierung : Erneute Authentifizierung
+    Authentifiziert --> App-Sperre : Aktivierung der App-Sperre
+    App-Sperre --> Authentifiziert : Deaktivierung der App-Sperre
+    App-Sperre --> [*] : Beenden der App-Sperre

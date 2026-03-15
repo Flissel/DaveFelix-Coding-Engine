@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Info/Status Text
+    Person(user, "User", "A user who wants to view or update their profile information.")
+    System(system, "Info/Status Text System", "A system that supports a short info text in the user profile.")
+    
+    Rel(user, system, "Uses")

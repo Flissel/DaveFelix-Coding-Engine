@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> pending
+    pending --> active : reaction_added [valid_emoji] / store_reaction
+    pending --> removed : add_failed / cleanup_pending_reaction
+    active --> updating : reaction_changed [valid_emoji] / prepare_update
+    active --> sync_pending : sync_requested / initiate_device_sync
+    active --> removed : reaction_removed / mark_for_deletion
+    updating --> active : update_completed / apply_changes
+    updating --> active : update_failed / revert_changes
+    sync_pending --> active : sync_completed / confirm_sync_success
+    sync_pending --> sync_failed : sync_failed / log_sync_error
+    sync_failed --> sync_pending : retry_sync [retry_count_valid] / increment_retry_count
+    sync_failed --> active : sync_abandoned / reset_sync_state
+    removed --> [*]

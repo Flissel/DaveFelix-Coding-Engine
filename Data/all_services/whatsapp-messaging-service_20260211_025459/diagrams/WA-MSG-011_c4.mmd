@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Broadcast-Listen System Context Diagram
+
+    Person(user, "User", "A person who receives mass messages")
+    System(broadcastListenSystem, "Broadcast-Listen System", "Supports broadcasting messages to multiple recipients")
+    
+    System_Ext(messagingService, "Messaging Service", "External service for sending messages")
+    System_Ext(database, "Database", "Stores user information and message history")
+
+    Rel(user, broadcastListenSystem, "Uses")
+    Rel(broadcastListenSystem, messagingService, "Sends messages to")
+    Rel(broadcastListenSystem, database, "Reads from and writes to")

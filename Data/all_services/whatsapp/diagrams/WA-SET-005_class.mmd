@@ -1,0 +1,19 @@
+classDiagram
+    class Gruppe {
+        +String name
+        +String beschreibung
+        +List<Benutzer> mitglieder
+        +List<Benutzer> einladendeBenutzer
+        +void einladen(Benutzer benutzer)
+        +void hinzufuegen(Benutzer benutzer)
+    }
+
+    class Benutzer {
+        +String name
+        +String email
+        +List<Gruppe> gruppen
+        +boolean darfEinladen
+    }
+
+    Gruppe "1" -- "*" Benutzer : hat
+    Benutzer "1" -- "*" Gruppe : istMitgliedVon

@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Status-Datenschutz System Context Diagram
+
+    Person(admin, "Administrator", "Manages system configurations and user access")
+    Person(user, "User", "Interacts with the system to set and view status visibility")
+
+    System(statusDatenschutz, "Status-Datenschutz", "Provides configurable status visibility")
+
+    Rel(admin, statusDatenschutz, "Configures status visibility settings")
+    Rel(user, statusDatenschutz, "Views and sets status visibility")

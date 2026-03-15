@@ -1,0 +1,25 @@
+classDiagram
+    class BusinessProfile {
+        +String name
+        +String description
+        +List<String> categories
+        +String contactInfo
+        +List<SocialMedia> socialMediaLinks
+        +void updateProfile()
+    }
+
+    class SocialMedia {
+        +String platform
+        +String url
+    }
+
+    class User {
+        +String username
+        +String email
+        +BusinessProfile businessProfile
+        +void createProfile()
+        +void editProfile()
+    }
+
+    BusinessProfile "1" -- "0..*" SocialMedia : contains
+    User "1" -- "1" BusinessProfile : owns

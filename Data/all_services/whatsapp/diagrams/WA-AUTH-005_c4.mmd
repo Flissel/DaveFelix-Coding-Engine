@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Passkey-Unterstuetzung System Architecture
+
+    Person(user, "User", "A user who wants to log in without a password.")
+    System(passkeySystem, "Passkey System", "A system that supports passwordless login via Passkeys.")
+    System_Ext(authenticationService, "Authentication Service", "External service for authentication.")
+    System_Ext(deviceManager, "Device Manager", "External service that manages user devices.")
+
+    Rel(user, passkeySystem, "Uses")
+    Rel(passkeySystem, authenticationService, "Authenticates using")
+    Rel(passkeySystem, deviceManager, "Manages devices with")

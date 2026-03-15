@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Chat archivieren?}
+    B -- Ja --> C[Chat auswählen]
+    B -- Nein --> D[Prozess beenden]
+    C --> E[Archivierungsoptionen anzeigen]
+    E --> F[Archivierungsbestätigung]
+    F --> G{Bestätigung erhalten?}
+    G -- Ja --> H[Chat archiviert]
+    G -- Nein --> I[Fehlerbehandlung]
+    H --> J[Prozess beenden]
+    I --> J
+    D --> J

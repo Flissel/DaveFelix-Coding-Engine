@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant API as Business-API
+    participant System as System
+
+    User->>API: Anfrage für API-Zugang
+    API->>System: Überprüfung der Berechtigungen
+    System-->>API: Berechtigungen gültig
+    API-->>User: Zugang gewährt
+    User->>API: API-Anfrage senden
+    API->>System: Anfrage verarbeiten
+    System-->>API: Antwort generieren
+    API-->>User: Antwort zurücksenden

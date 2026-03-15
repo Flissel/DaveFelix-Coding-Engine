@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Anruflink-System
+
+    User->>System: Anruflink anfordern
+    System-->>User: Anruflink generieren
+    User->>System: Geplanten Anruf bestätigen
+    System-->>User: Bestätigung des Anruflinks senden
+    User->>System: Anruflink verwenden
+    System-->>User: Anruf initiieren

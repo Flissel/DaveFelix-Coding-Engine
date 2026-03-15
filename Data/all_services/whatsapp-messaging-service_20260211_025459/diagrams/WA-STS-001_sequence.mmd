@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Status erstellen anfordern
+    System->>User: Eingabeformular anzeigen
+    User->>System: Statusinformationen eingeben
+    System->>User: Statusvorschau anzeigen
+    User->>System: Status bestätigen
+    System->>User: Status erfolgreich erstellt

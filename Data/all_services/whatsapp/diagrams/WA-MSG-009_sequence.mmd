@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Media as Medien
+
+    User->>System: Anforderung für View-Once Medien
+    System->>Media: Abrufen von View-Once Medien
+    Media-->>System: Bereitstellung der Medien
+    System-->>User: Anzeige der View-Once Medien
+    User->>System: Medien ansehen
+    System->>User: Medien werden einmalig angezeigt
+    User->>System: Medien schließen
+    System->>Media: Medien als angesehen markieren

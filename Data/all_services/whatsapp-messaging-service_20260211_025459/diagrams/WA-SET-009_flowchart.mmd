@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{User Preference}
+    B -->|Enable Dark Mode| C[Activate Dark Mode]
+    B -->|Disable Dark Mode| D[Activate Light Mode]
+    C --> E[Update UI Colors]
+    D --> E
+    E --> F[Save User Preference]
+    F --> G[End]

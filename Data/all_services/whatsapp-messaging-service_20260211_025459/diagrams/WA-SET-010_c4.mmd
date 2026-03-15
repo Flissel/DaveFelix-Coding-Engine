@@ -1,0 +1,8 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Sprache System Context Diagram
+
+    Person(customer, "Kunde", "Nutzt das System, um Inhalte in verschiedenen Sprachen zu konsumieren.")
+    System(spracheSystem, "Sprache System", "Ein System, das mehrere Sprachen unterstützt.")
+
+    Rel(customer, spracheSystem, "Verwendet")

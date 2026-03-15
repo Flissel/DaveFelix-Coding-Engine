@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "Umfragen System Context Diagram", "description": "Das System MUSS Umfragen in Gruppen und Einzelchats unterstuetzen" } }%%
+C4Context
+    Person(user, "Benutzer", "Nutzer, der Umfragen erstellt und beantwortet")
+    System(umfragenSystem, "Umfragen System", "System zur Erstellung und Verwaltung von Umfragen")
+    System_Ext(gruppenChat, "Gruppenchat", "Plattform für Gruppenchats")
+    System_Ext(einzelChat, "Einzelchat", "Plattform für Einzelchats")
+
+    Rel(user, umfragenSystem, "verwendet")
+    Rel(umfragenSystem, gruppenChat, "unterstützt Umfragen in")
+    Rel(umfragenSystem, einzelChat, "unterstützt Umfragen in")

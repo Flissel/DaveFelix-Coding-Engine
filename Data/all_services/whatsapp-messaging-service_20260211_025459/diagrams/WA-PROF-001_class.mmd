@@ -1,0 +1,18 @@
+classDiagram
+    class User {
+        +String username
+        +String email
+        +String profilePicture
+        +uploadProfilePicture()
+        +deleteProfilePicture()
+        +updateProfilePicture()
+    }
+
+    class ProfilePicture {
+        +String imagePath
+        +String uploadDate
+        +String format
+        +getImageDetails()
+    }
+
+    User "1" -- "0..1" ProfilePicture : has

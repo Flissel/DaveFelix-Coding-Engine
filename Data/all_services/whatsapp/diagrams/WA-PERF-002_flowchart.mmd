@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{System Check}
+    B -->|Pass| C[Load App Components]
+    B -->|Fail| D[Error Handling]
+    C --> E[Initialize App]
+    E --> F{User Interaction}
+    F -->|Yes| G[Process User Input]
+    F -->|No| H[Idle State]
+    G --> I[Update App State]
+    I --> F
+    D --> J[Notify User]
+    J --> A

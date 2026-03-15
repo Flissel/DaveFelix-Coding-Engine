@@ -1,0 +1,14 @@
+erDiagram
+    USER {
+        string id PK
+        string name
+        string phone_number
+    }
+
+    PROFILE {
+        string id PK
+        string user_id FK
+        string display_name
+    }
+
+    USER ||--o{ PROFILE : has

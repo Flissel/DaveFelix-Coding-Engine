@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant VideoService as VideoService
+
+    User->>System: Anfrage für Videoanruf
+    System->>VideoService: Initiieren des Videoanrufs
+    VideoService-->>System: Videoanruf-Details (verschlüsselt)
+    System-->>User: Videoanruf-Details (verschlüsselt)
+    User->>VideoService: Verbindung zum Videoanruf herstellen
+    VideoService-->>User: Videoanruf gestartet

@@ -1,0 +1,194 @@
+{
+  "project_id": "whatsapp-messaging-service",
+  "generated_at": "2026-02-12T17:16:36.141157",
+  "link_types": [
+    {
+      "id": "req-story",
+      "from_type": "requirement",
+      "to_type": "user-story",
+      "relation": "implements",
+      "color": "#1d9bf0",
+      "label": "implementiert",
+      "label_en": "implements",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "epic-story",
+      "from_type": "epic",
+      "to_type": "user-story",
+      "relation": "derives",
+      "color": "#7856ff",
+      "label": "leitet ab",
+      "label_en": "derives",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "story-test",
+      "from_type": "user-story",
+      "to_type": "test",
+      "relation": "verified_by",
+      "color": "#00ba7c",
+      "label": "getestet durch",
+      "label_en": "tested by",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "req-diagram",
+      "from_type": "requirement",
+      "to_type": "diagram",
+      "relation": "visualized_by",
+      "color": "#ffd400",
+      "label": "visualisiert",
+      "label_en": "visualized by",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "persona-story",
+      "from_type": "persona",
+      "to_type": "user-story",
+      "relation": "needs",
+      "color": "#f97316",
+      "label": "benoetigt",
+      "label_en": "needs",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "req-api",
+      "from_type": "requirement",
+      "to_type": "api",
+      "relation": "exposes",
+      "color": "#ff7a00",
+      "label": "exponiert",
+      "label_en": "exposes",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "comp-api",
+      "from_type": "component",
+      "to_type": "api",
+      "relation": "calls",
+      "color": "#ff7a00",
+      "label": "ruft auf",
+      "label_en": "calls",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "test-api",
+      "from_type": "test",
+      "to_type": "api",
+      "relation": "validates",
+      "color": "#f4212e",
+      "label": "validiert",
+      "label_en": "validates",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "api-entity",
+      "from_type": "api",
+      "to_type": "entity",
+      "relation": "manages",
+      "color": "#6366f1",
+      "label": "verwaltet",
+      "label_en": "manages",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "req-entity",
+      "from_type": "requirement",
+      "to_type": "entity",
+      "relation": "models",
+      "color": "#6366f1",
+      "label": "modelliert",
+      "label_en": "models",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "entity-api",
+      "from_type": "entity",
+      "to_type": "api",
+      "relation": "served_by",
+      "color": "#6366f1",
+      "label": "bedient durch",
+      "label_en": "served by",
+      "style": "solid",
+      "arrow": true
+    },
+    {
+      "id": "diagram-entity",
+      "from_type": "diagram",
+      "to_type": "entity",
+      "relation": "shows",
+      "color": "#ffd400",
+      "label": "zeigt",
+      "label_en": "shows",
+      "style": "solid",
+      "arrow": true
+    }
+  ],
+  "node_types": [
+    {
+      "id": "api",
+      "color": "#ff7a00",
+      "icon": "&#128268;",
+      "label": "API"
+    },
+    {
+      "id": "component",
+      "color": "#84cc16",
+      "icon": "&#129513;",
+      "label": "Component"
+    },
+    {
+      "id": "diagram",
+      "color": "#ffd400",
+      "icon": "&#128202;",
+      "label": "Diagram"
+    },
+    {
+      "id": "entity",
+      "color": "#6366f1",
+      "icon": "&#128451;",
+      "label": "Entity"
+    },
+    {
+      "id": "epic",
+      "color": "#7856ff",
+      "icon": "&#127919;",
+      "label": "Epic"
+    },
+    {
+      "id": "persona",
+      "color": "#f97316",
+      "icon": "&#128100;",
+      "label": "Persona"
+    },
+    {
+      "id": "requirement",
+      "color": "#1d9bf0",
+      "icon": "&#128203;",
+      "label": "Requirement"
+    },
+    {
+      "id": "test",
+      "color": "#f4212e",
+      "icon": "&#129514;",
+      "label": "Test"
+    },
+    {
+      "id": "user-story",
+      "color": "#00ba7c",
+      "icon": "&#128214;",
+      "label": "User Story"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant User1 as User 1
+    participant User2 as User 2
+    participant User3 as User 3
+    participant System as Gruppenanruf System
+
+    User1->>System: Initiate group call
+    System-->>User1: Call setup confirmation
+    User2->>System: Join group call
+    System-->>User2: Join confirmation
+    User3->>System: Join group call
+    System-->>User3: Join confirmation
+    System-->>User1: Notify users joined
+    User1->>System: Start video/audio stream
+    System-->>User1: Stream started
+    System-->>User2: Stream started
+    System-->>User3: Stream started
+    User1->>User2: Communicate
+    User1->>User3: Communicate
+    User2->>User3: Communicate
+    User3->>User1: Communicate
+    User3->>System: Leave group call
+    System-->>User3: Leave confirmation
+    User2->>System: Leave group call
+    System-->>User2: Leave confirmation
+    User1->>System: End group call
+    System-->>User1: Call ended

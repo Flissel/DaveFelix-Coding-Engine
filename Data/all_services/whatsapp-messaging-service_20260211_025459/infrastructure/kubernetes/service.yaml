@@ -1,0 +1,13 @@
+# Kubernetes Service for whatsapp_messaging_service
+apiVersion: v1
+kind: Service
+metadata:
+  name: whatsapp_messaging_service
+spec:
+  selector:
+    app: whatsapp_messaging_service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

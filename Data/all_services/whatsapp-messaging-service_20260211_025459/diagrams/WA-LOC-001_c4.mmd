@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title RTL-Unterstützung System Context Diagram
+
+    Person(user, "User", "A user who interacts with the system.")
+    System(rtlSystem, "RTL-Unterstützung System", "A system that fully supports right-to-left languages.")
+
+    Rel(user, rtlSystem, "Uses")
+
+    System_Ext(externalService, "External Translation Service", "Provides translation services for RTL languages.")
+    Rel(rtlSystem, externalService, "Requests translations from")
+
+    System_Ext(database, "Database", "Stores user preferences and language settings.")
+    Rel(rtlSystem, database, "Reads/Writes user preferences")

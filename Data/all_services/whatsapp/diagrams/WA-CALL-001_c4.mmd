@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Sprachanruf System Context Diagram
+    Person(user, "User", "A user making a voice call")
+    System(sprachanruf, "Sprachanruf", "A system that supports encrypted voice calls")
+    System_Ext(telecom, "Telecommunication Network", "Network for voice transmission")
+    
+    Rel(user, sprachanruf, "Makes encrypted voice calls")
+    Rel(sprachanruf, telecom, "Transmits voice data securely")

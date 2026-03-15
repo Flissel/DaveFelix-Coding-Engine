@@ -1,0 +1,15 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Benachrichtigungsvorschau System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Benachrichtigungen empfängt.")
+    
+    System(bvSystem, "Benachrichtigungsvorschau", "Ein System, das konfigurierbare Benachrichtigungsvorschauen bietet.")
+
+    Rel(user, bvSystem, "Nutzt")
+
+    System_Ext(emailService, "E-Mail-Dienst", "Ein externer Dienst zum Versenden von E-Mails.")
+    Rel(bvSystem, emailService, "Sendet Benachrichtigungen über")
+
+    System_Ext(notificationService, "Benachrichtigungsdienst", "Ein externer Dienst zur Verwaltung von Benachrichtigungen.")
+    Rel(bvSystem, notificationService, "Empfängt Benachrichtigungsdaten von")

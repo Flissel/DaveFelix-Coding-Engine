@@ -1,0 +1,14 @@
+classDiagram
+    class Kontrast {
+        +checkContrast(color1: String, color2: String): Boolean
+        +getContrastRatio(color1: String, color2: String): Float
+        +isAccessible(color1: String, color2: String): Boolean
+    }
+    
+    class Color {
+        +hex: String
+        +name: String
+        +getLuminance(): Float
+    }
+    
+    Kontrast --> Color : uses

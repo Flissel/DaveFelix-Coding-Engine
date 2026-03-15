@@ -1,0 +1,24 @@
+classDiagram
+    class Erwaehnung {
+        +String username
+        +DateTime timestamp
+        +String message
+        +void notifyUser()
+    }
+
+    class Gruppenchats {
+        +String chatID
+        +List<Erwaehnung> mentions
+        +void addMention(Erwaehnung mention)
+        +List<Erwaehnung> getMentions()
+    }
+
+    class User {
+        +String userID
+        +String displayName
+        +void sendMessage(String message)
+        +void receiveMention(Erwaehnung mention)
+    }
+
+    User "1" -- "0..*" Gruppenchats : participates in
+    Gruppenchats "1" -- "0..*" Erwaehnung : contains

@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B[Datennutzung Initiieren]
+    B --> C{Kontrolle ueber Datenverbrauch?}
+    C -->|Ja| D[System bietet Kontrolle]
+    C -->|Nein| E[System ohne Kontrolle]
+    D --> F[Datennutzung fortsetzen]
+    E --> F
+    F --> G[Ende]

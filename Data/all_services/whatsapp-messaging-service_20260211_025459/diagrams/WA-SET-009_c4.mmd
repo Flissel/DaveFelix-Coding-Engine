@@ -1,0 +1,16 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Uses| B[Dark Mode System]
+    B -->|Interacts with| C[User Interface]
+    B -->|Saves preferences to| D[Preferences Storage]
+    B -->|Fetches themes from| E[Theme Repository]
+    A -->|Requests| F[Help Documentation]
+
+    classDef user fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef system fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef storage fill:#ffb,stroke:#333,stroke-width:2px;
+    
+    class A user;
+    class B system;
+    class D storage;
+    class E storage;

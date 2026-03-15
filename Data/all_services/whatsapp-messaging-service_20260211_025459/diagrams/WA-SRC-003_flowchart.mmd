@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Benutzer gibt Suchbegriff ein}
+    B -->|Ja| C[Suche in Chats/Kontakten]
+    B -->|Nein| D[Fehlermeldung: Bitte Suchbegriff eingeben]
+    C --> E{Ergebnisse gefunden?}
+    E -->|Ja| F[Zeige Ergebnisse an]
+    E -->|Nein| G[Fehlermeldung: Keine Ergebnisse gefunden]
+    F --> H[Ende]
+    G --> H
+    D --> H

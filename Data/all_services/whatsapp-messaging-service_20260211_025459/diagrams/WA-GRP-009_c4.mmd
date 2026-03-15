@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Events planen
+    Person(admin, "Admin", "Verwaltet die Event-Planung")
+    Person(user, "Benutzer", "Nimmt an Events teil und plant Events")
+    System(system, "Events planen", "Unterstützt die Event-Planung in Gruppen")
+
+    Rel(admin, system, "Verwaltet")
+    Rel(user, system, "Nimmt teil und plant")

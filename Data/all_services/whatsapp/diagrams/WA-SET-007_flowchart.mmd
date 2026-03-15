@@ -1,0 +1,15 @@
+flowchart TD
+    A[Start] --> B{Datenverbrauch kontrollieren?}
+    B -- Ja --> C[System zeigt aktuellen Datenverbrauch]
+    B -- Nein --> D[System fordert Nutzer zur Kontrolle auf]
+    D --> B
+    C --> E{Datenverbrauch akzeptabel?}
+    E -- Ja --> F[Weiterer Gebrauch der Daten]
+    E -- Nein --> G[System gibt Warnung aus]
+    G --> H[Optionen zur Reduzierung des Verbrauchs]
+    H --> I{Nutzer wählt Option?}
+    I -- Ja --> J[Option wird umgesetzt]
+    I -- Nein --> K[System bietet weitere Optionen an]
+    K --> H
+    J --> C
+    F --> L[Ende]

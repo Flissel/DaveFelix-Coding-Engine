@@ -1,0 +1,22 @@
+classDiagram
+    class User {
+        +String username
+        +String onlineStatus
+        +DateTime lastOnline
+        +void updateStatus(String status)
+        +void configureVisibility(boolean isVisible)
+    }
+
+    class OnlineStatus {
+        +String status
+        +DateTime timestamp
+    }
+
+    class VisibilitySettings {
+        +boolean isVisible
+        +void setVisibility(boolean visibility)
+        +boolean getVisibility()
+    }
+
+    User --> OnlineStatus : "has"
+    User --> VisibilitySettings : "uses"

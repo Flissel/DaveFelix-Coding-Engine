@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Ist das System speichereffizient?}
+    B -->|Ja| C[System läuft optimal]
+    B -->|Nein| D[Analyse der Speicherverwendung]
+    D --> E{Optimierungsmöglichkeiten identifizieren}
+    E -->|Ja| F[Implementierung von Optimierungen]
+    E -->|Nein| G[System anpassen]
+    F --> H[Überprüfung der Effizienz]
+    G --> H
+    H --> B

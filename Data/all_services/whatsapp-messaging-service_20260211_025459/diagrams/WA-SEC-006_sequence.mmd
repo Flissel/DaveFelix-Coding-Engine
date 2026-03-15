@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Auth as Authentifizierungsdienst
+
+    User->>System: Anmeldung
+    System->>User: Anfrage nach zusätzlicher PIN
+    User->>System: Eingabe der PIN
+    System->>Authentifizierungsdienst: Überprüfung der PIN
+    Auth->>System: Bestätigung der PIN
+    System->>User: Zugang gewährt

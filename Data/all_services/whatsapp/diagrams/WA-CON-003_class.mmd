@@ -1,0 +1,31 @@
+classDiagram
+    class Favoriten {
+        +int id
+        +string name
+        +string phoneNumber
+        +string email
+        +void addFavorit()
+        +void removeFavorit()
+        +void listFavoriten()
+    }
+
+    class Benutzer {
+        +int benutzerId
+        +string benutzerName
+        +string passwort
+        +void anmelden()
+        +void abmelden()
+    }
+
+    class Kontakt {
+        +int kontaktId
+        +string vorname
+        +string nachname
+        +string telefon
+        +string email
+        +void speichern()
+        +void loeschen()
+    }
+
+    Benutzer "1" -- "0..*" Favoriten : besitzt
+    Favoriten "0..*" -- "1" Kontakt : referenziert

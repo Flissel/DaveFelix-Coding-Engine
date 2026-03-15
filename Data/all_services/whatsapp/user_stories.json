@@ -1,0 +1,1262 @@
+[
+  {
+    "id": "US-001",
+    "title": "Telefonnummer-Registrierung",
+    "priority": "MUST",
+    "linked_requirement": "WA-AUTH-001",
+    "as_a": "new user",
+    "i_want": "register with a mobile phone number and complete verification",
+    "so_that": "to securely create an account and access the system",
+    "description": "As a new user I want to register with a mobile phone number and complete verification so that to securely create an account and access the system"
+  },
+  {
+    "id": "US-002",
+    "title": "Zwei-Faktor-Authentifizierung",
+    "priority": "MUST",
+    "linked_requirement": "WA-AUTH-002",
+    "as_a": "registered user",
+    "i_want": "enable and use optional two-factor authentication with a 6-digit PIN",
+    "so_that": "increase account security against unauthorized access",
+    "description": "As a registered user I want to enable and use optional two-factor authentication with a 6-digit PIN so that increase account security against unauthorized access"
+  },
+  {
+    "id": "US-003",
+    "title": "Biometrische Entsperrung",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-AUTH-003",
+    "as_a": "registrierter Benutzer",
+    "i_want": "mich per Fingerabdruck oder Face ID entsperren",
+    "so_that": "um mich schneller und sicherer anzumelden, ohne mein Passwort eingeben zu muessen",
+    "description": "As a registrierter Benutzer I want to mich per Fingerabdruck oder Face ID entsperren so that um mich schneller und sicherer anzumelden, ohne mein Passwort eingeben zu muessen"
+  },
+  {
+    "id": "US-004",
+    "title": "Multi-Device Support",
+    "priority": "MUST",
+    "linked_requirement": "WA-AUTH-004",
+    "as_a": "registered user",
+    "i_want": "use the system concurrently on multiple devices",
+    "so_that": "to stay productive and continue work seamlessly across devices",
+    "description": "As a registered user I want to use the system concurrently on multiple devices so that to stay productive and continue work seamlessly across devices"
+  },
+  {
+    "id": "US-005",
+    "title": "Passkey-Unterstuetzung",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-AUTH-005",
+    "as_a": "registered user",
+    "i_want": "sign in using a passkey instead of a password",
+    "so_that": "to access my account quickly and securely without remembering a password",
+    "description": "As a registered user I want to sign in using a passkey instead of a password so that to access my account quickly and securely without remembering a password"
+  },
+  {
+    "id": "US-006",
+    "title": "Profilbild",
+    "priority": "MUST",
+    "linked_requirement": "WA-PROF-001",
+    "as_a": "registered user",
+    "i_want": "upload and manage a profile picture",
+    "so_that": "so that my account is easily recognizable and personalized",
+    "description": "As a registered user I want to upload and manage a profile picture so that so that my account is easily recognizable and personalized"
+  },
+  {
+    "id": "US-007",
+    "title": "Anzeigename",
+    "priority": "MUST",
+    "linked_requirement": "WA-PROF-002",
+    "as_a": "registered user",
+    "i_want": "set and update my configurable display name",
+    "so_that": "so that my preferred name is shown to others while keeping my account identity consistent",
+    "description": "As a registered user I want to set and update my configurable display name so that so that my preferred name is shown to others while keeping my account identity consistent"
+  },
+  {
+    "id": "US-008",
+    "title": "Info/Status Text",
+    "priority": "MUST",
+    "linked_requirement": "WA-PROF-003",
+    "as_a": "registered user",
+    "i_want": "add or update a short info/status text in my profile",
+    "so_that": "so that others can quickly understand my current status or information",
+    "description": "As a registered user I want to add or update a short info/status text in my profile so that so that others can quickly understand my current status or information"
+  },
+  {
+    "id": "US-009",
+    "title": "Telefonnummer anzeigen",
+    "priority": "MUST",
+    "linked_requirement": "WA-PROF-004",
+    "as_a": "registered user",
+    "i_want": "view my phone number in my profile",
+    "so_that": "so that I can verify my contact information is correct",
+    "description": "As a registered user I want to view my phone number in my profile so that so that I can verify my contact information is correct"
+  },
+  {
+    "id": "US-010",
+    "title": "QR-Code Profil",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-PROF-005",
+    "as_a": "registered user",
+    "i_want": "generate a scannable QR code for my profile",
+    "so_that": "so others can quickly add my profile without manual entry",
+    "description": "As a registered user I want to generate a scannable QR code for my profile so that so others can quickly add my profile without manual entry"
+  },
+  {
+    "id": "US-011",
+    "title": "Textnachricht senden",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-001",
+    "as_a": "registered user",
+    "i_want": "send a text message in real time to another user",
+    "so_that": "to communicate instantly and keep conversations timely",
+    "description": "As a registered user I want to send a text message in real time to another user so that to communicate instantly and keep conversations timely"
+  },
+  {
+    "id": "US-012",
+    "title": "Sprachnachricht",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-002",
+    "as_a": "messaging user",
+    "i_want": "record and send a voice message in a chat",
+    "so_that": "communicate quickly when typing is inconvenient",
+    "description": "As a messaging user I want to record and send a voice message in a chat so that communicate quickly when typing is inconvenient"
+  },
+  {
+    "id": "US-013",
+    "title": "Nachricht loeschen",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-003",
+    "as_a": "registered user",
+    "i_want": "delete a message from my message list",
+    "so_that": "keep my inbox organized and remove irrelevant content",
+    "description": "As a registered user I want to delete a message from my message list so that keep my inbox organized and remove irrelevant content"
+  },
+  {
+    "id": "US-014",
+    "title": "Nachricht bearbeiten",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-004",
+    "as_a": "registered user",
+    "i_want": "edit a message I have already sent",
+    "so_that": "I can correct mistakes or update information for recipients",
+    "description": "As a registered user I want to edit a message I have already sent so that I can correct mistakes or update information for recipients"
+  },
+  {
+    "id": "US-015",
+    "title": "Nachricht weiterleiten",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-005",
+    "as_a": "registered user",
+    "i_want": "forward an existing message to one or more recipients",
+    "so_that": "so that I can quickly share relevant information without retyping",
+    "description": "As a registered user I want to forward an existing message to one or more recipients so that so that I can quickly share relevant information without retyping"
+  },
+  {
+    "id": "US-016",
+    "title": "Nachricht zitieren",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-006",
+    "as_a": "chat user",
+    "i_want": "quote a specific message when replying in a chat",
+    "so_that": "to provide clear context and improve conversation clarity",
+    "description": "As a chat user I want to quote a specific message when replying in a chat so that to provide clear context and improve conversation clarity"
+  },
+  {
+    "id": "US-017",
+    "title": "Reaktionen",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-007",
+    "as_a": "chat user",
+    "i_want": "add an emoji reaction to a message",
+    "so_that": "so that I can quickly express feedback without sending a new message",
+    "description": "As a chat user I want to add an emoji reaction to a message so that so that I can quickly express feedback without sending a new message"
+  },
+  {
+    "id": "US-018",
+    "title": "Verschwindende Nachrichten",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-008",
+    "as_a": "registered user",
+    "i_want": "send a self-destructing message with a specified expiration time",
+    "so_that": "so that sensitive information is automatically removed after a set period",
+    "description": "As a registered user I want to send a self-destructing message with a specified expiration time so that so that sensitive information is automatically removed after a set period"
+  },
+  {
+    "id": "US-019",
+    "title": "Einmal-Ansicht Medien",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-009",
+    "as_a": "messaging user",
+    "i_want": "send and view media that can be opened only once",
+    "so_that": "to share sensitive content with reduced risk of repeated access",
+    "description": "As a messaging user I want to send and view media that can be opened only once so that to share sensitive content with reduced risk of repeated access"
+  },
+  {
+    "id": "US-020",
+    "title": "Chat sperren",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-MSG-010",
+    "as_a": "authenticated user",
+    "i_want": "lock an individual chat with additional authentication",
+    "so_that": "to prevent unauthorized access to sensitive conversations",
+    "description": "As a authenticated user I want to lock an individual chat with additional authentication so that to prevent unauthorized access to sensitive conversations"
+  },
+  {
+    "id": "US-021",
+    "title": "Broadcast-Listen",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-011",
+    "as_a": "messaging administrator",
+    "i_want": "create and use a broadcast list to send a mass message to multiple recipients",
+    "so_that": "to efficiently communicate the same information to many recipients at once",
+    "description": "As a messaging administrator I want to create and use a broadcast list to send a mass message to multiple recipients so that to efficiently communicate the same information to many recipients at once"
+  },
+  {
+    "id": "US-022",
+    "title": "Formatierte Texte",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-012",
+    "as_a": "chat user",
+    "i_want": "format text using basic styles (e.g., bold, italic, underline) while composing a message",
+    "so_that": "so that messages are clearer and emphasize important information",
+    "description": "As a chat user I want to format text using basic styles (e.g., bold, italic, underline) while composing a message so that so that messages are clearer and emphasize important information"
+  },
+  {
+    "id": "US-023",
+    "title": "Erwaehnung (@mention)",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-013",
+    "as_a": "Gruppenchat-Nutzer",
+    "i_want": "einen anderen Teilnehmer mit @mention im Gruppenchat markieren",
+    "so_that": "damit die angesprochene Person gezielt benachrichtigt wird und schneller reagieren kann",
+    "description": "As a Gruppenchat-Nutzer I want to einen anderen Teilnehmer mit @mention im Gruppenchat markieren so that damit die angesprochene Person gezielt benachrichtigt wird und schneller reagieren kann"
+  },
+  {
+    "id": "US-024",
+    "title": "Standort teilen",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-014",
+    "as_a": "registered user",
+    "i_want": "share my current location with another user",
+    "so_that": "so that I can quickly communicate where I am for coordination",
+    "description": "As a registered user I want to share my current location with another user so that so that I can quickly communicate where I am for coordination"
+  },
+  {
+    "id": "US-025",
+    "title": "Kontakt teilen",
+    "priority": "MUST",
+    "linked_requirement": "WA-MSG-015",
+    "as_a": "registered user",
+    "i_want": "share a contact's details with another person",
+    "so_that": "to easily exchange contact information and improve communication",
+    "description": "As a registered user I want to share a contact's details with another person so that to easily exchange contact information and improve communication"
+  },
+  {
+    "id": "US-026",
+    "title": "Gruppe erstellen",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-001",
+    "as_a": "registered user",
+    "i_want": "create a group chat with selected participants and a group name",
+    "so_that": "to communicate efficiently with multiple people in a single conversation",
+    "description": "As a registered user I want to create a group chat with selected participants and a group name so that to communicate efficiently with multiple people in a single conversation"
+  },
+  {
+    "id": "US-027",
+    "title": "Gruppenadministration",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-002",
+    "as_a": "group administrator",
+    "i_want": "manage groups by creating, editing, deleting, and assigning users with roles and permissions",
+    "so_that": "so that user access is controlled efficiently and securely across the system",
+    "description": "As a group administrator I want to manage groups by creating, editing, deleting, and assigning users with roles and permissions so that so that user access is controlled efficiently and securely across the system"
+  },
+  {
+    "id": "US-028",
+    "title": "Gruppeneinstellungen",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-003",
+    "as_a": "group administrator",
+    "i_want": "configure group settings",
+    "so_that": "to tailor group behavior to meet organizational needs and improve collaboration",
+    "description": "As a group administrator I want to configure group settings so that to tailor group behavior to meet organizational needs and improve collaboration"
+  },
+  {
+    "id": "US-029",
+    "title": "Einladungslink",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-004",
+    "as_a": "group administrator",
+    "i_want": "generate and share an invitation link for a group",
+    "so_that": "so that I can onboard members quickly without manual approvals",
+    "description": "As a group administrator I want to generate and share an invitation link for a group so that so that I can onboard members quickly without manual approvals"
+  },
+  {
+    "id": "US-030",
+    "title": "Gruppe verlassen",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-005",
+    "as_a": "group member",
+    "i_want": "leave a group",
+    "so_that": "to exit group participation without notifying other members",
+    "description": "As a group member I want to leave a group so that to exit group participation without notifying other members"
+  },
+  {
+    "id": "US-031",
+    "title": "Community",
+    "priority": "MUST",
+    "linked_requirement": "WA-GRP-006",
+    "as_a": "community administrator",
+    "i_want": "create a community with multiple groups",
+    "so_that": "so that related groups can be managed under a single community for easier organization and governance",
+    "description": "As a community administrator I want to create a community with multiple groups so that so that related groups can be managed under a single community for easier organization and governance"
+  },
+  {
+    "id": "US-032",
+    "title": "Kanaele",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-GRP-007",
+    "as_a": "channel administrator",
+    "i_want": "create and manage a one-way broadcast channel",
+    "so_that": "so that important information can be distributed reliably without member replies cluttering the channel",
+    "description": "As a channel administrator I want to create and manage a one-way broadcast channel so that so that important information can be distributed reliably without member replies cluttering the channel"
+  },
+  {
+    "id": "US-033",
+    "title": "Umfragen",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-GRP-008",
+    "as_a": "registered chat user",
+    "i_want": "create and view polls within group chats and individual chats",
+    "so_that": "so that I can gather quick feedback and make decisions directly in the conversation",
+    "description": "As a registered chat user I want to create and view polls within group chats and individual chats so that so that I can gather quick feedback and make decisions directly in the conversation"
+  },
+  {
+    "id": "US-034",
+    "title": "Events planen",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-GRP-009",
+    "as_a": "group organizer",
+    "i_want": "create and manage an event plan within a group",
+    "so_that": "so that group activities are coordinated and agreed efficiently",
+    "description": "As a group organizer I want to create and manage an event plan within a group so that so that group activities are coordinated and agreed efficiently"
+  },
+  {
+    "id": "US-035",
+    "title": "Sprachanruf",
+    "priority": "MUST",
+    "linked_requirement": "WA-CALL-001",
+    "as_a": "registered user",
+    "i_want": "place and receive encrypted voice calls",
+    "so_that": "so that my conversations remain confidential and compliant with security requirements",
+    "description": "As a registered user I want to place and receive encrypted voice calls so that so that my conversations remain confidential and compliant with security requirements"
+  },
+  {
+    "id": "US-036",
+    "title": "Videoanruf",
+    "priority": "MUST",
+    "linked_requirement": "WA-CALL-002",
+    "as_a": "Endnutzer",
+    "i_want": "einen verschlüsselten Videoanruf starten und führen",
+    "so_that": "um vertrauliche Gespräche sicher zu führen und Datenschutzanforderungen zu erfüllen",
+    "description": "As a Endnutzer I want to einen verschlüsselten Videoanruf starten und führen so that um vertrauliche Gespräche sicher zu führen und Datenschutzanforderungen zu erfüllen"
+  },
+  {
+    "id": "US-037",
+    "title": "Gruppenanruf",
+    "priority": "MUST",
+    "linked_requirement": "WA-CALL-003",
+    "as_a": "registered user",
+    "i_want": "start a group voice or video call with multiple participants",
+    "so_that": "to communicate and collaborate with several people simultaneously",
+    "description": "As a registered user I want to start a group voice or video call with multiple participants so that to communicate and collaborate with several people simultaneously"
+  },
+  {
+    "id": "US-038",
+    "title": "Bildschirmfreigabe",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-CALL-004",
+    "as_a": "call participant",
+    "i_want": "share their screen during a call",
+    "so_that": "so that all participants can view information in real time and collaborate effectively",
+    "description": "As a call participant I want to share their screen during a call so that so that all participants can view information in real time and collaborate effectively"
+  },
+  {
+    "id": "US-039",
+    "title": "Anruflink",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-CALL-005",
+    "as_a": "call organizer",
+    "i_want": "generate and share a call link for a scheduled call",
+    "so_that": "participants can join the call easily at the scheduled time, reducing coordination effort",
+    "description": "As a call organizer I want to generate and share a call link for a scheduled call so that participants can join the call easily at the scheduled time, reducing coordination effort"
+  },
+  {
+    "id": "US-040",
+    "title": "Anruf ablehnen mit Nachricht",
+    "priority": "MUST",
+    "linked_requirement": "WA-CALL-006",
+    "as_a": "eingehender Anrufempfänger",
+    "i_want": "einen eingehenden Anruf mit einer Schnellantwort ablehnen",
+    "so_that": "damit der Anrufer sofort informiert wird und der Gesprächsverlauf effizient bleibt",
+    "description": "As a eingehender Anrufempfänger I want to einen eingehenden Anruf mit einer Schnellantwort ablehnen so that damit der Anrufer sofort informiert wird und der Gesprächsverlauf effizient bleibt"
+  },
+  {
+    "id": "US-041",
+    "title": "Anrufverlauf",
+    "priority": "MUST",
+    "linked_requirement": "WA-CALL-007",
+    "as_a": "customer service agent",
+    "i_want": "view and access the call history for a customer",
+    "so_that": "to track prior interactions and provide informed, efficient support",
+    "description": "As a customer service agent I want to view and access the call history for a customer so that to track prior interactions and provide informed, efficient support"
+  },
+  {
+    "id": "US-042",
+    "title": "Status erstellen",
+    "priority": "MUST",
+    "linked_requirement": "WA-STS-001",
+    "as_a": "registered user",
+    "i_want": "create a 24-hour status update",
+    "so_that": "to share timely updates that automatically expire and keep content current",
+    "description": "As a registered user I want to create a 24-hour status update so that to share timely updates that automatically expire and keep content current"
+  },
+  {
+    "id": "US-043",
+    "title": "Status anzeigen",
+    "priority": "MUST",
+    "linked_requirement": "WA-STS-002",
+    "as_a": "registered user",
+    "i_want": "view the current status of a contact",
+    "so_that": "so that I can quickly understand the contact's availability and decide on the next action",
+    "description": "As a registered user I want to view the current status of a contact so that so that I can quickly understand the contact's availability and decide on the next action"
+  },
+  {
+    "id": "US-044",
+    "title": "Status-Antwort",
+    "priority": "MUST",
+    "linked_requirement": "WA-STS-003",
+    "as_a": "authenticated user",
+    "i_want": "respond to a status update",
+    "so_that": "to communicate current state and keep stakeholders informed",
+    "description": "As a authenticated user I want to respond to a status update so that to communicate current state and keep stakeholders informed"
+  },
+  {
+    "id": "US-045",
+    "title": "Status-Datenschutz",
+    "priority": "MUST",
+    "linked_requirement": "WA-STS-004",
+    "as_a": "system administrator",
+    "i_want": "configure which statuses are visible to specific user roles",
+    "so_that": "to ensure data privacy by exposing only permitted status information",
+    "description": "As a system administrator I want to configure which statuses are visible to specific user roles so that to ensure data privacy by exposing only permitted status information"
+  },
+  {
+    "id": "US-046",
+    "title": "Status stumm schalten",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-STS-005",
+    "as_a": "registered user",
+    "i_want": "mute a contact's status updates",
+    "so_that": "to reduce distractions and control which status updates are visible",
+    "description": "As a registered user I want to mute a contact's status updates so that to reduce distractions and control which status updates are visible"
+  },
+  {
+    "id": "US-047",
+    "title": "Bilder senden",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-001",
+    "as_a": "end user",
+    "i_want": "send images through the system",
+    "so_that": "so that I can share visual information to improve communication",
+    "description": "As a end user I want to send images through the system so that so that I can share visual information to improve communication"
+  },
+  {
+    "id": "US-048",
+    "title": "Videos senden",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-002",
+    "as_a": "registered user",
+    "i_want": "send a video message to another user",
+    "so_that": "so that I can share rich media information to improve communication",
+    "description": "As a registered user I want to send a video message to another user so that so that I can share rich media information to improve communication"
+  },
+  {
+    "id": "US-049",
+    "title": "Dokumente senden",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-003",
+    "as_a": "medizinischer Benutzer",
+    "i_want": "beliebige Dokumente über das System senden",
+    "so_that": "damit Dokumente zuverlässig und nachvollziehbar an die vorgesehenen Empfänger übermittelt werden können",
+    "description": "As a medizinischer Benutzer I want to beliebige Dokumente über das System senden so that damit Dokumente zuverlässig und nachvollziehbar an die vorgesehenen Empfänger übermittelt werden können"
+  },
+  {
+    "id": "US-050",
+    "title": "Bildbearbeitung",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-004",
+    "as_a": "sender",
+    "i_want": "perform basic image edits before sending",
+    "so_that": "so that images are properly adjusted and professional before being shared",
+    "description": "As a sender I want to perform basic image edits before sending so that so that images are properly adjusted and professional before being shared"
+  },
+  {
+    "id": "US-051",
+    "title": "Sticker",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-005",
+    "as_a": "chat user",
+    "i_want": "send stickers in a chat",
+    "so_that": "express emotions quickly and enrich communication",
+    "description": "As a chat user I want to send stickers in a chat so that express emotions quickly and enrich communication"
+  },
+  {
+    "id": "US-052",
+    "title": "GIFs",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-006",
+    "as_a": "messaging app user",
+    "i_want": "search for and send GIFs in a conversation",
+    "so_that": "to express emotions quickly and enhance communication",
+    "description": "As a messaging app user I want to search for and send GIFs in a conversation so that to express emotions quickly and enhance communication"
+  },
+  {
+    "id": "US-053",
+    "title": "Kamera-Integration",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-007",
+    "as_a": "chat user",
+    "i_want": "open the device camera directly from the chat to capture and send a photo",
+    "so_that": "so I can share visual information instantly without leaving the conversation",
+    "description": "As a chat user I want to open the device camera directly from the chat to capture and send a photo so that so I can share visual information instantly without leaving the conversation"
+  },
+  {
+    "id": "US-054",
+    "title": "Audio-Dateien",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-008",
+    "as_a": "authenticated user",
+    "i_want": "send an audio file through the system",
+    "so_that": "to share voice information efficiently and improve communication",
+    "description": "As a authenticated user I want to send an audio file through the system so that to share voice information efficiently and improve communication"
+  },
+  {
+    "id": "US-055",
+    "title": "Galerie-Zugriff",
+    "priority": "MUST",
+    "linked_requirement": "WA-MED-009",
+    "as_a": "mobile app user",
+    "i_want": "select images from the device gallery",
+    "so_that": "to attach existing photos to complete tasks efficiently",
+    "description": "As a mobile app user I want to select images from the device gallery so that to attach existing photos to complete tasks efficiently"
+  },
+  {
+    "id": "US-056",
+    "title": "HD-Medien",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-MED-010",
+    "as_a": "registered user",
+    "i_want": "send media in HD quality",
+    "so_that": "so that recipients receive clear, high-quality content for better communication",
+    "description": "As a registered user I want to send media in HD quality so that so that recipients receive clear, high-quality content for better communication"
+  },
+  {
+    "id": "US-057",
+    "title": "End-to-End Verschluesselung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-001",
+    "as_a": "message sender",
+    "i_want": "send a message that is end-to-end encrypted",
+    "so_that": "to ensure only intended recipients can read the content and protect confidentiality",
+    "description": "As a message sender I want to send a message that is end-to-end encrypted so that to ensure only intended recipients can read the content and protect confidentiality"
+  },
+  {
+    "id": "US-058",
+    "title": "Sicherheitscode-Verifizierung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-002",
+    "as_a": "security administrator",
+    "i_want": "manually verify the encryption security code for a stored asset",
+    "so_that": "to ensure encryption compliance and reduce the risk of data breaches",
+    "description": "As a security administrator I want to manually verify the encryption security code for a stored asset so that to ensure encryption compliance and reduce the risk of data breaches"
+  },
+  {
+    "id": "US-059",
+    "title": "Nachrichtensperre",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-003",
+    "as_a": "app user",
+    "i_want": "lock the app and require authentication to access messages",
+    "so_that": "to protect my messages from unauthorized access",
+    "description": "As a app user I want to lock the app and require authentication to access messages so that to protect my messages from unauthorized access"
+  },
+  {
+    "id": "US-060",
+    "title": "Blockieren",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-004",
+    "as_a": "registered user",
+    "i_want": "block a contact",
+    "so_that": "to prevent unwanted communication and protect my privacy",
+    "description": "As a registered user I want to block a contact so that to prevent unwanted communication and protect my privacy"
+  },
+  {
+    "id": "US-061",
+    "title": "Melden",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-005",
+    "as_a": "registered user",
+    "i_want": "report a message or contact",
+    "so_that": "to flag inappropriate content so it can be reviewed and addressed",
+    "description": "As a registered user I want to report a message or contact so that to flag inappropriate content so it can be reviewed and addressed"
+  },
+  {
+    "id": "US-062",
+    "title": "Zwei-Schritte-Verifizierung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SEC-006",
+    "as_a": "registered user",
+    "i_want": "enable an optional additional PIN verification step for my account",
+    "so_that": "to increase the security of sensitive actions and protect my account from unauthorized access",
+    "description": "As a registered user I want to enable an optional additional PIN verification step for my account so that to increase the security of sensitive actions and protect my account from unauthorized access"
+  },
+  {
+    "id": "US-063",
+    "title": "Spam-Erkennung",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-SEC-007",
+    "as_a": "system administrator",
+    "i_want": "enable and configure automatic spam detection for user-generated content",
+    "so_that": "reduce spam exposure and protect platform quality with minimal manual moderation",
+    "description": "As a system administrator I want to enable and configure automatic spam detection for user-generated content so that reduce spam exposure and protect platform quality with minimal manual moderation"
+  },
+  {
+    "id": "US-064",
+    "title": "IP-Adresse schuetzen",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-SEC-008",
+    "as_a": "call participant",
+    "i_want": "make a call with their IP address masked",
+    "so_that": "so that their network identity is protected during communications",
+    "description": "As a call participant I want to make a call with their IP address masked so that so that their network identity is protected during communications"
+  },
+  {
+    "id": "US-065",
+    "title": "Push-Benachrichtigungen",
+    "priority": "MUST",
+    "linked_requirement": "WA-NOT-001",
+    "as_a": "mobile App-Nutzer",
+    "i_want": "Push-Benachrichtigungen empfangen",
+    "so_that": "damit ich zeitkritische Informationen zuverlässig und rechtzeitig erhalte",
+    "description": "As a mobile App-Nutzer I want to Push-Benachrichtigungen empfangen so that damit ich zeitkritische Informationen zuverlässig und rechtzeitig erhalte"
+  },
+  {
+    "id": "US-066",
+    "title": "Benachrichtigungsvorschau",
+    "priority": "MUST",
+    "linked_requirement": "WA-NOT-002",
+    "as_a": "notification administrator",
+    "i_want": "configure and preview notification templates before sending",
+    "so_that": "to ensure messages are accurate and consistent across channels, reducing errors and rework",
+    "description": "As a notification administrator I want to configure and preview notification templates before sending so that to ensure messages are accurate and consistent across channels, reducing errors and rework"
+  },
+  {
+    "id": "US-067",
+    "title": "Schnellantwort",
+    "priority": "MUST",
+    "linked_requirement": "WA-NOT-003",
+    "as_a": "end user",
+    "i_want": "reply directly from a notification",
+    "so_that": "to respond faster without opening the app",
+    "description": "As a end user I want to reply directly from a notification so that to respond faster without opening the app"
+  },
+  {
+    "id": "US-068",
+    "title": "Nicht stoeren",
+    "priority": "MUST",
+    "linked_requirement": "WA-NOT-004",
+    "as_a": "end user",
+    "i_want": "activate and deactivate a Do Not Disturb mode",
+    "so_that": "to avoid interruptions and focus on tasks without unwanted notifications",
+    "description": "As a end user I want to activate and deactivate a Do Not Disturb mode so that to avoid interruptions and focus on tasks without unwanted notifications"
+  },
+  {
+    "id": "US-069",
+    "title": "Reaktionsbenachrichtigungen",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-NOT-005",
+    "as_a": "message sender",
+    "i_want": "receive notifications when others react to my messages",
+    "so_that": "to stay informed about engagement without manually checking conversations",
+    "description": "As a message sender I want to receive notifications when others react to my messages so that to stay informed about engagement without manually checking conversations"
+  },
+  {
+    "id": "US-070",
+    "title": "Anrufbenachrichtigungen",
+    "priority": "MUST",
+    "linked_requirement": "WA-NOT-006",
+    "as_a": "end user",
+    "i_want": "configure separate call notification settings",
+    "so_that": "to control how and when I am alerted about calls according to my preferences",
+    "description": "As a end user I want to configure separate call notification settings so that to control how and when I am alerted about calls according to my preferences"
+  },
+  {
+    "id": "US-071",
+    "title": "Kontakte synchronisieren",
+    "priority": "MUST",
+    "linked_requirement": "WA-CON-001",
+    "as_a": "WhatsApp user",
+    "i_want": "synchronize device contacts to identify which contacts are WhatsApp users",
+    "so_that": "so that I can easily find and message people who are already on WhatsApp",
+    "description": "As a WhatsApp user I want to synchronize device contacts to identify which contacts are WhatsApp users so that so that I can easily find and message people who are already on WhatsApp"
+  },
+  {
+    "id": "US-072",
+    "title": "Kontakt hinzufuegen",
+    "priority": "MUST",
+    "linked_requirement": "WA-CON-002",
+    "as_a": "end user",
+    "i_want": "add a new contact through different available methods",
+    "so_that": "so that I can save contacts using the most convenient option and maintain my contact list efficiently",
+    "description": "As a end user I want to add a new contact through different available methods so that so that I can save contacts using the most convenient option and maintain my contact list efficiently"
+  },
+  {
+    "id": "US-073",
+    "title": "Favoriten",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-CON-003",
+    "as_a": "registered user",
+    "i_want": "mark a contact as a favorite",
+    "so_that": "to quickly access important contacts",
+    "description": "As a registered user I want to mark a contact as a favorite so that to quickly access important contacts"
+  },
+  {
+    "id": "US-074",
+    "title": "Labels/Tags",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-CON-004",
+    "as_a": "business user",
+    "i_want": "assign, edit, and remove labels for contacts",
+    "so_that": "to categorize contacts for faster retrieval and segmentation",
+    "description": "As a business user I want to assign, edit, and remove labels for contacts so that to categorize contacts for faster retrieval and segmentation"
+  },
+  {
+    "id": "US-075",
+    "title": "Unbekannte Absender",
+    "priority": "MUST",
+    "linked_requirement": "WA-CON-005",
+    "as_a": "communications administrator",
+    "i_want": "segregate messages from unknown senders",
+    "so_that": "so that they can be reviewed and handled appropriately without affecting standard processing",
+    "description": "As a communications administrator I want to segregate messages from unknown senders so that so that they can be reviewed and handled appropriately without affecting standard processing"
+  },
+  {
+    "id": "US-076",
+    "title": "Nachrichtensuche",
+    "priority": "MUST",
+    "linked_requirement": "WA-SRC-001",
+    "as_a": "message user",
+    "i_want": "perform a full-text search across messages",
+    "so_that": "so that I can quickly find relevant information without manually browsing messages",
+    "description": "As a message user I want to perform a full-text search across messages so that so that I can quickly find relevant information without manually browsing messages"
+  },
+  {
+    "id": "US-077",
+    "title": "Mediensuche",
+    "priority": "MUST",
+    "linked_requirement": "WA-SRC-002",
+    "as_a": "end user",
+    "i_want": "filter search results by media type",
+    "so_that": "to quickly find relevant media and reduce time spent reviewing irrelevant results",
+    "description": "As a end user I want to filter search results by media type so that to quickly find relevant media and reduce time spent reviewing irrelevant results"
+  },
+  {
+    "id": "US-078",
+    "title": "Chat-Suche",
+    "priority": "MUST",
+    "linked_requirement": "WA-SRC-003",
+    "as_a": "chat user",
+    "i_want": "search for chats or contacts by name or keyword",
+    "so_that": "quickly find the right conversation or person to continue communication efficiently",
+    "description": "As a chat user I want to search for chats or contacts by name or keyword so that quickly find the right conversation or person to continue communication efficiently"
+  },
+  {
+    "id": "US-079",
+    "title": "Datumsbasierte Suche",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-SRC-004",
+    "as_a": "user",
+    "i_want": "jump to a specific date in the system",
+    "so_that": "so that I can quickly access data from the desired time period and improve efficiency",
+    "description": "As a user I want to jump to a specific date in the system so that so that I can quickly access data from the desired time period and improve efficiency"
+  },
+  {
+    "id": "US-080",
+    "title": "Zuletzt online",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-001",
+    "as_a": "registered user",
+    "i_want": "configure the visibility of my online status",
+    "so_that": "so that I can control who sees when I was last online and protect my privacy",
+    "description": "As a registered user I want to configure the visibility of my online status so that so that I can control who sees when I was last online and protect my privacy"
+  },
+  {
+    "id": "US-081",
+    "title": "Lesebestaetigung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-002",
+    "as_a": "system administrator",
+    "i_want": "configure read receipts for messages",
+    "so_that": "ensure compliance and provide auditability of message delivery and acknowledgment",
+    "description": "As a system administrator I want to configure read receipts for messages so that ensure compliance and provide auditability of message delivery and acknowledgment"
+  },
+  {
+    "id": "US-082",
+    "title": "Profilbild-Sichtbarkeit",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-003",
+    "as_a": "system administrator",
+    "i_want": "configure profile picture visibility settings for user profiles",
+    "so_that": "to control privacy and compliance requirements while enabling appropriate user identification",
+    "description": "As a system administrator I want to configure profile picture visibility settings for user profiles so that to control privacy and compliance requirements while enabling appropriate user identification"
+  },
+  {
+    "id": "US-083",
+    "title": "Info-Sichtbarkeit",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-004",
+    "as_a": "system administrator",
+    "i_want": "configure the visibility of info/status texts in the system",
+    "so_that": "to control which messages are shown to users and ensure appropriate communication",
+    "description": "As a system administrator I want to configure the visibility of info/status texts in the system so that to control which messages are shown to users and ensure appropriate communication"
+  },
+  {
+    "id": "US-084",
+    "title": "Gruppen-Einladungen",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-005",
+    "as_a": "system admin",
+    "i_want": "configure which roles are allowed to add users to groups",
+    "so_that": "ensure group membership changes are controlled and compliant with organizational policies",
+    "description": "As a system admin I want to configure which roles are allowed to add users to groups so that ensure group membership changes are controlled and compliant with organizational policies"
+  },
+  {
+    "id": "US-085",
+    "title": "Speichernutzung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-006",
+    "as_a": "system administrator",
+    "i_want": "view and manage storage usage across the system",
+    "so_that": "to monitor capacity and prevent storage shortages that could impact operations",
+    "description": "As a system administrator I want to view and manage storage usage across the system so that to monitor capacity and prevent storage shortages that could impact operations"
+  },
+  {
+    "id": "US-086",
+    "title": "Datennutzung",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-007",
+    "as_a": "system administrator",
+    "i_want": "configure and monitor data usage limits for the system",
+    "so_that": "to ensure data consumption stays within agreed limits and costs are controlled",
+    "description": "As a system administrator I want to configure and monitor data usage limits for the system so that to ensure data consumption stays within agreed limits and costs are controlled"
+  },
+  {
+    "id": "US-087",
+    "title": "Chat-Hintergrund",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-SET-008",
+    "as_a": "Chatnutzer",
+    "i_want": "den Chat-Hintergrund aus vordefinierten Optionen anpassen",
+    "so_that": "damit ich die Chat-Oberfläche besser an meine Vorlieben und Lesbarkeit anpassen kann",
+    "description": "As a Chatnutzer I want to den Chat-Hintergrund aus vordefinierten Optionen anpassen so that damit ich die Chat-Oberfläche besser an meine Vorlieben und Lesbarkeit anpassen kann"
+  },
+  {
+    "id": "US-088",
+    "title": "Dark Mode",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-009",
+    "as_a": "end user",
+    "i_want": "switch the interface to dark mode",
+    "so_that": "to reduce eye strain and improve usability in low-light conditions",
+    "description": "As a end user I want to switch the interface to dark mode so that to reduce eye strain and improve usability in low-light conditions"
+  },
+  {
+    "id": "US-089",
+    "title": "Sprache",
+    "priority": "MUST",
+    "linked_requirement": "WA-SET-010",
+    "as_a": "site visitor",
+    "i_want": "select a preferred language for the interface",
+    "so_that": "so I can understand and use the system effectively in my language",
+    "description": "As a site visitor I want to select a preferred language for the interface so that so I can understand and use the system effectively in my language"
+  },
+  {
+    "id": "US-090",
+    "title": "Cloud-Backup",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-001",
+    "as_a": "chat user",
+    "i_want": "enable and run a backup of my chat history to the cloud",
+    "so_that": "so that my conversations are محفوظ and can be restored if I change devices or lose data",
+    "description": "As a chat user I want to enable and run a backup of my chat history to the cloud so that so that my conversations are محفوظ and can be restored if I change devices or lose data"
+  },
+  {
+    "id": "US-091",
+    "title": "Verschluesseltes Backup",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-002",
+    "as_a": "system administrator",
+    "i_want": "configure and perform end-to-end encrypted backups",
+    "so_that": "ensure backup data is protected from unauthorized access and meets security compliance",
+    "description": "As a system administrator I want to configure and perform end-to-end encrypted backups so that ensure backup data is protected from unauthorized access and meets security compliance"
+  },
+  {
+    "id": "US-092",
+    "title": "Chat exportieren",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-003",
+    "as_a": "chat user",
+    "i_want": "export a single chat conversation",
+    "so_that": "to archive or share the conversation for documentation and compliance",
+    "description": "As a chat user I want to export a single chat conversation so that to archive or share the conversation for documentation and compliance"
+  },
+  {
+    "id": "US-093",
+    "title": "Chatverlauf uebertragen",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-004",
+    "as_a": "registered user",
+    "i_want": "transfer my chat history to a new device",
+    "so_that": "so that I can continue conversations without losing context when switching devices",
+    "description": "As a registered user I want to transfer my chat history to a new device so that so that I can continue conversations without losing context when switching devices"
+  },
+  {
+    "id": "US-094",
+    "title": "Chat archivieren",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-005",
+    "as_a": "registered user",
+    "i_want": "archive a chat conversation",
+    "so_that": "to keep my active chat list organized while retaining access to past conversations",
+    "description": "As a registered user I want to archive a chat conversation so that to keep my active chat list organized while retaining access to past conversations"
+  },
+  {
+    "id": "US-095",
+    "title": "Chat anpinnen",
+    "priority": "MUST",
+    "linked_requirement": "WA-BAK-006",
+    "as_a": "registered user",
+    "i_want": "pin an important chat to the top of the chat list",
+    "so_that": "so that I can quickly access high-priority conversations",
+    "description": "As a registered user I want to pin an important chat to the top of the chat list so that so that I can quickly access high-priority conversations"
+  },
+  {
+    "id": "US-096",
+    "title": "Business-Profil",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-001",
+    "as_a": "business account admin",
+    "i_want": "create and update an extended business profile with additional company details",
+    "so_that": "so that the business can present comprehensive information and improve trust with partners and customers",
+    "description": "As a business account admin I want to create and update an extended business profile with additional company details so that so that the business can present comprehensive information and improve trust with partners and customers"
+  },
+  {
+    "id": "US-097",
+    "title": "Verifiziertes Business",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-BUS-002",
+    "as_a": "business owner",
+    "i_want": "request verification for their business profile",
+    "so_that": "to build trust with customers and access verified-business features",
+    "description": "As a business owner I want to request verification for their business profile so that to build trust with customers and access verified-business features"
+  },
+  {
+    "id": "US-098",
+    "title": "Schnellantworten",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-003",
+    "as_a": "business account user",
+    "i_want": "select and send predefined quick replies in conversations",
+    "so_that": "to respond faster and maintain consistent communication with customers",
+    "description": "As a business account user I want to select and send predefined quick replies in conversations so that to respond faster and maintain consistent communication with customers"
+  },
+  {
+    "id": "US-099",
+    "title": "Abwesenheitsnachrichten",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-004",
+    "as_a": "employee",
+    "i_want": "configure an automatic absence message for a defined period",
+    "so_that": "so that incoming messages receive timely status information without manual replies",
+    "description": "As a employee I want to configure an automatic absence message for a defined period so that so that incoming messages receive timely status information without manual replies"
+  },
+  {
+    "id": "US-100",
+    "title": "Begrussungsnachrichten",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-005",
+    "as_a": "erstmaliger Kunde",
+    "i_want": "automatisch eine Begrüßungsnachricht beim ersten Kontakt erhalten",
+    "so_that": "damit ich mich willkommen fühle und schnell verstehe, wie ich Unterstützung erhalte",
+    "description": "As a erstmaliger Kunde I want to automatisch eine Begrüßungsnachricht beim ersten Kontakt erhalten so that damit ich mich willkommen fühle und schnell verstehe, wie ich Unterstützung erhalte"
+  },
+  {
+    "id": "US-101",
+    "title": "Produktkatalog",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-006",
+    "as_a": "business admin",
+    "i_want": "view and browse the product catalog for businesses",
+    "so_that": "to evaluate and select products that fit the company’s purchasing needs",
+    "description": "As a business admin I want to view and browse the product catalog for businesses so that to evaluate and select products that fit the company’s purchasing needs"
+  },
+  {
+    "id": "US-102",
+    "title": "Warenkorb",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-BUS-007",
+    "as_a": "shopper",
+    "i_want": "add, view, update, and remove products in a shopping cart during the ordering process",
+    "so_that": "so that I can review and adjust my intended purchase before checkout, increasing order accuracy and conversion",
+    "description": "As a shopper I want to add, view, update, and remove products in a shopping cart during the ordering process so that so that I can review and adjust my intended purchase before checkout, increasing order accuracy and conversion"
+  },
+  {
+    "id": "US-103",
+    "title": "WhatsApp Pay",
+    "priority": "COULD",
+    "linked_requirement": "WA-BUS-008",
+    "as_a": "registered customer",
+    "i_want": "pay for goods or services directly within the WhatsApp app",
+    "so_that": "to complete purchases quickly without leaving the chat and increase conversion for supported markets",
+    "description": "As a registered customer I want to pay for goods or services directly within the WhatsApp app so that to complete purchases quickly without leaving the chat and increase conversion for supported markets"
+  },
+  {
+    "id": "US-104",
+    "title": "Business-Statistiken",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-009",
+    "as_a": "business account admin",
+    "i_want": "view basic message statistics for their business",
+    "so_that": "so that they can monitor communication volume and trends to make operational decisions",
+    "description": "As a business account admin I want to view basic message statistics for their business so that so that they can monitor communication volume and trends to make operational decisions"
+  },
+  {
+    "id": "US-105",
+    "title": "API-Zugang",
+    "priority": "MUST",
+    "linked_requirement": "WA-BUS-010",
+    "as_a": "integration partner",
+    "i_want": "access the business API to integrate external systems",
+    "so_that": "to automate data exchange and enable seamless integrations",
+    "description": "As a integration partner I want to access the business API to integrate external systems so that to automate data exchange and enable seamless integrations"
+  },
+  {
+    "id": "US-106",
+    "title": "Screenreader-Unterstuetzung",
+    "priority": "MUST",
+    "linked_requirement": "WA-ACC-001",
+    "as_a": "user with visual impairment",
+    "i_want": "navigate and operate all system features using a screen reader",
+    "so_that": "so that they can independently access and complete tasks, ensuring accessibility compliance and inclusivity",
+    "description": "As a user with visual impairment I want to navigate and operate all system features using a screen reader so that so that they can independently access and complete tasks, ensuring accessibility compliance and inclusivity"
+  },
+  {
+    "id": "US-107",
+    "title": "Schriftgroesse",
+    "priority": "MUST",
+    "linked_requirement": "WA-ACC-002",
+    "as_a": "end user",
+    "i_want": "adjust the font size in the system interface",
+    "so_that": "to improve readability and accessibility according to personal needs",
+    "description": "As a end user I want to adjust the font size in the system interface so that to improve readability and accessibility according to personal needs"
+  },
+  {
+    "id": "US-108",
+    "title": "Kontrast",
+    "priority": "MUST",
+    "linked_requirement": "WA-ACC-003",
+    "as_a": "website visitor",
+    "i_want": "use the interface with sufficient color contrast between text and background",
+    "so_that": "to read and navigate content reliably, improving accessibility and usability",
+    "description": "As a website visitor I want to use the interface with sufficient color contrast between text and background so that to read and navigate content reliably, improving accessibility and usability"
+  },
+  {
+    "id": "US-109",
+    "title": "Sprachnachrichten transkribieren",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-ACC-004",
+    "as_a": "app user",
+    "i_want": "request transcription of a voice message",
+    "so_that": "to understand the content quickly and search or reference it later",
+    "description": "As a app user I want to request transcription of a voice message so that to understand the content quickly and search or reference it later"
+  },
+  {
+    "id": "US-110",
+    "title": "Offline-Modus",
+    "priority": "MUST",
+    "linked_requirement": "WA-PERF-001",
+    "as_a": "field employee",
+    "i_want": "access and use core functions while offline",
+    "so_that": "so that work can continue without interruption when no network is available",
+    "description": "As a field employee I want to access and use core functions while offline so that so that work can continue without interruption when no network is available"
+  },
+  {
+    "id": "US-111",
+    "title": "Schneller App-Start",
+    "priority": "MUST",
+    "linked_requirement": "WA-PERF-002",
+    "as_a": "mobile app user",
+    "i_want": "open the app and reach the home screen quickly",
+    "so_that": "so that I can start using the app without delay and stay satisfied",
+    "description": "As a mobile app user I want to open the app and reach the home screen quickly so that so that I can start using the app without delay and stay satisfied"
+  },
+  {
+    "id": "US-112",
+    "title": "Effiziente Synchronisation",
+    "priority": "MUST",
+    "linked_requirement": "WA-PERF-003",
+    "as_a": "system integration service",
+    "i_want": "synchronize messages between systems efficiently",
+    "so_that": "to ensure timely delivery while minimizing resource usage and avoiding delays",
+    "description": "As a system integration service I want to synchronize messages between systems efficiently so that to ensure timely delivery while minimizing resource usage and avoiding delays"
+  },
+  {
+    "id": "US-113",
+    "title": "Batterieeffizienz",
+    "priority": "MUST",
+    "linked_requirement": "WA-PERF-004",
+    "as_a": "mobile app user",
+    "i_want": "use the application throughout the day without excessive battery drain",
+    "so_that": "to maintain device usability and avoid frequent recharging",
+    "description": "As a mobile app user I want to use the application throughout the day without excessive battery drain so that to maintain device usability and avoid frequent recharging"
+  },
+  {
+    "id": "US-114",
+    "title": "Speichereffizienz",
+    "priority": "MUST",
+    "linked_requirement": "WA-PERF-005",
+    "as_a": "system administrator",
+    "i_want": "configure and verify that the system stores data using efficient compression and deduplication settings",
+    "so_that": "to minimize storage costs while maintaining required performance and data integrity",
+    "description": "As a system administrator I want to configure and verify that the system stores data using efficient compression and deduplication settings so that to minimize storage costs while maintaining required performance and data integrity"
+  },
+  {
+    "id": "US-115",
+    "title": "Share-Extension",
+    "priority": "MUST",
+    "linked_requirement": "WA-INT-001",
+    "as_a": "end user",
+    "i_want": "share content from the app using the device's system share sheet",
+    "so_that": "to quickly distribute information through installed apps without leaving the app",
+    "description": "As a end user I want to share content from the app using the device's system share sheet so that to quickly distribute information through installed apps without leaving the app"
+  },
+  {
+    "id": "US-116",
+    "title": "Siri/Google Assistant",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-INT-002",
+    "as_a": "end user",
+    "i_want": "link Siri or Google Assistant to my account and issue voice commands to use the system's features",
+    "so_that": "so that I can complete tasks hands-free and more quickly",
+    "description": "As a end user I want to link Siri or Google Assistant to my account and issue voice commands to use the system's features so that so that I can complete tasks hands-free and more quickly"
+  },
+  {
+    "id": "US-117",
+    "title": "Widgets",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-INT-003",
+    "as_a": "mobile app user",
+    "i_want": "add and view home-screen widgets from the app",
+    "so_that": "so that I can quickly access key information without opening the app",
+    "description": "As a mobile app user I want to add and view home-screen widgets from the app so that so that I can quickly access key information without opening the app"
+  },
+  {
+    "id": "US-118",
+    "title": "Watch-App",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-INT-004",
+    "as_a": "smartwatch user",
+    "i_want": "connect their smartwatch to the system to receive and interact with app notifications",
+    "so_that": "so they can access key updates quickly without using their phone, improving responsiveness and engagement",
+    "description": "As a smartwatch user I want to connect their smartwatch to the system to receive and interact with app notifications so that so they can access key updates quickly without using their phone, improving responsiveness and engagement"
+  },
+  {
+    "id": "US-119",
+    "title": "Desktop-App",
+    "priority": "MUST",
+    "linked_requirement": "WA-INT-005",
+    "as_a": "end user",
+    "i_want": "download and use a native desktop application to access the system",
+    "so_that": "so that I can work with the system using a performant, OS-integrated application",
+    "description": "As a end user I want to download and use a native desktop application to access the system so that so that I can work with the system using a performant, OS-integrated application"
+  },
+  {
+    "id": "US-120",
+    "title": "Web-Version",
+    "priority": "MUST",
+    "linked_requirement": "WA-INT-006",
+    "as_a": "end user",
+    "i_want": "access the system via a web browser",
+    "so_that": "use the system without installing any software and from any device",
+    "description": "As a end user I want to access the system via a web browser so that use the system without installing any software and from any device"
+  },
+  {
+    "id": "US-121",
+    "title": "Meta AI Chat",
+    "priority": "SHOULD",
+    "linked_requirement": "WA-AI-001",
+    "as_a": "registered user",
+    "i_want": "start a chat with the integrated AI assistant and submit questions",
+    "so_that": "to receive immediate guidance and information without leaving the system",
+    "description": "As a registered user I want to start a chat with the integrated AI assistant and submit questions so that to receive immediate guidance and information without leaving the system"
+  },
+  {
+    "id": "US-122",
+    "title": "Smart Reply",
+    "priority": "COULD",
+    "linked_requirement": "WA-AI-002",
+    "as_a": "customer support agent",
+    "i_want": "generate intelligent reply suggestions for an incoming message",
+    "so_that": "to respond faster and consistently, improving customer satisfaction",
+    "description": "As a customer support agent I want to generate intelligent reply suggestions for an incoming message so that to respond faster and consistently, improving customer satisfaction"
+  },
+  {
+    "id": "US-123",
+    "title": "Sticker-Vorschlaege",
+    "priority": "COULD",
+    "linked_requirement": "WA-AI-003",
+    "as_a": "chat user",
+    "i_want": "receive context-based sticker suggestions while composing a message",
+    "so_that": "to express reactions faster and more relevantly without searching manually",
+    "description": "As a chat user I want to receive context-based sticker suggestions while composing a message so that to express reactions faster and more relevantly without searching manually"
+  },
+  {
+    "id": "US-124",
+    "title": "RTL-Unterstuetzung",
+    "priority": "MUST",
+    "linked_requirement": "WA-LOC-001",
+    "as_a": "RTL-sprachiger Endnutzer",
+    "i_want": "die Anwendung in einer rechts-nach-links Sprache nutzen",
+    "so_that": "alle Inhalte korrekt lesen und effizient bedienen zu können",
+    "description": "As a RTL-sprachiger Endnutzer I want to die Anwendung in einer rechts-nach-links Sprache nutzen so that alle Inhalte korrekt lesen und effizient bedienen zu können"
+  },
+  {
+    "id": "US-125",
+    "title": "Regionale Formate",
+    "priority": "MUST",
+    "linked_requirement": "WA-LOC-002",
+    "as_a": "end user",
+    "i_want": "view and enter dates, numbers, and currencies in their local regional format",
+    "so_that": "so that information is understood and processed correctly without confusion or errors",
+    "description": "As a end user I want to view and enter dates, numbers, and currencies in their local regional format so that so that information is understood and processed correctly without confusion or errors"
+  },
+  {
+    "id": "US-126",
+    "title": "Lokale Sticker",
+    "priority": "COULD",
+    "linked_requirement": "WA-LOC-003",
+    "as_a": "registered customer",
+    "i_want": "browse and select region-specific sticker packs",
+    "so_that": "so that I can personalize my messages with locally relevant content",
+    "description": "As a registered customer I want to browse and select region-specific sticker packs so that so that I can personalize my messages with locally relevant content"
+  }
+]

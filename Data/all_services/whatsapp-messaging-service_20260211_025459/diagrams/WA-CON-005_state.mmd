@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> UnbekannterAbsender
+    UnbekannterAbsender --> NachrichtEmpfangen : Nachricht erhalten
+    NachrichtEmpfangen --> NachrichtAnalysieren : Nachricht analysieren
+    NachrichtAnalysieren --> VerdachtErkennen : Verdacht auf Spam oder Phishing
+    VerdachtErkennen --> Spam : Spam erkannt
+    VerdachtErkennen --> Sicher : Nachricht als sicher eingestuft
+    Spam --> NachrichtLöschen : Nachricht löschen
+    Sicher --> NachrichtZulassen : Nachricht zulassen
+    NachrichtZulassen --> [*]
+    NachrichtLöschen --> [*]

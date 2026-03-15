@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Einmal-Ansicht Medien System Architecture
+
+    Person(user, "User", "A user who wants to view media once")
+    System(system, "Einmal-Ansicht Medien", "A system that supports view-once media")
+
+    System_Ext(mediaSource, "Media Source", "External source of media content")
+    System_Ext(notificationService, "Notification Service", "Service to notify users about media availability")
+
+    Rel(user, system, "Uses")
+    Rel(system, mediaSource, "Fetches media from")
+    Rel(system, notificationService, "Sends notifications to users")

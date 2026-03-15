@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B[System muss eine Web-Version bieten]
+    B --> C{Ist die Web-Version verfügbar?}
+    C -->|Ja| D[Web-Version bereitstellen]
+    C -->|Nein| E[Web-Version entwickeln]
+    E --> D
+    D --> F[Web-Version testen]
+    F --> G{Test erfolgreich?}
+    G -->|Ja| H[Web-Version veröffentlichen]
+    G -->|Nein| E
+    H --> I[Ende]

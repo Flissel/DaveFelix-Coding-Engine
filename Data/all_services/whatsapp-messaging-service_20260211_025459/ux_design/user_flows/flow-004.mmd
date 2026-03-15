@@ -1,0 +1,39 @@
+flowchart TD
+    Start([Start: Multi-Device Support nutzen])
+    S1[User öffnet die App auf Gerät A und ist bereits angemeldet]
+    Start --> S1
+    S2[User öffnet die App auf Gerät B und meldet sich mit demselben Konto an]
+    S1 --> S2
+    E2[/Login fehlgeschlagen bei falschen Zugangsdaten/]
+    S2 -.-> E2
+    S3[User sendet eine Nachricht auf Gerät A]
+    S2 --> S3
+    E3[/Senden fehlgeschlagen bei Netzwerkfehler/]
+    S3 -.-> E3
+    S4[System synchronisiert die gesendete Nachricht auf Gerät B]
+    S3 --> S4
+    E4[/Nachricht erscheint verzögert oder nicht bei Sync-Problem/]
+    S4 -.-> E4
+    S5[User erhält eine neue Nachricht auf Gerät A]
+    S4 --> S5
+    E5[/Benachrichtigung bleibt aus bei deaktivierten Notifications/]
+    S5 -.-> E5
+    S6[System zeigt die Benachrichtigung auch auf Gerät B an]
+    S5 --> S6
+    E6[/Benachrichtigung wird nicht synchron angezeigt/]
+    S6 -.-> E6
+    S7[User öffnet die neue Nachricht auf Gerät B]
+    S6 --> S7
+    E7[/Lesestatus bleibt ungelesen bei Sync-Problem/]
+    S7 -.-> E7
+    S8[System synchronisiert den Lesestatus auf Gerät A]
+    S7 --> S8
+    E8[/Lesestatus wird nicht synchronisiert/]
+    S8 -.-> E8
+    S9{Drittes Gerät versucht, sich mit demselben Konto anzumelden}
+    S8 --> S9
+    S10[Geräte-Limit erreicht -> System zeigt Fehlermeldung]
+    S9 --> S10
+    E10[/Unklare Fehlermeldung oder dennoch Sitzung erstellt/]
+    S10 -.-> E10
+    S10 --> End([End])

@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as User
+    participant ChatSystem as Chat System
+    participant StickerService as Sticker Service
+
+    User->>ChatSystem: Request to send sticker
+    ChatSystem->>StickerService: Validate sticker availability
+    StickerService-->>ChatSystem: Sticker available
+    ChatSystem-->>User: Send sticker confirmation
+    User->>ChatSystem: Receive sticker in chat

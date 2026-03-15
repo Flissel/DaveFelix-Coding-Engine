@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Receiver as Empfänger
+
+    Benutzer->>System: Textnachricht senden
+    System->>System: Nachricht verarbeiten
+    System->>Empfänger: Textnachricht zustellen
+    Empfänger-->>System: Empfangsbestätigung
+    System-->>Benutzer: Nachricht gesendet

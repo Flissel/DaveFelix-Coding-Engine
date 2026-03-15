@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Uses| B[Einladungslink System]
+    B -->|Generates| C[Group Invitation Link]
+    B -->|Sends| D[Notification Service]
+    D -->|Notifies| E[Group Members]
+    B -->|Stores| F[Database]
+    F -->|Contains| G[Invitation Data]
+
+    classDef user fill:#f9f,stroke:#333,stroke-width:2px;
+    class A user;

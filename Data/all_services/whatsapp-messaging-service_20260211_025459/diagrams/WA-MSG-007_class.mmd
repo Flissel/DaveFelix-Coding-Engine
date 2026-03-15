@@ -1,0 +1,21 @@
+classDiagram
+    class Nachricht {
+        +String inhalt
+        +Date zeitstempel
+        +void senden()
+    }
+
+    class Emoji {
+        +String name
+        +String unicode
+    }
+
+    class Reaktion {
+        +Emoji emoji
+        +Nachricht nachricht
+        +String benutzer
+        +Date zeit
+    }
+
+    Nachricht "1" -- "*" Reaktion : hat
+    Emoji "1" -- "*" Reaktion : wird verwendet für

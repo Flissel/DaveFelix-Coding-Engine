@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Ist der Kontakt aktiv?}
+    B -- Ja --> C[Stummschalten aktivieren]
+    B -- Nein --> D[Keine Aktion erforderlich]
+    C --> E[Status aktualisieren]
+    E --> F[Benachrichtigung senden]
+    F --> G[Ende]
+    D --> G

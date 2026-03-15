@@ -1,0 +1,15 @@
+flowchart TD
+    A[Start] --> B{User selects payment option}
+    B -->|Yes| C[User enters payment details]
+    B -->|No| D[User cancels transaction]
+    C --> E{Payment method selected}
+    E -->|WhatsApp Pay| F[Process payment through WhatsApp Pay]
+    E -->|Other| G[Redirect to alternative payment method]
+    F --> H{Payment successful?}
+    H -->|Yes| I[Transaction completed]
+    H -->|No| J[Show error message]
+    J --> K[User retries payment]
+    K --> C
+    D --> L[End]
+    I --> L
+    G --> L

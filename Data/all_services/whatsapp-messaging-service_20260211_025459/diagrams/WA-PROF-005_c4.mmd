@@ -1,0 +1,8 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title QR-Code Profil System Architecture
+
+    Person(user, "Benutzer", "Ein Benutzer, der QR-Codes scannt und hinzufügt.")
+    System(system, "QR-Code Profil", "Ein System zur Generierung von QR-Codes für das einfache Hinzufügen.")
+
+    Rel(user, system, "Scannt QR-Codes und fügt hinzu")

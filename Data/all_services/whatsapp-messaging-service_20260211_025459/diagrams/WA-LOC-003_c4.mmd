@@ -1,0 +1,17 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Lokale Sticker System Architecture
+
+    Person(user, "Benutzer", "Nutzer, der Sticker-Packs anfordert.")
+    System(system, "Lokale Sticker", "Bietet regionalspezifische Sticker-Packs an.")
+
+    Person(admin, "Administrator", "Verwaltet die Sticker-Packs und die Benutzer.")
+
+    System_Ext(regionAPI, "Regionale API", "Stellt Informationen über regionale Sticker-Packs bereit.")
+    System_Ext(database, "Datenbank", "Speichert die Sticker-Packs und Benutzerinformationen.")
+
+    Rel(user, system, "Fordert Sticker-Packs an")
+    Rel(system, regionAPI, "Fragt regionale Sticker-Daten ab")
+    Rel(system, database, "Speichert und lädt Sticker-Packs")
+    Rel(admin, system, "Verwaltet Sticker-Packs")
+    Rel(system, admin, "Benachrichtigt über Änderungen")

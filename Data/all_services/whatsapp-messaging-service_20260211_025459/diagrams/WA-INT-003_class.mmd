@@ -1,0 +1,27 @@
+classDiagram
+    class Widget {
+        +String id
+        +String name
+        +String type
+        +String description
+        +void display()
+        +void update()
+    }
+
+    class HomeScreen {
+        +List<Widget> widgets
+        +void addWidget(Widget widget)
+        +void removeWidget(Widget widget)
+        +void arrangeWidgets()
+    }
+
+    class User {
+        +String userId
+        +String username
+        +List<Widget> favoriteWidgets
+        +void customizeHomeScreen(HomeScreen screen)
+    }
+
+    Widget --> HomeScreen : contains
+    User --> HomeScreen : customizes
+    User --> Widget : favorites

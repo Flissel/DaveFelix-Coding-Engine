@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[System: Kontakt Hinzufügen] 
+    B[User: Endbenutzer]
+    C[System: Externe API]
+    D[System: Datenbank]
+    
+    A -->|Nutzerinteraktion| B
+    A -->|API-Anfrage| C
+    A -->|Daten speichern| D

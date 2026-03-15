@@ -1,0 +1,5758 @@
+{
+  "epic_id": "EPIC-003",
+  "epic_name": "Messaging-Kernfunktionen",
+  "tasks": [
+    {
+      "id": "EPIC-003-SCHEMA-chat-model",
+      "epic_id": "EPIC-003",
+      "type": "schema_model",
+      "title": "Create Prisma model: chat",
+      "description": "Define chat model in prisma/schema.prisma with all required attributes and types.",
+      "status": "pending",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#chat"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-chat-relations",
+      "epic_id": "EPIC-003",
+      "type": "schema_relations",
+      "title": "Define relations for: chat",
+      "description": "Set up Prisma relations for chat with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-chat-model"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#chat_relations"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-chat-migration",
+      "epic_id": "EPIC-003",
+      "type": "schema_migration",
+      "title": "Run migration for: chat",
+      "description": "Execute prisma migrate dev for chat changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-chat-relations"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/migrations/*_chat/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message-model",
+      "epic_id": "EPIC-003",
+      "type": "schema_model",
+      "title": "Create Prisma model: message",
+      "description": "Define message model in prisma/schema.prisma with all required attributes and types.",
+      "status": "pending",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message-relations",
+      "epic_id": "EPIC-003",
+      "type": "schema_relations",
+      "title": "Define relations for: message",
+      "description": "Set up Prisma relations for message with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message-model"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_relations"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message-migration",
+      "epic_id": "EPIC-003",
+      "type": "schema_migration",
+      "title": "Run migration for: message",
+      "description": "Execute prisma migrate dev for message changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message-relations"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/migrations/*_message/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_media-model",
+      "epic_id": "EPIC-003",
+      "type": "schema_model",
+      "title": "Create Prisma model: message_media",
+      "description": "Define message_media model in prisma/schema.prisma with all required attributes and types.",
+      "status": "pending",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_media"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_media-relations",
+      "epic_id": "EPIC-003",
+      "type": "schema_relations",
+      "title": "Define relations for: message_media",
+      "description": "Set up Prisma relations for message_media with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_media-model"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_media_relations"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_media-migration",
+      "epic_id": "EPIC-003",
+      "type": "schema_migration",
+      "title": "Run migration for: message_media",
+      "description": "Execute prisma migrate dev for message_media changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_media-relations"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/migrations/*_message_media/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_mention-model",
+      "epic_id": "EPIC-003",
+      "type": "schema_model",
+      "title": "Create Prisma model: message_mention",
+      "description": "Define message_mention model in prisma/schema.prisma with all required attributes and types.",
+      "status": "pending",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_mention"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_mention-relations",
+      "epic_id": "EPIC-003",
+      "type": "schema_relations",
+      "title": "Define relations for: message_mention",
+      "description": "Set up Prisma relations for message_mention with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_mention-model"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_mention_relations"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_mention-migration",
+      "epic_id": "EPIC-003",
+      "type": "schema_migration",
+      "title": "Run migration for: message_mention",
+      "description": "Execute prisma migrate dev for message_mention changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_mention-relations"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/migrations/*_message_mention/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_reaction-model",
+      "epic_id": "EPIC-003",
+      "type": "schema_model",
+      "title": "Create Prisma model: message_reaction",
+      "description": "Define message_reaction model in prisma/schema.prisma with all required attributes and types.",
+      "status": "pending",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_reaction"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_reaction-relations",
+      "epic_id": "EPIC-003",
+      "type": "schema_relations",
+      "title": "Define relations for: message_reaction",
+      "description": "Set up Prisma relations for message_reaction with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_reaction-model"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/schema.prisma#message_reaction_relations"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-SCHEMA-message_reaction-migration",
+      "epic_id": "EPIC-003",
+      "type": "schema_migration",
+      "title": "Run migration for: message_reaction",
+      "description": "Execute prisma migrate dev for message_reaction changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_reaction-relations"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "prisma/migrations/*_message_reaction/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-schema",
+      "epic_id": "EPIC-003",
+      "type": "verify_schema",
+      "title": "Validate Prisma schema",
+      "description": "Run prisma validate to check schema integrity.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-SCHEMA-message_reaction-model",
+        "EPIC-003-SCHEMA-message_reaction-relations",
+        "EPIC-003-SCHEMA-message_reaction-migration"
+      ],
+      "estimated_minutes": 1,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "schema",
+      "command": "npx prisma validate",
+      "success_criteria": "prisma validate exits with code 0",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-CHECKPOINT-schema",
+      "epic_id": "EPIC-003",
+      "type": "checkpoint_schema",
+      "title": "Checkpoint: Review Schema",
+      "description": "User approval required before continuing. Review the schema phase results.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-schema"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": true,
+      "user_prompt": "Review the generated Prisma schema.\n\nPlease verify:\n- All entities are correctly defined\n- Relations between entities are correct\n- Field types and constraints are appropriate\n- Indexes are defined where needed\n\nApprove to continue with API generation.",
+      "user_response": null,
+      "checkpoint": true,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "schema",
+      "command": null,
+      "success_criteria": "User approved checkpoint",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/conversations/{conversationId}/messages",
+      "description": "Send a text message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-001"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/conversations/{conversationId}/messages",
+      "description": "Business logic for Send a text message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-001"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: SendTextMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/conversations/{conversationId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/dto/sendtextmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-001"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/conversations/{conversationId}/messages",
+      "description": "JWT authentication guard for POST /api/v1/conversations/{conversationId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-001"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/conversations/{conversationId}/messages",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-001"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_voice-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/messages/voice",
+      "description": "Send a voice message\nImplement controller method with 0 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-002"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_voice-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/messages/voice",
+      "description": "Business logic for Send a voice message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_voice-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-002"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_voice-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateVoiceMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/messages/voice",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_voice-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/createvoicemessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-002"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_voice-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/voice",
+      "description": "JWT authentication guard for POST /api/v1/messages/voice",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_voice-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-002"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: DELETE /api/v1/messages/{messageId}",
+      "description": "Nachricht loeschen\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-003"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: DELETE /api/v1/messages/{messageId}",
+      "description": "Business logic for Nachricht loeschen",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-003"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: DeleteMessageRequest",
+      "description": "Request/Response DTO for DELETE /api/v1/messages/{messageId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/deletemessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-003"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}",
+      "description": "JWT authentication guard for DELETE /api/v1/messages/{messageId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-003"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: DELETE /api/v1/messages/{messageId}",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-003"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_messages_messageId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: PUT /api/v1/messages/{messageId}",
+      "description": "Edit a sent message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-004"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_messages_messageId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: PUT /api/v1/messages/{messageId}",
+      "description": "Business logic for Edit a sent message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-004"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_messages_messageId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: EditMessageRequest",
+      "description": "Request/Response DTO for PUT /api/v1/messages/{messageId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/editmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-004"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_messages_messageId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}",
+      "description": "JWT authentication guard for PUT /api/v1/messages/{messageId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_messages_messageId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-004"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_messages_messageId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: PUT /api/v1/messages/{messageId}",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_messages_messageId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-004"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_forward-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/messages/{messageId}/forward",
+      "description": "Forward a message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-005"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_forward-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/messages/{messageId}/forward",
+      "description": "Business logic for Forward a message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_forward-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-005"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_forward-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: ForwardMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/messages/{messageId}/forward",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_forward-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/forwardmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-005"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_forward-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}/forward",
+      "description": "JWT authentication guard for POST /api/v1/messages/{messageId}/forward",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_forward-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-005"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_forward-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/messages/{messageId}/forward",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_forward-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-005"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/messages",
+      "description": "Send a message with optional quote\nImplement controller method with 0 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-006"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/messages",
+      "description": "Business logic for Send a message with optional quote",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-006"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/createmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-006"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages",
+      "description": "JWT authentication guard for POST /api/v1/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-006"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_reactions-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/messages/{messageId}/reactions",
+      "description": "Add an emoji reaction to a message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_reactions-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/messages/{messageId}/reactions",
+      "description": "Business logic for Add an emoji reaction to a message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_reactions-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateReactionRequest",
+      "description": "Request/Response DTO for POST /api/v1/messages/{messageId}/reactions",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/createreactionrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_reactions-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}/reactions",
+      "description": "JWT authentication guard for POST /api/v1/messages/{messageId}/reactions",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_messages_messageId_reactions-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/messages/{messageId}/reactions",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_messages_messageId_reactions-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_messages_messageId_reactions-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: GET /api/v1/messages/{messageId}/reactions",
+      "description": "List emoji reactions for a message\nImplement controller method with 3 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_messages_messageId_reactions-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: GET /api/v1/messages/{messageId}/reactions",
+      "description": "Business logic for List emoji reactions for a message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_messages_messageId_reactions-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: ListReactionsRequest",
+      "description": "Request/Response DTO for GET /api/v1/messages/{messageId}/reactions",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/listreactionsrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_messages_messageId_reactions-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}/reactions",
+      "description": "JWT authentication guard for GET /api/v1/messages/{messageId}/reactions",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_messages_messageId_reactions-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_messages_messageId_reactions-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: GET /api/v1/messages/{messageId}/reactions",
+      "description": "Input validation for 3 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_messages_messageId_reactions-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: DELETE /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "description": "Remove an emoji reaction from a message\nImplement controller method with 2 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: DELETE /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "description": "Business logic for Remove an emoji reaction from a message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: DeleteReactionRequest",
+      "description": "Request/Response DTO for DELETE /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/deletereactionrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "description": "JWT authentication guard for DELETE /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: DELETE /api/v1/messages/{messageId}/reactions/{reactionId}",
+      "description": "Input validation for 2 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_messages_messageId_reactions_reactionId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-007"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: PATCH /api/v1/messages/{messageId}/self-destruct",
+      "description": "Update self-destruct policy for a message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-008"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: PATCH /api/v1/messages/{messageId}/self-destruct",
+      "description": "Business logic for Update self-destruct policy for a message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/messages.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-008"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: UpdateSelfDestructRequest",
+      "description": "Request/Response DTO for PATCH /api/v1/messages/{messageId}/self-destruct",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/dto/updateselfdestructrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-008"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/messages/{messageId}/self-destruct",
+      "description": "JWT authentication guard for PATCH /api/v1/messages/{messageId}/self-destruct",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-008"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: PATCH /api/v1/messages/{messageId}/self-destruct",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PATCH-api_v1_messages_messageId_self-destruct-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/messages/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-008"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_media-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/media",
+      "description": "Upload encrypted media for view-once use\nImplement controller method with 0 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/media.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_media-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/media",
+      "description": "Business logic for Upload encrypted media for view-once use",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_media-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/media.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_media-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: UploadMediaRequest",
+      "description": "Request/Response DTO for POST /api/v1/media",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_media-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/dto/uploadmediarequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_media-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/media",
+      "description": "JWT authentication guard for POST /api/v1/media",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_media-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_media_mediaId_view-once-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: GET /api/v1/media/{mediaId}/view-once",
+      "description": "Retrieve and consume view-once media\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/media.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_media_mediaId_view-once-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: GET /api/v1/media/{mediaId}/view-once",
+      "description": "Business logic for Retrieve and consume view-once media",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_media_mediaId_view-once-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/media.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_media_mediaId_view-once-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: GetViewOnceMediaRequest",
+      "description": "Request/Response DTO for GET /api/v1/media/{mediaId}/view-once",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_media_mediaId_view-once-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/dto/getviewoncemediarequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_media_mediaId_view-once-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/media/{mediaId}/view-once",
+      "description": "JWT authentication guard for GET /api/v1/media/{mediaId}/view-once",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_media_mediaId_view-once-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_media_mediaId_view-once-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: GET /api/v1/media/{mediaId}/view-once",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_media_mediaId_view-once-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/media/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-009"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_lock-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: PUT /api/v1/chats/{chatId}/lock",
+      "description": "Lock a chat with additional authentication\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_lock-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: PUT /api/v1/chats/{chatId}/lock",
+      "description": "Business logic for Lock a chat with additional authentication",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_lock-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_lock-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: LockChatRequest",
+      "description": "Request/Response DTO for PUT /api/v1/chats/{chatId}/lock",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_lock-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/dto/lockchatrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_lock-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/chats/{chatId}/lock",
+      "description": "JWT authentication guard for PUT /api/v1/chats/{chatId}/lock",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_lock-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_lock-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: PUT /api/v1/chats/{chatId}/lock",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_lock-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: PUT /api/v1/chats/{chatId}/unlock",
+      "description": "Unlock a chat with additional authentication\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: PUT /api/v1/chats/{chatId}/unlock",
+      "description": "Business logic for Unlock a chat with additional authentication",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: UnlockChatRequest",
+      "description": "Request/Response DTO for PUT /api/v1/chats/{chatId}/unlock",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/dto/unlockchatrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/chats/{chatId}/unlock",
+      "description": "JWT authentication guard for PUT /api/v1/chats/{chatId}/unlock",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: PUT /api/v1/chats/{chatId}/unlock",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_chats_chatId_unlock-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-010"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/broadcast-lists",
+      "description": "Create a broadcast list\nImplement controller method with 0 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/broadcast-lists",
+      "description": "Business logic for Create a broadcast list",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateBroadcastListRequest",
+      "description": "Request/Response DTO for POST /api/v1/broadcast-lists",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/createbroadcastlistrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists",
+      "description": "JWT authentication guard for POST /api/v1/broadcast-lists",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: GET /api/v1/broadcast-lists",
+      "description": "List broadcast lists\nImplement controller method with 2 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: GET /api/v1/broadcast-lists",
+      "description": "Business logic for List broadcast lists",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: ListBroadcastListsRequest",
+      "description": "Request/Response DTO for GET /api/v1/broadcast-lists",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/listbroadcastlistsrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists",
+      "description": "JWT authentication guard for GET /api/v1/broadcast-lists",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: GET /api/v1/broadcast-lists",
+      "description": "Input validation for 2 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: GET /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Get broadcast list details\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: GET /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Business logic for Get broadcast list details",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: GetBroadcastListRequest",
+      "description": "Request/Response DTO for GET /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/getbroadcastlistrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "JWT authentication guard for GET /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: GET /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_broadcast-lists_broadcastListId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: PUT /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Update broadcast list\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: PUT /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Business logic for Update broadcast list",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: UpdateBroadcastListRequest",
+      "description": "Request/Response DTO for PUT /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/updatebroadcastlistrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "JWT authentication guard for PUT /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: PUT /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-PUT-api_v1_broadcast-lists_broadcastListId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: DELETE /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Delete broadcast list\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: DELETE /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Business logic for Delete broadcast list",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: DeleteBroadcastListRequest",
+      "description": "Request/Response DTO for DELETE /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/deletebroadcastlistrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "JWT authentication guard for DELETE /api/v1/broadcast-lists/{broadcastListId}",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: DELETE /api/v1/broadcast-lists/{broadcastListId}",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-DELETE-api_v1_broadcast-lists_broadcastListId-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "description": "Send broadcast message\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "description": "Business logic for Send broadcast message",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/broadcast-lists.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: SendBroadcastMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/dto/sendbroadcastmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "description": "JWT authentication guard for POST /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/broadcast-lists/{broadcastListId}/messages",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_broadcast-lists_broadcastListId_messages-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/broadcast-lists/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-011"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: GET /api/v1/conversations/{conversationId}/messages",
+      "description": "List messages with formatted text metadata\nImplement controller method with 3 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-012"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: GET /api/v1/conversations/{conversationId}/messages",
+      "description": "Business logic for List messages with formatted text metadata",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-012"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: ListMessagesRequest",
+      "description": "Request/Response DTO for GET /api/v1/conversations/{conversationId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/dto/listmessagesrequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-012"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/conversations/{conversationId}/messages",
+      "description": "JWT authentication guard for GET /api/v1/conversations/{conversationId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-012"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: GET /api/v1/conversations/{conversationId}/messages",
+      "description": "Input validation for 3 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-GET-api_v1_conversations_conversationId_messages-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-012"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/group-chats/{groupId}/messages",
+      "description": "Send a group message with @mentions\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/group-chats/group-chats.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-013"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/group-chats/{groupId}/messages",
+      "description": "Business logic for Send a group message with @mentions",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/group-chats/group-chats.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-013"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateGroupMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/group-chats/{groupId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/group-chats/dto/creategroupmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-013"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/group-chats/{groupId}/messages",
+      "description": "JWT authentication guard for POST /api/v1/group-chats/{groupId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-013"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/group-chats/{groupId}/messages",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_group-chats_groupId_messages-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/group-chats/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-013"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/conversations/{conversationId}/messages/location",
+      "description": "Share location in a conversation\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-014"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/conversations/{conversationId}/messages/location",
+      "description": "Business logic for Share location in a conversation",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/conversations.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-014"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateLocationMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/conversations/{conversationId}/messages/location",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/dto/createlocationmessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-014"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/conversations/{conversationId}/messages/location",
+      "description": "JWT authentication guard for POST /api/v1/conversations/{conversationId}/messages/location",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-014"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/conversations/{conversationId}/messages/location",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_conversations_conversationId_messages_location-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/conversations/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-014"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_chats_chatId_messages-controller",
+      "epic_id": "EPIC-003",
+      "type": "api_controller",
+      "title": "Controller: POST /api/v1/chats/{chatId}/messages",
+      "description": "Share a contact in a chat\nImplement controller method with 1 parameters.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.controller.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-015"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_chats_chatId_messages-service",
+      "epic_id": "EPIC-003",
+      "type": "api_service",
+      "title": "Service: POST /api/v1/chats/{chatId}/messages",
+      "description": "Business logic for Share a contact in a chat",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-controller"
+      ],
+      "estimated_minutes": 8,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/chats.service.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-015"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_chats_chatId_messages-dto",
+      "epic_id": "EPIC-003",
+      "type": "api_dto",
+      "title": "DTO: CreateContactShareMessageRequest",
+      "description": "Request/Response DTO for POST /api/v1/chats/{chatId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/dto/createcontactsharemessagerequest.dto.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-015"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_chats_chatId_messages-guard",
+      "epic_id": "EPIC-003",
+      "type": "api_guard",
+      "title": "Auth Guard: /api/v1/chats/{chatId}/messages",
+      "description": "JWT authentication guard for POST /api/v1/chats/{chatId}/messages",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-controller"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/guards/jwt-auth.guard.ts"
+      ],
+      "related_requirements": [
+        "WA-MSG-015"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-API-POST-api_v1_chats_chatId_messages-validation",
+      "epic_id": "EPIC-003",
+      "type": "api_validation",
+      "title": "Validation: POST /api/v1/chats/{chatId}/messages",
+      "description": "Input validation for 1 parameters",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-dto"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/modules/chats/validators/"
+      ],
+      "related_requirements": [
+        "WA-MSG-015"
+      ],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-build-api",
+      "epic_id": "EPIC-003",
+      "type": "verify_build",
+      "title": "Build backend",
+      "description": "Run npm run build for NestJS backend.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-controller",
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-service",
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-dto",
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-guard",
+        "EPIC-003-API-POST-api_v1_chats_chatId_messages-validation"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "npm run build",
+      "success_criteria": "Build completes without errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-typecheck-api",
+      "epic_id": "EPIC-003",
+      "type": "verify_typecheck",
+      "title": "TypeScript type check (API)",
+      "description": "Run tsc --noEmit to verify TypeScript types.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-build-api"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "npx tsc --noEmit",
+      "success_criteria": "No TypeScript errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-integration",
+      "epic_id": "EPIC-003",
+      "type": "verify_integration",
+      "title": "Run API integration tests",
+      "description": "Execute integration tests against API endpoints.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-typecheck-api"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "npm run test:integration",
+      "success_criteria": "All integration tests pass",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-build-api",
+      "epic_id": "EPIC-003",
+      "type": "docker_build",
+      "title": "Build API Docker image",
+      "description": "Build Docker image for NestJS backend.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-typecheck-api",
+        "EPIC-003-VERIFY-integration"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "docker-compose build api",
+      "success_criteria": "Docker image built successfully",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-start-api",
+      "epic_id": "EPIC-003",
+      "type": "docker_start",
+      "title": "Start API container",
+      "description": "Start backend container with docker-compose.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-build-api"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "docker-compose up -d api",
+      "success_criteria": "API container running",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-health-api",
+      "epic_id": "EPIC-003",
+      "type": "docker_health",
+      "title": "API health check",
+      "description": "Verify API container is healthy via /health endpoint.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-start-api"
+      ],
+      "estimated_minutes": 1,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": "curl -f http://localhost:3000/health",
+      "success_criteria": "Health endpoint returns 200 OK",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-CHECKPOINT-api",
+      "epic_id": "EPIC-003",
+      "type": "checkpoint_api",
+      "title": "Checkpoint: Review Api",
+      "description": "User approval required before continuing. Review the api phase results.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-build-api",
+        "EPIC-003-DOCKER-start-api",
+        "EPIC-003-DOCKER-health-api"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": true,
+      "user_prompt": "Review the generated APIs.\n\nPlease verify:\n- All endpoints are implemented\n- Authentication and authorization work\n- Input validation is correct\n- Error handling is appropriate\n\nApprove to continue with Frontend generation.",
+      "user_response": null,
+      "checkpoint": true,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "api",
+      "command": null,
+      "success_criteria": "User approved checkpoint",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatList-page",
+      "epic_id": "EPIC-003",
+      "type": "fe_page",
+      "title": "Page: ChatList",
+      "description": "Create ChatList page component implementing 5 user stories.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-api"
+      ],
+      "estimated_minutes": 20,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/pages/ChatList/ChatList.tsx"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-011",
+        "US-012",
+        "US-013",
+        "US-014",
+        "US-015"
+      ],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatList-components",
+      "epic_id": "EPIC-003",
+      "type": "fe_component",
+      "title": "Components: ChatList",
+      "description": "Create reusable components for ChatList",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatList-page"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/components/ChatList/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatList-hook",
+      "epic_id": "EPIC-003",
+      "type": "fe_hook",
+      "title": "Hook: useChatList",
+      "description": "Create custom hook for ChatList state and logic",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatList-page"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/hooks/useChatList.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatList-api",
+      "epic_id": "EPIC-003",
+      "type": "fe_api_client",
+      "title": "API Client: ChatList",
+      "description": "Create API client functions for ChatList",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatList-hook"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/api/chatlistAPI.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatRoom-page",
+      "epic_id": "EPIC-003",
+      "type": "fe_page",
+      "title": "Page: ChatRoom",
+      "description": "Create ChatRoom page component implementing 5 user stories.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-api"
+      ],
+      "estimated_minutes": 20,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/pages/ChatRoom/ChatRoom.tsx"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-016",
+        "US-017",
+        "US-018",
+        "US-019",
+        "US-020"
+      ],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatRoom-components",
+      "epic_id": "EPIC-003",
+      "type": "fe_component",
+      "title": "Components: ChatRoom",
+      "description": "Create reusable components for ChatRoom",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatRoom-page"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/components/ChatRoom/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatRoom-hook",
+      "epic_id": "EPIC-003",
+      "type": "fe_hook",
+      "title": "Hook: useChatRoom",
+      "description": "Create custom hook for ChatRoom state and logic",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatRoom-page"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/hooks/useChatRoom.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-ChatRoom-api",
+      "epic_id": "EPIC-003",
+      "type": "fe_api_client",
+      "title": "API Client: ChatRoom",
+      "description": "Create API client functions for ChatRoom",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatRoom-hook"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/api/chatroomAPI.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-MessageInput-page",
+      "epic_id": "EPIC-003",
+      "type": "fe_page",
+      "title": "Page: MessageInput",
+      "description": "Create MessageInput page component implementing 5 user stories.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-api"
+      ],
+      "estimated_minutes": 20,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/pages/MessageInput/MessageInput.tsx"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-021",
+        "US-022",
+        "US-023",
+        "US-024",
+        "US-025"
+      ],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-MessageInput-components",
+      "epic_id": "EPIC-003",
+      "type": "fe_component",
+      "title": "Components: MessageInput",
+      "description": "Create reusable components for MessageInput",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-MessageInput-page"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/components/MessageInput/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-MessageInput-hook",
+      "epic_id": "EPIC-003",
+      "type": "fe_hook",
+      "title": "Hook: useMessageInput",
+      "description": "Create custom hook for MessageInput state and logic",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-MessageInput-page"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/hooks/useMessageInput.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-FE-MessageInput-api",
+      "epic_id": "EPIC-003",
+      "type": "fe_api_client",
+      "title": "API Client: MessageInput",
+      "description": "Create API client functions for MessageInput",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-MessageInput-hook"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "src/api/messageinputAPI.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-build-fe",
+      "epic_id": "EPIC-003",
+      "type": "verify_build",
+      "title": "Build frontend",
+      "description": "Run npm run build for React frontend.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-FE-ChatRoom-api",
+        "EPIC-003-FE-MessageInput-page",
+        "EPIC-003-FE-MessageInput-components",
+        "EPIC-003-FE-MessageInput-hook",
+        "EPIC-003-FE-MessageInput-api"
+      ],
+      "estimated_minutes": 3,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "frontend",
+      "command": "npm run build",
+      "success_criteria": "Frontend build completes without errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-lint",
+      "epic_id": "EPIC-003",
+      "type": "verify_lint",
+      "title": "Run ESLint",
+      "description": "Check code quality with ESLint.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-build-fe"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "frontend",
+      "command": "npm run lint",
+      "success_criteria": "No linting errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-typecheck-fe",
+      "epic_id": "EPIC-003",
+      "type": "verify_typecheck",
+      "title": "TypeScript type check (Frontend)",
+      "description": "Run tsc --noEmit for frontend.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-lint"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "frontend",
+      "command": "npx tsc --noEmit",
+      "success_criteria": "No TypeScript errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-unit",
+      "epic_id": "EPIC-003",
+      "type": "verify_unit",
+      "title": "Run unit tests",
+      "description": "Execute vitest unit tests.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-typecheck-fe"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "frontend",
+      "command": "npm run test:unit",
+      "success_criteria": "All unit tests pass",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-CHECKPOINT-frontend",
+      "epic_id": "EPIC-003",
+      "type": "checkpoint_fe",
+      "title": "Checkpoint: Review Frontend",
+      "description": "User approval required before continuing. Review the frontend phase results.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-lint",
+        "EPIC-003-VERIFY-typecheck-fe",
+        "EPIC-003-VERIFY-unit"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": true,
+      "user_prompt": "Review the generated UI.\n\nPlease verify:\n- All pages and components are created\n- UI matches design requirements\n- Navigation works correctly\n- Forms have proper validation\n\nApprove to continue with Testing.",
+      "user_response": null,
+      "checkpoint": true,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "frontend",
+      "command": null,
+      "success_criteria": "User approved checkpoint",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-TEST-unit",
+      "epic_id": "EPIC-003",
+      "type": "test",
+      "title": "Generate unit tests for EPIC-003",
+      "description": "Create Vitest unit tests for all EPIC-003 services and utilities. NO MOCKS - use real implementations.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-frontend"
+      ],
+      "estimated_minutes": 10,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "__tests__/unit/epic_003/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-TEST-integration",
+      "epic_id": "EPIC-003",
+      "type": "test",
+      "title": "Generate integration tests for EPIC-003",
+      "description": "Create Vitest integration tests for EPIC-003 API endpoints with real database.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-TEST-unit"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "__tests__/integration/epic_003/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-TEST-e2e",
+      "epic_id": "EPIC-003",
+      "type": "test",
+      "title": "Generate E2E tests for EPIC-003",
+      "description": "Create Playwright E2E tests for 15 user stories in EPIC-003.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-TEST-integration"
+      ],
+      "estimated_minutes": 20,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [
+        "e2e/epic_003.spec.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-011",
+        "US-012",
+        "US-013",
+        "US-014",
+        "US-015",
+        "US-016",
+        "US-017",
+        "US-018",
+        "US-019",
+        "US-020",
+        "US-021",
+        "US-022",
+        "US-023",
+        "US-024",
+        "US-025"
+      ],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-VERIFY-e2e",
+      "epic_id": "EPIC-003",
+      "type": "verify_e2e",
+      "title": "Run E2E tests",
+      "description": "Execute Playwright E2E test suite.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-TEST-unit",
+        "EPIC-003-TEST-integration",
+        "EPIC-003-TEST-e2e"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "test",
+      "command": "npm run test:e2e",
+      "success_criteria": "All E2E tests pass",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-build-prod",
+      "epic_id": "EPIC-003",
+      "type": "docker_build",
+      "title": "Build production image",
+      "description": "Build optimized production Docker image.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-VERIFY-e2e"
+      ],
+      "estimated_minutes": 5,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "deploy",
+      "command": "docker-compose -f docker-compose.prod.yml build",
+      "success_criteria": "Production image built",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-start-prod",
+      "epic_id": "EPIC-003",
+      "type": "docker_start",
+      "title": "Start production container",
+      "description": "Start full stack in production mode.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-build-prod"
+      ],
+      "estimated_minutes": 2,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "deploy",
+      "command": "docker-compose -f docker-compose.prod.yml up -d",
+      "success_criteria": "All containers running",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-health-prod",
+      "epic_id": "EPIC-003",
+      "type": "docker_health",
+      "title": "Production health check",
+      "description": "Verify all services are healthy.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-start-prod"
+      ],
+      "estimated_minutes": 1,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "deploy",
+      "command": "docker-compose -f docker-compose.prod.yml ps",
+      "success_criteria": "All containers healthy",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-DOCKER-logs-prod",
+      "epic_id": "EPIC-003",
+      "type": "docker_logs",
+      "title": "Collect production logs",
+      "description": "Collect logs from all production containers.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-health-prod"
+      ],
+      "estimated_minutes": 1,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "deploy",
+      "command": "docker-compose -f docker-compose.prod.yml logs --tail=100",
+      "success_criteria": "Logs collected, no critical errors",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-CHECKPOINT-deploy",
+      "epic_id": "EPIC-003",
+      "type": "checkpoint_deploy",
+      "title": "Checkpoint: Review Deploy",
+      "description": "User approval required before continuing. Review the deploy phase results.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-DOCKER-start-prod",
+        "EPIC-003-DOCKER-health-prod",
+        "EPIC-003-DOCKER-logs-prod"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": true,
+      "user_prompt": "Review the complete application.\n\nFinal verification:\n- All features are implemented\n- All tests are passing\n- Docker containers are healthy\n- Ready for production deployment\n\nApprove to complete this Epic.",
+      "user_response": null,
+      "checkpoint": true,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "deploy",
+      "command": null,
+      "success_criteria": "User approved checkpoint",
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    },
+    {
+      "id": "EPIC-003-INTEGRATION",
+      "epic_id": "EPIC-003",
+      "type": "integration",
+      "title": "Validate and integrate EPIC-003",
+      "description": "Run all EPIC-003 tests, validate build, and verify all 15 user stories are implemented.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-003-CHECKPOINT-deploy"
+      ],
+      "estimated_minutes": 15,
+      "actual_minutes": null,
+      "error_message": null,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "requires_user_input": false,
+      "user_prompt": null,
+      "user_response": null,
+      "checkpoint": false,
+      "auto_retry": true,
+      "max_retries": 3,
+      "retry_count": 0,
+      "timeout_seconds": 300,
+      "phase": "code",
+      "command": null,
+      "success_criteria": null,
+      "tested": false,
+      "user_fix_instructions": null,
+      "enrichment_context": null
+    }
+  ],
+  "total_tasks": 167,
+  "completed_tasks": 0,
+  "failed_tasks": 0,
+  "progress_percent": 0.0,
+  "run_count": 0,
+  "last_run_at": null,
+  "created_at": "2026-02-18T14:56:29.510617",
+  "estimated_total_minutes": 1132
+}

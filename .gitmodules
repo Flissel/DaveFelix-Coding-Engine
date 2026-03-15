@@ -1,0 +1,3 @@
+[submodule "la_fungus_search"]
+	path = la_fungus_search
+	url = https://github.com/Flissel/la_fungus_search.git

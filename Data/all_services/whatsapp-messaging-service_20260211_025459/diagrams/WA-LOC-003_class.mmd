@@ -1,0 +1,24 @@
+classDiagram
+    class StickerPack {
+        +String name
+        +String region
+        +List<Sticker> stickers
+        +addSticker(Sticker sticker)
+        +removeSticker(Sticker sticker)
+    }
+
+    class Sticker {
+        +String id
+        +String imageUrl
+        +String description
+    }
+
+    class User {
+        +String username
+        +List<StickerPack> favoriteStickerPacks
+        +addFavoriteStickerPack(StickerPack stickerPack)
+        +removeFavoriteStickerPack(StickerPack stickerPack)
+    }
+
+    StickerPack "1" -- "*" Sticker : contains
+    User "1" -- "*" StickerPack : favorites

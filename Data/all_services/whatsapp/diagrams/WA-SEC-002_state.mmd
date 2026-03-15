@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Initial
+    Initial --> CodeEntered : Sicherheitscode eingegeben
+    CodeEntered --> VerificationPending : Verifizierung ausstehend
+    VerificationPending --> Verified : Verifizierung erfolgreich
+    VerificationPending --> Failed : Verifizierung fehlgeschlagen
+    Verified --> [*] : Zugriff gewährt
+    Failed --> [*] : Zugriff verweigert

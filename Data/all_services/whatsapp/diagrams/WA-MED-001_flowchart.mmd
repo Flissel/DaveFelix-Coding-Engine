@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Bilder vorhanden?}
+    B -- Ja --> C[Wähle Bild]
+    B -- Nein --> D[Fehler: Keine Bilder]
+    C --> E[Überprüfe Bildformat]
+    E -- Gültig --> F[Sende Bild]
+    E -- Ungültig --> G[Fehler: Ungültiges Format]
+    F --> H[Bestätigung erhalten]
+    H --> I[Ende]
+    D --> I
+    G --> I

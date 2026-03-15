@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Standort teilen?}
+    B -- Ja --> C[Standort auswählen]
+    C --> D[Standortdetails überprüfen]
+    D --> E{Details korrekt?}
+    E -- Ja --> F[Standort teilen]
+    F --> G[Bestätigung senden]
+    G --> H[Ende]
+    E -- Nein --> I[Details anpassen]
+    I --> D
+    B -- Nein --> H

@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title" : "Sticker System Context", "version" : "1.0" } }%%
+C4Context
+    Person(user, "User", "A person who uses the chat application.")
+    System(stickerSystem, "Sticker System", "Supports stickers in chats.")
+    System_Ext(chatApp, "Chat Application", "The application where users communicate.")
+
+    Rel(user, chatApp, "Uses")
+    Rel(chatApp, stickerSystem, "Integrates with")
+    Rel(stickerSystem, user, "Provides stickers to")

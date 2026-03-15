@@ -1,0 +1,9 @@
+flowchart TD
+    A[Unbekannte Absender] --> B{System}
+    B -->|MUSS gesondert behandeln| C[Überprüfung der Absenderadresse]
+    C --> D{Absender bekannt?}
+    D -->|Ja| E[Normale Verarbeitung]
+    D -->|Nein| F[Zusätzliche Sicherheitsüberprüfung]
+    F --> G{Ergebnis der Überprüfung}
+    G -->|Sicher| H[Zugriff gewähren]
+    G -->|Unsicher| I[Zugriff verweigern]

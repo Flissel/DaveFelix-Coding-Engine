@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+
+    Nutzer->>System: Nachricht auswählen
+    System->>Nutzer: Bestätigung zum Löschen anfordern
+    Nutzer->>System: Bestätigen
+    System->>System: Nachricht löschen
+    System->>Nutzer: Löschbestätigung senden

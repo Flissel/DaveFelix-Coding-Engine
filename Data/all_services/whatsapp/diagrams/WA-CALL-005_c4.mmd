@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[Anruflink System] -->|Erstellt| B[Geplante Anrufe]
+    A -->|Ermöglicht| C[Nutzer]
+    A -->|Interagiert mit| D[Externe Systeme]
+    
+    C -->|Nutzt| E[Web Interface]
+    C -->|Nutzt| F[Mobile App]
+    
+    D -->|Sendet| G[Benachrichtigungen]
+    D -->|Empfängt| H[Anrufdaten]

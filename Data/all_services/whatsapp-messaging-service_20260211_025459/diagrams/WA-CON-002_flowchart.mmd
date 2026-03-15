@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Wähle Methode}
+    B -->|Manuell| C[Manuelle Eingabe]
+    B -->|Import| D[Importiere Kontakte]
+    B -->|Synchronisation| E[Synchronisiere mit externen Quellen]
+    C --> F[Kontakt speichern]
+    D --> F
+    E --> F
+    F --> G[Bestätigung anzeigen]
+    G --> H[Ende]

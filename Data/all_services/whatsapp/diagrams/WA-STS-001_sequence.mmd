@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    Benutzer->>System: Anfrage zum Erstellen eines 24-Stunden-Status-Updates
+    System-->>Benutzer: Bestätigung der Anfrage
+    Benutzer->>System: Eingabe der Statusinformationen
+    System-->>Benutzer: Status-Update erfolgreich erstellt

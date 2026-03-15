@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> StatusErstellen
+    StatusErstellen --> StatusErstellt : Status erfolgreich erstellt
+    StatusErstellen --> Fehler : Fehler beim Erstellen
+    Fehler --> StatusErstellen : Fehler behoben, erneut versuchen
+    StatusErstellt --> [*] : Status angezeigt

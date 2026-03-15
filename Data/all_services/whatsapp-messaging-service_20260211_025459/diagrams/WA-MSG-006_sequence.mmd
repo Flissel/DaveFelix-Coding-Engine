@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Wählt Nachricht zum Zitieren
+    System-->>User: Zeigt zitierte Nachricht an
+    User->>System: Gibt Antwort ein
+    System-->>User: Bestätigt das Zitieren/Antworten
+    System-->>All: Aktualisiert Nachricht mit Zitat

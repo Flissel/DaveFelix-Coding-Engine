@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title System Context Diagram for Siri/Google Assistant Integration
+    Person(user, "User", "A person using the voice assistant")
+    System(siri, "Siri", "Apple's voice assistant")
+    System(googleAssistant, "Google Assistant", "Google's voice assistant")
+    System(system, "Voice Assistant Integration System", "Provides integration for voice assistants")
+
+    Rel(user, system, "Interacts with")
+    Rel(system, siri, "Integrates with")
+    Rel(system, googleAssistant, "Integrates with")

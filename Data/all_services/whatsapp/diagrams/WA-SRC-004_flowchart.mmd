@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B[Benutzer gibt Datum ein]
+    B --> C{Datum gültig?}
+    C -->|Ja| D[System sucht Daten für das Datum]
+    C -->|Nein| E[Fehlermeldung anzeigen]
+    D --> F[Suchergebnisse anzeigen]
+    E --> B
+    F --> G[Ende]

@@ -1,0 +1,13 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Zwei-Faktor-Authentifizierung System Architecture
+
+    Person(user, "User", "A user who wants to authenticate")
+    System(system, "Zwei-Faktor-Authentifizierung System", "Supports optional 2FA with a 6-digit PIN")
+
+    System_Ext(emailService, "Email Service", "Sends email for 2FA")
+    System_Ext(smsService, "SMS Service", "Sends SMS for 2FA")
+
+    Rel(user, system, "Uses")
+    Rel(system, emailService, "Requests 2FA code via email")
+    Rel(system, smsService, "Requests 2FA code via SMS")

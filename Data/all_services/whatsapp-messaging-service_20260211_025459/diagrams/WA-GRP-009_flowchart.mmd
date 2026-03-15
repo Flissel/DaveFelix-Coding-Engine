@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B{Event planen}
+    B --> C[Gruppen bilden]
+    C --> D[Thema festlegen]
+    D --> E[Ort und Zeit auswählen]
+    E --> F[Einladungen versenden]
+    F --> G{Teilnehmerzahl}
+    G -->|Genug Teilnehmer| H[Event durchführen]
+    G -->|Zu wenige Teilnehmer| I[Event absagen]
+    H --> J[Feedback einholen]
+    J --> K[Event auswerten]
+    K --> L[Ende]
+    I --> L

@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Abwesenheitsnachricht erforderlich?}
+    B -- Ja --> C[Automatische Abwesenheitsnachricht generieren]
+    B -- Nein --> D[Keine Aktion erforderlich]
+    C --> E[Nachricht an Absender senden]
+    E --> F[Abwesenheitsnachricht aktivieren]
+    F --> G[Ende]
+    D --> G

@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Initial
+    Initial --> CodeEntered : Code eingegeben
+    CodeEntered --> Verifying : Verifizierung gestartet
+    Verifying --> Success : Verifizierung erfolgreich
+    Verifying --> Failure : Verifizierung fehlgeschlagen
+    Failure --> CodeEntered : Erneute Eingabe erforderlich
+    Success --> [*]

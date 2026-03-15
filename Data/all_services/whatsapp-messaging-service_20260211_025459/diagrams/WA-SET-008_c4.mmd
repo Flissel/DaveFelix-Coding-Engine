@@ -1,0 +1,12 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Chat-Hintergrund System Architecture
+
+    Person(user, "User", "A user who customizes chat backgrounds")
+    
+    System(chatHintergrund, "Chat-Hintergrund", "A system that provides customizable chat backgrounds")
+    
+    System_Ext(chatService, "Chat Service", "External chat service that integrates with Chat-Hintergrund")
+    
+    Rel(user, chatHintergrund, "Uses")
+    Rel(chatHintergrund, chatService, "Integrates with")

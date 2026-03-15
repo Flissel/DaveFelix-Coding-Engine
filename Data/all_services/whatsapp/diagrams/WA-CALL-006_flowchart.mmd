@@ -1,0 +1,7 @@
+flowchart TD
+    A[Anruf erhalten] --> B{Anruf ablehnen?}
+    B -- Ja --> C[Nachricht auswählen]
+    B -- Nein --> D[Anruf annehmen]
+    C --> E[Nachricht senden]
+    E --> F[Anruf abgelehnt mit Nachricht]
+    D --> G[Gespräch führen]

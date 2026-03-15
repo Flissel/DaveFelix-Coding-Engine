@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[Benutzer gibt Telefonnummer ein]
+    B --> C[System sendet Verifizierungscode]
+    C --> D[Benutzer erhält Verifizierungscode]
+    D --> E[Benutzer gibt Verifizierungscode ein]
+    E --> F{Ist der Verifizierungscode korrekt?}
+    F -->|Ja| G[Benutzer erfolgreich registriert]
+    F -->|Nein| H[Fehlermeldung anzeigen]
+    H --> B
+    G --> I[Ende]

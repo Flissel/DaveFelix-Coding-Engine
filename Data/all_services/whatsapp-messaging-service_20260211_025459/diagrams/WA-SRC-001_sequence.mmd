@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as Nachrichtensystem
+
+    User->>System: Anfrage zur Volltext-Suche
+    System->>User: Ergebnisse der Suche zurückgeben
+    User->>System: Auswahl eines Ergebnisses
+    System->>User: Detailansicht der Nachricht anzeigen

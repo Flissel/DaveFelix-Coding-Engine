@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Gruppeneinstellungen}
+    B -->|Konfigurierbar| C[Benutzerdefinierte Einstellungen]
+    B -->|Standard| D[Standard Einstellungen]
+    C --> E{Einstellungen anpassen}
+    D --> E
+    E --> F[Speichern]
+    F --> G[Bestätigung]
+    G --> H[Ende]

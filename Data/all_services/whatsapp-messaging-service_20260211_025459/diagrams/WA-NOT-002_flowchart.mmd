@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Benachrichtigungsvorschau konfiguriert?}
+    B -- Ja --> C[Benachrichtigungsvorschau anzeigen]
+    B -- Nein --> D[Benachrichtigungsvorschau konfigurieren]
+    D --> C
+    C --> E[Benachrichtigungsvorschau anpassen]
+    E --> F{Änderungen speichern?}
+    F -- Ja --> G[Änderungen speichern]
+    F -- Nein --> H[Benachrichtigungsvorschau verlassen]
+    G --> I[Benachrichtigungsvorschau erfolgreich aktualisiert]
+    H --> I
+    I --> J[Ende]

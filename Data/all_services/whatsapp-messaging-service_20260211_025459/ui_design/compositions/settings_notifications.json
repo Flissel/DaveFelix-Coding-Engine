@@ -1,0 +1,106 @@
+{
+  "route": "/settings/notifications",
+  "screen_name": "Benachrichtigungen",
+  "description": "",
+  "user_stories": [
+    "US-065"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Benachrichtigungen",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Push-Benachrichtigungen",
+        "variant": "default",
+        "id": "push_notifications"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Neue Nachrichten",
+        "variant": "default",
+        "id": "new_messages"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Gruppennachrichten",
+        "variant": "default",
+        "id": "group_messages"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Anrufe",
+        "variant": "default",
+        "id": "calls"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Speichern",
+        "variant": "primary"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, padding 16px, gap 24px, max-width 400px",
+  "data_sources": [
+    "POST /api/v1/devices",
+    "GET /api/v1/devices"
+  ],
+  "state_shape": {
+    "pushNotifications": "boolean",
+    "newMessages": "boolean",
+    "groupMessages": "boolean",
+    "calls": "boolean",
+    "isLoading": "boolean",
+    "deviceId": "string"
+  }
+}

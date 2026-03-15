@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Gruppeneinladung?}
+    B -- Ja --> C[Link generieren]
+    B -- Nein --> D[Prozess beenden]
+    C --> E[Link an Teilnehmer senden]
+    E --> F{Teilnehmer akzeptiert?}
+    F -- Ja --> G[Teilnehmer zur Gruppe hinzufügen]
+    F -- Nein --> H[Prozess beenden]
+    G --> I[Einladung erfolgreich]
+    H --> I
+    D --> I
+    I --> J[Ende]

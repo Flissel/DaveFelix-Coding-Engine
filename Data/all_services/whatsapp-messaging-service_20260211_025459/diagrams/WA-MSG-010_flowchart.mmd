@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Chat auswählen}
+    B -->|Chat gefunden| C[Zusätzliche Authentifizierung anfordern]
+    B -->|Chat nicht gefunden| D[Fehler anzeigen]
+    C --> E{Authentifizierung erfolgreich?}
+    E -->|Ja| F[Sperren des Chats]
+    E -->|Nein| G[Fehler anzeigen]
+    F --> H[Chat gesperrt]
+    G --> H
+    D --> H
+    H --> I[Ende]

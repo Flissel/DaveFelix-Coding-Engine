@@ -1,0 +1,7 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Meldet Nachrichten/Kontakte| B(Melden System)
+    B -->|Speichert| C[Database]
+    B -->|Benachrichtigt| D[Notification Service]
+    B -->|Analysiert| E[Analytics Service]
+    A -->|Empfängt Bestätigungen| B

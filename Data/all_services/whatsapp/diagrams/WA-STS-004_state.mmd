@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Visible
+    [*] --> Hidden
+    [*] --> Restricted
+
+    Visible --> Hidden : Set to Hidden
+    Visible --> Restricted : Set to Restricted
+    Hidden --> Visible : Set to Visible
+    Hidden --> Restricted : Set to Restricted
+    Restricted --> Visible : Set to Visible
+    Restricted --> Hidden : Set to Hidden

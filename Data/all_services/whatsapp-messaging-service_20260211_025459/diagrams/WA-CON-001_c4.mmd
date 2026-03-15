@@ -1,0 +1,6 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A[User Device] -->|Synchronizes Contacts| B[Contact Synchronization System]
+    B -->|Matches Contacts| C[WhatsApp Users]
+    A -->|Requests Sync| B
+    C -->|Provides User Data| B

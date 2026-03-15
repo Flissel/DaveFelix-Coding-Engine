@@ -1,0 +1,38 @@
+classDiagram
+    class Gruppenadministration {
+        +createGroup()
+        +deleteGroup()
+        +addMember()
+        +removeMember()
+        +assignRole()
+        +revokeRole()
+        +listGroups()
+        +getGroupDetails()
+    }
+
+    class Gruppe {
+        +groupName: String
+        +groupID: String
+        +members: List<Member>
+        +roles: List<Role>
+    }
+
+    class Member {
+        +memberID: String
+        +memberName: String
+        +email: String
+    }
+
+    class Role {
+        +roleName: String
+        +permissions: List<Permission>
+    }
+
+    class Permission {
+        +permissionName: String
+    }
+
+    Gruppenadministration --> Gruppe : manages
+    Gruppe --> Member : contains
+    Gruppe --> Role : has
+    Role --> Permission : grants

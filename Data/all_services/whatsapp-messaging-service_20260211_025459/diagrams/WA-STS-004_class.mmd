@@ -1,0 +1,17 @@
+classDiagram
+    class Status {
+        +String name
+        +Boolean isVisible
+        +String description
+        +setVisibility(Boolean visibility)
+    }
+
+    class Datenschutz {
+        +String policy
+        +String complianceLevel
+        +List<Status> statuses
+        +addStatus(Status status)
+        +removeStatus(Status status)
+    }
+
+    Datenschutz "1" -- "*" Status : manages

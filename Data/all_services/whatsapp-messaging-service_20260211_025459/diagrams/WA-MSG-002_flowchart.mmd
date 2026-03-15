@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Sprachnachricht senden?}
+    B -- Ja --> C[Sprachnachricht aufnehmen]
+    B -- Nein --> D[Prozess beenden]
+    C --> E[Sprachnachricht an Server senden]
+    E --> F{Serverantwort erhalten?}
+    F -- Ja --> G[Sprachnachricht erfolgreich gesendet]
+    F -- Nein --> H[Fehler beim Senden]
+    G --> I[Prozess beenden]
+    H --> I
+    D --> I

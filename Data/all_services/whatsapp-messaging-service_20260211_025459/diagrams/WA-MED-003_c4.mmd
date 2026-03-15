@@ -1,0 +1,8 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Dokumente senden System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Dokumente senden möchte.")
+    System(system, "Dokumente senden System", "Ein System, das das Senden beliebiger Dokumente unterstützt.")
+
+    Rel(user, system, "Sendet Dokumente")

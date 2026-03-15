@@ -1,0 +1,128 @@
+{
+  "route": "/settings/devices/add",
+  "screen_name": "Geraet hinzufügen",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Gerät hinzufügen",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "label": "Gerätename",
+        "placeholder": "Mein neues Gerät",
+        "variant": "outline",
+        "required": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "label": "Telefonnummer",
+        "placeholder": "+49 123 456789",
+        "variant": "outline",
+        "type": "tel",
+        "required": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "label": "Bestätigungscode",
+        "variant": "numeric",
+        "length": 6,
+        "hidden": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Code anfordern",
+        "variant": "primary",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Code erneut senden",
+        "variant": "ghost",
+        "hidden": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Gerät hinzufügen",
+        "variant": "primary",
+        "fullWidth": true,
+        "disabled": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 20px, gap 16px",
+  "data_sources": [
+    "POST /api/v1/phone-registrations",
+    "POST /api/v1/phone-registrations/{registrationId}/verify",
+    "POST /api/v1/phone-registrations/{registrationId}/resend-otp",
+    "POST /api/v1/devices"
+  ],
+  "state_shape": {
+    "deviceName": "string",
+    "phoneNumber": "string",
+    "otpCode": "string",
+    "registrationId": "string",
+    "isOtpSent": "boolean",
+    "isVerifying": "boolean",
+    "isRegistering": "boolean",
+    "errors": "object"
+  }
+}

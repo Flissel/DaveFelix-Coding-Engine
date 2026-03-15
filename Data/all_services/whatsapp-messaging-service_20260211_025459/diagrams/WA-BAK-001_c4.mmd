@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Cloud-Backup System Context Diagram
+
+    Person(user, "User", "A user who wants to backup their chat data.")
+    System(backupSystem, "Cloud-Backup", "A system that enables chat backup in the cloud.")
+
+    Rel(user, backupSystem, "Uses", "HTTPS")

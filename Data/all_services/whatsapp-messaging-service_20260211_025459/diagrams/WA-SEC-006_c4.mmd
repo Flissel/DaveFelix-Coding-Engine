@@ -1,0 +1,7 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Uses| B(Zwei-Schritte-Verifizierung System)
+    B -->|Requests PIN| C[Authentication Server]
+    B -->|Sends Notification| D[Notification Service]
+    C -->|Validates PIN| E[Database]
+    D -->|Sends Code| A

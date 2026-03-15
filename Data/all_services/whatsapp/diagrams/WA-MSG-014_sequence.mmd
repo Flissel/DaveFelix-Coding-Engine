@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant LocationService as Standortdienst
+
+    User->>System: Standort teilen anfordern
+    System->>LocationService: Standortdaten abrufen
+    LocationService-->>System: Standortdaten zurückgeben
+    System-->>User: Standort erfolgreich geteilt

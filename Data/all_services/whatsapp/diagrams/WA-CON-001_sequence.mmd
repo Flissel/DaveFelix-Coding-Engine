@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+    participant WhatsApp as WhatsApp
+
+    User->>System: Kontakte synchronisieren anfordern
+    System->>WhatsApp: Kontakte abgleichen
+    WhatsApp-->>System: Kontakte zurückgeben
+    System-->>User: Synchronisierung abgeschlossen

@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> NachrichtGesendet
+    NachrichtGesendet --> NachrichtBearbeiten : Bearbeiten anfordern
+    NachrichtBearbeiten --> NachrichtGesendet : Änderungen speichern
+    NachrichtBearbeiten --> NachrichtGesendet : Abbrechen
+    NachrichtBearbeiten --> [*] : Abbrechen

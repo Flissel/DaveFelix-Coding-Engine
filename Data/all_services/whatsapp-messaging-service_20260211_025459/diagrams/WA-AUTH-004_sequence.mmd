@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant Device1 as Gerät 1
+    participant Device2 as Gerät 2
+    participant System as System
+
+    User->>Device1: Anmeldung
+    Device1->>System: Authentifizierung
+    System-->>Device1: Bestätigung
+
+    User->>Device2: Anmeldung
+    Device2->>System: Authentifizierung
+    System-->>Device2: Bestätigung
+
+    User->>Device1: Aktion ausführen
+    Device1->>System: Anfrage
+    System-->>Device1: Antwort
+
+    User->>Device2: Aktion ausführen
+    Device2->>System: Anfrage
+    System-->>Device2: Antwort

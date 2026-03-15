@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Gruppenerstellungsanfrage
+    System-->>User: Bestätigung der Anfrage
+    System->>System: Gruppe erstellen
+    System-->>User: Gruppenchats erstellt

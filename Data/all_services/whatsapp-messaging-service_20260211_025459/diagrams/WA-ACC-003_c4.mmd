@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+    C4Context
+        title System Context Diagram for Kontrast
+        Person(customer, "Customer", "A user who needs sufficient color contrast.")
+        System(kontrastSystem, "Kontrast", "A system that ensures sufficient color contrast for accessibility.")
+        System_Ext(externalSystem, "External Systems", "Other systems that may interact with Kontrast.")
+
+        Rel(customer, kontrastSystem, "Uses")
+        Rel(kontrastSystem, externalSystem, "Interacts with")

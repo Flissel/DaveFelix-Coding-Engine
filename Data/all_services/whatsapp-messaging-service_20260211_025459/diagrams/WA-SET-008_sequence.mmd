@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant System as Chat System
+    participant Background as Background Service
+
+    User->>System: Request customizable chat backgrounds
+    System->>Background: Fetch available backgrounds
+    Background-->>System: Return list of backgrounds
+    System-->>User: Display available backgrounds
+    User->>System: Select a background
+    System->>Background: Apply selected background
+    Background-->>System: Confirm background applied
+    System-->>User: Confirm background change

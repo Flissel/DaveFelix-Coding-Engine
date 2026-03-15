@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Chat Exportieren System Context Diagram
+
+    Person(user, "Benutzer", "Interagiert mit dem System um Chats zu exportieren.")
+    System(chatExportSystem, "Chat Exportieren System", "Ermöglicht den Export einzelner Chats.")
+
+    Rel(user, chatExportSystem, "Exportiert Chats")

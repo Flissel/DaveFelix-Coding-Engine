@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Anzeigename
+    Person(user, "User", "A user who interacts with the system")
+    System(system, "Anzeigename System", "Das System MUSS einen konfigurierbaren Anzeigenamen unterstuetzen")
+    
+    Rel(user, system, "Uses")

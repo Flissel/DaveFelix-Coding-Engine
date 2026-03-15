@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Ist das System online?}
+    B -- Ja --> C[System bietet volle Funktionalität]
+    B -- Nein --> D[System bietet grundlegende Funktionalität offline]
+    D --> E{Funktionalität benötigt?}
+    E -- Ja --> F[Benutzer kann grundlegende Funktionen nutzen]
+    E -- Nein --> G[Warten auf Online-Verbindung]
+    F --> H[Ende]
+    G --> H
+    C --> H

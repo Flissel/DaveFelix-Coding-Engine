@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Meta AI Chat System Context
+
+    Person(customer, "Customer", "A user interacting with the AI assistant.")
+    Person(admin, "Admin", "An administrator managing the AI assistant.")
+
+    System(metaAIChat, "Meta AI Chat", "A system providing AI assistant integration.")
+
+    System_Ext(thirdPartyAPI, "Third Party API", "External APIs for additional functionalities.")
+
+    Rel(customer, metaAIChat, "Uses")
+    Rel(admin, metaAIChat, "Manages")
+    Rel(metaAIChat, thirdPartyAPI, "Integrates with")

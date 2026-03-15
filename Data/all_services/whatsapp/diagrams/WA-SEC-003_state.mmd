@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Authentifizierung
+    Authentifizierung --> AppSperre : Erfolgreiche Authentifizierung
+    Authentifizierung --> [*] : Fehlgeschlagene Authentifizierung
+    AppSperre --> Nachrichtensperre : Aktivierung der Nachrichtensperre
+    Nachrichtensperre --> AppSperre : Deaktivierung der Nachrichtensperre
+    Nachrichtensperre --> [*] : Rückkehr zur Hauptansicht

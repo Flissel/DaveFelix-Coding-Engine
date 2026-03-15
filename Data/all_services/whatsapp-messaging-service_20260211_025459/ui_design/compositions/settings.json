@@ -1,0 +1,133 @@
+{
+  "route": "/settings",
+  "screen_name": "Einstellungen",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Einstellungen",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "2FA aktivieren",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Biometrische Anmeldung",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Telefonnummer registrieren",
+        "variant": "outline"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Geräte verwalten",
+        "variant": "outline"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Biometrische Daten löschen",
+        "variant": "danger"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "alert",
+        "title": "2FA PIN eingeben"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, padding 16px, gap 24px, max-width 400px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa",
+    "POST /api/v1/users/{userId}/2fa",
+    "DELETE /api/v1/users/{userId}/2fa",
+    "GET /api/v1/biometric/credentials",
+    "DELETE /api/v1/biometric/credentials/{credentialId}",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "GET /api/v1/devices"
+  ],
+  "state_shape": {
+    "twoFactorEnabled": "boolean",
+    "biometricEnabled": "boolean",
+    "biometricCredentials": "array",
+    "devices": "array",
+    "showTwoFactorModal": "boolean",
+    "twoFactorPin": "string",
+    "isLoading": "boolean"
+  }
+}

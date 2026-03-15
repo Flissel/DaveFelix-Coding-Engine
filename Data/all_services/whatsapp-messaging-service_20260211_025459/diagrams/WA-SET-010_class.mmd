@@ -1,0 +1,16 @@
+classDiagram
+    class Sprache {
+        +String name
+        +String code
+        +String region
+        +void translate(String text)
+    }
+
+    class System {
+        +List<Sprache> sprachen
+        +void addSprache(Sprache sprache)
+        +void removeSprache(Sprache sprache)
+        +List<String> getSupportedLanguages()
+    }
+
+    System "1" -- "*" Sprache : supports

@@ -1,0 +1,19 @@
+stateDiagram-v2
+    [*] --> Offline
+    Offline --> Online
+    Online --> Invisible
+    Online --> Offline
+    Invisible --> Online
+    Invisible --> Offline
+
+    state Offline {
+        [*] --> NotVisible
+        NotVisible --> Visible
+        Visible --> NotVisible
+    }
+
+    state Online {
+        [*] --> Visible
+        Visible --> Invisible
+        Invisible --> Visible
+    }

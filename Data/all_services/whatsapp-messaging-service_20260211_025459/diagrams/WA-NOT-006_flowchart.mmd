@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Anrufbenachrichtigungseinstellungen}
+    B -->|Ja| C[Separate Einstellungen anbieten]
+    B -->|Nein| D[Standard Einstellungen verwenden]
+    C --> E[Benutzerdefinierte Optionen bereitstellen]
+    D --> F[Benutzer informiert über Standardoptionen]
+    E --> G[Benutzer speichert Einstellungen]
+    F --> G
+    G --> H[Anrufbenachrichtigung aktiv]
+    H --> I[Ende]

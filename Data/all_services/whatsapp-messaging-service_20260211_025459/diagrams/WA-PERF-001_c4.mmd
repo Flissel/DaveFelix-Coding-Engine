@@ -1,0 +1,11 @@
+%%{ init: { "theme": "default" } }%%
+C4Context
+    title Offline-Modus System Architecture
+
+    Person(user, "User", "A user who interacts with the system offline.")
+    
+    System_Boundary(system, "Offline-Modus System") {
+        System(systemName, "Offline Functionality", "Provides basic functionality while offline.")
+    }
+
+    Rel(user, system, "Uses", "Interacts with the system to access offline features.")

@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> created
+    created --> active : activate_chat / initialize_chat_session
+    active --> locked : lock_chat [user_has_lock_permission] / enable_authentication_requirement
+    locked --> unlocking : attempt_unlock / prompt_authentication
+    unlocking --> active : authentication_success [valid_credentials] / disable_authentication_requirement
+    unlocking --> locked : authentication_failed / log_failed_attempt
+    active --> archived : archive_chat [user_has_archive_permission] / move_to_archive
+    locked --> archived : archive_chat [user_has_archive_permission] / move_to_archive
+    archived --> active : restore_chat [user_has_restore_permission] / restore_from_archive
+    active --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data
+    locked --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data
+    archived --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data
+    deleted --> [*]

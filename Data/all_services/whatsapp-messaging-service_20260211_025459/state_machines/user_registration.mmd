@@ -1,0 +1,19 @@
+stateDiagram-v2
+    [*] --> not_started
+    not_started --> phone_number_entered : enter_phone_number [phone_number_valid] / validate_phone_format
+    not_started --> registration_failed : enter_phone_number [phone_number_invalid] / log_validation_error
+    phone_number_entered --> verification_code_sent : request_verification [phone_number_not_registered] / send_verification_sms
+    phone_number_entered --> registration_failed : request_verification [phone_number_already_registered] / notify_already_registered
+    verification_code_sent --> verification_pending : code_delivery_confirmed / start_verification_timer
+    verification_code_sent --> verification_failed : code_delivery_failed / log_delivery_failure
+    verification_pending --> verified : submit_verification_code [code_valid_and_not_expired] / mark_phone_verified
+    verification_pending --> verification_failed : submit_verification_code [code_invalid] / increment_attempt_counter
+    verification_pending --> expired : verification_timeout / invalidate_verification_code
+    verification_failed --> verification_pending : retry_verification [attempts_below_limit] / reset_verification_timer
+    verification_failed --> registration_failed : retry_verification [attempts_exceeded] / block_phone_temporarily
+    expired --> verification_code_sent : resend_verification [resend_attempts_below_limit] / send_new_verification_sms
+    expired --> registration_failed : resend_verification [resend_attempts_exceeded] / block_registration_temporarily
+    verified --> registration_completed : complete_registration / create_user_account
+    verified --> registration_failed : account_creation_failed / log_account_creation_error
+    registration_completed --> [*]
+    registration_failed --> [*]

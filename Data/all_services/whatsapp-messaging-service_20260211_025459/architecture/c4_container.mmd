@@ -1,0 +1,59 @@
+graph TB
+    subgraph "Mobile Device"
+        A[React Native App]
+    end
+    
+    subgraph "API Layer"
+        B[Kong API Gateway]
+    end
+    
+    subgraph "Microservices"
+        C[Auth Service]
+        D[User Profile Service]
+        E[Messaging Service]
+        F[Chat Service]
+        G[WebSocket Service]
+        H[Media Service]
+        I[Notification Worker]
+    end
+    
+    subgraph "Data Layer"
+        J[(PostgreSQL Auth)]
+        K[(PostgreSQL Profiles)]
+        L[(PostgreSQL Messages)]
+        M[(PostgreSQL Chats)]
+        N[(PostgreSQL Media)]
+        O[(PostgreSQL Notifications)]
+        P[(Redis Cache)]
+    end
+    
+    subgraph "Infrastructure"
+        Q[Kafka Queue]
+        R[AWS S3 Storage]
+    end
+    
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    B --> F
+    B --> G
+    B --> H
+    C --> J
+    C --> P
+    D --> K
+    D --> P
+    D --> R
+    E --> L
+    E --> P
+    E --> Q
+    F --> M
+    F --> P
+    F --> Q
+    G --> P
+    G --> Q
+    H --> N
+    H --> R
+    H --> P
+    I --> O
+    I --> Q

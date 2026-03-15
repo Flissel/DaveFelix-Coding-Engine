@@ -1,0 +1,13 @@
+classDiagram
+    class UserProfile {
+        +String name
+        +String email
+        +String phoneNumber
+        +displayPhoneNumber()
+    }
+
+    UserProfile --> "1" PhoneNumber : contains
+    class PhoneNumber {
+        +String number
+        +String type
+    }

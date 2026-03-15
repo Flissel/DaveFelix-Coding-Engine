@@ -1,0 +1,6 @@
+flowchart TD
+    A[Gruppe verlassen] --> B{Benachrichtigung erforderlich?}
+    B -- Ja --> C[Benachrichtigung senden]
+    B -- Nein --> D[Gruppe verlassen ohne Benachrichtigung]
+    C --> D
+    D --> E[Prozess abgeschlossen]

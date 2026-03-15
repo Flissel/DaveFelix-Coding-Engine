@@ -1,0 +1,12 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Standort teilen - System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Standorte teilen möchte.")
+    System(system, "Standort teilen", "Ein System, das das Teilen von Standorten unterstützt.")
+    System_Ext(googleMaps, "Google Maps", "Ein externer Dienst zur Anzeige von Standorten.")
+    System_Ext(socialMedia, "Soziale Medien", "Externe Plattformen zum Teilen von Standorten.")
+
+    Rel(user, system, "Benutzt")
+    Rel(system, googleMaps, "Nutzen API zur Standortanzeige")
+    Rel(system, socialMedia, "Teilen von Standorten")

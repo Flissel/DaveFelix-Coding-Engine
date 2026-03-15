@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[User] -->|Interacts with| B(Batterieeffizienz System)
+    B -->|Sends data to| C[External Data Sources]
+    B -->|Receives updates from| D[Monitoring Services]
+    B -->|Provides feedback to| E[User Interface]
+    
+    classDef system fill:#f9f,stroke:#333,stroke-width:2px;
+    class B system;

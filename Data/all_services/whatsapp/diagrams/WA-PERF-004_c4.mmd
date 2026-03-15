@@ -1,0 +1,9 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Batterieeffizienz System Context Diagram
+    Person(user, "User", "A user who interacts with the system.")
+    System(batterieeffizienzSystem, "Batterieeffizienz System", "A system that operates efficiently to save battery.")
+    System_Ext(externalSystem, "External System", "An external system that provides data for battery efficiency.")
+
+    Rel(user, batterieeffizienzSystem, "Uses")
+    Rel(batterieeffizienzSystem, externalSystem, "Requests data from")

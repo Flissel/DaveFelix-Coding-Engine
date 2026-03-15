@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Zwei-Faktor-Authentifizierung System Context
+
+    Person(customer, "Kunde", "Ein Benutzer, der sich anmelden möchte.")
+    System(system, "Zwei-Faktor-Authentifizierung System", "Ein System, das optionale 2FA mit 6-stelliger PIN unterstützt.")
+    System_Ext(authenticationService, "Authentifizierungsdienst", "Ein externer Dienst zur Verifizierung von Anmeldedaten.")
+
+    Rel(customer, system, "Verwendet")
+    Rel(system, authenticationService, "Sendet Anmeldedaten zur Verifizierung")
+    Rel(authenticationService, system, "Sendet Bestätigung oder Fehler zurück")

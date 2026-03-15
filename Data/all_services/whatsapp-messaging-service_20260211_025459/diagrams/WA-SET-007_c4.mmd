@@ -1,0 +1,13 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Datennutzung System Context Diagram
+
+    Person(user, "User", "A person using the system to manage data consumption")
+    System(datennutzung, "Datennutzung System", "Provides control over data consumption")
+
+    System_Ext(dataSource, "Data Source", "External system providing data")
+    System_Ext(admin, "Admin", "System administrator managing the system")
+
+    Rel(user, datennutzung, "Uses")
+    Rel(datennutzung, dataSource, "Fetches data from")
+    Rel(admin, datennutzung, "Manages")

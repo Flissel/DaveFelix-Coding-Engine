@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Videos senden?}
+    B -- Ja --> C[Video auswählen]
+    C --> D[Video hochladen]
+    D --> E{Upload erfolgreich?}
+    E -- Ja --> F[Video senden]
+    F --> G[Bestätigung senden]
+    G --> H[Ende]
+    E -- Nein --> I[Fehler anzeigen]
+    I --> H
+    B -- Nein --> H

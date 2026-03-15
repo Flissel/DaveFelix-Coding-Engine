@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Erhält Benachrichtigung
+    System-->>User: Zeigt Antwortoptionen an
+    User->>System: Wählt Antwort aus
+    System-->>User: Sendet Antwort
+    User->>System: Bestätigt Empfang der Antwort

@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant UI as Benutzeroberfläche
+
+    User->>UI: Wählt Sprache (z.B. Arabisch)
+    UI->>System: Sendet Spracheinstellung
+    System->>UI: Bestätigt Spracheinstellung
+    UI->>User: Aktualisiert Benutzeroberfläche
+    User->>UI: Interagiert mit der Benutzeroberfläche
+    UI->>System: Sendet Benutzerinteraktion
+    System->>UI: Liefert Inhalte in RTL
+    UI->>User: Zeigt Inhalte an (rechts-nach-links)

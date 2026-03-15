@@ -1,0 +1,23 @@
+classDiagram
+    class Warenkorb {
+        +List<Artikel> artikel
+        +addArtikel(artikel: Artikel)
+        +removeArtikel(artikel: Artikel)
+        +calculateTotal(): float
+    }
+
+    class Artikel {
+        +String name
+        +float preis
+        +int menge
+    }
+
+    class Bestellung {
+        +String bestellnummer
+        +Date datum
+        +Warenkorb warenkorb
+        +confirmBestellung()
+    }
+
+    Warenkorb "1" -- "*" Artikel : enthält
+    Warenkorb "1" -- "1" Bestellung : gehört zu

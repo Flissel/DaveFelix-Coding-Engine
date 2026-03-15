@@ -1,0 +1,116 @@
+{
+  "route": "/settings/security/passkeys",
+  "screen_name": "Passkeys verwalten",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Passkeys",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Neuen Passkey hinzufügen",
+        "variant": "primary",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Passkey erstellen",
+        "variant": "primary"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Abbrechen",
+        "variant": "outline"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Löschen",
+        "variant": "danger"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "default",
+        "title": "Passkey hinzufügen"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "alert",
+        "title": "Passkey löschen"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, full-width, padding 16px",
+  "data_sources": [
+    "GET /api/v1/biometric/credentials",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "DELETE /api/v1/biometric/credentials/{credentialId}"
+  ],
+  "state_shape": {
+    "passkeys": "array",
+    "isLoading": "boolean",
+    "showAddModal": "boolean",
+    "showDeleteModal": "boolean",
+    "selectedPasskey": "object|null",
+    "error": "string|null"
+  }
+}

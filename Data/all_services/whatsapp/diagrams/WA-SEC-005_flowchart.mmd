@@ -1,0 +1,8 @@
+flowchart TD
+    A[Melden von Nachrichten/Kontakten] --> B{System überprüfen}
+    B -->|Ja| C[Nachricht/Kontakt erfassen]
+    B -->|Nein| D[Fehlermeldung anzeigen]
+    C --> E[Bestätigung senden]
+    D --> F[Nutzer informieren]
+    E --> G[Prozess abgeschlossen]
+    F --> G

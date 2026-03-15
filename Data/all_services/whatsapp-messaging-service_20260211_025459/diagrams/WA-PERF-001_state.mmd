@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Offline
+    Offline --> BasicFunctionality
+    BasicFunctionality --> [*]
+    Offline --> Error
+    Error --> Offline

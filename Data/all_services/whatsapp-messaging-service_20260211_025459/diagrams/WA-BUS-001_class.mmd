@@ -1,0 +1,35 @@
+classDiagram
+    class BusinessProfile {
+        +String name
+        +String description
+        +List<String> tags
+        +List<BusinessContact> contacts
+        +List<BusinessLocation> locations
+        +List<BusinessService> services
+        +void addContact(BusinessContact contact)
+        +void addLocation(BusinessLocation location)
+        +void addService(BusinessService service)
+    }
+
+    class BusinessContact {
+        +String name
+        +String email
+        +String phone
+    }
+
+    class BusinessLocation {
+        +String address
+        +String city
+        +String postalCode
+        +String country
+    }
+
+    class BusinessService {
+        +String serviceName
+        +String serviceDescription
+        +double price
+    }
+
+    BusinessProfile "1" -- "*" BusinessContact : contains
+    BusinessProfile "1" -- "*" BusinessLocation : contains
+    BusinessProfile "1" -- "*" BusinessService : offers

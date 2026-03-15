@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Status-Datenschutz System Context Diagram
+
+    Person(admin, "Administrator", "Manages system configurations and user access.")
+    Person(user, "User", "Uses the system to check status visibility.")
+    
+    System(system, "Status-Datenschutz", "Provides configurable status visibility.")
+
+    System_Ext(externalSystem, "External System", "Interacts with external services for status updates.")
+
+    Rel(admin, system, "Configures")
+    Rel(user, system, "Checks status visibility")
+    Rel(system, externalSystem, "Fetches status updates")

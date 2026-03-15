@@ -1,0 +1,14 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Gruppen-Einladungen System Architecture
+
+    Person(user, "Benutzer", "Ein Benutzer, der Gruppen verwaltet und Einladungen sendet.")
+    System(system, "Gruppen-Einladungen", "Ein System zur Verwaltung von Gruppen und Einladungen.")
+
+    Person(admin, "Administrator", "Ein Administrator, der Berechtigungen verwaltet.")
+    
+    System_Ext(externalSystem, "Externe Systeme", "Systeme, die mit Gruppen-Einladungen interagieren.")
+
+    Rel(user, system, "Verwaltet Gruppen und sendet Einladungen")
+    Rel(admin, system, "Konfiguriert Berechtigungen für Gruppen")
+    Rel(system, externalSystem, "Kommuniziert mit externen Systemen zur Validierung von Benutzern")

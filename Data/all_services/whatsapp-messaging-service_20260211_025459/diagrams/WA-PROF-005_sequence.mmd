@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant QRCodeGenerator as QR-Code Generator
+
+    User->>System: Anfrage zum Hinzufügen
+    System->>QRCodeGenerator: Generiere QR-Code
+    QRCodeGenerator-->>System: QR-Code generiert
+    System-->>User: Zeige QR-Code an

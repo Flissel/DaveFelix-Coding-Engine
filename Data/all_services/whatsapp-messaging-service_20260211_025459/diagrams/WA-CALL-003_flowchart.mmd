@@ -1,0 +1,17 @@
+flowchart TD
+    A[Start] --> B{Gruppenanruf?}
+    B -- Ja --> C[Benutzer wählt Teilnehmer aus]
+    B -- Nein --> D[Ende]
+    C --> E[Verbindung herstellen]
+    E --> F{Verbindung erfolgreich?}
+    F -- Ja --> G[Anruf gestartet]
+    F -- Nein --> H[Fehlerbehandlung]
+    H --> I[Benutzer informieren]
+    I --> C
+    G --> J{Videoanruf?}
+    J -- Ja --> K[Video aktivieren]
+    J -- Nein --> L[Audio aktivieren]
+    K --> M[Anruf läuft]
+    L --> M
+    M --> N[Anruf beenden]
+    N --> O[Ende]

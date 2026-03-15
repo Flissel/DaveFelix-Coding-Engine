@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Biometrische Authentifizierung?}
+    B -->|Ja| C{Fingerabdruck oder Face ID?}
+    B -->|Nein| D[Zugriff verweigert]
+    C -->|Fingerabdruck| E[Fingerabdruck scannen]
+    C -->|Face ID| F[Gesicht scannen]
+    E --> G{Erfolg?}
+    F --> G
+    G -->|Ja| H[Zugriff gewährt]
+    G -->|Nein| D
+    D --> I[Ende]
+    H --> I

@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Efficient
+    Efficient --> DataStored : Store Data
+    Efficient --> DataRetrieved : Retrieve Data
+    DataStored --> Efficient : Data Accessed
+    DataRetrieved --> Efficient : Data Processed
+    Efficient --> [*] : System Idle

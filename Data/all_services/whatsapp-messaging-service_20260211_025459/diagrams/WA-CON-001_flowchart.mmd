@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start: Kontakte synchronisieren] --> B{Geraete-Kontakte vorhanden?}
+    B -- Ja --> C[Kontakte abrufen]
+    B -- Nein --> D[Fehler: Keine Kontakte]
+    C --> E{WhatsApp-Nutzer vorhanden?}
+    E -- Ja --> F[Kontakte abgleichen]
+    E -- Nein --> G[Fehler: Keine WhatsApp-Nutzer]
+    F --> H[Synchronisation abgeschlossen]
+    D --> I[Prozess beenden]
+    G --> I
+    H --> I
+    I[Ende]

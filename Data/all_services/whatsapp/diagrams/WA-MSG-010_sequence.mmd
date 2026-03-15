@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Auth as Authentifizierung
+
+    User->>System: Anfrage zum Sperren eines Chats
+    System->>User: Zusätzliche Authentifizierung erforderlich
+    User->>Auth: Authentifizierung durchführen
+    Auth-->>User: Authentifizierung erfolgreich
+    User->>System: Bestätigung der Authentifizierung
+    System->>System: Chat sperren
+    System-->>User: Chat erfolgreich gesperrt

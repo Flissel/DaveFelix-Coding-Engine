@@ -1,0 +1,1162 @@
+[
+  {
+    "entity": "user_registration",
+    "description": "Durchläuft Registrierung von Telefonnummer-Eingabe über Verifizierung bis zur Aktivierung",
+    "states": [
+      "not_started",
+      "phone_number_entered",
+      "verification_code_sent",
+      "verification_pending",
+      "verification_failed",
+      "verified",
+      "registration_completed",
+      "registration_failed",
+      "expired"
+    ],
+    "initial_state": "not_started",
+    "final_states": [
+      "registration_completed",
+      "registration_failed"
+    ],
+    "transitions": [
+      {
+        "from_state": "not_started",
+        "to_state": "phone_number_entered",
+        "trigger": "enter_phone_number",
+        "guard": "phone_number_valid",
+        "action": "validate_phone_format"
+      },
+      {
+        "from_state": "not_started",
+        "to_state": "registration_failed",
+        "trigger": "enter_phone_number",
+        "guard": "phone_number_invalid",
+        "action": "log_validation_error"
+      },
+      {
+        "from_state": "phone_number_entered",
+        "to_state": "verification_code_sent",
+        "trigger": "request_verification",
+        "guard": "phone_number_not_registered",
+        "action": "send_verification_sms"
+      },
+      {
+        "from_state": "phone_number_entered",
+        "to_state": "registration_failed",
+        "trigger": "request_verification",
+        "guard": "phone_number_already_registered",
+        "action": "notify_already_registered"
+      },
+      {
+        "from_state": "verification_code_sent",
+        "to_state": "verification_pending",
+        "trigger": "code_delivery_confirmed",
+        "guard": "",
+        "action": "start_verification_timer"
+      },
+      {
+        "from_state": "verification_code_sent",
+        "to_state": "verification_failed",
+        "trigger": "code_delivery_failed",
+        "guard": "",
+        "action": "log_delivery_failure"
+      },
+      {
+        "from_state": "verification_pending",
+        "to_state": "verified",
+        "trigger": "submit_verification_code",
+        "guard": "code_valid_and_not_expired",
+        "action": "mark_phone_verified"
+      },
+      {
+        "from_state": "verification_pending",
+        "to_state": "verification_failed",
+        "trigger": "submit_verification_code",
+        "guard": "code_invalid",
+        "action": "increment_attempt_counter"
+      },
+      {
+        "from_state": "verification_pending",
+        "to_state": "expired",
+        "trigger": "verification_timeout",
+        "guard": "",
+        "action": "invalidate_verification_code"
+      },
+      {
+        "from_state": "verification_failed",
+        "to_state": "verification_pending",
+        "trigger": "retry_verification",
+        "guard": "attempts_below_limit",
+        "action": "reset_verification_timer"
+      },
+      {
+        "from_state": "verification_failed",
+        "to_state": "registration_failed",
+        "trigger": "retry_verification",
+        "guard": "attempts_exceeded",
+        "action": "block_phone_temporarily"
+      },
+      {
+        "from_state": "expired",
+        "to_state": "verification_code_sent",
+        "trigger": "resend_verification",
+        "guard": "resend_attempts_below_limit",
+        "action": "send_new_verification_sms"
+      },
+      {
+        "from_state": "expired",
+        "to_state": "registration_failed",
+        "trigger": "resend_verification",
+        "guard": "resend_attempts_exceeded",
+        "action": "block_registration_temporarily"
+      },
+      {
+        "from_state": "verified",
+        "to_state": "registration_completed",
+        "trigger": "complete_registration",
+        "guard": "",
+        "action": "create_user_account"
+      },
+      {
+        "from_state": "verified",
+        "to_state": "registration_failed",
+        "trigger": "account_creation_failed",
+        "guard": "",
+        "action": "log_account_creation_error"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> not_started\n    not_started --> phone_number_entered : enter_phone_number [phone_number_valid] / validate_phone_format\n    not_started --> registration_failed : enter_phone_number [phone_number_invalid] / log_validation_error\n    phone_number_entered --> verification_code_sent : request_verification [phone_number_not_registered] / send_verification_sms\n    phone_number_entered --> registration_failed : request_verification [phone_number_already_registered] / notify_already_registered\n    verification_code_sent --> verification_pending : code_delivery_confirmed / start_verification_timer\n    verification_code_sent --> verification_failed : code_delivery_failed / log_delivery_failure\n    verification_pending --> verified : submit_verification_code [code_valid_and_not_expired] / mark_phone_verified\n    verification_pending --> verification_failed : submit_verification_code [code_invalid] / increment_attempt_counter\n    verification_pending --> expired : verification_timeout / invalidate_verification_code\n    verification_failed --> verification_pending : retry_verification [attempts_below_limit] / reset_verification_timer\n    verification_failed --> registration_failed : retry_verification [attempts_exceeded] / block_phone_temporarily\n    expired --> verification_code_sent : resend_verification [resend_attempts_below_limit] / send_new_verification_sms\n    expired --> registration_failed : resend_verification [resend_attempts_exceeded] / block_registration_temporarily\n    verified --> registration_completed : complete_registration / create_user_account\n    verified --> registration_failed : account_creation_failed / log_account_creation_error\n    registration_completed --> [*]\n    registration_failed --> [*]",
+    "source_requirements": [
+      "WA-AUTH-001"
+    ]
+  },
+  {
+    "entity": "auth_session",
+    "description": "Verwaltet Anmeldezustände mit verschiedenen Authentifizierungsmethoden und Multi-Device-Support",
+    "states": [
+      "unauthenticated",
+      "pending_primary_auth",
+      "pending_2fa",
+      "pending_biometric",
+      "pending_passkey",
+      "authenticated",
+      "session_expired",
+      "locked",
+      "device_verification_required",
+      "multi_device_conflict",
+      "auth_failed",
+      "terminated"
+    ],
+    "initial_state": "unauthenticated",
+    "final_states": [
+      "terminated"
+    ],
+    "transitions": [
+      {
+        "from_state": "unauthenticated",
+        "to_state": "pending_primary_auth",
+        "trigger": "initiate_login",
+        "guard": "",
+        "action": "create_session_token"
+      },
+      {
+        "from_state": "unauthenticated",
+        "to_state": "pending_passkey",
+        "trigger": "initiate_passkey_auth",
+        "guard": "passkey_available",
+        "action": "request_passkey_challenge"
+      },
+      {
+        "from_state": "pending_primary_auth",
+        "to_state": "pending_2fa",
+        "trigger": "primary_auth_success",
+        "guard": "2fa_enabled",
+        "action": "send_2fa_code"
+      },
+      {
+        "from_state": "pending_primary_auth",
+        "to_state": "pending_biometric",
+        "trigger": "primary_auth_success",
+        "guard": "biometric_enabled_and_no_2fa",
+        "action": "request_biometric_verification"
+      },
+      {
+        "from_state": "pending_primary_auth",
+        "to_state": "device_verification_required",
+        "trigger": "primary_auth_success",
+        "guard": "new_device_detected",
+        "action": "send_device_verification_code"
+      },
+      {
+        "from_state": "pending_primary_auth",
+        "to_state": "authenticated",
+        "trigger": "primary_auth_success",
+        "guard": "no_additional_auth_required",
+        "action": "establish_session"
+      },
+      {
+        "from_state": "pending_primary_auth",
+        "to_state": "auth_failed",
+        "trigger": "primary_auth_failed",
+        "guard": "",
+        "action": "increment_failed_attempts"
+      },
+      {
+        "from_state": "pending_2fa",
+        "to_state": "pending_biometric",
+        "trigger": "2fa_success",
+        "guard": "biometric_enabled",
+        "action": "request_biometric_verification"
+      },
+      {
+        "from_state": "pending_2fa",
+        "to_state": "authenticated",
+        "trigger": "2fa_success",
+        "guard": "no_biometric_required",
+        "action": "establish_session"
+      },
+      {
+        "from_state": "pending_2fa",
+        "to_state": "auth_failed",
+        "trigger": "2fa_failed",
+        "guard": "",
+        "action": "increment_failed_attempts"
+      },
+      {
+        "from_state": "pending_2fa",
+        "to_state": "pending_2fa",
+        "trigger": "resend_2fa_code",
+        "guard": "resend_limit_not_exceeded",
+        "action": "send_2fa_code"
+      },
+      {
+        "from_state": "pending_biometric",
+        "to_state": "authenticated",
+        "trigger": "biometric_success",
+        "guard": "",
+        "action": "establish_session"
+      },
+      {
+        "from_state": "pending_biometric",
+        "to_state": "auth_failed",
+        "trigger": "biometric_failed",
+        "guard": "",
+        "action": "increment_failed_attempts"
+      },
+      {
+        "from_state": "pending_biometric",
+        "to_state": "pending_primary_auth",
+        "trigger": "fallback_to_password",
+        "guard": "",
+        "action": "clear_biometric_attempt"
+      },
+      {
+        "from_state": "pending_passkey",
+        "to_state": "authenticated",
+        "trigger": "passkey_success",
+        "guard": "",
+        "action": "establish_session"
+      },
+      {
+        "from_state": "pending_passkey",
+        "to_state": "auth_failed",
+        "trigger": "passkey_failed",
+        "guard": "",
+        "action": "increment_failed_attempts"
+      },
+      {
+        "from_state": "pending_passkey",
+        "to_state": "pending_primary_auth",
+        "trigger": "fallback_to_password",
+        "guard": "",
+        "action": "clear_passkey_attempt"
+      },
+      {
+        "from_state": "device_verification_required",
+        "to_state": "pending_2fa",
+        "trigger": "device_verified",
+        "guard": "2fa_enabled",
+        "action": "register_device_and_send_2fa"
+      },
+      {
+        "from_state": "device_verification_required",
+        "to_state": "authenticated",
+        "trigger": "device_verified",
+        "guard": "no_additional_auth_required",
+        "action": "register_device_and_establish_session"
+      },
+      {
+        "from_state": "device_verification_required",
+        "to_state": "auth_failed",
+        "trigger": "device_verification_failed",
+        "guard": "",
+        "action": "increment_failed_attempts"
+      },
+      {
+        "from_state": "authenticated",
+        "to_state": "multi_device_conflict",
+        "trigger": "concurrent_login_detected",
+        "guard": "multi_device_limit_exceeded",
+        "action": "notify_device_conflict"
+      },
+      {
+        "from_state": "authenticated",
+        "to_state": "session_expired",
+        "trigger": "session_timeout",
+        "guard": "",
+        "action": "invalidate_session_token"
+      },
+      {
+        "from_state": "authenticated",
+        "to_state": "locked",
+        "trigger": "suspicious_activity_detected",
+        "guard": "",
+        "action": "lock_session_and_notify"
+      },
+      {
+        "from_state": "authenticated",
+        "to_state": "terminated",
+        "trigger": "logout",
+        "guard": "",
+        "action": "cleanup_session"
+      },
+      {
+        "from_state": "multi_device_conflict",
+        "to_state": "authenticated",
+        "trigger": "resolve_conflict_continue",
+        "guard": "",
+        "action": "terminate_other_sessions"
+      },
+      {
+        "from_state": "multi_device_conflict",
+        "to_state": "terminated",
+        "trigger": "resolve_conflict_terminate",
+        "guard": "",
+        "action": "terminate_current_session"
+      },
+      {
+        "from_state": "session_expired",
+        "to_state": "pending_primary_auth",
+        "trigger": "reauthenticate",
+        "guard": "",
+        "action": "create_new_session_token"
+      },
+      {
+        "from_state": "session_expired",
+        "to_state": "pending_biometric",
+        "trigger": "quick_reauth",
+        "guard": "biometric_enabled_and_recent_session",
+        "action": "request_biometric_verification"
+      },
+      {
+        "from_state": "session_expired",
+        "to_state": "terminated",
+        "trigger": "abandon_session",
+        "guard": "",
+        "action": "cleanup_expired_session"
+      },
+      {
+        "from_state": "locked",
+        "to_state": "pending_primary_auth",
+        "trigger": "unlock_session",
+        "guard": "unlock_conditions_met",
+        "action": "reset_security_flags"
+      },
+      {
+        "from_state": "locked",
+        "to_state": "terminated",
+        "trigger": "force_terminate",
+        "guard": "",
+        "action": "cleanup_locked_session"
+      },
+      {
+        "from_state": "auth_failed",
+        "to_state": "locked",
+        "trigger": "max_attempts_reached",
+        "guard": "",
+        "action": "lock_account_temporarily"
+      },
+      {
+        "from_state": "auth_failed",
+        "to_state": "pending_primary_auth",
+        "trigger": "retry_auth",
+        "guard": "retry_attempts_available",
+        "action": "reset_auth_state"
+      },
+      {
+        "from_state": "auth_failed",
+        "to_state": "terminated",
+        "trigger": "abandon_auth",
+        "guard": "",
+        "action": "cleanup_failed_session"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> unauthenticated\n    unauthenticated --> pending_primary_auth : initiate_login / create_session_token\n    unauthenticated --> pending_passkey : initiate_passkey_auth [passkey_available] / request_passkey_challenge\n    pending_primary_auth --> pending_2fa : primary_auth_success [2fa_enabled] / send_2fa_code\n    pending_primary_auth --> pending_biometric : primary_auth_success [biometric_enabled_and_no_2fa] / request_biometric_verification\n    pending_primary_auth --> device_verification_required : primary_auth_success [new_device_detected] / send_device_verification_code\n    pending_primary_auth --> authenticated : primary_auth_success [no_additional_auth_required] / establish_session\n    pending_primary_auth --> auth_failed : primary_auth_failed / increment_failed_attempts\n    pending_2fa --> pending_biometric : 2fa_success [biometric_enabled] / request_biometric_verification\n    pending_2fa --> authenticated : 2fa_success [no_biometric_required] / establish_session\n    pending_2fa --> auth_failed : 2fa_failed / increment_failed_attempts\n    pending_2fa --> pending_2fa : resend_2fa_code [resend_limit_not_exceeded] / send_2fa_code\n    pending_biometric --> authenticated : biometric_success / establish_session\n    pending_biometric --> auth_failed : biometric_failed / increment_failed_attempts\n    pending_biometric --> pending_primary_auth : fallback_to_password / clear_biometric_attempt\n    pending_passkey --> authenticated : passkey_success / establish_session\n    pending_passkey --> auth_failed : passkey_failed / increment_failed_attempts\n    pending_passkey --> pending_primary_auth : fallback_to_password / clear_passkey_attempt\n    device_verification_required --> pending_2fa : device_verified [2fa_enabled] / register_device_and_send_2fa\n    device_verification_required --> authenticated : device_verified [no_additional_auth_required] / register_device_and_establish_session\n    device_verification_required --> auth_failed : device_verification_failed / increment_failed_attempts\n    authenticated --> multi_device_conflict : concurrent_login_detected [multi_device_limit_exceeded] / notify_device_conflict\n    authenticated --> session_expired : session_timeout / invalidate_session_token\n    authenticated --> locked : suspicious_activity_detected / lock_session_and_notify\n    authenticated --> terminated : logout / cleanup_session\n    multi_device_conflict --> authenticated : resolve_conflict_continue / terminate_other_sessions\n    multi_device_conflict --> terminated : resolve_conflict_terminate / terminate_current_session\n    session_expired --> pending_primary_auth : reauthenticate / create_new_session_token\n    session_expired --> pending_biometric : quick_reauth [biometric_enabled_and_recent_session] / request_biometric_verification\n    session_expired --> terminated : abandon_session / cleanup_expired_session\n    locked --> pending_primary_auth : unlock_session [unlock_conditions_met] / reset_security_flags\n    locked --> terminated : force_terminate / cleanup_locked_session\n    auth_failed --> locked : max_attempts_reached / lock_account_temporarily\n    auth_failed --> pending_primary_auth : retry_auth [retry_attempts_available] / reset_auth_state\n    auth_failed --> terminated : abandon_auth / cleanup_failed_session\n    terminated --> [*]",
+    "source_requirements": [
+      "WA-AUTH-002",
+      "WA-AUTH-003",
+      "WA-AUTH-004",
+      "WA-AUTH-005"
+    ]
+  },
+  {
+    "entity": "message",
+    "description": "Durchläuft Lebenszyklus von Erstellung über Zustellung, Bearbeitung bis hin zur automatischen Löschung",
+    "states": [
+      "draft",
+      "sending",
+      "sent",
+      "delivered",
+      "read",
+      "editing",
+      "edited",
+      "deleting",
+      "deleted",
+      "expired",
+      "failed"
+    ],
+    "initial_state": "draft",
+    "final_states": [
+      "deleted",
+      "expired"
+    ],
+    "transitions": [
+      {
+        "from_state": "draft",
+        "to_state": "sending",
+        "trigger": "send",
+        "guard": "content_valid",
+        "action": "validate_message"
+      },
+      {
+        "from_state": "sending",
+        "to_state": "sent",
+        "trigger": "send_success",
+        "guard": null,
+        "action": "store_message"
+      },
+      {
+        "from_state": "sending",
+        "to_state": "failed",
+        "trigger": "send_failed",
+        "guard": null,
+        "action": "log_error"
+      },
+      {
+        "from_state": "sent",
+        "to_state": "delivered",
+        "trigger": "delivery_confirmed",
+        "guard": null,
+        "action": "update_delivery_status"
+      },
+      {
+        "from_state": "delivered",
+        "to_state": "read",
+        "trigger": "message_read",
+        "guard": null,
+        "action": "update_read_status"
+      },
+      {
+        "from_state": "sent",
+        "to_state": "editing",
+        "trigger": "edit_request",
+        "guard": "edit_allowed",
+        "action": "lock_message"
+      },
+      {
+        "from_state": "delivered",
+        "to_state": "editing",
+        "trigger": "edit_request",
+        "guard": "edit_allowed",
+        "action": "lock_message"
+      },
+      {
+        "from_state": "read",
+        "to_state": "editing",
+        "trigger": "edit_request",
+        "guard": "edit_allowed",
+        "action": "lock_message"
+      },
+      {
+        "from_state": "editing",
+        "to_state": "edited",
+        "trigger": "edit_complete",
+        "guard": "content_valid",
+        "action": "update_content"
+      },
+      {
+        "from_state": "editing",
+        "to_state": "sent",
+        "trigger": "edit_cancelled",
+        "guard": null,
+        "action": "unlock_message"
+      },
+      {
+        "from_state": "edited",
+        "to_state": "delivered",
+        "trigger": "delivery_confirmed",
+        "guard": null,
+        "action": "update_delivery_status"
+      },
+      {
+        "from_state": "edited",
+        "to_state": "read",
+        "trigger": "message_read",
+        "guard": null,
+        "action": "update_read_status"
+      },
+      {
+        "from_state": "sent",
+        "to_state": "deleting",
+        "trigger": "delete_request",
+        "guard": "delete_allowed",
+        "action": "mark_for_deletion"
+      },
+      {
+        "from_state": "delivered",
+        "to_state": "deleting",
+        "trigger": "delete_request",
+        "guard": "delete_allowed",
+        "action": "mark_for_deletion"
+      },
+      {
+        "from_state": "read",
+        "to_state": "deleting",
+        "trigger": "delete_request",
+        "guard": "delete_allowed",
+        "action": "mark_for_deletion"
+      },
+      {
+        "from_state": "edited",
+        "to_state": "deleting",
+        "trigger": "delete_request",
+        "guard": "delete_allowed",
+        "action": "mark_for_deletion"
+      },
+      {
+        "from_state": "deleting",
+        "to_state": "deleted",
+        "trigger": "delete_confirmed",
+        "guard": null,
+        "action": "remove_message"
+      },
+      {
+        "from_state": "sent",
+        "to_state": "expired",
+        "trigger": "expiry_timer_elapsed",
+        "guard": "is_disappearing_message",
+        "action": "auto_delete_message"
+      },
+      {
+        "from_state": "delivered",
+        "to_state": "expired",
+        "trigger": "expiry_timer_elapsed",
+        "guard": "is_disappearing_message",
+        "action": "auto_delete_message"
+      },
+      {
+        "from_state": "read",
+        "to_state": "expired",
+        "trigger": "expiry_timer_elapsed",
+        "guard": "is_disappearing_message",
+        "action": "auto_delete_message"
+      },
+      {
+        "from_state": "edited",
+        "to_state": "expired",
+        "trigger": "expiry_timer_elapsed",
+        "guard": "is_disappearing_message",
+        "action": "auto_delete_message"
+      },
+      {
+        "from_state": "failed",
+        "to_state": "sending",
+        "trigger": "retry_send",
+        "guard": "retry_allowed",
+        "action": "reset_send_attempt"
+      },
+      {
+        "from_state": "failed",
+        "to_state": "deleted",
+        "trigger": "abandon_send",
+        "guard": null,
+        "action": "cleanup_failed_message"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> draft\n    draft --> sending : send [content_valid] / validate_message\n    sending --> sent : send_success / store_message\n    sending --> failed : send_failed / log_error\n    sent --> delivered : delivery_confirmed / update_delivery_status\n    delivered --> read : message_read / update_read_status\n    sent --> editing : edit_request [edit_allowed] / lock_message\n    delivered --> editing : edit_request [edit_allowed] / lock_message\n    read --> editing : edit_request [edit_allowed] / lock_message\n    editing --> edited : edit_complete [content_valid] / update_content\n    editing --> sent : edit_cancelled / unlock_message\n    edited --> delivered : delivery_confirmed / update_delivery_status\n    edited --> read : message_read / update_read_status\n    sent --> deleting : delete_request [delete_allowed] / mark_for_deletion\n    delivered --> deleting : delete_request [delete_allowed] / mark_for_deletion\n    read --> deleting : delete_request [delete_allowed] / mark_for_deletion\n    edited --> deleting : delete_request [delete_allowed] / mark_for_deletion\n    deleting --> deleted : delete_confirmed / remove_message\n    sent --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message\n    delivered --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message\n    read --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message\n    edited --> expired : expiry_timer_elapsed [is_disappearing_message] / auto_delete_message\n    failed --> sending : retry_send [retry_allowed] / reset_send_attempt\n    failed --> deleted : abandon_send / cleanup_failed_message\n    deleted --> [*]\n    expired --> [*]",
+    "source_requirements": [
+      "WA-MSG-001",
+      "WA-MSG-003",
+      "WA-MSG-004",
+      "WA-MSG-008"
+    ]
+  },
+  {
+    "entity": "message_media",
+    "description": "Spezielle Zustandsübergänge für View-Once Medien von verfügbar zu angezeigt zu gelöscht",
+    "states": [
+      "uploading",
+      "available",
+      "downloading",
+      "viewed",
+      "deleted",
+      "expired",
+      "failed"
+    ],
+    "initial_state": "uploading",
+    "final_states": [
+      "deleted",
+      "expired"
+    ],
+    "transitions": [
+      {
+        "from_state": "uploading",
+        "to_state": "available",
+        "trigger": "upload_completed",
+        "guard": "upload_successful",
+        "action": "notify_recipient"
+      },
+      {
+        "from_state": "uploading",
+        "to_state": "failed",
+        "trigger": "upload_failed",
+        "guard": "upload_error_occurred",
+        "action": "log_error"
+      },
+      {
+        "from_state": "available",
+        "to_state": "downloading",
+        "trigger": "download_started",
+        "guard": "recipient_authorized",
+        "action": "start_download_timer"
+      },
+      {
+        "from_state": "available",
+        "to_state": "expired",
+        "trigger": "expiry_time_reached",
+        "guard": "ttl_exceeded",
+        "action": "cleanup_media_file"
+      },
+      {
+        "from_state": "downloading",
+        "to_state": "viewed",
+        "trigger": "media_opened",
+        "guard": "download_completed",
+        "action": "mark_as_viewed"
+      },
+      {
+        "from_state": "downloading",
+        "to_state": "available",
+        "trigger": "download_cancelled",
+        "guard": "download_interrupted",
+        "action": "reset_download_state"
+      },
+      {
+        "from_state": "downloading",
+        "to_state": "failed",
+        "trigger": "download_failed",
+        "guard": "download_error_occurred",
+        "action": "log_download_error"
+      },
+      {
+        "from_state": "viewed",
+        "to_state": "deleted",
+        "trigger": "view_completed",
+        "guard": "view_once_media",
+        "action": "delete_media_file"
+      },
+      {
+        "from_state": "failed",
+        "to_state": "uploading",
+        "trigger": "retry_upload",
+        "guard": "retry_attempts_available",
+        "action": "reset_upload_state"
+      },
+      {
+        "from_state": "failed",
+        "to_state": "deleted",
+        "trigger": "cleanup_failed_media",
+        "guard": "max_retries_exceeded",
+        "action": "cleanup_failed_upload"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> uploading\n    uploading --> available : upload_completed [upload_successful] / notify_recipient\n    uploading --> failed : upload_failed [upload_error_occurred] / log_error\n    available --> downloading : download_started [recipient_authorized] / start_download_timer\n    available --> expired : expiry_time_reached [ttl_exceeded] / cleanup_media_file\n    downloading --> viewed : media_opened [download_completed] / mark_as_viewed\n    downloading --> available : download_cancelled [download_interrupted] / reset_download_state\n    downloading --> failed : download_failed [download_error_occurred] / log_download_error\n    viewed --> deleted : view_completed [view_once_media] / delete_media_file\n    failed --> uploading : retry_upload [retry_attempts_available] / reset_upload_state\n    failed --> deleted : cleanup_failed_media [max_retries_exceeded] / cleanup_failed_upload\n    deleted --> [*]\n    expired --> [*]",
+    "source_requirements": [
+      "WA-MSG-009"
+    ]
+  },
+  {
+    "entity": "chat",
+    "description": "Kann zwischen entsperrt und gesperrt wechseln, mit verschiedenen Sicherheitsstufen",
+    "states": [
+      "created",
+      "active",
+      "locked",
+      "unlocking",
+      "archived",
+      "deleted"
+    ],
+    "initial_state": "created",
+    "final_states": [
+      "deleted"
+    ],
+    "transitions": [
+      {
+        "from_state": "created",
+        "to_state": "active",
+        "trigger": "activate_chat",
+        "guard": null,
+        "action": "initialize_chat_session"
+      },
+      {
+        "from_state": "active",
+        "to_state": "locked",
+        "trigger": "lock_chat",
+        "guard": "user_has_lock_permission",
+        "action": "enable_authentication_requirement"
+      },
+      {
+        "from_state": "locked",
+        "to_state": "unlocking",
+        "trigger": "attempt_unlock",
+        "guard": null,
+        "action": "prompt_authentication"
+      },
+      {
+        "from_state": "unlocking",
+        "to_state": "active",
+        "trigger": "authentication_success",
+        "guard": "valid_credentials",
+        "action": "disable_authentication_requirement"
+      },
+      {
+        "from_state": "unlocking",
+        "to_state": "locked",
+        "trigger": "authentication_failed",
+        "guard": null,
+        "action": "log_failed_attempt"
+      },
+      {
+        "from_state": "active",
+        "to_state": "archived",
+        "trigger": "archive_chat",
+        "guard": "user_has_archive_permission",
+        "action": "move_to_archive"
+      },
+      {
+        "from_state": "locked",
+        "to_state": "archived",
+        "trigger": "archive_chat",
+        "guard": "user_has_archive_permission",
+        "action": "move_to_archive"
+      },
+      {
+        "from_state": "archived",
+        "to_state": "active",
+        "trigger": "restore_chat",
+        "guard": "user_has_restore_permission",
+        "action": "restore_from_archive"
+      },
+      {
+        "from_state": "active",
+        "to_state": "deleted",
+        "trigger": "delete_chat",
+        "guard": "user_has_delete_permission",
+        "action": "cleanup_chat_data"
+      },
+      {
+        "from_state": "locked",
+        "to_state": "deleted",
+        "trigger": "delete_chat",
+        "guard": "user_has_delete_permission",
+        "action": "cleanup_chat_data"
+      },
+      {
+        "from_state": "archived",
+        "to_state": "deleted",
+        "trigger": "delete_chat",
+        "guard": "user_has_delete_permission",
+        "action": "cleanup_chat_data"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> created\n    created --> active : activate_chat / initialize_chat_session\n    active --> locked : lock_chat [user_has_lock_permission] / enable_authentication_requirement\n    locked --> unlocking : attempt_unlock / prompt_authentication\n    unlocking --> active : authentication_success [valid_credentials] / disable_authentication_requirement\n    unlocking --> locked : authentication_failed / log_failed_attempt\n    active --> archived : archive_chat [user_has_archive_permission] / move_to_archive\n    locked --> archived : archive_chat [user_has_archive_permission] / move_to_archive\n    archived --> active : restore_chat [user_has_restore_permission] / restore_from_archive\n    active --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data\n    locked --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data\n    archived --> deleted : delete_chat [user_has_delete_permission] / cleanup_chat_data\n    deleted --> [*]",
+    "source_requirements": [
+      "WA-MSG-010"
+    ]
+  },
+  {
+    "entity": "group_chat",
+    "description": "Durchläuft Erstellung, Konfiguration, aktive Phase und mögliche Auflösung",
+    "states": [
+      "creating",
+      "configuring",
+      "active",
+      "suspended",
+      "archived",
+      "deleted",
+      "error"
+    ],
+    "initial_state": "creating",
+    "final_states": [
+      "deleted"
+    ],
+    "transitions": [
+      {
+        "from_state": "creating",
+        "to_state": "configuring",
+        "trigger": "group_created",
+        "guard": "creator_valid",
+        "action": "initialize_group_metadata"
+      },
+      {
+        "from_state": "creating",
+        "to_state": "error",
+        "trigger": "creation_failed",
+        "guard": null,
+        "action": "log_creation_error"
+      },
+      {
+        "from_state": "configuring",
+        "to_state": "active",
+        "trigger": "configuration_completed",
+        "guard": "minimum_settings_configured",
+        "action": "activate_group_features"
+      },
+      {
+        "from_state": "configuring",
+        "to_state": "error",
+        "trigger": "configuration_failed",
+        "guard": null,
+        "action": "log_configuration_error"
+      },
+      {
+        "from_state": "active",
+        "to_state": "suspended",
+        "trigger": "suspend_group",
+        "guard": "admin_privileges",
+        "action": "disable_messaging"
+      },
+      {
+        "from_state": "active",
+        "to_state": "archived",
+        "trigger": "archive_group",
+        "guard": "admin_privileges",
+        "action": "archive_messages"
+      },
+      {
+        "from_state": "active",
+        "to_state": "deleted",
+        "trigger": "delete_group",
+        "guard": "admin_privileges",
+        "action": "cleanup_group_data"
+      },
+      {
+        "from_state": "active",
+        "to_state": "configuring",
+        "trigger": "modify_settings",
+        "guard": "admin_privileges",
+        "action": "enter_configuration_mode"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "active",
+        "trigger": "reactivate_group",
+        "guard": "admin_privileges",
+        "action": "enable_messaging"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "archived",
+        "trigger": "archive_group",
+        "guard": "admin_privileges",
+        "action": "archive_messages"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "deleted",
+        "trigger": "delete_group",
+        "guard": "admin_privileges",
+        "action": "cleanup_group_data"
+      },
+      {
+        "from_state": "archived",
+        "to_state": "active",
+        "trigger": "restore_group",
+        "guard": "admin_privileges",
+        "action": "restore_group_functionality"
+      },
+      {
+        "from_state": "archived",
+        "to_state": "deleted",
+        "trigger": "delete_group",
+        "guard": "admin_privileges",
+        "action": "cleanup_group_data"
+      },
+      {
+        "from_state": "error",
+        "to_state": "creating",
+        "trigger": "retry_creation",
+        "guard": "error_resolved",
+        "action": "reset_group_state"
+      },
+      {
+        "from_state": "error",
+        "to_state": "configuring",
+        "trigger": "retry_configuration",
+        "guard": "error_resolved",
+        "action": "reset_configuration_state"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> creating\n    creating --> configuring : group_created [creator_valid] / initialize_group_metadata\n    creating --> error : creation_failed / log_creation_error\n    configuring --> active : configuration_completed [minimum_settings_configured] / activate_group_features\n    configuring --> error : configuration_failed / log_configuration_error\n    active --> suspended : suspend_group [admin_privileges] / disable_messaging\n    active --> archived : archive_group [admin_privileges] / archive_messages\n    active --> deleted : delete_group [admin_privileges] / cleanup_group_data\n    active --> configuring : modify_settings [admin_privileges] / enter_configuration_mode\n    suspended --> active : reactivate_group [admin_privileges] / enable_messaging\n    suspended --> archived : archive_group [admin_privileges] / archive_messages\n    suspended --> deleted : delete_group [admin_privileges] / cleanup_group_data\n    archived --> active : restore_group [admin_privileges] / restore_group_functionality\n    archived --> deleted : delete_group [admin_privileges] / cleanup_group_data\n    error --> creating : retry_creation [error_resolved] / reset_group_state\n    error --> configuring : retry_configuration [error_resolved] / reset_configuration_state\n    deleted --> [*]",
+    "source_requirements": [
+      "WA-GRP-001",
+      "WA-GRP-002",
+      "WA-GRP-003"
+    ]
+  },
+  {
+    "entity": "group_member",
+    "description": "Verwaltet Mitgliedschaftsstatus von Einladung über aktive Teilnahme bis zum Verlassen",
+    "states": [
+      "not_member",
+      "invited",
+      "pending_approval",
+      "active",
+      "suspended",
+      "left",
+      "removed",
+      "banned"
+    ],
+    "initial_state": "not_member",
+    "final_states": [
+      "left",
+      "removed",
+      "banned"
+    ],
+    "transitions": [
+      {
+        "from_state": "not_member",
+        "to_state": "invited",
+        "trigger": "invite_via_link",
+        "guard": "group_exists",
+        "action": "create_invitation_record"
+      },
+      {
+        "from_state": "not_member",
+        "to_state": "pending_approval",
+        "trigger": "request_to_join",
+        "guard": "group_requires_approval",
+        "action": "notify_admins"
+      },
+      {
+        "from_state": "not_member",
+        "to_state": "active",
+        "trigger": "direct_add",
+        "guard": "admin_privileges",
+        "action": "send_welcome_notification"
+      },
+      {
+        "from_state": "invited",
+        "to_state": "active",
+        "trigger": "accept_invitation",
+        "guard": "invitation_valid",
+        "action": "send_welcome_notification"
+      },
+      {
+        "from_state": "invited",
+        "to_state": "not_member",
+        "trigger": "decline_invitation",
+        "guard": "",
+        "action": "cleanup_invitation"
+      },
+      {
+        "from_state": "invited",
+        "to_state": "not_member",
+        "trigger": "invitation_expired",
+        "guard": "",
+        "action": "cleanup_invitation"
+      },
+      {
+        "from_state": "pending_approval",
+        "to_state": "active",
+        "trigger": "approve_request",
+        "guard": "admin_privileges",
+        "action": "send_welcome_notification"
+      },
+      {
+        "from_state": "pending_approval",
+        "to_state": "not_member",
+        "trigger": "reject_request",
+        "guard": "admin_privileges",
+        "action": "notify_rejection"
+      },
+      {
+        "from_state": "pending_approval",
+        "to_state": "not_member",
+        "trigger": "cancel_request",
+        "guard": "",
+        "action": "cleanup_request"
+      },
+      {
+        "from_state": "active",
+        "to_state": "left",
+        "trigger": "leave_group",
+        "guard": "",
+        "action": "cleanup_member_data"
+      },
+      {
+        "from_state": "active",
+        "to_state": "removed",
+        "trigger": "remove_member",
+        "guard": "admin_privileges",
+        "action": "cleanup_member_data"
+      },
+      {
+        "from_state": "active",
+        "to_state": "banned",
+        "trigger": "ban_member",
+        "guard": "admin_privileges",
+        "action": "add_to_ban_list"
+      },
+      {
+        "from_state": "active",
+        "to_state": "suspended",
+        "trigger": "suspend_member",
+        "guard": "admin_privileges",
+        "action": "restrict_permissions"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "active",
+        "trigger": "unsuspend_member",
+        "guard": "admin_privileges",
+        "action": "restore_permissions"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "left",
+        "trigger": "leave_group",
+        "guard": "",
+        "action": "cleanup_member_data"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "removed",
+        "trigger": "remove_member",
+        "guard": "admin_privileges",
+        "action": "cleanup_member_data"
+      },
+      {
+        "from_state": "suspended",
+        "to_state": "banned",
+        "trigger": "ban_member",
+        "guard": "admin_privileges",
+        "action": "add_to_ban_list"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> not_member\n    not_member --> invited : invite_via_link [group_exists] / create_invitation_record\n    not_member --> pending_approval : request_to_join [group_requires_approval] / notify_admins\n    not_member --> active : direct_add [admin_privileges] / send_welcome_notification\n    invited --> active : accept_invitation [invitation_valid] / send_welcome_notification\n    invited --> not_member : decline_invitation / cleanup_invitation\n    invited --> not_member : invitation_expired / cleanup_invitation\n    pending_approval --> active : approve_request [admin_privileges] / send_welcome_notification\n    pending_approval --> not_member : reject_request [admin_privileges] / notify_rejection\n    pending_approval --> not_member : cancel_request / cleanup_request\n    active --> left : leave_group / cleanup_member_data\n    active --> removed : remove_member [admin_privileges] / cleanup_member_data\n    active --> banned : ban_member [admin_privileges] / add_to_ban_list\n    active --> suspended : suspend_member [admin_privileges] / restrict_permissions\n    suspended --> active : unsuspend_member [admin_privileges] / restore_permissions\n    suspended --> left : leave_group / cleanup_member_data\n    suspended --> removed : remove_member [admin_privileges] / cleanup_member_data\n    suspended --> banned : ban_member [admin_privileges] / add_to_ban_list\n    left --> [*]\n    removed --> [*]\n    banned --> [*]",
+    "source_requirements": [
+      "WA-GRP-004",
+      "WA-GRP-005"
+    ]
+  },
+  {
+    "entity": "message_reaction",
+    "description": "Kann hinzugefügt, geändert oder entfernt werden mit Synchronisation zwischen Geräten",
+    "states": [
+      "pending",
+      "active",
+      "updating",
+      "sync_pending",
+      "sync_failed",
+      "removed"
+    ],
+    "initial_state": "pending",
+    "final_states": [
+      "removed"
+    ],
+    "transitions": [
+      {
+        "from_state": "pending",
+        "to_state": "active",
+        "trigger": "reaction_added",
+        "guard": "valid_emoji",
+        "action": "store_reaction"
+      },
+      {
+        "from_state": "pending",
+        "to_state": "removed",
+        "trigger": "add_failed",
+        "guard": null,
+        "action": "cleanup_pending_reaction"
+      },
+      {
+        "from_state": "active",
+        "to_state": "updating",
+        "trigger": "reaction_changed",
+        "guard": "valid_emoji",
+        "action": "prepare_update"
+      },
+      {
+        "from_state": "active",
+        "to_state": "sync_pending",
+        "trigger": "sync_requested",
+        "guard": null,
+        "action": "initiate_device_sync"
+      },
+      {
+        "from_state": "active",
+        "to_state": "removed",
+        "trigger": "reaction_removed",
+        "guard": null,
+        "action": "mark_for_deletion"
+      },
+      {
+        "from_state": "updating",
+        "to_state": "active",
+        "trigger": "update_completed",
+        "guard": null,
+        "action": "apply_changes"
+      },
+      {
+        "from_state": "updating",
+        "to_state": "active",
+        "trigger": "update_failed",
+        "guard": null,
+        "action": "revert_changes"
+      },
+      {
+        "from_state": "sync_pending",
+        "to_state": "active",
+        "trigger": "sync_completed",
+        "guard": null,
+        "action": "confirm_sync_success"
+      },
+      {
+        "from_state": "sync_pending",
+        "to_state": "sync_failed",
+        "trigger": "sync_failed",
+        "guard": null,
+        "action": "log_sync_error"
+      },
+      {
+        "from_state": "sync_failed",
+        "to_state": "sync_pending",
+        "trigger": "retry_sync",
+        "guard": "retry_count_valid",
+        "action": "increment_retry_count"
+      },
+      {
+        "from_state": "sync_failed",
+        "to_state": "active",
+        "trigger": "sync_abandoned",
+        "guard": null,
+        "action": "reset_sync_state"
+      }
+    ],
+    "mermaid_diagram": "stateDiagram-v2\n    [*] --> pending\n    pending --> active : reaction_added [valid_emoji] / store_reaction\n    pending --> removed : add_failed / cleanup_pending_reaction\n    active --> updating : reaction_changed [valid_emoji] / prepare_update\n    active --> sync_pending : sync_requested / initiate_device_sync\n    active --> removed : reaction_removed / mark_for_deletion\n    updating --> active : update_completed / apply_changes\n    updating --> active : update_failed / revert_changes\n    sync_pending --> active : sync_completed / confirm_sync_success\n    sync_pending --> sync_failed : sync_failed / log_sync_error\n    sync_failed --> sync_pending : retry_sync [retry_count_valid] / increment_retry_count\n    sync_failed --> active : sync_abandoned / reset_sync_state\n    removed --> [*]",
+    "source_requirements": [
+      "WA-MSG-007"
+    ]
+  }
+]

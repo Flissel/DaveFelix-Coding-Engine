@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User
+    participant Siri
+    participant GoogleAssistant
+    participant System
+
+    User->>Siri: "Hey Siri, set a reminder"
+    Siri->>System: "Create reminder"
+    System-->>Siri: "Reminder created"
+    Siri-->>User: "Reminder set"
+
+    User->>GoogleAssistant: "Ok Google, play music"
+    GoogleAssistant->>System: "Play music command"
+    System-->>GoogleAssistant: "Playing music"
+    GoogleAssistant-->>User: "Now playing music"

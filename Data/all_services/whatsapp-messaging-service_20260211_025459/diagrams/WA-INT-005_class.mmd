@@ -1,0 +1,24 @@
+classDiagram
+    class DesktopApp {
+        +String name
+        +String version
+        +void launch()
+        +void close()
+    }
+
+    class User {
+        +String username
+        +String password
+        +void login()
+        +void logout()
+    }
+
+    class Feature {
+        +String featureName
+        +String description
+        +void enable()
+        +void disable()
+    }
+
+    DesktopApp "1" -- "*" User : uses
+    DesktopApp "1" -- "*" Feature : includes

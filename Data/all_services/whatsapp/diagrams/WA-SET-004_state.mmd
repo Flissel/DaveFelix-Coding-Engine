@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Konfiguration
+    Konfiguration --> Sichtbar : Info sichtbar
+    Konfiguration --> Unsichtbar : Info unsichtbar
+    Sichtbar --> Konfiguration : Konfiguration ändern
+    Unsichtbar --> Konfiguration : Konfiguration ändern
+    Sichtbar --> [*] : Info angezeigt
+    Unsichtbar --> [*] : Info nicht angezeigt

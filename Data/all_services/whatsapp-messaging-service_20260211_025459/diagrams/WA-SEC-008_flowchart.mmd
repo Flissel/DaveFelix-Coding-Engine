@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Anruf empfangen?}
+    B -- Ja --> C[IP-Adresse erfassen]
+    B -- Nein --> D[Ende]
+    C --> E{IP-Adresse verschleiern?}
+    E -- Ja --> F[IP-Adresse verschleiern]
+    E -- Nein --> G[IP-Adresse weiterleiten]
+    F --> H[Anruf verbinden]
+    G --> H
+    H --> I[Ende]

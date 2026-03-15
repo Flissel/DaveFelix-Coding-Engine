@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as User
+    participant App as Chat Application
+    participant Cloud as Cloud Backup Service
+
+    User->>App: Initiate Backup
+    App->>Cloud: Send Backup Data
+    Cloud-->>App: Acknowledge Backup Received
+    App-->>User: Confirm Backup Successful

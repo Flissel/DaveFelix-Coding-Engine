@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+
+    User->>System: Chat archivieren anfordern
+    System-->>User: Bestätigung des Archivierungsantrags
+    System->>System: Chat in Archiv verschieben
+    System-->>User: Archivierung abgeschlossen

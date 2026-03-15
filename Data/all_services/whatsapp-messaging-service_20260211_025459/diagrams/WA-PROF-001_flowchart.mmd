@@ -1,0 +1,10 @@
+flowchart TD
+    A[Benutzer] -->|Wählt Profilbild aus| B[Upload Profilbild]
+    B --> C{Profilbild validieren}
+    C -->|Gültig| D[Speichern im System]
+    C -->|Ungültig| E[Fehlermeldung anzeigen]
+    D --> F[Profilbild anzeigen]
+    F --> G{Profilbild verwalten}
+    G -->|Ändern| B
+    G -->|Löschen| H[Profilbild entfernen]
+    H --> F

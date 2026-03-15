@@ -1,0 +1,16 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Verifiziertes Business System Architecture
+
+    Person(customer, "Kunde", "Ein Benutzer, der ein Business verifizieren möchte.")
+    Person(admin, "Administrator", "Ein Benutzer, der das System verwaltet.")
+    
+    System(system, "Verifiziertes Business System", "Ein System zur Verifizierung von Businesses.")
+    
+    System_Ext(paymentGateway, "Zahlungsdienstleister", "Ein externer Dienst zur Abwicklung von Zahlungen.")
+    System_Ext(database, "Datenbank", "Speichert alle Informationen über verifizierte Businesses.")
+    
+    Rel(customer, system, "Verifiziert Businesses")
+    Rel(admin, system, "Verwaltet das System")
+    Rel(system, paymentGateway, "Verarbeitet Zahlungen")
+    Rel(system, database, "Speichert und ruft Daten ab")

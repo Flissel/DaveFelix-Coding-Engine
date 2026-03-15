@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Schnellantworten vordefinieren}
+    B -->|Ja| C[Antworten für Businesses erstellen]
+    B -->|Nein| D[Feedback einholen]
+    D --> B
+    C --> E{Antworten testen}
+    E -->|Bestanden| F[Antworten implementieren]
+    E -->|Nicht bestanden| G[Antworten anpassen]
+    G --> E
+    F --> H[System bereitstellen]
+    H --> I[Ende]

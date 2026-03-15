@@ -1,0 +1,12 @@
+%%{ init: { "theme": "default" } }%%
+C4Context
+    title System Context Diagram for Schriftgroesse
+
+    Person(user, "User", "A user who interacts with the Schriftgroesse system.")
+    
+    System(schriftgroesseSystem, "Schriftgroesse System", "A system that supports adjustable font sizes.")
+
+    System_Ext(fontSizeService, "Font Size Service", "External service that provides font size options.")
+
+    Rel(user, schriftgroesseSystem, "Uses")
+    Rel(schriftgroesseSystem, fontSizeService, "Requests font size options from")

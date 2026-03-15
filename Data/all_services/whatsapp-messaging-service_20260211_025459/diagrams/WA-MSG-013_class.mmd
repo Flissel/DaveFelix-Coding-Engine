@@ -1,0 +1,16 @@
+classDiagram
+    class Gruppenchats {
+        +String chatID
+        +String chatName
+        +List<Erwaehnung> erwaehnungen
+        +void addErwaehnung(Erwaehnung erwaehnung)
+    }
+
+    class Erwaehnung {
+        +String mentionID
+        +String username
+        +String timestamp
+        +void notifyUser()
+    }
+
+    Gruppenchats "1" -- "*" Erwaehnung : contains

@@ -1,0 +1,107 @@
+{
+  "name": "messaging-e2e-test",
+  "description": "E2E test project to verify all messaging agents activate correctly",
+  "tech_stack": {
+    "backend": {
+      "framework": "nestjs",
+      "language": "typescript",
+      "database": "postgresql",
+      "cache": "redis"
+    }
+  },
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "title": "Real-time WebSocket Chat",
+      "description": "Implement WebSocket-based real-time messaging with Socket.io for instant message delivery between users. Support private and group chat rooms.",
+      "tag": "functional",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-002",
+      "title": "Redis Pub/Sub Integration",
+      "description": "Configure Redis adapter for WebSocket scaling across multiple server instances. Implement pub/sub channels for real-time event broadcasting.",
+      "tag": "functional",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-003",
+      "title": "User Presence Tracking",
+      "description": "Track online/offline status with heartbeat mechanism. Implement typing indicators with 5-second TTL auto-expiry. Store last seen timestamps in Redis.",
+      "tag": "functional",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-004",
+      "title": "Read Receipt System",
+      "description": "Implement message delivery states: SENT, DELIVERED, READ. Track delivery and read timestamps. Batch delivery receipts for efficiency.",
+      "tag": "functional",
+      "priority": "medium"
+    },
+    {
+      "id": "REQ-005",
+      "title": "End-to-End Encryption",
+      "description": "Implement E2EE using ECDH key exchange protocol. Encrypt message content with AES-256. Support per-device key management and secure key storage.",
+      "tag": "security",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-006",
+      "title": "JWT Authentication",
+      "description": "Implement JWT-based authentication with access and refresh tokens. Secure WebSocket connections with token validation.",
+      "tag": "security",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-007",
+      "title": "User Management API",
+      "description": "CRUD endpoints for user accounts: GET /api/users, POST /api/users, PUT /api/users/:id. Include user profile and contact list management.",
+      "tag": "functional",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-008",
+      "title": "Message Storage",
+      "description": "Store messages in PostgreSQL with Prisma ORM. Support message pagination, search, and filtering by conversation.",
+      "tag": "functional",
+      "priority": "medium"
+    }
+  ],
+  "entities": [
+    {
+      "name": "User",
+      "attributes": [
+        {"name": "id", "type": "uuid", "primary": true},
+        {"name": "email", "type": "string", "unique": true},
+        {"name": "passwordHash", "type": "string"},
+        {"name": "displayName", "type": "string"},
+        {"name": "lastSeen", "type": "datetime"},
+        {"name": "isOnline", "type": "boolean", "default": false}
+      ]
+    },
+    {
+      "name": "Message",
+      "attributes": [
+        {"name": "id", "type": "uuid", "primary": true},
+        {"name": "content", "type": "text"},
+        {"name": "encryptedContent", "type": "text", "nullable": true},
+        {"name": "senderId", "type": "uuid", "relation": "User"},
+        {"name": "receiverId", "type": "uuid", "relation": "User"},
+        {"name": "status", "type": "enum", "values": ["SENT", "DELIVERED", "READ"]},
+        {"name": "sentAt", "type": "datetime"},
+        {"name": "deliveredAt", "type": "datetime", "nullable": true},
+        {"name": "readAt", "type": "datetime", "nullable": true}
+      ]
+    },
+    {
+      "name": "DeviceKey",
+      "attributes": [
+        {"name": "id", "type": "uuid", "primary": true},
+        {"name": "userId", "type": "uuid", "relation": "User"},
+        {"name": "publicKey", "type": "text"},
+        {"name": "deviceFingerprint", "type": "string"},
+        {"name": "createdAt", "type": "datetime"}
+      ]
+    }
+  ]
+}

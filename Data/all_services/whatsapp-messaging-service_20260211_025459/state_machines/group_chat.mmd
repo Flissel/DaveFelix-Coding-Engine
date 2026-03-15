@@ -1,0 +1,18 @@
+stateDiagram-v2
+    [*] --> creating
+    creating --> configuring : group_created [creator_valid] / initialize_group_metadata
+    creating --> error : creation_failed / log_creation_error
+    configuring --> active : configuration_completed [minimum_settings_configured] / activate_group_features
+    configuring --> error : configuration_failed / log_configuration_error
+    active --> suspended : suspend_group [admin_privileges] / disable_messaging
+    active --> archived : archive_group [admin_privileges] / archive_messages
+    active --> deleted : delete_group [admin_privileges] / cleanup_group_data
+    active --> configuring : modify_settings [admin_privileges] / enter_configuration_mode
+    suspended --> active : reactivate_group [admin_privileges] / enable_messaging
+    suspended --> archived : archive_group [admin_privileges] / archive_messages
+    suspended --> deleted : delete_group [admin_privileges] / cleanup_group_data
+    archived --> active : restore_group [admin_privileges] / restore_group_functionality
+    archived --> deleted : delete_group [admin_privileges] / cleanup_group_data
+    error --> creating : retry_creation [error_resolved] / reset_group_state
+    error --> configuring : retry_configuration [error_resolved] / reset_configuration_state
+    deleted --> [*]

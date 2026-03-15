@@ -1,0 +1,105 @@
+{
+  "route": "/settings/devices/:id",
+  "screen_name": "Geraete-Details",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Gerät Details",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "rounded",
+        "size": "large",
+        "icon": "device"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Biometrische Authentifizierung",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "2FA aktiviert",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Gerät entfernen",
+        "variant": "danger"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "title": "Gerät entfernen",
+        "message": "Möchten Sie dieses Gerät wirklich entfernen?",
+        "variant": "alert"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+  "data_sources": [
+    "GET /api/v1/devices",
+    "GET /api/v1/biometric/credentials",
+    "GET /api/v1/users/{userId}/2fa",
+    "DELETE /api/v1/biometric/credentials/{credentialId}",
+    "DELETE /api/v1/users/{userId}/2fa"
+  ],
+  "state_shape": {
+    "device": "object",
+    "biometricEnabled": "boolean",
+    "twoFactorEnabled": "boolean",
+    "showDeleteModal": "boolean",
+    "loading": "boolean",
+    "error": "string|null"
+  }
+}

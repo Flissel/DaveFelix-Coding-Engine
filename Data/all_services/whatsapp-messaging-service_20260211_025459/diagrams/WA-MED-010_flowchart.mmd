@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Medien auswählen}
+    B -->|HD-Qualität| C[Medien in HD-Qualität senden]
+    B -->|Nicht HD| D[Medien in Standardqualität senden]
+    C --> E[Übertragung starten]
+    D --> E
+    E --> F{Übertragung erfolgreich?}
+    F -->|Ja| G[Medien erfolgreich gesendet]
+    F -->|Nein| H[Fehlerbehandlung]
+    H --> I[Übertragung erneut versuchen]
+    I --> F
+    G --> J[Ende]

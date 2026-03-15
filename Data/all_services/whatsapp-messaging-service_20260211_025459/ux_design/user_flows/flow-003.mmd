@@ -1,0 +1,29 @@
+flowchart TD
+    Start([Start: App per Biometrie entsperren])
+    S1[User tippt auf App-Icon]
+    Start --> S1
+    S2{System prueft, ob Biometrie aktiviert und am Geraet eingerichtet ist}
+    S1 --> S2
+    E2[/Unbekannter Authentifizierungsstatus -> Passwort-Login anzeigen/]
+    S2 -.-> E2
+    S3[Biometrische Abfrage wird angezeigt]
+    S2 --> S3
+    E3[/Biometrie-Prompt laesst sich nicht laden -> Passwort-Login anzeigen/]
+    S3 -.-> E3
+    S4{User bestaetigt Biometrie erfolgreich}
+    S3 --> S4
+    E4[/Zeitueberschreitung >2 Sekunden -> Ladehinweis oder Passwort-Fallback/]
+    S4 -.-> E4
+    S5[App zeigt Hauptansicht]
+    S4 --> S5
+    S6{Biometrische Pruefung schlaegt fehl}
+    S5 --> S6
+    E6[/Mehrere Fehlversuche -> kurze Sperre mit Hinweis/]
+    S6 -.-> E6
+    S7{User gibt Passwort ein}
+    S6 --> S7
+    E7[/Falsches Passwort -> Fehlermeldung und erneute Eingabe/]
+    S7 -.-> E7
+    S8[Geraet unterstuetzt keine Biometrie oder ist deaktiviert]
+    S7 --> S8
+    S8 --> End([End])

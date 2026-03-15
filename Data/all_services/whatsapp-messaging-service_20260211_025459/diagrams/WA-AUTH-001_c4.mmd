@@ -1,0 +1,12 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[Benutzer] -->|Registrierung| B(Telefonnummer-Registrierung)
+    B -->|Verifizierung| C[Verifizierungsdienst]
+    B -->|Daten speichern| D[Datenbank]
+    A -->|Benachrichtigung| E[Benachrichtigungsdienst]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px;
+    style B fill:#bbf,stroke:#333,stroke-width:2px;
+    style C fill:#bbf,stroke:#333,stroke-width:2px;
+    style D fill:#bbf,stroke:#333,stroke-width:2px;
+    style E fill:#bbf,stroke:#333,stroke-width:2px;

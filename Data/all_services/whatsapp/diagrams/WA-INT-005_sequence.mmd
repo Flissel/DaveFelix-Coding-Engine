@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant User as User
+    participant DesktopApp as Desktop Application
+    participant System as System
+
+    User->>DesktopApp: Launch Application
+    DesktopApp->>System: Initialize
+    System-->>DesktopApp: Provide Resources
+    DesktopApp->>User: Display Interface
+    User->>DesktopApp: Interact with Features
+    DesktopApp->>System: Process Requests
+    System-->>DesktopApp: Return Data
+    DesktopApp->>User: Update Interface
+    User->>DesktopApp: Close Application
+    DesktopApp->>System: Terminate Session
+    System-->>DesktopApp: Release Resources

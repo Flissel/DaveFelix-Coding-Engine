@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[User activates Siri/Google Assistant]
+    B --> C[Voice command recognized]
+    C --> D{Is command valid?}
+    D -->|Yes| E[Process command]
+    D -->|No| F[Provide error message]
+    E --> G[Execute action]
+    G --> H[Return response to user]
+    H --> I[End]
+    F --> I

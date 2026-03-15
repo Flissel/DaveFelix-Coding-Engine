@@ -1,0 +1,13 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Benachrichtigungsvorschau System Architecture
+
+    Person(user, "User", "A user who receives notifications")
+    System(bvSystem, "Benachrichtigungsvorschau", "A system that provides configurable notification previews")
+
+    System_Ext(emailService, "Email Service", "External service to send email notifications")
+    System_Ext(pushNotificationService, "Push Notification Service", "External service to send push notifications")
+
+    Rel(user, bvSystem, "Uses")
+    Rel(bvSystem, emailService, "Sends email notifications to")
+    Rel(bvSystem, pushNotificationService, "Sends push notifications to")

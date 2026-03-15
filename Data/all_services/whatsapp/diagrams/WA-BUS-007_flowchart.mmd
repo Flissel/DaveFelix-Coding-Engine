@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B[Warenkorb erstellen]
+    B --> C{Artikel hinzufuegen?}
+    C -->|Ja| D[Artikel waehlen]
+    D --> E[Artikel in den Warenkorb legen]
+    E --> C
+    C -->|Nein| F[Warenkorb anzeigen]
+    F --> G{Bestellung abschicken?}
+    G -->|Ja| H[Bestellung verarbeiten]
+    H --> I[Bestellbestaetigung senden]
+    I --> J[Ende]
+    G -->|Nein| K[Warenkorb bearbeiten]
+    K --> F

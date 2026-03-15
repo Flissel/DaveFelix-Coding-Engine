@@ -1,0 +1,14 @@
+classDiagram
+    class RegionaleFormate {
+        +String name
+        +String description
+        +List<Format> formats
+    }
+
+    class Format {
+        +String formatName
+        +String formatType
+        +String region
+    }
+
+    RegionaleFormate "1" -- "*" Format : contains

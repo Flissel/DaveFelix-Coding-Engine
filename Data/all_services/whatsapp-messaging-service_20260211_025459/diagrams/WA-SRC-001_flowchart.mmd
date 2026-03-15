@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B[Benutzer gibt Suchbegriff ein]
+    B --> C{Suchbegriff gültig?}
+    C -->|Ja| D[System führt Volltext-Suche durch]
+    C -->|Nein| E[Fehlermeldung anzeigen]
+    D --> F{Ergebnisse gefunden?}
+    F -->|Ja| G[Ergebnisse anzeigen]
+    F -->|Nein| H[Keine Ergebnisse gefunden]
+    G --> I[Benutzer kann Ergebnisse filtern]
+    I --> J[Ende]
+    E --> J
+    H --> J

@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Spam-Erkennung System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der E-Mails sendet und empfängt.")
+    System(spamErkennung, "Spam-Erkennung", "Ein System zur automatischen Erkennung von Spam-E-Mails.")
+    System_Ext(emailServer, "E-Mail-Server", "Der Server, der E-Mails sendet und empfängt.")
+    System_Ext(spamDb, "Spam-Datenbank", "Eine Datenbank, die bekannte Spam-Muster speichert.")
+
+    Rel(user, spamErkennung, "Sendet und empfängt E-Mails")
+    Rel(spamErkennung, emailServer, "Analysiert E-Mails zur Spam-Erkennung")
+    Rel(spamErkennung, spamDb, "Fragt bekannte Spam-Muster ab")

@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Ist das System Screenreader-kompatibel?}
+    B -- Ja --> C[Vollständige Screenreader-Kompatibilität]
+    B -- Nein --> D[Identifizieren der Probleme]
+    D --> E[Probleme beheben]
+    E --> F[Testen der Screenreader-Kompatibilität]
+    F --> B
+    C --> G[System bereit für den Einsatz]
+    G --> H[Ende]

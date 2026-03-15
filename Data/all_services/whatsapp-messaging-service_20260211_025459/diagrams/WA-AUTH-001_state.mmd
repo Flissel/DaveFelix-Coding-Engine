@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Registrierung
+    Registrierung --> Eingabe_Telefonnummer
+    Eingabe_Telefonnummer --> Telefonnummer_Eingereicht
+    Telefonnummer_Eingereicht --> Verifizierung
+    Verifizierung --> Telefonnummer_Verifiziert
+    Telefonnummer_Verifiziert --> [*]
+
+    Telefonnummer_Eingereicht --> Fehler
+    Fehler --> Eingabe_Telefonnummer

@@ -1,0 +1,9 @@
+flowchart TD
+    A[Nachricht auswählen] --> B{Bestätigung erforderlich?}
+    B -- Ja --> C[Bestätigungsdialog anzeigen]
+    C --> D{Bestätigt?}
+    D -- Ja --> E[Nachricht löschen]
+    D -- Nein --> F[Abbrechen]
+    B -- Nein --> E
+    E --> G[Nachricht erfolgreich gelöscht]
+    F --> H[Aktion abgebrochen]

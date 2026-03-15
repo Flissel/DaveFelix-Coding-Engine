@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant Benutzer as Benutzer
+    participant System as System
+
+    Benutzer->>System: Registrierungsanfrage mit Telefonnummer
+    System->>Benutzer: Bestätigungs-SMS senden
+    Benutzer->>System: Bestätigungscode eingeben
+    System->>System: Überprüfung des Bestätigungscodes
+    alt Code korrekt
+        System->>Benutzer: Registrierung erfolgreich
+    else Code inkorrekt
+        System->>Benutzer: Fehler: Ungültiger Bestätigungscode
+    end

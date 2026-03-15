@@ -1,0 +1,137 @@
+{
+  "route": "/settings/security",
+  "screen_name": "Sicherheit & Anmeldung",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Sicherheit & Anmeldung",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Zwei-Faktor-Authentifizierung",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "label": "Biometrische Anmeldung",
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Telefonnummer ändern",
+        "variant": "outline"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Registrierte Geräte verwalten",
+        "variant": "outline"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "title": "2FA einrichten",
+        "variant": "default"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "length": 6,
+        "variant": "numeric"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "placeholder": "Neue Telefonnummer",
+        "variant": "outline"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, padding 16px, gap 20px, max-width 600px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa",
+    "POST /api/v1/users/{userId}/2fa",
+    "DELETE /api/v1/users/{userId}/2fa",
+    "GET /api/v1/biometric/credentials",
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "GET /api/v1/devices",
+    "POST /api/v1/phone-registrations",
+    "POST /api/v1/phone-registrations/{registrationId}/verify"
+  ],
+  "state_shape": {
+    "twoFactorEnabled": "boolean",
+    "biometricEnabled": "boolean",
+    "phoneNumber": "string",
+    "devices": "array",
+    "biometricCredentials": "array",
+    "showTwoFactorModal": "boolean",
+    "showPhoneChangeModal": "boolean",
+    "otpValue": "string",
+    "newPhoneNumber": "string",
+    "registrationId": "string"
+  }
+}

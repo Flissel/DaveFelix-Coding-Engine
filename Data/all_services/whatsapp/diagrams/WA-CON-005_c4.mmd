@@ -1,0 +1,16 @@
+%%{init: {"theme": "default"}}%%
+  C4Context
+    title System Context Diagram for Unbekannte Absender
+
+    Person(user, "User", "A user who interacts with the system.")
+    System(system, "Unbekannte Absender", "A system that handles unknown senders separately.")
+
+    Person(admin, "Admin", "An administrator who manages the system.")
+
+    System_Ext(emailService, "Email Service", "External service for sending and receiving emails.")
+    System_Ext(database, "Database", "Stores information about senders and messages.")
+
+    Rel(user, system, "Interacts with")
+    Rel(admin, system, "Manages")
+    Rel(system, emailService, "Sends and receives emails")
+    Rel(system, database, "Stores and retrieves sender information")

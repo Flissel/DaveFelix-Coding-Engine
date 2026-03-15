@@ -1,0 +1,108 @@
+{
+  "project_name": "",
+  "language": "de",
+  "requirement_id_pattern": "",
+  "diagram_naming": "",
+  "schema_hash": "8cc2548c3740a12b75ad73636737e9b2a404bffe7ef9dd6b3d3c49ef6753768c",
+  "sources": {
+    "diagrams": {
+      "file": "tasks",
+      "format": "mermaid",
+      "purpose": "diagrams",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "directory",
+      "key_fields": {}
+    },
+    "tasks": {
+      "file": "tasks/task_list.json",
+      "format": "json",
+      "purpose": "tasks",
+      "id_field": "",
+      "id_pattern": "TASK-\\d+",
+      "structure": "",
+      "key_fields": {}
+    },
+    "components": {
+      "file": "ui_design/compositions/component_matrix.md",
+      "format": "markdown",
+      "purpose": "components",
+      "id_field": "",
+      "id_pattern": "COMP-\\d+",
+      "structure": "markdown_sections",
+      "key_fields": {}
+    },
+    "design_tokens": {
+      "file": "ui_design/design_tokens.json",
+      "format": "json",
+      "purpose": "design_tokens",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    },
+    "screens": {
+      "file": "ui_design\\screens",
+      "format": "markdown",
+      "purpose": "screens",
+      "id_field": "",
+      "id_pattern": "SCREEN-\\d+",
+      "structure": "directory",
+      "key_fields": {}
+    },
+    "accessibility": {
+      "file": "ux_design/accessibility_checklist.md",
+      "format": "markdown",
+      "purpose": "accessibility",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    },
+    "routes": {
+      "file": "ux_design/information_architecture.md",
+      "format": "markdown",
+      "purpose": "routes",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    },
+    "gherkin_features": {
+      "file": "testing",
+      "format": "gherkin",
+      "purpose": "gherkin_features",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "directory",
+      "key_fields": {}
+    },
+    "data_dictionary": {
+      "file": "data/data_dictionary.md",
+      "format": "markdown",
+      "purpose": "data_dictionary",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    },
+    "openapi": {
+      "file": "api/openapi_spec.yaml",
+      "format": "yaml",
+      "purpose": "openapi",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    },
+    "quality_report": {
+      "file": "quality/self_critique_report.json",
+      "format": "json",
+      "purpose": "quality_report",
+      "id_field": "",
+      "id_pattern": "",
+      "structure": "",
+      "key_fields": {}
+    }
+  }
+}

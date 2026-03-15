@@ -1,0 +1,19 @@
+flowchart TD
+    A[Start] --> B[User opens Watch-App]
+    B --> C{Is Smartwatch connected?}
+    C -->|Yes| D[Display main interface]
+    C -->|No| E[Prompt user to connect Smartwatch]
+    E --> F[User connects Smartwatch]
+    F --> D
+    D --> G[User selects feature]
+    G --> H{Feature type}
+    H -->|Health| I[Display health metrics]
+    H -->|Notifications| J[Show notifications]
+    H -->|Settings| K[Open settings menu]
+    I --> L[User reviews metrics]
+    J --> L
+    K --> L
+    L --> M[User exits feature]
+    M --> D
+    D --> N[User closes Watch-App]
+    N --> O[End]

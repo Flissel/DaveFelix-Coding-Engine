@@ -1,0 +1,19 @@
+classDiagram
+    class Schriftgroesse {
+        +int id
+        +string name
+        +int value
+        +string unit
+        +setSchriftgroesse(int newValue)
+        +getSchriftgroesse() int
+    }
+    
+    class Benutzer {
+        +int id
+        +string name
+        +Schriftgroesse schriftgroesse
+        +setSchriftgroesse(Schriftgroesse newSchriftgroesse)
+        +getSchriftgroesse() Schriftgroesse
+    }
+    
+    Benutzer "1" -- "1" Schriftgroesse : hat

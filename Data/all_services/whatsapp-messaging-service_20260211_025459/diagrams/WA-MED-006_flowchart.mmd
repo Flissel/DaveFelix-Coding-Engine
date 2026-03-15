@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Benutzeranfrage}
+    B -->|Suche nach GIFs| C[GIF-Datenbank durchsuchen]
+    B -->|Versand eines GIFs| D[GIF an Benutzer senden]
+    C --> E{GIF gefunden?}
+    E -->|Ja| D
+    E -->|Nein| F[Benutzer benachrichtigen]
+    D --> G[Prozess beenden]
+    F --> G

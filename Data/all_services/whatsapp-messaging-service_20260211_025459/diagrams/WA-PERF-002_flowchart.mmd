@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{App gestartet?}
+    B -- Ja --> C[App initialisieren]
+    B -- Nein --> D[App-Daten laden]
+    D --> C
+    C --> E{Alle Ressourcen bereit?}
+    E -- Ja --> F[App anzeigen]
+    E -- Nein --> G[Fehlerbehandlung]
+    G --> H[App schließen]
+    F --> I[Ende]
+    H --> I

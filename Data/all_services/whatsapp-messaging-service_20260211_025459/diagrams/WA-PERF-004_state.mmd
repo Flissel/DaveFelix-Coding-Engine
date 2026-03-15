@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Active : Start
+    Active --> Idle : Stop
+    Active --> PowerSaving : Low Battery
+    PowerSaving --> Active : Battery Charged
+    PowerSaving --> Idle : Battery Depleted
+    Idle --> PowerSaving : Low Battery

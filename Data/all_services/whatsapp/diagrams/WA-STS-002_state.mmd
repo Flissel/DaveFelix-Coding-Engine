@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> StatusAnzeigen
+    StatusAnzeigen --> StatusAnzeigenErfolgreich : Status erfolgreich angezeigt
+    StatusAnzeigen --> StatusAnzeigenFehlgeschlagen : Fehler beim Anzeigen des Status
+    StatusAnzeigenErfolgreich --> [*]
+    StatusAnzeigenFehlgeschlagen --> [*]

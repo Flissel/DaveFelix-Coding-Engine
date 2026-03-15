@@ -1,0 +1,22 @@
+erDiagram
+    GROUP_SETTING {
+        string id PK "Primary Key"
+        string name "Name of the group setting"
+        string description "Description of the group setting"
+        boolean is_active "Indicates if the setting is active"
+    }
+
+    USER {
+        string id PK "Primary Key"
+        string username "Username of the user"
+        string email "Email of the user"
+    }
+
+    GROUP {
+        string id PK "Primary Key"
+        string name "Name of the group"
+        string description "Description of the group"
+    }
+
+    USER ||--o{ GROUP : belongs_to
+    GROUP ||--o{ GROUP_SETTING : has

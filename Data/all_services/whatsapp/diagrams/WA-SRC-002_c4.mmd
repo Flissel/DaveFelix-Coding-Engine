@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Mediensuche System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der nach Medien sucht.")
+    System(mediensuche, "Mediensuche", "Ein System zur Suche nach Medien mit Filterung nach Medientypen.")
+
+    System_Ext(mediaSource, "Medienquelle", "Externe Quellen für Medieninformationen.")
+
+    Rel(user, mediensuche, "Sucht nach Medien")
+    Rel(mediensuche, mediaSource, "Fragt Medieninformationen ab")
+    Rel(mediensuche, user, "Bietet gefilterte Suchergebnisse")

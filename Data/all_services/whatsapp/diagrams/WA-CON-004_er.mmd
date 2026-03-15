@@ -1,0 +1,21 @@
+erDiagram
+    LABELS {
+        string id PK
+        string name
+        string description
+    }
+
+    CONTACTS {
+        string id PK
+        string name
+        string email
+        string phone
+    }
+
+    CONTACT_LABELS {
+        string contact_id FK
+        string label_id FK
+    }
+
+    LABELS ||--o{ CONTACT_LABELS : contains
+    CONTACTS ||--o{ CONTACT_LABELS : associates

@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant NotificationService as Benachrichtigungsdienst
+
+    User->>System: Anfrage für Push-Benachrichtigung
+    System->>NotificationService: Anfrage zur Erstellung der Benachrichtigung
+    NotificationService-->>System: Bestätigung der Benachrichtigung
+    System-->>User: Push-Benachrichtigung gesendet
+    User->>System: Empfang der Benachrichtigung bestätigen
+    System->>NotificationService: Empfangsbestätigung weiterleiten
+    NotificationService-->>System: Empfang bestätigt

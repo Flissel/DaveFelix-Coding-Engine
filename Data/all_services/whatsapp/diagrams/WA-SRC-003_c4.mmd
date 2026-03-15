@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[User] -->|Uses| B(Chat-Suche)
+    B -->|Fetches| C[Chat Database]
+    B -->|Fetches| D[Contact Database]
+    A -->|Requests| E[Chat API]
+    B -->|Interacts with| F[External Messaging Services]
+
+    classDef user fill:#f9f,stroke:#333,stroke-width:2px;
+    class A user;

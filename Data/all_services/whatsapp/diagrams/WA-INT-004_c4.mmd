@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[User] -->|Interacts with| B(Watch-App)
+    B -->|Fetches data from| C[Smartwatch API]
+    B -->|Sends notifications to| D[Smartwatch]
+    B -->|Communicates with| E[Backend Server]
+    E -->|Stores user data| F[Database]
+    E -->|Processes requests| G[Third-party Services]

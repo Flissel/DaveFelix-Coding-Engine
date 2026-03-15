@@ -1,0 +1,14 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title Verschwindende Nachrichten System Context Diagram
+
+    Person(user, "User", "A user who sends and receives self-destructing messages.")
+    
+    System(vnSystem, "Verschwindende Nachrichten", "A system that supports self-destructing messages.")
+
+    System_Ext(emailService, "Email Service", "External service for sending email notifications.")
+    System_Ext(smsService, "SMS Service", "External service for sending SMS notifications.")
+
+    Rel(user, vnSystem, "Uses")
+    Rel(vnSystem, emailService, "Sends notifications via")
+    Rel(vnSystem, smsService, "Sends notifications via")

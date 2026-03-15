@@ -1,0 +1,399 @@
+{
+  "project_name": "whatsapp-messaging-service",
+  "design_tokens": {
+    "colors": {
+      "primary": "#25D366",
+      "primary-dark": "#128C7E",
+      "primary-light": "#DCF8C6",
+      "secondary": "#34B7F1",
+      "background": "#F5F5F5",
+      "surface": "#FFFFFF",
+      "text-primary": "#1C1C1C",
+      "text-secondary": "#6B6B6B",
+      "error": "#E53935",
+      "warning": "#FB8C00",
+      "success": "#43A047",
+      "info": "#1E88E5"
+    },
+    "typography": {
+      "font-family": {
+        "base": "Inter, Arial, sans-serif",
+        "mono": "Fira Mono, monospace"
+      },
+      "h1": {
+        "size": "2.5rem",
+        "weight": "700",
+        "line-height": "1.2"
+      },
+      "h2": {
+        "size": "2rem",
+        "weight": "600",
+        "line-height": "1.25"
+      },
+      "h3": {
+        "size": "1.5rem",
+        "weight": "600",
+        "line-height": "1.3"
+      },
+      "h4": {
+        "size": "1.25rem",
+        "weight": "600",
+        "line-height": "1.4"
+      },
+      "body": {
+        "size": "1rem",
+        "weight": "400",
+        "line-height": "1.5"
+      },
+      "body-small": {
+        "size": "0.875rem",
+        "weight": "400",
+        "line-height": "1.5"
+      },
+      "caption": {
+        "size": "0.75rem",
+        "weight": "400",
+        "line-height": "1.4"
+      }
+    },
+    "spacing": {
+      "xs": "0.25rem",
+      "sm": "0.5rem",
+      "md": "1rem",
+      "lg": "1.5rem",
+      "xl": "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem"
+    },
+    "breakpoints": {
+      "mobile": 320,
+      "mobile-lg": 480,
+      "tablet": 768,
+      "desktop": 1024,
+      "desktop-lg": 1280,
+      "desktop-xl": 1536
+    },
+    "shadows": {
+      "sm": "0 1px 2px rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px rgba(0, 0, 0, 0.1)",
+      "lg": "0 10px 15px rgba(0, 0, 0, 0.1)",
+      "xl": "0 20px 25px rgba(0, 0, 0, 0.15)"
+    },
+    "border_radius": {
+      "none": "0",
+      "sm": "0.125rem",
+      "md": "0.375rem",
+      "lg": "0.5rem",
+      "xl": "0.75rem",
+      "full": "9999px"
+    }
+  },
+  "components": [
+    {
+      "id": "COMP-001",
+      "name": "Button",
+      "component_type": "button",
+      "description": "Primary and secondary action button",
+      "variants": [
+        "primary",
+        "secondary",
+        "outline",
+        "ghost",
+        "danger"
+      ],
+      "props": {
+        "size": "sm | md | lg",
+        "disabled": "boolean",
+        "loading": "boolean",
+        "icon": "ReactNode (optional)",
+        "onClick": "() => void",
+        "fullWidth": "boolean"
+      },
+      "states": [
+        "default",
+        "hover",
+        "active",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "accessibility": {
+        "role": "button",
+        "aria-label": "Required for icon-only buttons",
+        "aria-disabled": "When disabled"
+      },
+      "example_usage": "<Button variant='primary' size='md'>Weiter</Button>",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-002",
+      "name": "TextInput",
+      "component_type": "input",
+      "description": "Single-line input for text, phone numbers, and search",
+      "variants": [
+        "default",
+        "filled",
+        "outline"
+      ],
+      "props": {
+        "type": "text | tel | password | search",
+        "value": "string",
+        "placeholder": "string",
+        "error": "string (optional)",
+        "leadingIcon": "ReactNode (optional)",
+        "trailingIcon": "ReactNode (optional)",
+        "onChange": "(value: string) => void"
+      },
+      "states": [
+        "default",
+        "focus",
+        "filled",
+        "error",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "textbox",
+        "aria-label": "Input description required",
+        "aria-invalid": "When error"
+      },
+      "example_usage": "<TextInput type='tel' placeholder='+49 123 456789' />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-003",
+      "name": "OTPInput",
+      "component_type": "input",
+      "description": "Input group for 6-digit PIN/verification codes",
+      "variants": [
+        "numeric",
+        "masked"
+      ],
+      "props": {
+        "length": "number",
+        "value": "string",
+        "autoFocus": "boolean",
+        "onChange": "(value: string) => void",
+        "onComplete": "(value: string) => void"
+      },
+      "states": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ],
+      "accessibility": {
+        "role": "group",
+        "aria-label": "One-time code input"
+      },
+      "example_usage": "<OTPInput length={6} onComplete={verifyCode} />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-004",
+      "name": "TopBar",
+      "component_type": "navigation",
+      "description": "App header with title, back button, and actions",
+      "variants": [
+        "default",
+        "transparent",
+        "elevated"
+      ],
+      "props": {
+        "title": "string",
+        "showBack": "boolean",
+        "actions": "ReactNode (optional)",
+        "onBack": "() => void"
+      },
+      "states": [
+        "default",
+        "scrolled"
+      ],
+      "accessibility": {
+        "role": "navigation",
+        "aria-label": "Top navigation"
+      },
+      "example_usage": "<TopBar title='Chats' actions={<IconButton icon={<Search/>} />} />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-005",
+      "name": "BottomNav",
+      "component_type": "navigation",
+      "description": "Bottom navigation for main sections",
+      "variants": [
+        "default",
+        "labeled"
+      ],
+      "props": {
+        "items": "NavItem[]",
+        "activeId": "string",
+        "onChange": "(id: string) => void"
+      },
+      "states": [
+        "default",
+        "active"
+      ],
+      "accessibility": {
+        "role": "navigation",
+        "aria-label": "Bottom navigation"
+      },
+      "example_usage": "<BottomNav items={navItems} activeId='chats' />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-006",
+      "name": "ChatListItem",
+      "component_type": "list-item",
+      "description": "Row showing chat preview with avatar, name, last message and unread badge",
+      "variants": [
+        "default",
+        "compact"
+      ],
+      "props": {
+        "avatarUrl": "string",
+        "name": "string",
+        "lastMessage": "string",
+        "timestamp": "string",
+        "unreadCount": "number",
+        "onClick": "() => void"
+      },
+      "states": [
+        "default",
+        "hover",
+        "active",
+        "selected"
+      ],
+      "accessibility": {
+        "role": "button",
+        "aria-label": "Open chat"
+      },
+      "example_usage": "<ChatListItem name='Lisa' lastMessage='Hey!' unreadCount={2} />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-007",
+      "name": "MessageBubble",
+      "component_type": "message",
+      "description": "Chat bubble for sent/received messages with status",
+      "variants": [
+        "sent",
+        "received",
+        "system"
+      ],
+      "props": {
+        "text": "string",
+        "time": "string",
+        "status": "sent | delivered | read",
+        "media": "ReactNode (optional)"
+      },
+      "states": [
+        "default",
+        "selected"
+      ],
+      "accessibility": {
+        "role": "article",
+        "aria-label": "Message"
+      },
+      "example_usage": "<MessageBubble variant='sent' text='Hallo!' status='read' />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-008",
+      "name": "Avatar",
+      "component_type": "image",
+      "description": "User avatar with fallback initials",
+      "variants": [
+        "circle",
+        "rounded"
+      ],
+      "props": {
+        "src": "string (optional)",
+        "name": "string",
+        "size": "xs | sm | md | lg | xl",
+        "onClick": "() => void (optional)"
+      },
+      "states": [
+        "default",
+        "loading",
+        "error"
+      ],
+      "accessibility": {
+        "role": "img",
+        "aria-label": "User avatar"
+      },
+      "example_usage": "<Avatar name='Max' src='/max.jpg' size='lg' />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-009",
+      "name": "ToggleSwitch",
+      "component_type": "switch",
+      "description": "Toggle for settings like 2FA, biometrics, and notifications",
+      "variants": [
+        "default"
+      ],
+      "props": {
+        "checked": "boolean",
+        "disabled": "boolean",
+        "label": "string",
+        "onChange": "(checked: boolean) => void"
+      },
+      "states": [
+        "default",
+        "checked",
+        "disabled",
+        "focus"
+      ],
+      "accessibility": {
+        "role": "switch",
+        "aria-checked": "boolean"
+      },
+      "example_usage": "<ToggleSwitch label='Biometrie aktivieren' checked />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    },
+    {
+      "id": "COMP-010",
+      "name": "ModalDialog",
+      "component_type": "dialog",
+      "description": "Modal for confirmations, device limit alerts, and biometric fallback",
+      "variants": [
+        "default",
+        "alert",
+        "fullscreen"
+      ],
+      "props": {
+        "title": "string",
+        "open": "boolean",
+        "onClose": "() => void",
+        "actions": "ReactNode (optional)"
+      },
+      "states": [
+        "open",
+        "closed"
+      ],
+      "accessibility": {
+        "role": "dialog",
+        "aria-modal": "true",
+        "aria-labelledby": "Dialog title id"
+      },
+      "example_usage": "<ModalDialog title='Geräte-Limit erreicht' open />",
+      "parent_screen_ids": [],
+      "source_user_story_id": ""
+    }
+  ],
+  "screens": [],
+  "responsive_strategy": "mobile-first",
+  "theme_support": true,
+  "dark_mode": true,
+  "navigation_map": [],
+  "state_architecture": {}
+}

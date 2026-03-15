@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Config as Konfiguration
+
+    User->>System: Anfrage für Benachrichtigungsvorschau
+    System->>Config: Abrufen der Konfiguration
+    Config-->>System: Rückgabe der konfigurierten Vorschau
+    System-->>User: Anzeige der Benachrichtigungsvorschau

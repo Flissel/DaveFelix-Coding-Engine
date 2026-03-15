@@ -1,0 +1,298 @@
+{
+  "project_name": "whatsapp-messaging-service",
+  "services": [
+    {
+      "name": "api-gateway",
+      "type": "gateway",
+      "technology": "Kong 3.7.1",
+      "responsibilities": [
+        "Request Routing",
+        "Rate Limiting",
+        "Authentication",
+        "Load Balancing"
+      ],
+      "dependencies": [],
+      "ports": [
+        8000,
+        8001
+      ]
+    },
+    {
+      "name": "auth-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Phone Number Registration",
+        "2FA Management",
+        "Biometric Auth",
+        "Multi-Device Support",
+        "Passkey Management"
+      ],
+      "dependencies": [
+        "postgres-auth",
+        "redis-cache"
+      ],
+      "ports": [
+        3001
+      ]
+    },
+    {
+      "name": "user-profile-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Profile Management",
+        "Profile Picture Upload",
+        "Display Name",
+        "Status Text",
+        "QR Code Generation"
+      ],
+      "dependencies": [
+        "postgres-profiles",
+        "redis-cache",
+        "s3-storage"
+      ],
+      "ports": [
+        3002
+      ]
+    },
+    {
+      "name": "messaging-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Text Messages",
+        "Voice Messages",
+        "Message Operations",
+        "Message Forwarding",
+        "Message Reactions"
+      ],
+      "dependencies": [
+        "postgres-messages",
+        "redis-cache",
+        "kafka-queue",
+        "websocket-service"
+      ],
+      "ports": [
+        3003
+      ]
+    },
+    {
+      "name": "chat-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Chat Management",
+        "Chat Locking",
+        "Disappearing Messages",
+        "View-Once Media"
+      ],
+      "dependencies": [
+        "postgres-chats",
+        "redis-cache",
+        "kafka-queue"
+      ],
+      "ports": [
+        3004
+      ]
+    },
+    {
+      "name": "websocket-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Real-time Communication",
+        "WebSocket Connections",
+        "Live Message Delivery",
+        "Presence Management"
+      ],
+      "dependencies": [
+        "redis-cache",
+        "kafka-queue"
+      ],
+      "ports": [
+        3005
+      ]
+    },
+    {
+      "name": "media-service",
+      "type": "api",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Media Upload",
+        "Media Processing",
+        "Media Storage",
+        "View-Once Media Management"
+      ],
+      "dependencies": [
+        "s3-storage",
+        "postgres-media",
+        "redis-cache"
+      ],
+      "ports": [
+        3006
+      ]
+    },
+    {
+      "name": "notification-worker",
+      "type": "worker",
+      "technology": "NestJS 10.3.2",
+      "responsibilities": [
+        "Push Notifications",
+        "Email Notifications",
+        "SMS Notifications",
+        "Notification Templates"
+      ],
+      "dependencies": [
+        "kafka-queue",
+        "postgres-notifications"
+      ],
+      "ports": [
+        3007
+      ]
+    },
+    {
+      "name": "postgres-auth",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "User Authentication Data",
+        "Device Registration",
+        "2FA Settings",
+        "Passkey Storage"
+      ],
+      "dependencies": [],
+      "ports": [
+        5432
+      ]
+    },
+    {
+      "name": "postgres-profiles",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "User Profiles",
+        "Profile Pictures Metadata",
+        "Display Names",
+        "Status Information"
+      ],
+      "dependencies": [],
+      "ports": [
+        5433
+      ]
+    },
+    {
+      "name": "postgres-messages",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "Message Storage",
+        "Message History",
+        "Message Metadata",
+        "Reactions"
+      ],
+      "dependencies": [],
+      "ports": [
+        5434
+      ]
+    },
+    {
+      "name": "postgres-chats",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "Chat Metadata",
+        "Chat Settings",
+        "Chat Participants",
+        "Chat Security"
+      ],
+      "dependencies": [],
+      "ports": [
+        5435
+      ]
+    },
+    {
+      "name": "postgres-media",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "Media Metadata",
+        "Media References",
+        "Media Access Control"
+      ],
+      "dependencies": [],
+      "ports": [
+        5436
+      ]
+    },
+    {
+      "name": "postgres-notifications",
+      "type": "database",
+      "technology": "PostgreSQL 16.3",
+      "responsibilities": [
+        "Notification Queue",
+        "Notification History",
+        "Notification Settings"
+      ],
+      "dependencies": [],
+      "ports": [
+        5437
+      ]
+    },
+    {
+      "name": "redis-cache",
+      "type": "cache",
+      "technology": "Redis 7.2.5",
+      "responsibilities": [
+        "Session Storage",
+        "Message Cache",
+        "Profile Cache",
+        "Real-time Data"
+      ],
+      "dependencies": [],
+      "ports": [
+        6379
+      ]
+    },
+    {
+      "name": "kafka-queue",
+      "type": "queue",
+      "technology": "Kafka 3.7.1",
+      "responsibilities": [
+        "Message Events",
+        "Notification Events",
+        "User Events",
+        "System Events"
+      ],
+      "dependencies": [],
+      "ports": [
+        9092
+      ]
+    },
+    {
+      "name": "s3-storage",
+      "type": "api",
+      "technology": "AWS S3",
+      "responsibilities": [
+        "Media Storage",
+        "Profile Pictures",
+        "Voice Messages",
+        "File Attachments"
+      ],
+      "dependencies": [],
+      "ports": [
+        443
+      ]
+    }
+  ],
+  "c4_context_diagram": "C4Context\n    title System Context - WhatsApp Messaging Service\n    Person(user, \"User\", \"Mobile app user\")\n    Person(contact, \"Contact\", \"Other users\")\n    System(whatsapp, \"WhatsApp Messaging Service\", \"Real-time messaging platform\")\n    System_Ext(sms, \"SMS Gateway\", \"Phone verification\")\n    System_Ext(push, \"Push Service\", \"Mobile notifications\")\n    System_Ext(biometric, \"Biometric Service\", \"Device authentication\")\n    \n    Rel(user, whatsapp, \"Sends messages, manages profile\")\n    Rel(contact, whatsapp, \"Receives messages, interacts\")\n    Rel(whatsapp, sms, \"Sends verification codes\")\n    Rel(whatsapp, push, \"Sends push notifications\")\n    Rel(whatsapp, biometric, \"Validates biometric auth\")",
+  "c4_container_diagram": "graph TB\n    subgraph \"Mobile Device\"\n        A[React Native App]\n    end\n    \n    subgraph \"API Layer\"\n        B[Kong API Gateway]\n    end\n    \n    subgraph \"Microservices\"\n        C[Auth Service]\n        D[User Profile Service]\n        E[Messaging Service]\n        F[Chat Service]\n        G[WebSocket Service]\n        H[Media Service]\n        I[Notification Worker]\n    end\n    \n    subgraph \"Data Layer\"\n        J[(PostgreSQL Auth)]\n        K[(PostgreSQL Profiles)]\n        L[(PostgreSQL Messages)]\n        M[(PostgreSQL Chats)]\n        N[(PostgreSQL Media)]\n        O[(PostgreSQL Notifications)]\n        P[(Redis Cache)]\n    end\n    \n    subgraph \"Infrastructure\"\n        Q[Kafka Queue]\n        R[AWS S3 Storage]\n    end\n    \n    A --> B\n    B --> C\n    B --> D\n    B --> E\n    B --> F\n    B --> G\n    B --> H\n    C --> J\n    C --> P\n    D --> K\n    D --> P\n    D --> R\n    E --> L\n    E --> P\n    E --> Q\n    F --> M\n    F --> P\n    F --> Q\n    G --> P\n    G --> Q\n    H --> N\n    H --> R\n    H --> P\n    I --> O\n    I --> Q",
+  "deployment_diagram": "graph TB\n    subgraph \"AWS Cloud\"\n        subgraph \"EKS Cluster\"\n            subgraph \"API Gateway Namespace\"\n                A[Kong Gateway Pod]\n            end\n            \n            subgraph \"Services Namespace\"\n                B[Auth Service Pods]\n                C[Profile Service Pods]\n                D[Messaging Service Pods]\n                E[Chat Service Pods]\n                F[WebSocket Service Pods]\n                G[Media Service Pods]\n                H[Notification Worker Pods]\n            end\n            \n            subgraph \"Data Namespace\"\n                I[PostgreSQL StatefulSet]\n                J[Redis StatefulSet]\n                K[Kafka StatefulSet]\n            end\n        end\n        \n        subgraph \"AWS Services\"\n            L[S3 Bucket]\n            M[Application Load Balancer]\n            N[CloudWatch]\n            O[Route 53]\n        end\n        \n        subgraph \"External\"\n            P[GitHub Actions]\n            Q[Docker Registry]\n        end\n    end\n    \n    O --> M\n    M --> A\n    A --> B\n    A --> C\n    A --> D\n    A --> E\n    A --> F\n    A --> G\n    B --> I\n    C --> I\n    D --> I\n    E --> I\n    F --> J\n    G --> L\n    H --> K\n    P --> Q\n    Q --> EKS",
+  "data_flow_diagram": "flowchart LR\n    A[Mobile Client] -->|HTTPS/WSS| B[API Gateway]\n    B -->|Route Auth| C[Auth Service]\n    B -->|Route Profile| D[Profile Service]\n    B -->|Route Messages| E[Messaging Service]\n    B -->|Route Chat| F[Chat Service]\n    B -->|WebSocket| G[WebSocket Service]\n    B -->|Route Media| H[Media Service]\n    \n    C -->|Store Auth| I[(Auth DB)]\n    C -->|Cache Session| J[(Redis)]\n    \n    D -->|Store Profile| K[(Profile DB)]\n    D -->|Upload Media| L[S3 Storage]\n    D -->|Cache Profile| J\n    \n    E -->|Store Messages| M[(Message DB)]\n    E -->|Publish Event| N[Kafka]\n    E -->|Cache Messages| J\n    E -->|Real-time| G\n    \n    F -->|Store Chat Data| O[(Chat DB)]\n    F -->|Publish Event| N\n    F -->|Cache Chat| J\n    \n    G -->|Cache Connections| J\n    G -->|Subscribe Events| N\n    G -->|Push to Client| A\n    \n    H -->|Store Media Meta| P[(Media DB)]\n    H -->|Store Files| L\n    H -->|Cache Meta| J\n    \n    N -->|Consume Events| Q[Notification Worker]\n    Q -->|Store Notifications| R[(Notification DB)]\n    Q -->|Send Push| S[External Push Service]",
+  "architecture_pattern": "Microservices",
+  "communication_patterns": [
+    "REST",
+    "WebSocket",
+    "Event-Driven"
+  ]
+}

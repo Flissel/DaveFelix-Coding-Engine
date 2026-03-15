@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Unregistered
+    Unregistered --> EnterPhoneNumber: Enter phone number
+    EnterPhoneNumber --> PhoneNumberEntered
+    PhoneNumberEntered --> SendVerificationCode: Send verification code
+    SendVerificationCode --> WaitingForVerificationCode
+    WaitingForVerificationCode --> VerifyCode: Enter verification code
+    VerifyCode --> Verified: Code valid
+    VerifyCode --> InvalidCode: Code invalid
+    InvalidCode --> WaitingForVerificationCode: Retry
+    Verified --> [*]

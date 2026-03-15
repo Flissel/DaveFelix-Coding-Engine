@@ -1,0 +1,43 @@
+gantt
+    title Project Tasks - Project Schedule
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+
+    section FEAT-001
+    Telefonnummer-Registrierung Ba :TASK-001, , 1d
+    Telefonnummer-Registrierung Fr :TASK-002, after TASK-001, 1d
+    Zwei-Faktor-Authentifizierung :TASK-003, after TASK-001, 1d
+    Biometrische Entsperrung :TASK-004, after TASK-002, 1d
+    Multi-Device Support & Passkey :TASK-005, after TASK-001, 1d
+    section FEAT-002
+    Auth-Flows UX/UI definieren :TASK-008, , 1d
+    Backend: Telefon-Registrierung :TASK-009, , 1d
+    Frontend: Telefon-Registrierun :TASK-010, after TASK-001, 1d
+    Backend: 2FA & Multi-Device Se :TASK-011, after TASK-002, 1d
+    Frontend: 2FA & Geräteverwaltu :TASK-012, after TASK-001, 1d
+    section FEAT-003
+    Auth-Flow Design & API Spezifi :TASK-015, , 1d
+    DevOps Setup SMS/OTP Provider :TASK-016, after TASK-001, 1d
+    Backend: Telefon-Registrierung :TASK-017, after TASK-001, 1d
+    Backend: Biometrie & Passkey U :TASK-018, after TASK-001, 1d
+    Frontend: Telefon-Registrierun :TASK-019, after TASK-003, 1d
+    section FEAT-004
+    Auth-Flow Design & Datenmodell :TASK-022, , 1d
+    Backend: Telefonnummer-Registr :TASK-023, after TASK-001, 1d
+    Backend: Zwei-Faktor-Authentif :TASK-024, after TASK-002, 1d
+    Frontend: Biometrische Entsper :TASK-025, after TASK-003, 1d
+    Backend: Multi-Device & Passke :TASK-026, after TASK-001, 1d
+    section FEAT-005
+    Auth-Flow und UI/UX für Regist :TASK-028, , 1d
+    Backend: Telefonnummer-Registr :TASK-029, after TASK-001, 1d
+    Frontend: Registrierung & 2FA  :TASK-030, after TASK-001, 1d
+    Backend: Multi-Device Support  :TASK-031, after TASK-002, 1d
+    Frontend: Passkey-Flow integri :TASK-032, after TASK-001, 1d
+    section DATABASE
+    Create user model and migratio :TASK-035, , 1d
+    Create user_profile model and  :TASK-036, , 1d
+    Create user_device model and m :TASK-037, , 1d
+    Create auth_credential model a :TASK-038, , 1d
+    Create chat model and migratio :TASK-039, , 1d
+    section API
+    Implement api API endpoints :TASK-045, , 1d

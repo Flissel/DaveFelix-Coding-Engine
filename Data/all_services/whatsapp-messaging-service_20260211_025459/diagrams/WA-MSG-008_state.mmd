@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Sending : Send Nachricht
+    Sending --> Sent : Nachricht gesendet
+    Sent --> Waiting : Warten auf Empfangsbestätigung
+    Waiting --> Received : Nachricht empfangen
+    Received --> SelfDestructing : Selbstzerstörung einleiten
+    SelfDestructing --> Destroyed : Nachricht gelöscht
+    Destroyed --> Idle : Zurücksetzen

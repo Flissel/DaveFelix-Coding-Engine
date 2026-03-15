@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Sprache_auswaehlen
+    Sprache_auswaehlen --> Sprache_ausgewaehlt: Sprache wählen
+    Sprache_ausgewaehlt --> Sprache_anwenden: Sprache anwenden
+    Sprache_anwenden --> [*]: Anwendung abgeschlossen
+    Sprache_anwenden --> Sprache_auswaehlen: Sprache wechseln

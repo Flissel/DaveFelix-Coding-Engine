@@ -1,0 +1,18 @@
+C4Context
+    title System Architecture - whatsapp-messaging-service
+
+    Person(user, "User", "End user of the system")
+
+    System_Boundary(system, "whatsapp-messaging-service") {
+        Container(frontend, "Frontend", "React Native 0.74.1", "User Interface")
+        Container(backend, "Backend API", "NestJS 10.3.2", "REST + WebSocket API")
+        ContainerDb(db, "Database", "PostgreSQL 16.3", "Primary data store")
+        ContainerDb(cache, "Cache", "Redis 7.2.5", "Caching layer")
+        Container(mq, "Message Queue", "Kafka 3.7.1", "Async messaging")
+    }
+
+    Rel(user, frontend, "Uses", "HTTPS")
+    Rel(frontend, backend, "API calls", "HTTPS")
+    Rel(backend, db, "Reads/Writes", "SQL/NoSQL")
+    Rel(backend, cache, "Caches", "TCP")
+    Rel(backend, mq, "Publishes/Subscribes", "AMQP/Kafka")

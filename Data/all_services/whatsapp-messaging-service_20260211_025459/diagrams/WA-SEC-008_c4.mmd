@@ -1,0 +1,11 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "C4 Context Diagram for IP-Adresse schuetzen", "version": "1.0" } }%%
+C4Context
+    title System Context for IP-Adresse schuetzen
+    Person(user, "User", "A user making calls that need IP address protection.")
+    System(ipProtectionSystem, "IP-Adresse schuetzen", "A system that obscures IP addresses during calls.")
+    System_Ext(callService, "Call Service", "External service that handles the calls.")
+    
+    Rel(user, ipProtectionSystem, "Uses")
+    Rel(ipProtectionSystem, callService, "Sends obscured IP address to")
+    Rel(callService, user, "Delivers call")

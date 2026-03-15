@@ -1,0 +1,18 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Multi-Device Support System Architecture
+
+    Person(user, "User", "A user who accesses the system from multiple devices.")
+    
+    System(multiDeviceSystem, "Multi-Device Support System", "Allows simultaneous usage on multiple devices.")
+
+    System_Ext(device1, "Device 1", "First device used by the user.")
+    System_Ext(device2, "Device 2", "Second device used by the user.")
+    System_Ext(device3, "Device 3", "Third device used by the user.")
+
+    Rel(user, device1, "Uses")
+    Rel(user, device2, "Uses")
+    Rel(user, device3, "Uses")
+    Rel(device1, multiDeviceSystem, "Connects to")
+    Rel(device2, multiDeviceSystem, "Connects to")
+    Rel(device3, multiDeviceSystem, "Connects to")

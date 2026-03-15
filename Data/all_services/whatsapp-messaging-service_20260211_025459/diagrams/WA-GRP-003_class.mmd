@@ -1,0 +1,24 @@
+classDiagram
+    class Gruppeneinstellungen {
+        +String gruppenName
+        +String beschreibung
+        +List<Mitglied> mitglieder
+        +List<Einstellung> einstellungen
+        +void addMitglied(Mitglied mitglied)
+        +void removeMitglied(Mitglied mitglied)
+        +void updateEinstellung(Einstellung einstellung)
+    }
+
+    class Mitglied {
+        +String name
+        +String email
+        +String rolle
+    }
+
+    class Einstellung {
+        +String einstellungsName
+        +String wert
+    }
+
+    Gruppeneinstellungen "1" --> "*" Mitglied : enthält
+    Gruppeneinstellungen "1" --> "*" Einstellung : hat

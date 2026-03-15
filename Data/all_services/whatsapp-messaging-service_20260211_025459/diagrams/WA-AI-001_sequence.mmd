@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant MetaAI as Meta AI Assistant
+    participant System as Integration System
+
+    User->>MetaAI: Request assistance
+    MetaAI->>System: Send user query
+    System-->>MetaAI: Processed response
+    MetaAI-->>User: Provide response
+    User->>MetaAI: Follow-up question
+    MetaAI->>System: Send follow-up query
+    System-->>MetaAI: Processed follow-up response
+    MetaAI-->>User: Provide follow-up response

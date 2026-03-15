@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[User] -->|Uses| B[Dark Mode Feature]
+    B -->|Interacts with| C[User Interface]
+    B -->|Requests| D[Theme Service]
+    D -->|Provides| E[Dark Theme]
+    E -->|Applies| C

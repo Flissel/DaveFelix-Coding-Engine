@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+    A[User] -->|Makes a call| B(System: IP-Adresse schuetzen)
+    B -->|Hides IP Address| C[Telecommunication Network]
+    B -->|Logs anonymized data| D[Database]
+    A -->|Receives call| C
+    C -->|Routes call| B

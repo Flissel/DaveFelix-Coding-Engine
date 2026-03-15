@@ -1,0 +1,7 @@
+flowchart TD
+    A[Start] --> B{Bildbearbeitung notwendig?}
+    B -- Ja --> C[Grundlegende Bildbearbeitung durchführen]
+    C --> D[Bild speichern]
+    D --> E[Bild senden]
+    B -- Nein --> E
+    E --> F[Ende]

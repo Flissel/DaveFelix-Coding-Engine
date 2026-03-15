@@ -1,0 +1,185 @@
+{
+  "route": "/chats/:id",
+  "screen_name": "Chat-Detail",
+  "description": "",
+  "user_stories": [
+    "US-020",
+    "US-078",
+    "US-087",
+    "US-092",
+    "US-094",
+    "US-095",
+    "US-121"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "variant": "default",
+        "title": "Chat Name",
+        "showBackButton": true,
+        "showMenuButton": true
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "circle",
+        "size": "small"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-007",
+      "component_name": "MessageBubble",
+      "props": {
+        "variant": "sent"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-007",
+      "component_name": "MessageBubble",
+      "props": {
+        "variant": "received"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-007",
+      "component_name": "MessageBubble",
+      "props": {
+        "variant": "system"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "placeholder": "Nachricht eingeben...",
+        "multiline": true
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "icon": "send"
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-010",
+      "component_name": "ModalDialog",
+      "props": {
+        "variant": "default",
+        "title": "Chat-Optionen"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "Chat sperren"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Chat archivieren"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Chat anpinnen"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Chat exportieren"
+      },
+      "position": "modal",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, full height, header fixed top, main scrollable, footer fixed bottom",
+  "data_sources": [],
+  "state_shape": {
+    "chatId": "string",
+    "messages": "array",
+    "currentMessage": "string",
+    "isTyping": "boolean",
+    "chatSettings": "object",
+    "showOptionsModal": "boolean",
+    "isLocked": "boolean",
+    "isPinned": "boolean",
+    "isArchived": "boolean"
+  }
+}

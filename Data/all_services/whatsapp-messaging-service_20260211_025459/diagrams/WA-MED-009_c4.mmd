@@ -1,0 +1,9 @@
+%%{ init: { "theme": "default" } }%%
+%%{ C4Context: { "title": "Galerie-Zugriff System Architecture", "legend": true } }%%
+C4Context
+    Person(p1, "User", "A user who accesses the device gallery")
+    System(system1, "Galerie-Zugriff", "A system that provides access to the device gallery")
+    System_Ext(ext1, "Device Gallery", "A repository of devices")
+
+    Rel(p1, system1, "Uses")
+    Rel(system1, ext1, "Accesses")

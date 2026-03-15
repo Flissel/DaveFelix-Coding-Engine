@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Contact as Kontakt
+
+    User->>System: Anfrage zum Teilen von Kontaktdaten
+    System->>Contact: Kontaktdaten abrufen
+    Contact-->>System: Kontaktdaten bereitstellen
+    System-->>User: Kontaktdaten erfolgreich geteilt

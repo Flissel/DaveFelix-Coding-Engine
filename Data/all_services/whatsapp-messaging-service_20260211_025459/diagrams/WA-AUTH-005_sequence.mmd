@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant AuthServer as Authentifizierungsserver
+
+    User->>System: Anfrage zur passwortlosen Anmeldung
+    System->>User: Fordert Passkey an
+    User->>System: Sendet Passkey
+    System->>AuthServer: Überprüft Passkey
+    AuthServer-->>System: Bestätigt Passkey
+    System-->>User: Anmeldung erfolgreich

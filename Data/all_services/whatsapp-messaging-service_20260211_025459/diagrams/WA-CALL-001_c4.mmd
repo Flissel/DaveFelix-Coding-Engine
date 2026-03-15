@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Initiates call| B(Sprachanruf System)
+    B -->|Encrypts call| C[Encryption Service]
+    B -->|Handles call| D[Call Management Service]
+    B -->|Stores metadata| E[Database]
+    
+    A -->|Receives call| B
+    C -->|Decrypts call| A
+    D -->|Manages call state| B
+    E -->|Provides call logs| B

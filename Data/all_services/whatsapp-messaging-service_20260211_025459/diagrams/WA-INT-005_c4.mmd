@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ config : { "themeVariables": { "C4ContextBackground": "#ffffff" } } }%%
+C4Context
+    title System Context Diagram for Desktop-App
+
+    Person(user, "User", "A user of the desktop application.")
+    System(desktopApp, "Desktop Application", "A native desktop application that provides various functionalities.")
+
+    Rel(user, desktopApp, "Uses")

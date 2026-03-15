@@ -1,0 +1,1485 @@
+{
+  "project_name": "Project Tasks",
+  "features": {
+    "FEAT-001": [
+      {
+        "id": "TASK-001",
+        "title": "Telefonnummer-Registrierung Backend",
+        "description": "Implementierung der Backend-Endpoints für Registrierung per Telefonnummer inkl. SMS-OTP Versand, Validierung und Benutzeranlage.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "authentication",
+          "api"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Endpunkte für Registrierung und OTP-Verifikation sind implementiert",
+          "SMS-OTP wird sicher generiert, gesendet und validiert",
+          "Benutzer wird nach erfolgreicher Verifikation angelegt"
+        ]
+      },
+      {
+        "id": "TASK-002",
+        "title": "Telefonnummer-Registrierung Frontend",
+        "description": "Erstellung der UI-Flows für Telefonnummer-Registrierung inkl. Eingabe, OTP-Bestätigung und Fehlerhandling.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "ui"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Registrierungs-UI ermöglicht Eingabe der Telefonnummer",
+          "OTP-Eingabe und Verifikation sind integriert",
+          "Fehlerfälle werden nutzerfreundlich dargestellt"
+        ]
+      },
+      {
+        "id": "TASK-003",
+        "title": "Zwei-Faktor-Authentifizierung",
+        "description": "Implementierung von 2FA mit optionaler Aktivierung, Verifikation bei Login und Fallback-Mechanismen.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "authentication"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA kann aktiviert/deaktiviert werden",
+          "Login erfordert 2FA-Verifikation, wenn aktiviert",
+          "Fallback-Mechanismus (z.B. Backup-Codes) vorhanden"
+        ]
+      },
+      {
+        "id": "TASK-004",
+        "title": "Biometrische Entsperrung",
+        "description": "Integration der biometrischen Authentifizierung (z.B. FaceID/TouchID) in den App-Login.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "security"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung kann im Profil aktiviert werden",
+          "Login per biometrischer Authentifizierung funktioniert",
+          "Fallback auf PIN/Passwort bei Fehler"
+        ]
+      },
+      {
+        "id": "TASK-005",
+        "title": "Multi-Device Support & Passkey-Unterstützung",
+        "description": "Implementierung von Multi-Device Login-Handling und Passkey-Unterstützung für sichere Authentifizierung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001",
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "authentication"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Login auf mehreren Geräten wird korrekt verwaltet",
+          "Passkey-Authentifizierung ist möglich",
+          "Device-Management berücksichtigt Sicherheitsvorgaben"
+        ]
+      },
+      {
+        "id": "TASK-006",
+        "title": "Security & Auth Testing",
+        "description": "Durchführung von Tests für Registrierung, 2FA, biometrische Entsperrung und Multi-Device Login.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "security",
+          "testing"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Registrierungs- und Login-Flows sind getestet",
+          "2FA und biometrische Entsperrung werden verifiziert",
+          "Multi-Device Login funktioniert ohne Sicherheitslücken"
+        ]
+      },
+      {
+        "id": "TASK-007",
+        "title": "Dokumentation Authentifizierung",
+        "description": "Erstellung von Entwickler- und Nutzer-Dokumentation für Registrierung, 2FA, biometrische Entsperrung und Passkeys.",
+        "task_type": "documentation",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 6,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-001",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "documentation",
+          "security"
+        ],
+        "suggested_assignee_role": "Technical Writer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Dokumentation erklärt alle Auth-Features verständlich",
+          "API-Details und UI-Flows sind beschrieben",
+          "Sicherheitsaspekte sind dokumentiert"
+        ]
+      }
+    ],
+    "FEAT-002": [
+      {
+        "id": "TASK-008",
+        "title": "Auth-Flows UX/UI definieren",
+        "description": "Erstelle UX-Flows und UI-Mockups für Telefon-Registrierung, 2FA, biometrische Entsperrung, Passkey-Login und Multi-Device-Management (Geräteliste/Abmelden).",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "ui",
+          "mobile-design"
+        ],
+        "suggested_assignee_role": "UX/UI Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Alle Auth-Flows sind als User-Journey dokumentiert",
+          "Mockups für alle relevanten Screens liegen vor",
+          "Design berücksichtigt Barrierefreiheit und Fehlermeldungen"
+        ]
+      },
+      {
+        "id": "TASK-009",
+        "title": "Backend: Telefon-Registrierung & OTP",
+        "description": "Implementiere API-Endpunkte für Telefon-Registrierung inkl. OTP-Versand/Verifikation sowie Sicherheits-Rate-Limits und Audit-Logging.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "authentication",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Endpunkte für Registrierung, OTP-Anforderung und OTP-Verifizierung sind verfügbar",
+          "Rate-Limits und Logging sind implementiert",
+          "Unit-Tests für OTP-Validierung bestehen"
+        ]
+      },
+      {
+        "id": "TASK-010",
+        "title": "Frontend: Telefon-Registrierung UI",
+        "description": "Implementiere die UI für Telefonnummer-Registrierung inkl. Eingabevalidierung, OTP-Eingabe, Fehlerzustände und Erfolgsmeldung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-001",
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "typescript"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Telefonnummer- und OTP-Screens sind implementiert",
+          "Eingaben werden validiert und Fehler angezeigt",
+          "Integration mit Backend-APIs funktioniert"
+        ]
+      },
+      {
+        "id": "TASK-011",
+        "title": "Backend: 2FA & Multi-Device Sessions",
+        "description": "Implementiere 2FA-Mechanismus (z.B. OTP/PUSH) nach Login sowie Session-/Geräteverwaltung für Multi-Device Support inkl. Geräteabmeldung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "authentication",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA-Challenge kann erstellt und verifiziert werden",
+          "Geräteliste mit aktiven Sessions wird bereitgestellt",
+          "Geräteabmeldung invalidiert Session korrekt"
+        ]
+      },
+      {
+        "id": "TASK-012",
+        "title": "Frontend: 2FA & Geräteverwaltung",
+        "description": "Implementiere UI für 2FA-Verifizierung sowie Device-Management (Liste aktiver Geräte, Abmelden).",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-001",
+          "TASK-004"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "typescript"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA-Verifizierungsscreen ist integriert",
+          "Geräteliste wird angezeigt und Abmelden funktioniert",
+          "Fehlerfälle sind abgedeckt"
+        ]
+      },
+      {
+        "id": "TASK-013",
+        "title": "Biometrische Entsperrung & Passkey-Unterstützung",
+        "description": "Implementiere biometrische Entsperrung auf Client-Seite (Face/Touch) und Passkey-Registrierung/Login mit fallback auf 2FA.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001",
+          "TASK-004"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile-security",
+          "authentication"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung funktioniert auf unterstützten Geräten",
+          "Passkey-Registrierung und -Login sind integriert",
+          "Fallback auf 2FA bei Fehlern ist implementiert"
+        ]
+      },
+      {
+        "id": "TASK-014",
+        "title": "End-to-End Tests für Authentifizierung",
+        "description": "Erstelle E2E-Tests für Telefon-Registrierung, 2FA, biometrische Entsperrung, Passkey und Multi-Device-Abmeldung.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-003",
+          "TASK-005",
+          "TASK-006"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "automation-testing"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Automatisierte Tests decken alle Auth-Flows ab",
+          "Tests laufen stabil in CI",
+          "Fehlerfälle sind geprüft"
+        ]
+      }
+    ],
+    "FEAT-003": [
+      {
+        "id": "TASK-015",
+        "title": "Auth-Flow Design & API Spezifikation",
+        "description": "Erstelle ein technisches Design für Telefon-Registrierung, 2FA, Biometrie, Multi-Device und Passkey-Unterstützung. Definiere API-Endpunkte, Datenmodelle und Sicherheitsanforderungen.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 6,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "system-design",
+          "security"
+        ],
+        "suggested_assignee_role": "Solution Architect",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Spezifikation dokumentiert und reviewed",
+          "Auth-Flow Diagramme vorhanden",
+          "Sicherheitsanforderungen und Datenmodelle definiert"
+        ]
+      },
+      {
+        "id": "TASK-016",
+        "title": "DevOps Setup SMS/OTP Provider",
+        "description": "Konfiguriere SMS/OTP Provider (z.B. Twilio) inkl. Secrets Management, Umgebungsvariablen und Monitoring für OTP-Zustellung.",
+        "task_type": "devops",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "simple",
+        "story_points": 2,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "devops",
+          "cloud",
+          "security"
+        ],
+        "suggested_assignee_role": "DevOps Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "SMS/OTP Provider ist in allen Umgebungen konfiguriert",
+          "Secrets sicher gespeichert",
+          "Monitoring/Alerts für OTP-Fehler eingerichtet"
+        ]
+      },
+      {
+        "id": "TASK-017",
+        "title": "Backend: Telefon-Registrierung & 2FA APIs",
+        "description": "Implementiere Backend-Endpunkte für Telefon-Registrierung, OTP-Generierung/Validierung und 2FA-Statusverwaltung inkl. Multi-Device Support.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001",
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "nodejs"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Endpunkte für Registrierung und 2FA verfügbar",
+          "OTP-Validierung inkl. Expiry und Rate Limiting implementiert",
+          "Multi-Device Session/Token Handling umgesetzt"
+        ]
+      },
+      {
+        "id": "TASK-018",
+        "title": "Backend: Biometrie & Passkey Unterstützung",
+        "description": "Implementiere Passkey/biometrische Authentifizierung (WebAuthn/FIDO2) inkl. Registrierung und Verifikation.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "webauthn"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Passkey Registrierung und Verifikation funktionieren",
+          "Biometrische Entsperrung API integriert",
+          "Sicherheitsprüfungen dokumentiert"
+        ]
+      },
+      {
+        "id": "TASK-019",
+        "title": "Frontend: Telefon-Registrierung & 2FA UI",
+        "description": "Implementiere UI für Telefonnummer-Registrierung, OTP-Eingabe und 2FA-Aktivierung inkl. Fehlerhandling und UX-Flow.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "typescript",
+          "ux"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Registrierungs- und OTP-Flow funktional",
+          "Fehler- und Retry-Handling vorhanden",
+          "UI erfüllt Designvorgaben"
+        ]
+      },
+      {
+        "id": "TASK-020",
+        "title": "Frontend: Biometrie & Passkey Integration",
+        "description": "Integriere Passkey- und Biometrie-Funktionalität im Client inkl. Fallback-Logik und Geräteprüfung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-004"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "webauthn",
+          "typescript"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Passkey-Registrierung und Login funktionieren",
+          "Biometrische Entsperrung verfügbar (wo unterstützt)",
+          "Fallback auf OTP bei Nichtverfügbarkeit"
+        ]
+      },
+      {
+        "id": "TASK-021",
+        "title": "Integrationstests & Dokumentation",
+        "description": "Erstelle Integrationstests für Auth-Flows (Telefon, 2FA, Biometrie, Passkey) und aktualisiere die Entwicklerdokumentation.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-003",
+          "TASK-004",
+          "TASK-005",
+          "TASK-006"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "testing",
+          "automation",
+          "documentation"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Automatisierte Tests decken alle Auth-Flows ab",
+          "Tests laufen erfolgreich in CI",
+          "Dokumentation aktualisiert und geprüft"
+        ]
+      }
+    ],
+    "FEAT-004": [
+      {
+        "id": "TASK-022",
+        "title": "Auth-Flow Design & Datenmodell",
+        "description": "Entwurf des Authentifizierungs-Datenmodells inkl. Telefonnummer-Registrierung, 2FA-Status, Biometrie-Flags, Multi-Device und Passkey-Entitäten.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 6,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "architecture",
+          "security"
+        ],
+        "suggested_assignee_role": "Solution Architect",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Datenmodell für alle Requirements dokumentiert",
+          "Schnittstellen zwischen Client und Backend definiert"
+        ]
+      },
+      {
+        "id": "TASK-023",
+        "title": "Backend: Telefonnummer-Registrierung implementieren",
+        "description": "API-Endpunkte für Telefonnummer-Registrierung inkl. Verifizierung (OTP) und Persistenz im User-Profil implementieren.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Endpunkte für Registrierung und Verifizierung verfügbar",
+          "Telefonnummer sicher gespeichert und verifiziert markiert"
+        ]
+      },
+      {
+        "id": "TASK-024",
+        "title": "Backend: Zwei-Faktor-Authentifizierung (2FA)",
+        "description": "2FA-Mechanik mit OTP-Generierung, -Validierung und Session-Handling implementieren.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA kann für User aktiviert/deaktiviert werden",
+          "OTP-Validierung schützt Login erfolgreich"
+        ]
+      },
+      {
+        "id": "TASK-025",
+        "title": "Frontend: Biometrische Entsperrung",
+        "description": "Client-seitige Integration der biometrischen Entsperrung (FaceID/TouchID) mit Fallback auf PIN/Passwort.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung aktiviert und getestet",
+          "Fallback-Mechanismus funktioniert"
+        ]
+      },
+      {
+        "id": "TASK-026",
+        "title": "Backend: Multi-Device & Passkey Support",
+        "description": "Unterstützung für mehrere Geräte pro Nutzer sowie Passkey-Registrierung und -Validierung implementieren.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Mehrere Geräte können pro User verwaltet werden",
+          "Passkeys können registriert und validiert werden"
+        ]
+      },
+      {
+        "id": "TASK-027",
+        "title": "Integration & Tests für Auth-Features",
+        "description": "End-to-End Tests für Registrierung, 2FA, Biometrie, Multi-Device und Passkey-Flows erstellen und automatisieren.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "testing",
+          "automation"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Testfälle für alle Auth-Features implementiert",
+          "CI-Pipeline führt Tests erfolgreich aus"
+        ]
+      }
+    ],
+    "FEAT-005": [
+      {
+        "id": "TASK-028",
+        "title": "Auth-Flow und UI/UX für Registrierung & 2FA designen",
+        "description": "Erstelle Wireframes und Interaktionsfluss für Telefonnummer-Registrierung, 2FA-Eingabe, Passkey-Opt-in und Fehlerzustände. Berücksichtige Multi-Device-Hinweise und biometrische Entsperrung im UI.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "ui",
+          "mobile",
+          "web"
+        ],
+        "suggested_assignee_role": "UX/UI Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Wireframes für Registrierung, 2FA und Passkey-Opt-in liegen vor",
+          "Fehler- und Ausnahmezustände sind in den Screens berücksichtigt",
+          "Designs sind mit dem Team abgestimmt und freigegeben"
+        ]
+      },
+      {
+        "id": "TASK-029",
+        "title": "Backend: Telefonnummer-Registrierung & 2FA API implementieren",
+        "description": "Implementiere Endpunkte für Telefonnummer-Registrierung, SMS-OTP Versand/Verifikation, Token-Erstellung und Wiederholungslogik. Inkl. Rate-Limiting und Security-Validierung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "nodejs",
+          "auth"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "API-Endpoints für Registrierung und 2FA sind implementiert",
+          "SMS-OTP Versand und Verifikation funktionieren",
+          "Rate-Limiting und Validierung sind aktiv"
+        ]
+      },
+      {
+        "id": "TASK-030",
+        "title": "Frontend: Registrierung & 2FA UI integrieren",
+        "description": "Implementiere UI für Telefonnummer-Registrierung, OTP-Eingabe und Fehlerbehandlung basierend auf Designs. Anbindung an Backend-APIs.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001",
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "typescript",
+          "react",
+          "auth"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Registrierung und 2FA Screens sind implementiert",
+          "API-Integration funktioniert mit Erfolg- und Fehlerfällen",
+          "Formvalidierung und Loading-States sind vorhanden"
+        ]
+      },
+      {
+        "id": "TASK-031",
+        "title": "Backend: Multi-Device Support & Passkey-Unterstützung",
+        "description": "Implementiere Geräteverwaltung (Device IDs, Session-Tracking) und Passkey-Registrierung/Verifikation (WebAuthn).",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "webauthn"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Geräteverwaltung und Session-Tracking sind implementiert",
+          "Passkey-Registrierung und -Verifikation funktionieren",
+          "API-Endpoints sind dokumentiert und getestet"
+        ]
+      },
+      {
+        "id": "TASK-032",
+        "title": "Frontend: Passkey-Flow integrieren",
+        "description": "Implementiere Passkey-Registrierungs- und Login-Flow im Frontend mit WebAuthn. Inklusive Fallback auf 2FA.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001",
+          "TASK-004"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "webauthn",
+          "typescript"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Passkey-Registrierung und Login sind im UI möglich",
+          "Fallback auf 2FA funktioniert",
+          "Browser-Kompatibilitätsprüfung ist umgesetzt"
+        ]
+      },
+      {
+        "id": "TASK-033",
+        "title": "Mobile: Biometrische Entsperrung integrieren",
+        "description": "Implementiere biometrische Entsperrung (Face ID/Touch ID) im mobilen Client inkl. Secure Storage von Token und Opt-in/Opt-out.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "mobile",
+          "ios",
+          "android",
+          "security"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrischer Login kann aktiviert/deaktiviert werden",
+          "Token werden sicher gespeichert",
+          "Fallback auf manuelle Anmeldung ist vorhanden"
+        ]
+      },
+      {
+        "id": "TASK-034",
+        "title": "End-to-End Tests für User Management",
+        "description": "Erstelle automatisierte Tests für Registrierung, 2FA, Passkey und biometrische Entsperrung inkl. Multi-Device Szenarien.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-005",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-003",
+          "TASK-005",
+          "TASK-006"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "automation",
+          "cypress",
+          "mobile-testing"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "E2E-Testfälle für Registrierung & 2FA sind automatisiert",
+          "Passkey- und Multi-Device Szenarien sind abgedeckt",
+          "Biometrische Entsperrung wird testweise validiert"
+        ]
+      }
+    ],
+    "DATABASE": [
+      {
+        "id": "TASK-035",
+        "title": "Create user model and migration",
+        "description": "Implement database model for user entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-USER",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "user model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-036",
+        "title": "Create user_profile model and migration",
+        "description": "Implement database model for user_profile entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-USER_PROFILE",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "user_profile model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-037",
+        "title": "Create user_device model and migration",
+        "description": "Implement database model for user_device entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-USER_DEVICE",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "user_device model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-038",
+        "title": "Create auth_credential model and migration",
+        "description": "Implement database model for auth_credential entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-AUTH_CREDENTIAL",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "auth_credential model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-039",
+        "title": "Create chat model and migration",
+        "description": "Implement database model for chat entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-CHAT",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "chat model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-040",
+        "title": "Create message model and migration",
+        "description": "Implement database model for message entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-MESSAGE",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "message model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-041",
+        "title": "Create message_media model and migration",
+        "description": "Implement database model for message_media entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-MESSAGE_MEDIA",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "message_media model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-042",
+        "title": "Create message_reaction model and migration",
+        "description": "Implement database model for message_reaction entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-MESSAGE_REACTION",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "message_reaction model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-043",
+        "title": "Create group_chat model and migration",
+        "description": "Implement database model for group_chat entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-GROUP_CHAT",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "group_chat model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-044",
+        "title": "Create group_member model and migration",
+        "description": "Implement database model for group_member entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "ENTITY-GROUP_MEMBER",
+        "parent_api_resource": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "group_member model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      }
+    ],
+    "API": [
+      {
+        "id": "TASK-045",
+        "title": "Implement api API endpoints",
+        "description": "Implement 418 endpoints for api resource including validation, error handling, and documentation.",
+        "task_type": "development",
+        "parent_feature_id": "API",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "parent_entity_id": "",
+        "parent_api_resource": "API-API",
+        "estimated_hours": 8,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "api",
+          "rest"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "All 418 endpoints implemented",
+          "Request/response validation",
+          "OpenAPI documentation updated",
+          "Integration tests written"
+        ]
+      }
+    ]
+  },
+  "total_tasks": 45,
+  "total_hours": 378,
+  "total_story_points": 213,
+  "critical_path": [
+    "TASK-001",
+    "TASK-003",
+    "TASK-005",
+    "TASK-006",
+    "TASK-034"
+  ],
+  "dependency_graph": {
+    "TASK-001": [],
+    "TASK-002": [
+      "TASK-001"
+    ],
+    "TASK-003": [
+      "TASK-001"
+    ],
+    "TASK-004": [
+      "TASK-002"
+    ],
+    "TASK-005": [
+      "TASK-001",
+      "TASK-003"
+    ],
+    "TASK-006": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-007": [
+      "TASK-001",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-008": [],
+    "TASK-009": [],
+    "TASK-010": [
+      "TASK-001",
+      "TASK-002"
+    ],
+    "TASK-011": [
+      "TASK-002"
+    ],
+    "TASK-012": [
+      "TASK-001",
+      "TASK-004"
+    ],
+    "TASK-013": [
+      "TASK-001",
+      "TASK-004"
+    ],
+    "TASK-014": [
+      "TASK-003",
+      "TASK-005",
+      "TASK-006"
+    ],
+    "TASK-015": [],
+    "TASK-016": [
+      "TASK-001"
+    ],
+    "TASK-017": [
+      "TASK-001",
+      "TASK-002"
+    ],
+    "TASK-018": [
+      "TASK-001"
+    ],
+    "TASK-019": [
+      "TASK-003"
+    ],
+    "TASK-020": [
+      "TASK-004"
+    ],
+    "TASK-021": [
+      "TASK-003",
+      "TASK-004",
+      "TASK-005",
+      "TASK-006"
+    ],
+    "TASK-022": [],
+    "TASK-023": [
+      "TASK-001"
+    ],
+    "TASK-024": [
+      "TASK-002"
+    ],
+    "TASK-025": [
+      "TASK-003"
+    ],
+    "TASK-026": [
+      "TASK-001"
+    ],
+    "TASK-027": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-028": [],
+    "TASK-029": [
+      "TASK-001"
+    ],
+    "TASK-030": [
+      "TASK-001",
+      "TASK-002"
+    ],
+    "TASK-031": [
+      "TASK-002"
+    ],
+    "TASK-032": [
+      "TASK-001",
+      "TASK-004"
+    ],
+    "TASK-033": [
+      "TASK-002"
+    ],
+    "TASK-034": [
+      "TASK-003",
+      "TASK-005",
+      "TASK-006"
+    ],
+    "TASK-035": [],
+    "TASK-036": [],
+    "TASK-037": [],
+    "TASK-038": [],
+    "TASK-039": [],
+    "TASK-040": [],
+    "TASK-041": [],
+    "TASK-042": [],
+    "TASK-043": [],
+    "TASK-044": [],
+    "TASK-045": []
+  }
+}

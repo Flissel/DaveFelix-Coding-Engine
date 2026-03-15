@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Erweiterte Business-Profile?}
+    B -- Ja --> C[Profile erstellen]
+    B -- Nein --> D[Standard Profile verwenden]
+    C --> E[Profile anpassen]
+    D --> E
+    E --> F[Profile speichern]
+    F --> G[System aktualisieren]
+    G --> H[Ende]

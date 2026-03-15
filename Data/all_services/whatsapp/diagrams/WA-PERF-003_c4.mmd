@@ -1,0 +1,11 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[Effiziente Synchronisation] as system
+
+    B[Benutzer] as user
+    C[Externe Systeme] as external_systems
+    D[Datenbank] as database
+
+    user -->|send/receive messages| system
+    system -->|synchronize messages| external_systems
+    system -->|store/retrieve data| database

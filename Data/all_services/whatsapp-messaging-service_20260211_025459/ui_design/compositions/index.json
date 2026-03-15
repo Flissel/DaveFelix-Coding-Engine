@@ -1,0 +1,61 @@
+{
+  "route": "/",
+  "screen_name": "Start",
+  "description": "",
+  "user_stories": [
+    "US-111"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "variant": "transparent",
+        "title": "Welcome"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Get Started",
+        "size": "large"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Sign In",
+        "size": "medium"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 20px, gap 16px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa",
+    "GET /api/v1/biometric/credentials"
+  ],
+  "state_shape": {
+    "isLoading": "boolean",
+    "hasExistingAuth": "boolean",
+    "biometricAvailable": "boolean"
+  }
+}

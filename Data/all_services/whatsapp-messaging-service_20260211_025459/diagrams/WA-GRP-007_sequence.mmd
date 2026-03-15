@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Channel as One-Way-Broadcast-Kanaele
+
+    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen
+    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele
+    Channel-->>System: Bestätigung der Initialisierung
+    System-->>User: Bestätigung der Unterstützung erhalten

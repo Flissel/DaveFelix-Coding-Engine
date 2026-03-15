@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as User
+    participant System as Smart Reply System
+    participant Database as Response Database
+
+    User->>System: Request for reply suggestions
+    System->>Database: Fetch relevant response data
+    Database-->>System: Return response data
+    System-->>User: Provide intelligent reply suggestions

@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Encryption as Verschlüsselung
+
+    User->>System: Initiate Voice Call
+    System->>Encryption: Encrypt Call Data
+    Encryption-->>System: Return Encrypted Data
+    System->>User: Establish Encrypted Call
+    User->>System: Send Voice Data
+    System->>Encryption: Encrypt Voice Data
+    Encryption-->>System: Return Encrypted Voice Data
+    System->>User: Transmit Encrypted Voice Data
+    User->>System: End Call
+    System->>Encryption: Terminate Encryption
+    Encryption-->>System: Confirm Termination
+    System->>User: Call Ended

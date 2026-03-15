@@ -1,0 +1,6 @@
+flowchart TD
+    A[Nachricht empfangen] --> B{Nachricht validieren}
+    B -->|Gültig| C[Nachricht an Empfänger weiterleiten]
+    B -->|Ungültig| D[Fehler melden]
+    C --> E[Bestätigung senden]
+    D --> F[Nachricht zurückweisen]

@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Dokumente auswählen}
+    B -->|Ja| C[Dokumente vorbereiten]
+    B -->|Nein| D[Prozess beenden]
+    C --> E{Dokumente validieren}
+    E -->|Validiert| F[Dokumente senden]
+    E -->|Nicht validiert| G[Fehler anzeigen]
+    F --> H[Bestätigung erhalten]
+    H --> I[Prozess beenden]
+    G --> B

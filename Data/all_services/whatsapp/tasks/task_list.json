@@ -1,0 +1,1176 @@
+{
+  "project_name": "Project Tasks",
+  "features": {
+    "FEAT-001": [
+      {
+        "id": "TASK-001",
+        "title": "Auth-Flow UX für Registrierung & 2FA entwerfen",
+        "description": "Erstelle UX/UI-Designs für Telefonnummer-Registrierung, OTP-Verifizierung und 2FA-Flow inkl. Fehlerzustände, Resend-Mechanik und Onboarding-Screens.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "ui",
+          "mobile-design"
+        ],
+        "suggested_assignee_role": "Product Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Wireframes und High-Fidelity Screens für Registrierung & 2FA vorhanden",
+          "Fehler- und Erfolgszustände dokumentiert",
+          "Designs sind im Design-System abgelegt"
+        ]
+      },
+      {
+        "id": "TASK-002",
+        "title": "Telefonnummer-Registrierung implementieren",
+        "description": "Implementierung der Registrierung per Telefonnummer inkl. Eingabevalidierung, Versand von OTP und Verifikation gegen Backend-API.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "api-integration"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "User kann Telefonnummer eingeben und OTP anfordern",
+          "OTP-Verifikation erfolgreich mit Backend",
+          "Validierungs- und Fehlermeldungen funktionieren"
+        ]
+      },
+      {
+        "id": "TASK-003",
+        "title": "Zwei-Faktor-Authentifizierung (2FA) hinzufügen",
+        "description": "Implementiere 2FA-Flow für Login nach Registrierung inkl. OTP-Eingabe, Resend-Option und Sperrlogik bei Fehlversuchen.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "mobile",
+          "security"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA wird nach Login ausgelöst",
+          "Resend-Mechanik mit Timer vorhanden",
+          "Fehlversuche werden limitiert und angezeigt"
+        ]
+      },
+      {
+        "id": "TASK-004",
+        "title": "Biometrische Entsperrung integrieren",
+        "description": "Integriere biometrisches Entsperren (FaceID/TouchID) mit Fallback auf PIN/Passwort. Einstellungen zur Aktivierung/Deaktivierung bereitstellen.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "mobile",
+          "security"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung funktioniert auf unterstützten Geräten",
+          "Fallback-Mechanismus vorhanden",
+          "Einstellung zur Aktivierung/Deaktivierung verfügbar"
+        ]
+      },
+      {
+        "id": "TASK-005",
+        "title": "Multi-Device & Passkey Unterstützung hinzufügen",
+        "description": "Implementiere Multi-Device Sessions und Passkey-Login (wo unterstützt). Backend-Token Handling und Device-Management integrieren.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "auth"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Mehrere Geräte können parallel authentifiziert werden",
+          "Passkey-Login funktioniert auf unterstützten Plattformen",
+          "Device-Session-Übersicht verfügbar"
+        ]
+      },
+      {
+        "id": "TASK-006",
+        "title": "Auth-Tests & Dokumentation",
+        "description": "Erstelle Testfälle für Registrierung, 2FA, Biometrie und Passkeys. Aktualisiere Entwicklerdokumentation für Auth-APIs und Flows.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-001",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "documentation",
+          "auth"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Testfälle für alle Auth-Flows vorhanden und ausgeführt",
+          "Dokumentation für Auth-APIs aktualisiert",
+          "Testreport erstellt und abgelegt"
+        ]
+      }
+    ],
+    "FEAT-002": [
+      {
+        "id": "TASK-007",
+        "title": "Auth-Flow UX/UI konzipieren",
+        "description": "Erstelle die UX/UI für Telefonnummer-Registrierung, 2FA, biometrische Entsperrung sowie Multi-Device/Passkey-Flows inkl. Zustandsdiagramm.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "ui",
+          "wireframing"
+        ],
+        "suggested_assignee_role": "UX/UI Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Wireframes für alle Auth-Screens vorhanden",
+          "Flow-Diagramm für Registrierung, 2FA, Biometrie und Passkey dokumentiert"
+        ]
+      },
+      {
+        "id": "TASK-008",
+        "title": "Backend: Telefonnummer-Registrierung & SMS-OTP",
+        "description": "Implementiere die Registrierung via Telefonnummer inkl. SMS-OTP Versand, Rate-Limiting und Verifizierung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "nodejs"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "OTP wird per SMS versendet und verifiziert",
+          "Rate-Limit und Fehlversuche werden serverseitig geprüft"
+        ]
+      },
+      {
+        "id": "TASK-009",
+        "title": "Backend: 2FA, Multi-Device & Passkey Support",
+        "description": "Implementiere 2FA-Mechanik (z.B. TOTP), Geräte-Registrierung/Entzug sowie Passkey-Registrierung und Validierung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "webauthn"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA kann pro Nutzer aktiviert/deaktiviert werden",
+          "Mehrere Geräte werden verwaltet und entzogen",
+          "Passkey-Registrierung und Login sind validiert"
+        ]
+      },
+      {
+        "id": "TASK-010",
+        "title": "Frontend: Auth-Screens für Registrierung & 2FA",
+        "description": "Erstelle UI und Logik für Telefonnummer-Registrierung, OTP-Eingabe, 2FA-Setup/Login sowie Fehlerzustände.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001",
+          "TASK-002",
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "typescript",
+          "react"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Registrierung und 2FA-Flows sind vollständig bedienbar",
+          "Fehler- und Ladezustände werden korrekt angezeigt"
+        ]
+      },
+      {
+        "id": "TASK-011",
+        "title": "Frontend: Biometrie & Passkey Integration",
+        "description": "Integriere biometrische Entsperrung (Face/Touch ID) sowie Passkey-Login in der Client-App.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001",
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "mobile",
+          "biometrics",
+          "webauthn"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung kann aktiviert und genutzt werden",
+          "Passkey-Login funktioniert auf unterstützten Geräten"
+        ]
+      },
+      {
+        "id": "TASK-012",
+        "title": "E2E-Tests für Auth-Flows",
+        "description": "Erstelle automatisierte Tests für Registrierung, 2FA, Biometrie, Multi-Device und Passkey-Login.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "automation",
+          "e2e-testing"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Alle kritischen Auth-Flows sind automatisiert abgedeckt",
+          "Tests laufen stabil in der CI-Pipeline"
+        ]
+      },
+      {
+        "id": "TASK-013",
+        "title": "Dokumentation: Authentifizierungs-Setup",
+        "description": "Dokumentiere Setup, Konfiguration und Sicherheitsaspekte (2FA, Passkeys, Multi-Device, Biometrie) für Entwickler und Support.",
+        "task_type": "documentation",
+        "parent_feature_id": "FEAT-002",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "simple",
+        "story_points": 2,
+        "depends_on": [
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "technical-writing",
+          "security"
+        ],
+        "suggested_assignee_role": "Technical Writer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Setup-Anleitung ist vollständig und nachvollziehbar",
+          "Sicherheits- und Betriebsanforderungen sind dokumentiert"
+        ]
+      }
+    ],
+    "FEAT-003": [
+      {
+        "id": "TASK-014",
+        "title": "Auth-Flow Architektur & UI-Flows definieren",
+        "description": "Erarbeiten der integrierten Authentifizierungs- und Registrierungsflüsse (Telefonnummer, 2FA, Biometrie, Passkey, Multi-Device). Erstellung von User Flow Diagrammen und UI-Zustandsmodellen für Integration.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "system-design"
+        ],
+        "suggested_assignee_role": "UX Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Vollständige User Flow Diagramme liegen vor",
+          "UI-Zustandsmodell deckt alle Anforderungen ab",
+          "Freigabe durch Product Owner dokumentiert"
+        ]
+      },
+      {
+        "id": "TASK-015",
+        "title": "Telefonnummer-Registrierung integrieren",
+        "description": "Implementierung der Telefonnummer-Registrierung inkl. Validierung, OTP-Anforderung und Backend-Integration gemäß WA-AUTH-001.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "backend",
+          "api-integration"
+        ],
+        "suggested_assignee_role": "Fullstack Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Telefonnummern-Input validiert Formate",
+          "OTP-Anforderung erfolgreich an Backend",
+          "Registrierung abgeschlossen und Nutzerprofil erstellt"
+        ]
+      },
+      {
+        "id": "TASK-016",
+        "title": "Zwei-Faktor-Authentifizierung integrieren",
+        "description": "Implementierung des 2FA-Mechanismus inklusive OTP-Eingabe, Fehlerbehandlung und Session-Hardening gemäß WA-AUTH-002.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "backend",
+          "security"
+        ],
+        "suggested_assignee_role": "Fullstack Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "OTP wird abgefragt und validiert",
+          "Fehlerfälle (falscher Code, Timeout) sind abgedeckt",
+          "Session erst nach erfolgreicher 2FA aktiviert"
+        ]
+      },
+      {
+        "id": "TASK-017",
+        "title": "Biometrische Entsperrung & Passkey Support implementieren",
+        "description": "Implementierung der Biometrie-Integration (z.B. FaceID/TouchID) sowie Passkey-Unterstützung für Login gemäß WA-AUTH-003 und WA-AUTH-005.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "mobile",
+          "security",
+          "platform-auth"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Anmeldung aktiviert und getestet",
+          "Passkey-Login funktioniert auf unterstützten Plattformen",
+          "Fallback auf PIN/OTP implementiert"
+        ]
+      },
+      {
+        "id": "TASK-018",
+        "title": "Multi-Device Session Handling integrieren",
+        "description": "Implementierung der Multi-Device-Unterstützung inkl. Geräteverwaltung, Session-Rotation und Abmeldung je Gerät gemäß WA-AUTH-004.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-003"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "security",
+          "api-design"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Mehrere Geräte können parallel angemeldet sein",
+          "Geräteübersicht inkl. Abmeldung vorhanden",
+          "Sessions sind sicher rotiert und invalidierbar"
+        ]
+      },
+      {
+        "id": "TASK-019",
+        "title": "Integrationstests für Auth-Flows erstellen",
+        "description": "Erstellung automatisierter Tests für Telefonnummer-Registrierung, 2FA, Biometrie, Passkey und Multi-Device-Szenarien.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "automation",
+          "testing"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Testabdeckung für alle Auth-Flows vorhanden",
+          "Tests laufen stabil in CI",
+          "Fehlerfälle sind inkludiert"
+        ]
+      },
+      {
+        "id": "TASK-020",
+        "title": "Technische Dokumentation & Betriebsanleitung",
+        "description": "Dokumentation der Authentifizierungsflüsse, API-Endpunkte, Konfigurationen und Hinweise für Betrieb/Support.",
+        "task_type": "documentation",
+        "parent_feature_id": "FEAT-003",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 6,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "technical-writing",
+          "security"
+        ],
+        "suggested_assignee_role": "Technical Writer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Dokumentation ist vollständig und versioniert",
+          "Betriebshinweise (Rollout, Support) enthalten",
+          "Review durch Engineering abgeschlossen"
+        ]
+      }
+    ],
+    "FEAT-004": [
+      {
+        "id": "TASK-021",
+        "title": "Auth-Flow Design & Spezifikation",
+        "description": "Erstelle detaillierte Spezifikation und Ablaufdiagramme für Telefonnummer-Registrierung, 2FA, biometrische Entsperrung, Multi-Device Support und Passkeys.",
+        "task_type": "design",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "medium",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "ux",
+          "security",
+          "authentication"
+        ],
+        "suggested_assignee_role": "UX Designer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Ablaufdiagramme für alle Auth-Flows vorhanden",
+          "Spezifikation deckt Requirements WA-AUTH-001 bis WA-AUTH-005 ab",
+          "Stakeholder-Review abgeschlossen"
+        ]
+      },
+      {
+        "id": "TASK-022",
+        "title": "Backend: Telefonnummer-Registrierung & OTP",
+        "description": "Implementiere Server-Endpunkte für Telefonnummer-Registrierung und OTP-Versand/Validierung inkl. Rate-Limiting und Logging.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "nodejs",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Telefonnummer-Registrierung speichert validierte Nummer",
+          "OTP kann versendet und geprüft werden",
+          "Rate-Limiting verhindert Missbrauch"
+        ]
+      },
+      {
+        "id": "TASK-023",
+        "title": "Backend: 2FA, Multi-Device & Passkeys",
+        "description": "Erweitere Auth-Logik um 2FA-Status, Geräteverwaltung (multi-device) und Passkey-Registrierung/Verifizierung.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 14,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "webauthn",
+          "security"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "2FA kann aktiviert/deaktiviert werden",
+          "Mehrere Geräte pro Benutzer verwaltbar",
+          "Passkey-Registrierung und Login funktionieren"
+        ]
+      },
+      {
+        "id": "TASK-024",
+        "title": "Frontend: Auth UI (Telefonnummer, 2FA, Passkey)",
+        "description": "Implementiere UI-Komponenten für Telefonnummer-Registrierung, OTP-Eingabe, 2FA-Aktivierung und Passkey-Login.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-001",
+          "TASK-002"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "frontend",
+          "typescript",
+          "react"
+        ],
+        "suggested_assignee_role": "Frontend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "UI deckt alle Auth-Flows ab",
+          "Fehler- und Erfolgsmeldungen werden angezeigt",
+          "UI ist responsiv und barrierearm"
+        ]
+      },
+      {
+        "id": "TASK-025",
+        "title": "Mobile: Biometrische Entsperrung",
+        "description": "Integriere biometrische Entsperrung (FaceID/TouchID) in der mobilen App inkl. Fallback-Logik.",
+        "task_type": "development",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 10,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [
+          "TASK-001"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "mobile",
+          "ios",
+          "android",
+          "security"
+        ],
+        "suggested_assignee_role": "Mobile Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Biometrische Entsperrung aktiviert/deaktiviert über Einstellungen",
+          "Fallback auf PIN/Passwort bei Fehler",
+          "Erfolgreiche Entsperrung triggert Login-Session"
+        ]
+      },
+      {
+        "id": "TASK-026",
+        "title": "Tests: Auth-Flows & Sicherheit",
+        "description": "Erstelle automatisierte Tests für Telefonnummer-Registrierung, OTP, 2FA, Passkeys und biometrische Entsperrung inkl. Security-Checks.",
+        "task_type": "testing",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 12,
+        "complexity": "complex",
+        "story_points": 8,
+        "depends_on": [
+          "TASK-002",
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "qa",
+          "automation",
+          "security"
+        ],
+        "suggested_assignee_role": "QA Engineer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Mindestens 80% Testabdeckung für Auth-Endpunkte",
+          "UI-Tests für OTP und 2FA vorhanden",
+          "Security-Tests (Rate-Limit, Replay-Attacke) dokumentiert"
+        ]
+      },
+      {
+        "id": "TASK-027",
+        "title": "Dokumentation & Betriebsanleitung",
+        "description": "Erstelle Entwickler- und Betriebsdokumentation für Auth-Feature inkl. Konfiguration, Passkey-Setup und Multi-Device Verwaltung.",
+        "task_type": "documentation",
+        "parent_feature_id": "FEAT-004",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 6,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [
+          "TASK-003",
+          "TASK-004",
+          "TASK-005"
+        ],
+        "blocks": [],
+        "required_skills": [
+          "documentation",
+          "security"
+        ],
+        "suggested_assignee_role": "Technical Writer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Konfigurationsschritte klar beschrieben",
+          "API-Endpoints dokumentiert",
+          "Runbook für Support vorhanden"
+        ]
+      }
+    ],
+    "DATABASE": [
+      {
+        "id": "TASK-028",
+        "title": "Create User model and migration",
+        "description": "Implement database model for User entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "User model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-029",
+        "title": "Create PhoneVerification model and migration",
+        "description": "Implement database model for PhoneVerification entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "PhoneVerification model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-030",
+        "title": "Create AuthMethod model and migration",
+        "description": "Implement database model for AuthMethod entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "AuthMethod model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-031",
+        "title": "Create Device model and migration",
+        "description": "Implement database model for Device entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Device model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-032",
+        "title": "Create Profile model and migration",
+        "description": "Implement database model for Profile entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Profile model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-033",
+        "title": "Create Message model and migration",
+        "description": "Implement database model for Message entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Message model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-034",
+        "title": "Create Reaction model and migration",
+        "description": "Implement database model for Reaction entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Reaction model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-035",
+        "title": "Create Chat model and migration",
+        "description": "Implement database model for Chat entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Chat model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-036",
+        "title": "Create Media model and migration",
+        "description": "Implement database model for Media entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Media model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      },
+      {
+        "id": "TASK-037",
+        "title": "Create Forwarding model and migration",
+        "description": "Implement database model for Forwarding entity with all attributes and relationships. Create migration script.",
+        "task_type": "development",
+        "parent_feature_id": "DATABASE",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 4,
+        "complexity": "medium",
+        "story_points": 3,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "database",
+          "orm"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "Forwarding model created with all attributes",
+          "Migration script works forward and backward",
+          "Unit tests for model validation"
+        ]
+      }
+    ],
+    "API": [
+      {
+        "id": "TASK-038",
+        "title": "Implement api API endpoints",
+        "description": "Implement 359 endpoints for api resource including validation, error handling, and documentation.",
+        "task_type": "development",
+        "parent_feature_id": "API",
+        "parent_user_story_id": "",
+        "parent_requirement_id": "",
+        "estimated_hours": 8,
+        "complexity": "complex",
+        "story_points": 5,
+        "depends_on": [],
+        "blocks": [],
+        "required_skills": [
+          "backend",
+          "api",
+          "rest"
+        ],
+        "suggested_assignee_role": "Backend Developer",
+        "status": "todo",
+        "acceptance_criteria": [
+          "All 359 endpoints implemented",
+          "Request/response validation",
+          "OpenAPI documentation updated",
+          "Integration tests written"
+        ]
+      }
+    ]
+  },
+  "total_tasks": 38,
+  "total_hours": 322,
+  "total_story_points": 208,
+  "critical_path": [
+    "TASK-001",
+    "TASK-002",
+    "TASK-003",
+    "TASK-005",
+    "TASK-026"
+  ],
+  "dependency_graph": {
+    "TASK-001": [],
+    "TASK-002": [
+      "TASK-001"
+    ],
+    "TASK-003": [
+      "TASK-002"
+    ],
+    "TASK-004": [
+      "TASK-003"
+    ],
+    "TASK-005": [
+      "TASK-003"
+    ],
+    "TASK-006": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-007": [],
+    "TASK-008": [],
+    "TASK-009": [
+      "TASK-002"
+    ],
+    "TASK-010": [
+      "TASK-001",
+      "TASK-002",
+      "TASK-003"
+    ],
+    "TASK-011": [
+      "TASK-001",
+      "TASK-003"
+    ],
+    "TASK-012": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-013": [
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-014": [],
+    "TASK-015": [
+      "TASK-001"
+    ],
+    "TASK-016": [
+      "TASK-002"
+    ],
+    "TASK-017": [
+      "TASK-003"
+    ],
+    "TASK-018": [
+      "TASK-003"
+    ],
+    "TASK-019": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-020": [
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-021": [],
+    "TASK-022": [
+      "TASK-001"
+    ],
+    "TASK-023": [
+      "TASK-002"
+    ],
+    "TASK-024": [
+      "TASK-001",
+      "TASK-002"
+    ],
+    "TASK-025": [
+      "TASK-001"
+    ],
+    "TASK-026": [
+      "TASK-002",
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-027": [
+      "TASK-003",
+      "TASK-004",
+      "TASK-005"
+    ],
+    "TASK-028": [],
+    "TASK-029": [],
+    "TASK-030": [],
+    "TASK-031": [],
+    "TASK-032": [],
+    "TASK-033": [],
+    "TASK-034": [],
+    "TASK-035": [],
+    "TASK-036": [],
+    "TASK-037": [],
+    "TASK-038": []
+  }
+}

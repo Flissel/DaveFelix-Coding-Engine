@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Verifier as Verifizierer
+
+    User->>System: Anfrage zur Verifizierung des Businesses
+    System->>Verifier: Überprüfung der Business-Daten
+    Verifier-->>System: Bestätigung oder Ablehnung der Verifizierung
+    System-->>User: Benachrichtigung über Verifizierungsergebnis

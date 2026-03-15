@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as Anruflink-System
+    participant Scheduler as Planer
+
+    User->>Scheduler: Anfrage für geplanten Anruf
+    Scheduler->>System: Anruflink erstellen
+    System-->>Scheduler: Anruflink generiert
+    Scheduler-->>User: Anruflink senden
+    User->>System: Anruflink verwenden
+    System-->>User: Anruf verbunden

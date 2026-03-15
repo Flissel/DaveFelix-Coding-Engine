@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant DesktopApp as Desktop Application
+    participant System as System
+
+    User->>DesktopApp: Launch Application
+    DesktopApp->>System: Request Data
+    System-->>DesktopApp: Send Data
+    DesktopApp-->>User: Display Data
+    User->>DesktopApp: Interact with Application
+    DesktopApp->>System: Update Data
+    System-->>DesktopApp: Confirm Update
+    DesktopApp-->>User: Show Update Confirmation

@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant User as User
+    participant App as Application
+    participant ShareExt as Share Extension
+    participant System as System
+
+    User->>App: Initiates sharing
+    App->>ShareExt: Request share options
+    ShareExt->>User: Display share options
+    User->>ShareExt: Select sharing option
+    ShareExt->>System: Send sharing data
+    System->>ShareExt: Confirm data received
+    ShareExt->>App: Notify sharing success
+    App->>User: Display success message

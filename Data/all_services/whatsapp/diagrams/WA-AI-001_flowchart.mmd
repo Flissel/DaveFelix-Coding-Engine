@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B[User Request]
+    B --> C{Is Request Valid?}
+    C -->|Yes| D[Process Request]
+    C -->|No| E[Return Error Message]
+    D --> F[Integrate AI Assistant]
+    F --> G{Is Integration Successful?}
+    G -->|Yes| H[Return Success Response]
+    G -->|No| I[Log Error]
+    I --> H
+    E --> J[End]
+    H --> J

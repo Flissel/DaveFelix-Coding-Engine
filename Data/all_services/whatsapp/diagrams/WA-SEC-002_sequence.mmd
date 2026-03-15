@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Verifier as Verifizierer
+
+    User->>System: Anforderung zur Sicherheitscode-Verifizierung
+    System->>User: Fordert Eingabe des Sicherheitscodes an
+    User->>System: Eingabe des Sicherheitscodes
+    System->>Verifier: Leitet Sicherheitscode zur Verifizierung weiter
+    Verifier->>System: Bestätigung der Verifizierung
+    System->>User: Verifizierung erfolgreich/fehlgeschlagen

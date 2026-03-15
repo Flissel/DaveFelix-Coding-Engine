@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Benutzeranfrage}
+    B -->|Anmeldung| C[Überprüfen der Authentifizierung]
+    C -->|Erfolgreich| D[App-Sperre aktivieren]
+    C -->|Fehlgeschlagen| E[Fehlermeldung anzeigen]
+    D --> F{Nachrichtensperre aktivieren?}
+    F -->|Ja| G[Nachrichtensperre aktivieren]
+    F -->|Nein| H[App-Sperre deaktivieren]
+    G --> I[Bestätigung anzeigen]
+    H --> I
+    I --> J[Ende]

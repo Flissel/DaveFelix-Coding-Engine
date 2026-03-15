@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Respektiert
+    Respektiert --> Nicht_respektiert : Fehler
+    Respektiert --> Korrekt : Korrekte Eingabe
+    Nicht_respektiert --> Respektiert : Korrektur
+    Korrekt --> Respektiert : Bestätigung

@@ -1,0 +1,8 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Chat-Hintergrund System Context Diagram
+
+    Person(user, "User", "A user who customizes chat backgrounds")
+    System(chatBackgroundSystem, "Chat-Hintergrund", "A system that provides customizable chat backgrounds")
+
+    Rel(user, chatBackgroundSystem, "Uses")

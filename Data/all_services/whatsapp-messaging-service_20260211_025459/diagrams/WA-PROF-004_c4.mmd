@@ -1,0 +1,8 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Telefonnummer anzeigen - Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der seine Telefonnummer anzeigen möchte.")
+    System(system, "Telefonnummer anzeigen", "Ein System, das die Telefonnummer im Profil anzeigt.")
+
+    Rel(user, system, "zeigt Telefonnummer an")

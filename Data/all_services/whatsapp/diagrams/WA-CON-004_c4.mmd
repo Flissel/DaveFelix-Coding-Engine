@@ -1,0 +1,13 @@
+%%{init: {'theme': 'default'}}%%
+C4Context
+    title System Context Diagram for Labels/Tags System
+
+    Person(customer, "Customer", "A user who interacts with the Labels/Tags system.")
+    System(system, "Labels/Tags System", "A system that supports contact labels for business.")
+
+    Person(employee, "Employee", "An employee who manages labels and tags.")
+    System_Ext(externalSystem, "External CRM System", "An external system for customer relationship management.")
+
+    Rel(customer, system, "Uses")
+    Rel(employee, system, "Manages")
+    Rel(system, externalSystem, "Integrates with")

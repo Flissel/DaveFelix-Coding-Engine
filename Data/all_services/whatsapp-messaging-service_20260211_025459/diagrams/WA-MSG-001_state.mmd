@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Sending : Start sending
+    Sending --> Sent : Message sent
+    Sent --> Idle : Acknowledge receipt
+    Sending --> Error : Sending failed
+    Error --> Idle : Retry or cancel

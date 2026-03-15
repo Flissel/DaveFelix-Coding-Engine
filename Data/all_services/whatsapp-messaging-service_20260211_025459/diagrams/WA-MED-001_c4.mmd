@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "Bilder senden System Context", "version": "1.0" } }%%
+C4Context
+    Person(customer, "Kunde", "Ein Benutzer, der Bilder senden möchte.")
+    System(bilderSendenSystem, "Bilder senden System", "Ein System, das das Senden von Bildern unterstützt.")
+    
+    Rel(customer, bilderSendenSystem, "Sendet Bilder an")

@@ -1,0 +1,23 @@
+classDiagram
+    class FormattedText {
+        +String content
+        +String formatType
+        +applyFormat()
+        +removeFormat()
+    }
+
+    class TextFormatter {
+        +formatText(text: String, formatType: String): FormattedText
+        +removeFormatting(formattedText: FormattedText): String
+    }
+
+    class FormatType {
+        <<enumeration>>
+        +BOLD
+        +ITALIC
+        +UNDERLINE
+        +STRIKETHROUGH
+    }
+
+    FormattedText --> FormatType
+    TextFormatter --> FormattedText

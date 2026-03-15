@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as User
+    participant System as Self-Deleting Message System
+
+    User->>System: Send self-deleting message
+    System-->>User: Confirm message sent
+    System->>System: Set timer for message deletion
+    Note over System: Message is displayed to recipient
+    System->>User: Notify recipient of message
+    User->>System: Recipient reads message
+    System-->>User: Confirm message read
+    System->>System: Delete message after timer expires
+    Note over System: Message is deleted

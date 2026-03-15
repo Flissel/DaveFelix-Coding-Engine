@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+%%{ c4: { "title": "Bildschirmfreigabe System Context", "version": "1.0" } }%%
+C4Context
+    title Bildschirmfreigabe System Context
+    Person(user, "Benutzer", "Nutzt das System zur Bildschirmfreigabe während Anrufen")
+    System(bildschirmfreigabe, "Bildschirmfreigabe System", "Unterstützt Bildschirmfreigabe während Anrufen")
+    System_Ext(telefonieSystem, "Telefonie System", "Verwaltet Anrufe und Verbindungen")
+
+    Rel(user, bildschirmfreigabe, "Verwendet")
+    Rel(bildschirmfreigabe, telefonieSystem, "Integriert mit")

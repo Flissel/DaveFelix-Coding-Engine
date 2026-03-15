@@ -1,0 +1,8 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Web-Version System Architecture
+
+    Person(customer, "Customer", "A user accessing the web version of the system.")
+    System(system, "Web Version", "The web-based application that provides the required functionalities.")
+
+    Rel(customer, system, "Uses")

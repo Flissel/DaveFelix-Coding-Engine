@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Textnachricht eingeben?}
+    B -- Ja --> C[Textnachricht an Server senden]
+    B -- Nein --> D[Fehler: Keine Nachricht eingegeben]
+    C --> E{Nachricht erfolgreich gesendet?}
+    E -- Ja --> F[Bestätigung anzeigen]
+    E -- Nein --> G[Fehler: Nachricht konnte nicht gesendet werden]
+    F --> H[Ende]
+    G --> H
+    D --> H

@@ -1,0 +1,12 @@
+%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Interacts with| B(Galerie-Zugriff)
+    B -->|Accesses| C(Geraete-Galerie)
+    
+    subgraph System Context
+        B
+        C
+    end
+
+    A -->|Requests data| C
+    C -->|Provides data| A

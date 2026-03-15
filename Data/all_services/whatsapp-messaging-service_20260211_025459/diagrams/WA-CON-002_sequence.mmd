@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant ContactDB as Kontakt-Datenbank
+
+    User->>System: Kontakt hinzufügen
+    alt Über Formular
+        System->>User: Formular anzeigen
+        User->>System: Formular ausfüllen
+        System->>ContactDB: Kontakt speichern
+        ContactDB-->>System: Bestätigung
+        System-->>User: Kontakt erfolgreich hinzugefügt
+    else Über Import
+        User->>System: Import-Datei auswählen
+        System->>ContactDB: Kontakte importieren
+        ContactDB-->>System: Bestätigung
+        System-->>User: Kontakte erfolgreich hinzugefügt
+    else Über API
+        User->>System: API-Anfrage senden
+        System->>ContactDB: Kontakt speichern
+        ContactDB-->>System: Bestätigung
+        System-->>User: Kontakt erfolgreich hinzugefügt
+    end

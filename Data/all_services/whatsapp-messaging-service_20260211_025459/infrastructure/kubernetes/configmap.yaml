@@ -1,0 +1,25 @@
+# Kubernetes ConfigMap for whatsapp_messaging_service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: whatsapp_messaging_service-config
+data:
+  NODE_ENV: "development"
+  PORT: "3000"
+  APP_NAME: "whatsapp_messaging_service"
+  LOG_LEVEL: "info"
+  DB_HOST: "localhost"
+  DB_PORT: "5432"
+  DB_NAME: "whatsapp_messaging_service"
+  DB_USER: "postgres"
+  DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+  REDIS_HOST: "localhost"
+  REDIS_PORT: "6379"
+  REDIS_URL: "redis://${REDIS_HOST}:${REDIS_PORT}"
+  KAFKA_BROKERS: "localhost:9092"
+  KAFKA_CLIENT_ID: "whatsapp_messaging_service"
+  KAFKA_GROUP_ID: "whatsapp_messaging_service-consumer"
+  JWT_EXPIRY: "3600"
+  JWT_REFRESH_EXPIRY: "604800"
+  KONG_ADMIN_URL: "http://localhost:8001"
+  STORAGE_BUCKET: "whatsapp_messaging_service-uploads"

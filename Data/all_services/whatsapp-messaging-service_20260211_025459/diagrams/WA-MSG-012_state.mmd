@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> UnformattedText
+    UnformattedText --> FormattedText : Apply Formatting
+    FormattedText --> UnformattedText : Remove Formatting
+    FormattedText --> BoldText : Apply Bold
+    BoldText --> FormattedText : Remove Bold
+    FormattedText --> ItalicText : Apply Italic
+    ItalicText --> FormattedText : Remove Italic
+    FormattedText --> UnderlinedText : Apply Underline
+    UnderlinedText --> FormattedText : Remove Underline

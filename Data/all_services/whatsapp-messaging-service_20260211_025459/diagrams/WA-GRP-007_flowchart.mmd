@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B[System Initialization]
+    B --> C{One-Way-Broadcast-Kanaele?}
+    C -->|Ja| D[Unterstützung aktivieren]
+    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]
+    D --> F[System bereit für One-Way-Broadcast]
+    E --> G[Prozess beenden]
+    F --> H[Ende]
+    G --> H

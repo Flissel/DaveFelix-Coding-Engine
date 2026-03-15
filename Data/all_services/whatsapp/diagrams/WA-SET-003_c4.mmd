@@ -1,0 +1,11 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Profilbild-Sichtbarkeit System Architecture
+
+    Person(user, "Benutzer", "Ein Benutzer, der sein Profilbild verwalten möchte.")
+    System(system, "Profilbild-Sichtbarkeit System", "Ein System zur Verwaltung der Sichtbarkeit von Profilbildern.")
+
+    Person(admin, "Administrator", "Ein Administrator, der die Sichtbarkeitseinstellungen verwaltet.")
+
+    Rel(user, system, "Verwaltet Profilbild-Sichtbarkeit")
+    Rel(admin, system, "Konfiguriert Sichtbarkeitseinstellungen")

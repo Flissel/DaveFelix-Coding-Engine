@@ -1,0 +1,10 @@
+%%{init: {'theme': 'default'}}%%
+%%{ c4: { "title": "Verschluesseltes Backup System", "version": "1.0" } }%%
+C4Context
+    title Verschluesseltes Backup System
+    Person(user, "User", "A user who needs to back up data securely.")
+    System(backupSystem, "Verschluesseltes Backup System", "A system that provides end-to-end encrypted backups.")
+    System_Ext(cloudStorage, "Cloud Storage", "External cloud storage service for storing backups.")
+    
+    Rel(user, backupSystem, "Uses")
+    Rel(backupSystem, cloudStorage, "Stores encrypted backups in")

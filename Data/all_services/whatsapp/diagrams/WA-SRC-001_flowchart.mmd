@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Benutzer gibt Suchbegriff ein}
+    B --> C[System empfängt Suchanfrage]
+    C --> D[System führt Volltext-Suche in Nachrichten durch]
+    D --> E{Ergebnisse gefunden?}
+    E -->|Ja| F[Ergebnisse anzeigen]
+    E -->|Nein| G[Keine Ergebnisse gefunden]
+    F --> H[Benutzer kann Ergebnisse filtern]
+    G --> H
+    H --> I[Ende]

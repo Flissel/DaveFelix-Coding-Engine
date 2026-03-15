@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Profilbild-Sichtbarkeit konfigurierbar?}
+    B -->|Ja| C[Benutzer wählt Sichtbarkeitseinstellungen]
+    B -->|Nein| D[Standard-Sichtbarkeit anwenden]
+    C --> E{Sichtbarkeitseinstellungen speichern?}
+    D --> E
+    E -->|Ja| F[Änderungen gespeichert]
+    E -->|Nein| G[Änderungen verworfen]
+    F --> H[Profilbild-Sichtbarkeit aktualisiert]
+    G --> H
+    H --> I[Ende]

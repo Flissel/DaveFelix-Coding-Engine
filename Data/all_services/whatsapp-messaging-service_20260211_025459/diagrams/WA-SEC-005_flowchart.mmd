@@ -1,0 +1,8 @@
+flowchart TD
+    A[Melden von Nachrichten/Kontakten] --> B{System}
+    B -->|MUSS| C[Nachricht/Kontakt erfassen]
+    C --> D{Validierung}
+    D -->|Gültig| E[Nachricht/Kontakt speichern]
+    D -->|Ungültig| F[Fehlermeldung anzeigen]
+    E --> G[Bestätigung senden]
+    F --> G

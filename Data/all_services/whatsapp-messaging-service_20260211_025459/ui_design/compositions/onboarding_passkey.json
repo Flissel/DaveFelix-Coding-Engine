@@ -1,0 +1,64 @@
+{
+  "route": "/onboarding/passkey",
+  "screen_name": "Passkey-Einrichtung",
+  "description": "",
+  "user_stories": [
+    "US-005"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Passkey einrichten",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Passkey erstellen",
+        "variant": "primary",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "text": "Später einrichten",
+        "variant": "ghost",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 24px, gap 24px",
+  "data_sources": [
+    "POST /api/v1/biometric/registration-options",
+    "POST /api/v1/biometric/credentials",
+    "GET /api/v1/biometric/credentials"
+  ],
+  "state_shape": {
+    "isLoading": "boolean",
+    "registrationChallenge": "object",
+    "error": "string|null",
+    "passkeySupported": "boolean"
+  }
+}

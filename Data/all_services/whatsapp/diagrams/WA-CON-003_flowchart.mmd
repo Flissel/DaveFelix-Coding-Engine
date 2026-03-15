@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start] --> B{Favoriten-Kontakte?}
+    B -- Ja --> C[Favoriten hinzufügen]
+    B -- Nein --> D[Keine Aktion]
+    C --> E[Favoriten anzeigen]
+    E --> F{Weitere Favoriten?}
+    F -- Ja --> C
+    F -- Nein --> G[Ende]
+    D --> G

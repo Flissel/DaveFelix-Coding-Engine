@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant BackupService as Backup-Dienst
+    participant EncryptionService as Verschluesselungsdienst
+
+    User->>System: Anfrage für Backup
+    System->>EncryptionService: Verschluesselung der Daten
+    EncryptionService-->>System: Verschluesselte Daten
+    System->>BackupService: Backup der verschluesselten Daten
+    BackupService-->>System: Backup erfolgreich
+    System-->>User: Backup abgeschlossen

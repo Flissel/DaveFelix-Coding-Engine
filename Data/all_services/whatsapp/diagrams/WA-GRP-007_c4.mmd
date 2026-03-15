@@ -1,0 +1,7 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Kanaele
+    Person(user, "User", "A user who consumes the one-way broadcast channels.")
+    System(kanaele, "Kanaele", "A system that supports one-way broadcast channels.")
+
+    Rel(user, kanaele, "Uses", "Broadcasts content through one-way channels.")

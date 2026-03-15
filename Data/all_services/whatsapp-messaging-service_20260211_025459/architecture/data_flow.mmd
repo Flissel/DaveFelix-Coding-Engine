@@ -1,0 +1,36 @@
+flowchart LR
+    A[Mobile Client] -->|HTTPS/WSS| B[API Gateway]
+    B -->|Route Auth| C[Auth Service]
+    B -->|Route Profile| D[Profile Service]
+    B -->|Route Messages| E[Messaging Service]
+    B -->|Route Chat| F[Chat Service]
+    B -->|WebSocket| G[WebSocket Service]
+    B -->|Route Media| H[Media Service]
+    
+    C -->|Store Auth| I[(Auth DB)]
+    C -->|Cache Session| J[(Redis)]
+    
+    D -->|Store Profile| K[(Profile DB)]
+    D -->|Upload Media| L[S3 Storage]
+    D -->|Cache Profile| J
+    
+    E -->|Store Messages| M[(Message DB)]
+    E -->|Publish Event| N[Kafka]
+    E -->|Cache Messages| J
+    E -->|Real-time| G
+    
+    F -->|Store Chat Data| O[(Chat DB)]
+    F -->|Publish Event| N
+    F -->|Cache Chat| J
+    
+    G -->|Cache Connections| J
+    G -->|Subscribe Events| N
+    G -->|Push to Client| A
+    
+    H -->|Store Media Meta| P[(Media DB)]
+    H -->|Store Files| L
+    H -->|Cache Meta| J
+    
+    N -->|Consume Events| Q[Notification Worker]
+    Q -->|Store Notifications| R[(Notification DB)]
+    Q -->|Send Push| S[External Push Service]

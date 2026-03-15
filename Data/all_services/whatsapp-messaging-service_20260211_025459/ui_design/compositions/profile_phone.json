@@ -1,0 +1,90 @@
+{
+  "route": "/profile/phone",
+  "screen_name": "Telefonnummer anzeigen",
+  "description": "",
+  "user_stories": [
+    "US-009",
+    "US-001",
+    "US-043"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Telefonnummer",
+        "variant": "default",
+        "showBackButton": true
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "circle",
+        "size": "large",
+        "icon": "phone"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-009",
+      "component_name": "ToggleSwitch",
+      "props": {
+        "variant": "default",
+        "label": "2FA aktiviert",
+        "disabled": false
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Telefonnummer ändern"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "danger",
+        "text": "Telefonnummer entfernen"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 16px, gap 24px",
+  "data_sources": [
+    "GET /api/v1/users/{userId}/2fa"
+  ],
+  "state_shape": {
+    "phoneNumber": "string",
+    "is2FAEnabled": "boolean",
+    "isLoading": "boolean",
+    "error": "string|null"
+  }
+}

@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> NewMessage : Nachricht empfangen
+    NewMessage --> NotifyReaction : Reaktion erkannt
+    NotifyReaction --> Idle : Benachrichtigung gesendet
+    NotifyReaction --> NewMessage : Weitere Reaktion empfangen
+    Idle --> NotifyReaction : Reaktion auf eigene Nachricht

@@ -1,0 +1,45 @@
+classDiagram
+    class Umfrage {
+        +String titel
+        +String beschreibung
+        +Date zeitstempel
+        +List<Frage> fragen
+        +List<Teilnehmer> teilnehmer
+        +void erstellen()
+        +void bearbeiten()
+        +void loeschen()
+    }
+
+    class Frage {
+        +String text
+        +List<String> antworten
+        +String richtigeAntwort
+        +void hinzufuegenAntwort()
+        +void entfernenAntwort()
+    }
+
+    class Teilnehmer {
+        +String name
+        +String chatId
+        +void teilnehmen()
+        +void abstimmen()
+    }
+
+    class Gruppe {
+        +String gruppenName
+        +List<Umfrage> umfragen
+        +void umfrageHinzufuegen()
+        +void umfrageEntfernen()
+    }
+
+    class Einzelchat {
+        +String chatId
+        +List<Umfrage> umfragen
+        +void umfrageHinzufuegen()
+        +void umfrageEntfernen()
+    }
+
+    Umfrage --> Frage : enthält
+    Umfrage --> Teilnehmer : hat
+    Gruppe --> Umfrage : enthält
+    Einzelchat --> Umfrage : enthält

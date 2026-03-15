@@ -1,0 +1,18 @@
+classDiagram
+    class Label {
+        +String name
+        +String description
+        +Date createdDate
+        +Date modifiedDate
+        +void addTag(Tag tag)
+        +void removeTag(Tag tag)
+    }
+
+    class Tag {
+        +String name
+        +String color
+        +Date createdDate
+        +Date modifiedDate
+    }
+
+    Label "1" -- "*" Tag : contains

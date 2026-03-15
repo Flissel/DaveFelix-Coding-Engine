@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Initial
+    Initial --> DateInput : User inputs date
+    DateInput --> Validating : Validate date
+    Validating --> Valid : Date is valid
+    Validating --> Invalid : Date is invalid
+    Valid --> Searching : Start search for data
+    Searching --> Results : Display results
+    Invalid --> DateInput : Prompt for valid date
+    Results --> [*] : End of search

@@ -1,0 +1,17 @@
+erDiagram
+    PRODUCT {
+        int id PK
+        string name
+        string description
+        decimal price
+        int stock_quantity
+    }
+
+    BUSINESS {
+        int id PK
+        string name
+        string address
+        string contact_info
+    }
+
+    PRODUCT ||--o{ BUSINESS : offers

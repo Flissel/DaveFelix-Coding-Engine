@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Anruf initiieren
+    System-->>User: Anruf gestartet
+    User->>System: Anruf beenden
+    System-->>User: Anruf beendet
+    System->>System: Anrufverlauf speichern
+    System-->>User: Anrufverlauf aktualisiert

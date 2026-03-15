@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Database as Datenbank
+
+    User->>System: Anfrage zum Bearbeiten der Nachricht
+    System->>Database: Nachricht abrufen
+    Database-->>System: Nachrichtdaten
+    System->>User: Nachricht anzeigen
+    User->>System: Änderungen vornehmen
+    System->>Database: Nachricht aktualisieren
+    Database-->>System: Bestätigung der Aktualisierung
+    System->>User: Bestätigung der Bearbeitung

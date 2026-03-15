@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[Benutzer wählt 'Gruppe erstellen']
+    B --> C[Benutzer gibt Gruppennamen ein]
+    C --> D[Benutzer fügt Mitglieder hinzu]
+    D --> E[Überprüfung der Mitglieder]
+    E -->|Mitglieder gültig| F[Gruppe wird erstellt]
+    E -->|Mitglieder ungültig| G[Fehlermeldung anzeigen]
+    F --> H[Gruppe erfolgreich erstellt]
+    G --> B
+    H --> I[Ende]

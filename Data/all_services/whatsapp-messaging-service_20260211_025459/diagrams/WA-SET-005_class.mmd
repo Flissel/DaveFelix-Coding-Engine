@@ -1,0 +1,29 @@
+classDiagram
+    class Gruppe {
+        +String name
+        +List<Einladung> einladungen
+        +List<Benutzer> benutzer
+        +void hinzufuegenBenutzer(Benutzer benutzer)
+        +void entfernenBenutzer(Benutzer benutzer)
+    }
+
+    class Einladung {
+        +Benutzer einladender
+        +Benutzer eingeladen
+        +Date datum
+        +void akzeptieren()
+        +void ablehnen()
+    }
+
+    class Benutzer {
+        +String name
+        +String email
+        +List<Gruppe> gruppen
+        +void erstellenGruppe(Gruppe gruppe)
+        +void beitretenGruppe(Gruppe gruppe)
+    }
+
+    Gruppe "1" -- "0..*" Einladung : enthält
+    Einladung "1" -- "1" Benutzer : eingeladen
+    Einladung "1" -- "1" Benutzer : einladender
+    Benutzer "0..*" -- "0..*" Gruppe : Mitgliedschaft

@@ -1,0 +1,12 @@
+flowchart TD
+    A[Start] --> B{Gruppeneinladung?}
+    B -- Ja --> C[Link generieren]
+    B -- Nein --> D[Prozess beenden]
+    C --> E[Link an Benutzer senden]
+    E --> F[Benutzer klickt auf Link]
+    F --> G{Zugriff gewähren?}
+    G -- Ja --> H[Benutzer zur Gruppe hinzufügen]
+    G -- Nein --> I[Zugriff verweigern]
+    H --> J[Prozess beenden]
+    I --> J
+    D --> J

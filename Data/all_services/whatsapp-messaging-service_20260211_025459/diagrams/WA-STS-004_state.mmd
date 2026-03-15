@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Konfigurierbare_Statussichtbarkeit
+    Konfigurierbare_Statussichtbarkeit --> Aktiv
+    Konfigurierbare_Statussichtbarkeit --> Inaktiv
+    Aktiv --> Sichtbar
+    Aktiv --> Unsichtbar
+    Inaktiv --> Sichtbar
+    Inaktiv --> Unsichtbar
+    Sichtbar --> [*]
+    Unsichtbar --> [*]

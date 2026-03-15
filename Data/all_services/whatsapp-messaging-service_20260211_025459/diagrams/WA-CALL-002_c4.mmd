@@ -1,0 +1,10 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Videoanruf System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Videoanrufe tätigt.")
+    System(videoanrufSystem, "Videoanruf System", "Ein System, das verschlüsselte Videoanrufe unterstützt.")
+    System_Ext(externalService, "Externer Dienst", "Ein externer Dienst zur Authentifizierung und Verschlüsselung.")
+
+    Rel(user, videoanrufSystem, "Nutzt")
+    Rel(videoanrufSystem, externalService, "Kommuniziert mit", "HTTPS")

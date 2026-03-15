@@ -1,0 +1,112 @@
+{
+  "route": "/onboarding/phone",
+  "screen_name": "Telefonnummer-Registrierung",
+  "description": "",
+  "user_stories": [
+    "US-001",
+    "US-009"
+  ],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "variant": "default",
+        "title": "Telefonnummer verifizieren",
+        "showBackButton": true
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "variant": "outline",
+        "type": "tel",
+        "placeholder": "+49 123 456 789",
+        "label": "Telefonnummer"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6,
+        "label": "Bestätigungscode"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Code senden",
+        "fullWidth": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "outline",
+        "text": "Bestätigen",
+        "fullWidth": true,
+        "disabled": true
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "ghost",
+        "text": "Code erneut senden"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, padding 24px, gap 16px",
+  "data_sources": [
+    "POST /api/v1/phone-registrations",
+    "POST /api/v1/phone-registrations/{registrationId}/verify",
+    "POST /api/v1/phone-registrations/{registrationId}/resend-otp"
+  ],
+  "state_shape": {
+    "phoneNumber": "string",
+    "registrationId": "string",
+    "otpCode": "string",
+    "isLoading": "boolean",
+    "step": "string",
+    "error": "string",
+    "canResendOtp": "boolean",
+    "resendTimer": "number"
+  }
+}

@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> CallInitiated : Anruf starten
+    CallInitiated --> InCall : Anruf verbunden
+    InCall --> CallEnded : Anruf beenden
+    CallEnded --> Idle : Zurück zum Idle
+    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren
+    CallHistoryUpdated --> Idle : Zurück zum Idle

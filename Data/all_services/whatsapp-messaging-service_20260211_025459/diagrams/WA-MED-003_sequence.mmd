@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+
+    User->>System: Dokumente auswählen
+    System-->>User: Bestätigung der Auswahl
+    User->>System: Dokumente senden
+    System-->>User: Empfangsbestätigung
+    System->>System: Dokumente verarbeiten
+    System-->>User: Dokumente erfolgreich gesendet

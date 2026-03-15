@@ -1,0 +1,33 @@
+flowchart TD
+    Start([Start: Zwei-Faktor-Authentifizierung aktivieren und verwenden])
+    S1[User oeffnet Einstellungen]
+    Start --> S1
+    S2[User navigiert zu 'Sicherheit']
+    S1 --> S2
+    S3[User klickt 'Zwei-Faktor-Authentifizierung aktivieren']
+    S2 --> S3
+    S4{User gibt eine 6-stellige PIN ein}
+    S3 --> S4
+    E4[/Wenn PIN nicht genau 6 Stellen hat, wird die Eingabe abgelehnt und eine Fehlermeldung angezeigt/]
+    S4 -.-> E4
+    S5[User bestaetigt die PIN]
+    S4 --> S5
+    E5[/Fehlermeldung bei Verbindungsfehler oder Speichervorgang fehlgeschlagen/]
+    S5 -.-> E5
+    S6[User loggt sich aus]
+    S5 --> S6
+    S7{User gibt Benutzername und Passwort ein und klickt 'Anmelden'}
+    S6 --> S7
+    E7[/Bei falschem Passwort wird der Login abgelehnt/]
+    S7 -.-> E7
+    S8{User gibt die 6-stellige PIN ein}
+    S7 --> S8
+    E8[/Wenn PIN fehlt oder nicht 6-stellig ist, wird der Zugriff verweigert und eine Fehlermeldung angezeigt/]
+    S8 -.-> E8
+    S9{System validiert PIN}
+    S8 --> S9
+    E9[/Bei falscher PIN wird der Login blockiert und eine generische Fehlermeldung angezeigt/]
+    S9 -.-> E9
+    S10[User wird in die App weitergeleitet]
+    S9 --> S10
+    S10 --> End([End])

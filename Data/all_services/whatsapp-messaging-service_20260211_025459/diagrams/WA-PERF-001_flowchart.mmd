@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Ist das System offline?}
+    B -- Ja --> C[Grundlegende Funktionalität bereitstellen]
+    B -- Nein --> D[Online-Funktionalität nutzen]
+    C --> E[Benutzer kann weiterhin arbeiten]
+    D --> F[Benutzer hat vollen Zugriff]
+    E --> G[Ende]
+    F --> G

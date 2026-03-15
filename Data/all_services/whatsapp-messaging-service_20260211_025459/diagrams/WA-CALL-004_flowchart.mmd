@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Anruf gestartet?}
+    B -- Ja --> C[Bildschirmfreigabe aktivieren]
+    B -- Nein --> D[Anruf beenden]
+    C --> E{Bildschirm freigeben?}
+    E -- Ja --> F[Bildschirmfreigabe aktiv]
+    E -- Nein --> G[Keine Bildschirmfreigabe]
+    F --> H[Anruf fortsetzen]
+    G --> H
+    D --> I[Prozess beenden]
+    H --> I

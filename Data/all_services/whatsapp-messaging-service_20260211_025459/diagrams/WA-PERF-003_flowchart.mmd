@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B{Nachrichtensynchronisation?}
+    B -->|Ja| C[Effiziente Methode wählen]
+    B -->|Nein| D[Prozess beenden]
+    C --> E[Nachrichten sammeln]
+    E --> F[Nachrichten analysieren]
+    F --> G[Nachrichten synchronisieren]
+    G --> H{Synchronisation erfolgreich?}
+    H -->|Ja| I[Prozess abschließen]
+    H -->|Nein| J[Fehlerbehandlung]
+    J --> C
+    I --> K[Ende]
+    D --> K

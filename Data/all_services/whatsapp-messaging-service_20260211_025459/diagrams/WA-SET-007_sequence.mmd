@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+    participant Admin as Administrator
+
+    User->>System: Anfrage zur Datennutzung
+    System-->>User: Anzeige des aktuellen Datenverbrauchs
+    User->>System: Anfrage zur Datenverbrauchsübersicht
+    System-->>User: Bereitstellung der Datenverbrauchsübersicht
+    Admin->>System: Aktualisierung der Datenverbrauchsrichtlinien
+    System-->>Admin: Bestätigung der Aktualisierung
+    User->>System: Feedback zur Datennutzung
+    System-->>User: Bestätigung des Feedbacks

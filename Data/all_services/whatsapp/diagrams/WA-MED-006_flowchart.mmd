@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{GIF-Suche}
+    B -->|Suchanfrage| C[GIF-Datenbank durchsuchen]
+    C --> D{GIF gefunden?}
+    D -->|Ja| E[GIF anzeigen]
+    D -->|Nein| F[Keine Ergebnisse]
+    E --> G[GIF versenden]
+    F --> H[Suchanfrage erneut eingeben]
+    G --> I[Ende]
+    H --> B

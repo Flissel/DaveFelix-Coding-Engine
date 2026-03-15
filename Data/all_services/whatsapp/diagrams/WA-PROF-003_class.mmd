@@ -1,0 +1,14 @@
+classDiagram
+    class Profile {
+        +String infoText
+        +getInfoText(): String
+        +setInfoText(infoText: String): void
+    }
+    
+    class Status {
+        +String statusText
+        +getStatusText(): String
+        +setStatusText(statusText: String): void
+    }
+    
+    Profile --> Status : contains

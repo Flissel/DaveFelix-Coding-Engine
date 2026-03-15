@@ -1,0 +1,12 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Chat anpinnen System Context Diagram
+
+    Person(user, "Benutzer", "Ein Benutzer, der Chats anpinnen möchte.")
+    
+    System(chatApp, "Chat anpinnen", "Ein System, das das Anpinnen wichtiger Chats ermöglicht.")
+    
+    System_Ext(externalSystem, "Externe Chat-Plattform", "Eine externe Plattform, die Chats verwaltet.")
+
+    Rel(user, chatApp, "Verwendet")
+    Rel(chatApp, externalSystem, "Kommuniziert mit", "REST API")

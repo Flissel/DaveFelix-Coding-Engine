@@ -1,0 +1,15 @@
+flowchart TD
+    A[Start] --> B{Umfrage erstellen?}
+    B -->|Ja| C[Umfrage in Gruppe erstellen]
+    B -->|Ja| D[Umfrage im Einzelchat erstellen]
+    B -->|Nein| E[Prozess beenden]
+    C --> F[Teilnehmer einladen]
+    D --> G[Teilnehmer einladen]
+    F --> H{Teilnehmer antworten?}
+    G --> H
+    H -->|Ja| I[Antworten sammeln]
+    H -->|Nein| J[Erinnerung senden]
+    J --> H
+    I --> K[Umfrage auswerten]
+    K --> L[Ergebnisse anzeigen]
+    L --> M[Prozess beenden]

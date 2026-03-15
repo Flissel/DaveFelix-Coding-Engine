@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Formatter as Formatierer
+
+    User->>System: Anfrage zur Textformatierung
+    System->>Formatter: Textformatierungsanfrage
+    Formatter-->>System: Formatierter Text
+    System-->>User: Rückgabe des formatierten Textes

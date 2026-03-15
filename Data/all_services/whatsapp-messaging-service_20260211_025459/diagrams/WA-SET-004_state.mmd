@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Hidden
+    Hidden --> Visible : Configure to show
+    Visible --> Hidden : Configure to hide
+    Visible --> [*]
+    Hidden --> [*]

@@ -1,0 +1,14 @@
+classDiagram
+    class Business {
+        +String name
+        +String contactInfo
+        +List<Schnellantwort> schnellantworten
+    }
+
+    class Schnellantwort {
+        +String text
+        +String category
+        +String language
+    }
+
+    Business "1" -- "0..*" Schnellantwort : contains

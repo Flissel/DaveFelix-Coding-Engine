@@ -1,0 +1,9 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Sprachnachrichten Transkribieren
+    Person(user, "Benutzer", "Ein Benutzer, der Sprachnachrichten transkribiert.")
+    System(system, "Sprachnachrichten Transkribieren", "Ein System zur Transkription von Sprachnachrichten.")
+    System_Ext(externalSystem, "Sprachnachrichtendienst", "Ein externer Dienst, der Sprachnachrichten bereitstellt.")
+
+    Rel(user, system, "Verwendet")
+    Rel(system, externalSystem, "Erhält Sprachnachrichten von")

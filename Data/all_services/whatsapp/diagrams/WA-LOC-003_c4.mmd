@@ -1,0 +1,13 @@
+%%{init: {"theme": "default"}}%%
+C4Context
+    title Lokale Sticker System Context Diagram
+
+    Person(customer, "Kunde", "Nutzer, der regionale Sticker-Packs anfordert")
+    System(system, "Lokale Sticker", "Bietet regionalspezifische Sticker-Packs an")
+
+    System_Ext(regionAPI, "Regionale API", "Stellt Informationen zu regionalen Sticker-Packs bereit")
+    System_Ext(paymentGateway, "Zahlungs-Gateway", "Verarbeitet Zahlungen für Sticker-Packs")
+
+    Rel(customer, system, "Fordert Sticker-Packs an")
+    Rel(system, regionAPI, "Fragt regionale Sticker-Packs ab")
+    Rel(system, paymentGateway, "Verarbeitet Zahlungen für Sticker-Packs")

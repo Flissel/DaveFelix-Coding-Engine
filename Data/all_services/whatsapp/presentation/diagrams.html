@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Diagrams for unnamed_project">
+    <title>Diagrams - unnamed_project</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme:'neutral'});</script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #5f6368;
+            --background-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --success-color: #34a853;
+            --warning-color: #fbbc04;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        nav {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header .meta {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        section h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .card .meta {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement-card {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .story-card {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .test-card {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .priority-must {
+            border-left-color: var(--error-color);
+        }
+
+        .priority-should {
+            border-left-color: var(--warning-color);
+        }
+
+        .priority-could {
+            border-left-color: var(--success-color);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.25rem;
+            background-color: var(--border-color);
+        }
+
+        .tag-must { background-color: #fce8e6; color: var(--error-color); }
+        .tag-should { background-color: #fef7e0; color: #e37400; }
+        .tag-could { background-color: #e6f4ea; color: #137333; }
+        .tag-wont { background-color: #f1f3f4; color: var(--secondary-color); }
+
+        .diagram-container {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--surface-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: var(--surface-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-card .label {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 0;
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+        }
+
+        .toc {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc h4 {
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .toc li {
+            margin: 0.25rem 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            header, nav, footer {
+                display: none;
+            }
+
+            main {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>unnamed_project</h1>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html" class="">Overview</a></li><li><a href="requirements.html" class="">Requirements</a></li><li><a href="user_stories.html" class="">User Stories</a></li><li><a href="diagrams.html" class="active">Diagrams</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            
+            <div class="page-header">
+                <h2>Diagrams</h2>
+                <p class="meta">Generated on 2026-02-04 19:28</p>
+            </div>
+        <section id="diagrams"><h3>Diagrams (353)</h3>
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Screenreader-Unterstützung System Context Diagram
+
+    Person(user, "Benutzer", "Nutzer, der Screenreader verwendet")
+    System(system, "Screenreader-Unterstützung", "Bietet vollständige Screenreader-Kompatibilität")
+
+    Rel(user, system, "Verwendet")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B{Ist das System Screenreader-kompatibel?}
+    B -- Ja --> C[Vollständige Screenreader-Kompatibilität]
+    B -- Nein --> D[Identifizieren der Probleme]
+    D --> E[Probleme beheben]
+    E --> F[Testen der Screenreader-Kompatibilität]
+    F --> B
+    C --> G[System bereit für den Einsatz]
+    G --> H[Ende]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as Screenreader User
+    participant System as System
+
+    User->>System: Request screen content
+    System-->>User: Provide accessible content
+    User->>System: Navigate through content
+    System-->>User: Announce current position
+    User->>System: Request additional information
+    System-->>User: Provide detailed information
+    User->>System: End session
+    System-->>User: Confirm session ended</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init: { "theme": "default" } }%%
+C4Context
+    title System Context Diagram for Schriftgroesse
+
+    Person(user, "User", "A user who interacts with the Schriftgroesse system.")
+    
+    System(schriftgroesseSystem, "Schriftgroesse System", "A system that supports adjustable font sizes.")
+
+    System_Ext(fontSizeService, "Font Size Service", "External service that provides font size options.")
+
+    Rel(user, schriftgroesseSystem, "Uses")
+    Rel(schriftgroesseSystem, fontSizeService, "Requests font size options from")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">classDiagram
+    class Schriftgroesse {
+        +int id
+        +string name
+        +int value
+        +bool isDefault
+        +setSchriftgroesse(int value)
+        +getSchriftgroesse() int
+    }
+    
+    class Benutzer {
+        +int userId
+        +string username
+        +Schriftgroesse schriftgroesse
+        +setBenutzerSchriftgroesse(Schriftgroesse schriftgroesse)
+        +getBenutzerSchriftgroesse() Schriftgroesse
+    }
+    
+    Schriftgroesse "1" -- "0..*" Benutzer : uses</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">stateDiagram-v2
+    [*] --> Default
+    Default --> Small : Select Small
+    Default --> Medium : Select Medium
+    Default --> Large : Select Large
+    Small --> Medium : Increase Size
+    Small --> Large : Increase Size
+    Medium --> Small : Decrease Size
+    Medium --> Large : Increase Size
+    Large --> Medium : Decrease Size
+    Large --> Small : Decrease Size</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init : { "theme" : "default" } }%%
+C4Context
+    title System Context Diagram for Kontrast
+    Person(user, "User", "A person who interacts with the system to ensure sufficient color contrast.")
+    System(kontrastSystem, "Kontrast", "A system that provides tools and guidelines to ensure adequate color contrast in digital content.")
+
+    Rel(user, kontrastSystem, "Uses")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">classDiagram
+    class Kontrast {
+        +checkContrast(color1: String, color2: String): Boolean
+        +getContrastRatio(color1: String, color2: String): Float
+        +isAccessible(color1: String, color2: String): Boolean
+    }
+
+    class Color {
+        +hex: String
+        +name: String
+        +getLuminance(): Float
+    }
+
+    Kontrast --> Color : uses</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">stateDiagram-v2
+    [*] --> LowContrast
+    LowContrast --> HighContrast : ImproveContrast()
+    HighContrast --> LowContrast : DecreaseContrast()
+    HighContrast --> [*] : SufficientContrast()
+    LowContrast --> [*] : InsufficientContrast()</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Sprachnachrichten Transkribieren System Architecture
+
+    Person(user, "Benutzer", "Nutzer, der Sprachnachrichten transkribiert.")
+    System(sprachnachrichtenSystem, "Sprachnachrichten Transkribieren", "System zur Transkription von Sprachnachrichten.")
+
+    System_Ext(externalService, "Externer Transkriptionsdienst", "Drittanbieter-Service zur Sprachnachrichtentranskription.")
+
+    Rel(user, sprachnachrichtenSystem, "Verwendet")
+    Rel(sprachnachrichtenSystem, externalService, "Sendet Sprachnachrichten zur Transkription")
+    Rel(externalService, sprachnachrichtenSystem, "Sendet transkribierte Texte zurück")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Sprachnachricht erhalten] --> B[Audioanalyse durchführen]
+    B --> C[Spracherkennung aktivieren]
+    C --> D[Textgenerierung]
+    D --> E[Qualitätsprüfung]
+    E --> F{Qualität ausreichend?}
+    F -->|Ja| G[Transkription speichern]
+    F -->|Nein| H[Nachbearbeitung]
+    H --> D
+    G --> I[Transkription bereitstellen]
+    I --> J[Prozess abschließen]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as Nutzer
+    participant System as System
+    participant TranscriptionService as Transkriptionsdienst
+
+    User->>System: Sprachnachricht hochladen
+    System->>TranscriptionService: Anfrage zur Transkription
+    TranscriptionService-->>System: Transkription bereitstellen
+    System-->>User: Transkription anzeigen</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Meta AI Chat System Context Diagram
+    Person(user, "User", "A person interacting with the AI assistant.")
+    System(metaAIChat, "Meta AI Chat", "A system providing AI assistant integration.")
+    System_Ext(thirdPartyService, "Third Party Services", "External services for data and functionality.")
+    
+    Rel(user, metaAIChat, "Interacts with")
+    Rel(metaAIChat, thirdPartyService, "Uses for additional data and services")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B[User Request]
+    B --> C{Is Request Valid?}
+    C -->|Yes| D[Process Request]
+    C -->|No| E[Return Error Message]
+    D --> F[Integrate AI Assistant]
+    F --> G{Is Integration Successful?}
+    G -->|Yes| H[Return Success Response]
+    G -->|No| I[Log Error]
+    I --> H
+    E --> J[End]
+    H --> J</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as User
+    participant MetaAI as Meta AI Assistant
+    participant System as System
+
+    User->>System: Request integration of AI Assistant
+    System->>MetaAI: Initiate integration process
+    MetaAI-->>System: Confirm integration capabilities
+    System->>User: Provide integration options
+    User->>System: Select preferred AI Assistant
+    System->>MetaAI: Implement selected AI Assistant
+    MetaAI-->>System: Integration successful
+    System->>User: Notify integration completion</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{init: {'theme': 'default'}}%%
+graph TD
+    A[User] -->|Interacts with| B(Smart Reply System)
+    B -->|Fetches data from| C[Email Service]
+    B -->|Uses| D[Machine Learning Model]
+    B -->|Sends suggestions to| E[User Interface]
+    B -->|Logs interactions to| F[Analytics Service]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B{Benutzeranfrage erhalten}
+    B -->|Ja| C[Nachricht analysieren]
+    C --> D[Kontext und Absicht erkennen]
+    D --> E[Antwortvorschläge generieren]
+    E --> F{Vorschläge anzeigen}
+    F -->|Ja| G[Benutzer wählt Vorschlag]
+    G --> H[Antwort senden]
+    F -->|Nein| I[Benutzer eingibt eigene Antwort]
+    I --> H
+    H --> J[Ende]
+    B -->|Nein| J</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as User
+    participant System as Smart Reply System
+    participant Database as Database
+
+    User->>System: Request for reply suggestions
+    System->>Database: Retrieve context and previous messages
+    Database-->>System: Return relevant data
+    System->>System: Generate intelligent reply suggestions
+    System-->>User: Present reply suggestions</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Sticker-Vorschlaege System Context Diagram
+
+    Person(user, "Benutzer", "Interagiert mit dem System, um Sticker-Vorschläge zu erhalten.")
+    System(stickerSystem, "Sticker-Vorschlaege", "Ein System, das kontextbasierte Sticker-Vorschläge generiert.")
+
+    System_Ext(contextProvider, "Kontextanbieter", "Bietet kontextuelle Informationen für Sticker-Vorschläge.")
+    System_Ext(stickerDatabase, "Sticker-Datenbank", "Enthält eine Sammlung von Stickern für Vorschläge.")
+
+    Rel(user, stickerSystem, "Verwendet")
+    Rel(stickerSystem, contextProvider, "Fragt nach Kontextinformationen")
+    Rel(stickerSystem, stickerDatabase, "Zugriff auf Sticker-Daten")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B{Kontext analysieren}
+    B -->|Daten sammeln| C[Benutzerinformationen]
+    B -->|Umgebungsdaten| D[Kontextdaten]
+    C --> E{Sticker-Datenbank abfragen}
+    D --> E
+    E --> F[Sticker-Vorschläge generieren]
+    F --> G{Vorschläge anpassen}
+    G -->|Feedback einholen| H[Benutzerfeedback]
+    G -->|Automatische Anpassung| I[Optimierte Vorschläge]
+    H --> I
+    I --> J[Sticker-Vorschläge anzeigen]
+    J --> K[Ende]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Context as Kontext
+
+    User->>System: Anfrage für Sticker-Vorschläge
+    System->>Context: Kontextdaten abrufen
+    Context-->>System: Kontextdaten zurückgeben
+    System->>System: Sticker-Vorschläge generieren
+    System-->>User: Kontextbasierte Sticker-Vorschläge anzeigen</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B[Benutzer gibt Telefonnummer ein]
+    B --> C[System sendet Verifizierungscode]
+    C --> D[Benutzer erhält Verifizierungscode]
+    D --> E[Benutzer gibt Verifizierungscode ein]
+    E --> F{Ist der Code korrekt?}
+    F -->|Ja| G[Benutzer registriert]
+    F -->|Nein| H[Benutzer erhält Fehlermeldung]
+    H --> D
+    G --> I[Ende]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant Benutzer as Benutzer
+    participant System as System
+    participant Verifizierungsdienst as Verifizierungsdienst
+
+    Benutzer->>System: Telefonnummer eingeben
+    System->>Benutzer: Bestätigungs-SMS senden
+    Benutzer->>Verifizierungsdienst: Bestätigungscode eingeben
+    Verifizierungsdienst-->>System: Bestätigungscode validieren
+    System-->>Benutzer: Registrierung erfolgreich</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">stateDiagram-v2
+    [*] --> Unregistered
+    Unregistered --> EnterPhoneNumber: Enter phone number
+    EnterPhoneNumber --> PhoneNumberEntered
+    PhoneNumberEntered --> SendVerificationCode: Send verification code
+    SendVerificationCode --> WaitingForVerificationCode
+    WaitingForVerificationCode --> VerifyCode: Enter verification code
+    VerifyCode --> Verified: Code valid
+    VerifyCode --> InvalidCode: Code invalid
+    InvalidCode --> WaitingForVerificationCode: Retry
+    Verified --> [*]</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{init: {'theme': 'default'}}%%
+C4Context
+    title Zwei-Faktor-Authentifizierung System Context
+
+    Person(customer, "Kunde", "Ein Benutzer, der sich anmelden möchte.")
+    System(system, "Zwei-Faktor-Authentifizierung System", "Ein System, das optionale 2FA mit 6-stelliger PIN unterstützt.")
+    System_Ext(authenticationService, "Authentifizierungsdienst", "Ein externer Dienst zur Verifizierung von Anmeldedaten.")
+
+    Rel(customer, system, "Verwendet")
+    Rel(system, authenticationService, "Sendet Anmeldedaten zur Verifizierung")
+    Rel(authenticationService, system, "Sendet Bestätigung oder Fehler zurück")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B{Ist 2FA aktiviert?}
+    B -- Ja --> C[Benutzer gibt 6-stellige PIN ein]
+    B -- Nein --> D[2FA aktivieren]
+    D --> C
+    C --> E{Ist die PIN korrekt?}
+    E -- Ja --> F[Zugriff gewährt]
+    E -- Nein --> G[Zugriff verweigert]
+    G --> H[Benutzer erneut versuchen]
+    H --> C</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Authenticator as Authenticator
+
+    Benutzer->>System: Anmelden
+    System->>Benutzer: Sende 6-stellige PIN zur Bestätigung
+    Benutzer->>Authenticator: Generiere 6-stellige PIN
+    Authenticator-->>Benutzer: 6-stellige PIN
+    Benutzer->>System: Eingabe der 6-stelligen PIN
+    System->>System: Überprüfe PIN
+    alt PIN korrekt
+        System-->>Benutzer: Zugang gewährt
+    else PIN falsch
+        System-->>Benutzer: Zugang verweigert
+    end</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">%%{init: {"theme": "default"}}%%
+C4Context
+    title Biometrische Entsperrung System Architecture
+
+    Person(admin, "Administrator", "Manages the biometric system")
+    Person(user, "User", "Uses biometric authentication for access")
+
+    System(biometricSystem, "Biometric Authentication System", "Supports fingerprint and Face ID authentication")
+
+    System_Ext(externalSystem, "External Authentication Service", "Third-party service for biometric verification")
+
+    Rel(admin, biometricSystem, "Manages")
+    Rel(user, biometricSystem, "Uses biometric authentication")
+    Rel(biometricSystem, externalSystem, "Sends biometric data for verification")
+    Rel(externalSystem, biometricSystem, "Returns authentication result")</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">flowchart TD
+    A[Start] --> B{Biometrische Authentifizierung}
+    B -->|Fingerabdruck| C[Fingerabdruck scannen]
+    B -->|Face ID| D[Gesicht scannen]
+    C --> E{Ergebnis}
+    D --> E
+    E -->|Erfolg| F[Zugriff gewährt]
+    E -->|Fehler| G[Zugriff verweigert]
+    F --> H[Ende]
+    G --> H</pre>
+                    </div>
+                
+                    <div class="diagram-container">
+                        <pre class="mermaid">sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant BiometricDevice as Biometrisches Gerät
+
+    User->>BiometricDevice: Fingerabdruck/Face ID scannen
+    BiometricDevice-->>User: Authentifizierung durchführen
+    User->>System: Authentifizierungsanfrage senden
+    System-->>BiometricDevice: Authentifizierungsstatus anfordern
+    BiometricDevice-->>System: Authentifizierungsstatus zurückgeben
+    System-->>User: Zugriff gewähren oder verweigern</pre>
+                    </div>
+                </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Generated by RE System - 2026-02-04 19:28:19</p>
+        </div>
+    </footer>
+</body>
+</html>

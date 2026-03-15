@@ -1,0 +1,78 @@
+{
+  "route": "/chats",
+  "screen_name": "Chats",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Chats",
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-002",
+      "component_name": "TextInput",
+      "props": {
+        "placeholder": "Search chats...",
+        "variant": "outline"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-006",
+      "component_name": "ChatListItem",
+      "props": {
+        "variant": "default"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-008",
+      "component_name": "Avatar",
+      "props": {
+        "variant": "circle"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-005",
+      "component_name": "BottomNav",
+      "props": {
+        "variant": "labeled"
+      },
+      "position": "footer",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "hidden"
+      }
+    }
+  ],
+  "layout": "flex column, full height, header-main-footer structure",
+  "data_sources": [],
+  "state_shape": {
+    "chats": "array",
+    "searchQuery": "string",
+    "selectedChat": "object|null",
+    "isLoading": "boolean"
+  }
+}

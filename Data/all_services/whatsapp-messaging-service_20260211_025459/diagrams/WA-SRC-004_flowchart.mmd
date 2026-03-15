@@ -1,0 +1,7 @@
+flowchart TD
+    A[Start] --> B{Datum eingeben}
+    B -->|Gültiges Datum| C[Sprung zu Datum]
+    B -->|Ungültiges Datum| D[Fehlermeldung anzeigen]
+    D --> B
+    C --> E[Inhalt zum Datum anzeigen]
+    E --> F[Ende]

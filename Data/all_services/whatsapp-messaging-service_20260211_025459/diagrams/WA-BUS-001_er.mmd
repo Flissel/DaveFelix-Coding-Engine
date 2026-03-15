@@ -1,0 +1,19 @@
+erDiagram
+    BUSINESS_PROFILE {
+        string id PK "Primary Key"
+        string name
+        string description
+        string industry
+        string location
+        string website
+    }
+    
+    USER {
+        string id PK "Primary Key"
+        string username
+        string email
+        string password
+    }
+    
+    BUSINESS_PROFILE ||--o{ USER : has
+    USER }o--|| BUSINESS_PROFILE : owns

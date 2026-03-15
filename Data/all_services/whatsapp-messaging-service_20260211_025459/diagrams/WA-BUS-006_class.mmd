@@ -1,0 +1,19 @@
+classDiagram
+    class Produktkatalog {
+        +String name
+        +String beschreibung
+        +List<Produkt> produkte
+        +addProdukt(Produkt produkt)
+        +removeProdukt(Produkt produkt)
+        +getProdukte() List<Produkt>
+    }
+
+    class Produkt {
+        +String id
+        +String name
+        +String kategorie
+        +String preis
+        +String beschreibung
+    }
+
+    Produktkatalog "1" -- "0..*" Produkt : enthält

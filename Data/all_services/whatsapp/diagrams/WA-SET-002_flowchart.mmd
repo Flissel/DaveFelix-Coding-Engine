@@ -1,0 +1,14 @@
+flowchart TD
+    A[Start] --> B{Konfigurierbare Lesebestaetigung?}
+    B -->|Ja| C[Lesebestaetigung aktivieren]
+    B -->|Nein| D[Lesebestaetigung deaktivieren]
+    C --> E[Benutzerdefinierte Einstellungen festlegen]
+    D --> F[Standard Einstellungen verwenden]
+    E --> G[Lesebestaetigung implementieren]
+    F --> G
+    G --> H[System testen]
+    H --> I{Test erfolgreich?}
+    I -->|Ja| J[Lesebestaetigung bereitstellen]
+    I -->|Nein| K[Fehlerbehebung durchführen]
+    K --> H
+    J --> L[Ende]

@@ -1,0 +1,16 @@
+flowchart TD
+    A[Start] --> B[Warenkorb öffnen]
+    B --> C[Artikel hinzufügen]
+    C --> D{Artikel im Warenkorb?}
+    D -->|Ja| E[Artikel bearbeiten]
+    D -->|Nein| F[Artikel suchen]
+    F --> C
+    E --> G[Zur Kasse gehen]
+    G --> H[Zahlungsinformationen eingeben]
+    H --> I[Bestellung überprüfen]
+    I --> J{Bestellung bestätigen?}
+    J -->|Ja| K[Bestellung abschicken]
+    J -->|Nein| L[Zurück zum Warenkorb]
+    L --> E
+    K --> M[Bestellbestätigung anzeigen]
+    M --> N[Ende]

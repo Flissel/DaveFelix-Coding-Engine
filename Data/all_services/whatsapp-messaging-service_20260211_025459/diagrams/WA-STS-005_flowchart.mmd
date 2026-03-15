@@ -1,0 +1,8 @@
+flowchart TD
+    A[Start] --> B{Status stumm schalten?}
+    B -- Ja --> C[Stummschalten aktivieren]
+    C --> D[Status auf stumm setzen]
+    D --> E[Bestätigung anzeigen]
+    E --> F[Ende]
+    B -- Nein --> G[Prozess abbrechen]
+    G --> F

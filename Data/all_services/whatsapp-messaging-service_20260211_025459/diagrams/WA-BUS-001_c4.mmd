@@ -1,0 +1,14 @@
+%%{ init : { "theme" : "default" } }%%
+C4Context
+    title Business-Profil System Context Diagram
+
+    Person(customer, "Kunde", "Ein Benutzer, der ein Business-Profil erstellt.")
+    Person(admin, "Administrator", "Ein Benutzer, der das System verwaltet.")
+
+    System(businessProfilSystem, "Business-Profil", "Ein System, das erweiterte Business-Profile unterstützt.")
+
+    System_Ext(externalSystem, "Externe Datenquelle", "Eine externe Quelle für Geschäftsdaten.")
+
+    Rel(customer, businessProfilSystem, "Erstellt und verwaltet Business-Profile")
+    Rel(admin, businessProfilSystem, "Verwaltet das System")
+    Rel(businessProfilSystem, externalSystem, "Zugriff auf externe Geschäftsdaten")

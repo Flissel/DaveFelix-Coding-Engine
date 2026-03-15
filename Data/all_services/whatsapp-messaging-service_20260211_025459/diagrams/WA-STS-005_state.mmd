@@ -1,0 +1,6 @@
+stateDiagram-v2
+    [*] --> Active
+    Active --> Muted : Stumm schalten
+    Muted --> Active : Laut schalten
+    Muted --> [*]
+    Active --> [*]

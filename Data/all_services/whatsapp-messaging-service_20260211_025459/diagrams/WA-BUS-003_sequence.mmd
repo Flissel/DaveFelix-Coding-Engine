@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User as Business User
+    participant System as Schnellantworten System
+
+    User->>System: Request predefined quick responses
+    System-->>User: Provide list of quick responses
+    User->>System: Select a quick response
+    System-->>User: Display selected quick response

@@ -1,0 +1,76 @@
+{
+  "total_calls": 252,
+  "successful_calls": 252,
+  "failed_calls": 0,
+  "total_input_tokens": 206012,
+  "total_output_tokens": 227213,
+  "total_tokens": 200182,
+  "total_cost_usd": 1.3597,
+  "avg_latency_ms": 4004.7,
+  "by_component": {
+    "self_critique": {
+      "calls": 3,
+      "tokens": 8234,
+      "cost_usd": 0.0399,
+      "models": {
+        "openai/gpt-5.2-codex": 3
+      }
+    },
+    "realtime_spec_generator": {
+      "calls": 28,
+      "tokens": 32961,
+      "cost_usd": 0.2453,
+      "models": {
+        "openai/gpt-5.2-codex": 28
+      }
+    },
+    "architecture_generator": {
+      "calls": 1,
+      "tokens": 4624,
+      "cost_usd": 0.0487,
+      "models": {
+        "anthropic/claude-sonnet-4": 1
+      }
+    },
+    "state_machine_generator": {
+      "calls": 9,
+      "tokens": 18987,
+      "cost_usd": 0.1696,
+      "models": {
+        "anthropic/claude-sonnet-4": 9
+      }
+    },
+    "user_story_generator": {
+      "calls": 127,
+      "tokens": 93174,
+      "cost_usd": 0.5201,
+      "models": {
+        "openai/gpt-5.2-codex": 127
+      }
+    },
+    "component_composition_generator": {
+      "calls": 23,
+      "tokens": 42202,
+      "cost_usd": 0.3361,
+      "models": {
+        "anthropic/claude-sonnet-4": 23
+      }
+    },
+    "presentation_agent_ContentAnalyzer": {
+      "calls": 1,
+      "tokens": 0,
+      "cost_usd": 0.0,
+      "models": {
+        "anthropic/claude-opus-4.6": 1
+      }
+    },
+    "presentation_agent_ScreenGenerator": {
+      "calls": 60,
+      "tokens": 0,
+      "cost_usd": 0.0,
+      "models": {
+        "anthropic/claude-opus-4.6": 60
+      }
+    }
+  }
+}

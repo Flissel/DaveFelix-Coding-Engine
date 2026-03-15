@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B{Audio-Datei vorhanden?}
+    B -- Ja --> C[Audio-Datei senden]
+    B -- Nein --> D[Fehler: Keine Audio-Datei]
+    C --> E{Senden erfolgreich?}
+    E -- Ja --> F[Bestätigung senden]
+    E -- Nein --> G[Fehler: Senden fehlgeschlagen]
+    F --> H[Ende]
+    G --> H
+    D --> H

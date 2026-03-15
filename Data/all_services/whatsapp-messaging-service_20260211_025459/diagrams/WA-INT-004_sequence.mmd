@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as User
+    participant Watch as Smartwatch
+    participant App as Mobile App
+    participant Server as Backend Server
+
+    User->>App: Open Watch-App
+    App->>Server: Request smartwatch integration
+    Server-->>App: Send integration details
+    App->>Watch: Send integration details
+    Watch-->>User: Display integration confirmation
+    User->>Watch: Start using features
+    Watch->>Server: Sync data
+    Server-->>Watch: Send updated data
+    Watch-->>User: Display updated information

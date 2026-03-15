@@ -1,0 +1,10 @@
+flowchart TD
+    A[Start] --> B[Benutzer lädt Bild hoch]
+    B --> C{Bildformat überprüfen}
+    C -->|Unterstützt| D[Grundlegende Bildbearbeitung]
+    C -->|Nicht unterstützt| E[Fehlermeldung anzeigen]
+    D --> F[Anpassungen vornehmen]
+    F --> G[Bild speichern]
+    G --> H[Bild senden]
+    E --> I[Prozess beenden]
+    H --> J[Prozess beenden]

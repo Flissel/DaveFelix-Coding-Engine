@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start] --> B{Nachricht ausgewählt?}
+    B -- Ja --> C[Nachricht zitieren]
+    B -- Nein --> D[Nachricht auswählen]
+    D --> B
+    C --> E{Antwort verfassen?}
+    E -- Ja --> F[Antwort schreiben]
+    E -- Nein --> G[Zitieren abschließen]
+    F --> G
+    G --> H[Nachricht senden]
+    H --> I[Ende]

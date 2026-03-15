@@ -1,0 +1,77 @@
+{
+  "route": "/onboarding/phone/verify",
+  "screen_name": "Verifizierungscode",
+  "description": "",
+  "user_stories": [],
+  "components": [
+    {
+      "component_id": "COMP-004",
+      "component_name": "TopBar",
+      "props": {
+        "title": "Verifizierung",
+        "showBackButton": true,
+        "variant": "default"
+      },
+      "position": "header",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-003",
+      "component_name": "OTPInput",
+      "props": {
+        "variant": "numeric",
+        "length": 6,
+        "placeholder": "000000"
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "primary",
+        "text": "Verifizieren",
+        "disabled": false
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    },
+    {
+      "component_id": "COMP-001",
+      "component_name": "Button",
+      "props": {
+        "variant": "ghost",
+        "text": "Code erneut senden",
+        "disabled": false
+      },
+      "position": "main",
+      "responsive": {
+        "mobile": "visible",
+        "desktop": "visible"
+      }
+    }
+  ],
+  "layout": "flex column, centered, max-width 400px, gap-4, padding-4",
+  "data_sources": [
+    "POST /api/v1/phone-registrations/{registrationId}/verify",
+    "POST /api/v1/phone-registrations/{registrationId}/resend-otp"
+  ],
+  "state_shape": {
+    "otpCode": "string",
+    "registrationId": "string",
+    "isVerifying": "boolean",
+    "isResending": "boolean",
+    "error": "string|null",
+    "phoneNumber": "string"
+  }
+}

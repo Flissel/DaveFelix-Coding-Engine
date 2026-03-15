@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Auth as Authentifizierungsdienst
+
+    User->>System: Anfrage zur passwortlosen Anmeldung
+    System->>User: Bitte Passkey bereitstellen
+    User->>System: Übermittlung des Passkeys
+    System->>Authentifizierungsdienst: Validierung des Passkeys
+    Authentifizierungsdienst-->>System: Bestätigung der Validierung
+    System-->>User: Anmeldung erfolgreich

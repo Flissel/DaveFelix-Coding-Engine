@@ -1,0 +1,13 @@
+%%{ init: { "theme": "default" } }%%
+C4Context
+    title Speichernutzung System Context Diagram
+
+    Person(user, "Benutzer", "Nutzer, der die Speichernutzung verwaltet")
+    System(speichernutzungSystem, "Speichernutzung System", "Bietet Übersicht und Verwaltung der Speichernutzung")
+
+    System_Ext(storageService, "Speicherdienst", "Externer Dienst zur Speicherung von Daten")
+    System_Ext(reportingService, "Reporting Dienst", "Externer Dienst zur Berichterstattung über Speichernutzung")
+
+    Rel(user, speichernutzungSystem, "Verwaltet")
+    Rel(speichernutzungSystem, storageService, "Kommuniziert mit")
+    Rel(speichernutzungSystem, reportingService, "Erzeugt Berichte für")

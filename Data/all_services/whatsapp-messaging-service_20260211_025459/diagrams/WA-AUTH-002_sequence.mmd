@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant User as Benutzer
+    participant System as System
+    participant Authenticator as Authenticator
+
+    User->>System: Anmelden
+    System->>User: Sende 6-stellige PIN zur Bestätigung
+    User->>Authenticator: Generiere 6-stellige PIN
+    Authenticator-->>User: PIN generiert
+    User->>System: Sende 6-stellige PIN
+    System->>System: Überprüfe PIN
+    alt PIN korrekt
+        System->>User: Zugang gewährt
+    else PIN falsch
+        System->>User: Zugang verweigert
+    end

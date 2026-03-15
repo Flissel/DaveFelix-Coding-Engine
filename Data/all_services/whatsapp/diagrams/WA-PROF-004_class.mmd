@@ -1,0 +1,14 @@
+classDiagram
+    class Benutzer {
+        +String name
+        +String email
+        +String telefonnummer
+        +anzeigenTelefonnummer()
+    }
+
+    class Profil {
+        +Benutzer benutzer
+        +zeigeTelefonnummer()
+    }
+
+    Benutzer --> Profil : hat

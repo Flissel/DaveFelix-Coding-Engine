@@ -1,0 +1,6 @@
+flowchart TD
+    A[Start] --> B{Status anzeigen?}
+    B -- Ja --> C[Status abrufen]
+    C --> D[Status anzeigen]
+    D --> E[Ende]
+    B -- Nein --> E

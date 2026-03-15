@@ -1,0 +1,17 @@
+%%{ init : { "theme" : "default" } }%%
+graph TD
+  %% C4 Context Diagram
+  A[API-Zugang] -->|Provides| B[Business API]
+  
+  subgraph Users
+    C[External Systems]
+    D[Internal Applications]
+  end
+
+  C -->|Integrates with| B
+  D -->|Integrates with| B
+
+  style A fill:#f9f,stroke:#333,stroke-width:2px;
+  style B fill:#bbf,stroke:#333,stroke-width:2px;
+  style C fill:#fff,stroke:#333,stroke-width:1px;
+  style D fill:#fff,stroke:#333,stroke-width:1px;

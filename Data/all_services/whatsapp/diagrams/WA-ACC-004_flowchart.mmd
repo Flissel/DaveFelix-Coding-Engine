@@ -1,0 +1,11 @@
+flowchart TD
+    A[Sprachnachricht erhalten] --> B[Audioanalyse durchführen]
+    B --> C[Spracherkennung aktivieren]
+    C --> D[Textgenerierung]
+    D --> E[Qualitätsprüfung]
+    E --> F{Qualität ausreichend?}
+    F -->|Ja| G[Transkription speichern]
+    F -->|Nein| H[Nachbearbeitung]
+    H --> D
+    G --> I[Transkription bereitstellen]
+    I --> J[Prozess abschließen]

@@ -1,0 +1,749 @@
+{
+  "project_name": "unnamed_project",
+  "personas": [
+    {
+      "id": "PERSONA-001",
+      "name": "Lena Hoffmann",
+      "role": "Product Manager",
+      "age_range": "30-40",
+      "goals": [
+        "Schneller und sicherer Zugang ohne Passwort",
+        "Nahtloses Arbeiten auf mehreren Geraeten",
+        "Professionelles Auftreten mit personalisiertem Profil"
+      ],
+      "pain_points": [
+        "Zu viele Passwoerter merken muessen",
+        "Unterbrechungen beim Device-Wechsel",
+        "Unsicherheit bei Account-Sicherheit"
+      ],
+      "tech_savviness": "high",
+      "frequency_of_use": "daily",
+      "quote": "Ich will mich sicher anmelden und sofort weiterarbeiten, egal auf welchem Geraet.",
+      "background": "Leitet ein Remote-Team, arbeitet taeglich mit mehreren Tools auf Laptop und Smartphone."
+    },
+    {
+      "id": "PERSONA-002",
+      "name": "Ali Demir",
+      "role": "Freelance Designer",
+      "age_range": "25-35",
+      "goals": [
+        "Schnelles Onboarding mit Mobilnummer",
+        "Biometrisches Entsperren fuer Komfort",
+        "Profil mit Bild und Status aktuell halten"
+      ],
+      "pain_points": [
+        "Aufwendige Registrierungsschritte",
+        "Passwort-Eingabe unterwegs",
+        "Unklare Profilinformationen fuer Kunden"
+      ],
+      "tech_savviness": "medium",
+      "frequency_of_use": "weekly",
+      "quote": "Je einfacher der Login, desto schneller kann ich loslegen.",
+      "background": "Arbeitet mobil, teilt regelmaessig Kontaktdaten mit neuen Kunden."
+    },
+    {
+      "id": "PERSONA-003",
+      "name": "Sabine Keller",
+      "role": "Team Assistant",
+      "age_range": "40-50",
+      "goals": [
+        "Zusaetzliche Sicherheit durch 2FA",
+        "Uebersichtliche Profildaten",
+        "Einfaches Teilen per QR-Code"
+      ],
+      "pain_points": [
+        "Sorge vor unbefugtem Zugriff",
+        "Technische Huerden bei neuen Sicherheitsfunktionen",
+        "Zeitverlust beim Austausch von Kontaktdaten"
+      ],
+      "tech_savviness": "low",
+      "frequency_of_use": "weekly",
+      "quote": "Ich moechte sicher sein, dass mein Konto geschuetzt ist, ohne komplizierte Schritte.",
+      "background": "Unterstuetzt ein Buero-Team, nutzt das System vor allem fuer Kommunikation und Profilpflege."
+    }
+  ],
+  "user_flows": [
+    {
+      "id": "FLOW-001",
+      "name": "Telefonnummer-Registrierung",
+      "description": "Flow zur Registrierung mit Mobilnummer inkl. Verifizierung",
+      "actor": "Lena Hoffmann",
+      "trigger": "User klickt auf 'Registrieren' und waehlt Registrierung per Telefonnummer",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet Registrierungsbildschirm",
+          "screen": "Registrierung",
+          "expected_result": "Registrierungsformular wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User gibt Mobilnummer ein und klickt 'Code senden'",
+          "screen": "Registrierung",
+          "expected_result": "System prueft Format und sendet Verifizierungscode",
+          "decision_point": true,
+          "error_scenario": "Ungueltige oder falsch formatierte Telefonnummer -> Validierungsmeldung anzeigen"
+        },
+        {
+          "step_number": 3,
+          "action": "User sieht Hinweis 'Code gesendet' und Eingabefeld fuer Code",
+          "screen": "Code-Verifizierung",
+          "expected_result": "Eingabefeld fuer Verifizierungscode ist aktiv",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 4,
+          "action": "User gibt Verifizierungscode ein und klickt 'Verifizieren'",
+          "screen": "Code-Verifizierung",
+          "expected_result": "System validiert Code und Zeitfenster",
+          "decision_point": true,
+          "error_scenario": "Falscher oder abgelaufener Code -> Fehlermeldung und Option 'Neuen Code senden'"
+        },
+        {
+          "step_number": 5,
+          "action": "User wird bestaetigt und Konto wird erstellt",
+          "screen": "Erfolg/Willkommen",
+          "expected_result": "Account ist erstellt und Telefonnummer als verifiziert markiert",
+          "decision_point": false,
+          "error_scenario": ""
+        }
+      ],
+      "success_criteria": "Konto wurde erstellt und die Telefonnummer ist verifiziert",
+      "error_scenarios": [
+        "Ungueltige oder falsch formatierte Telefonnummer",
+        "Falscher oder abgelaufener Verifizierungscode",
+        "Codeversand fehlgeschlagen (z.B. SMS-Gateway-Fehler)"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Telefonnummer-Registrierung])\n    S1[User oeffnet Registrierungsbildschirm]\n    Start --> S1\n    S2{User gibt Mobilnummer ein und klickt 'Code senden'}\n    S1 --> S2\n    E2[/Ungueltige oder falsch formatierte Telefonnummer -> Validierungsmeldung anzeigen/]\n    S2 -.-> E2\n    S3[User sieht Hinweis 'Code gesendet' und Eingabefeld fuer Code]\n    S2 --> S3\n    S4{User gibt Verifizierungscode ein und klickt 'Verifizieren'}\n    S3 --> S4\n    E4[/Falscher oder abgelaufener Code -> Fehlermeldung und Option 'Neuen Code senden'/]\n    S4 -.-> E4\n    S5[User wird bestaetigt und Konto wird erstellt]\n    S4 --> S5\n    S5 --> End([End])\n"
+    },
+    {
+      "id": "FLOW-002",
+      "name": "Zwei-Faktor-Authentifizierung aktivieren, nutzen und deaktivieren",
+      "description": "Flow zum Aktivieren, Verwenden und Deaktivieren der optionalen 2FA mit 6-stelligem PIN",
+      "actor": "Lena Hoffmann",
+      "trigger": "User moechte die Kontosicherheit erhoehen oder verwaltet 2FA in den Sicherheitseinstellungen",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet Sicherheits-Einstellungen",
+          "screen": "Account Settings > Security",
+          "expected_result": "Sicherheits-Einstellungen werden angezeigt",
+          "decision_point": false,
+          "error_scenario": "Zugriff verweigert, falls User nicht eingeloggt ist"
+        },
+        {
+          "step_number": 2,
+          "action": "User aktiviert den 2FA-Schalter",
+          "screen": "Account Settings > Security",
+          "expected_result": "Dialog zur Einrichtung der 2FA wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 3,
+          "action": "System sendet 6-stelligen PIN und User gibt PIN ein",
+          "screen": "2FA Setup Dialog",
+          "expected_result": "PIN-Eingabe wird akzeptiert",
+          "decision_point": true,
+          "error_scenario": "PIN nicht erhalten oder falscher PIN eingegeben"
+        },
+        {
+          "step_number": 4,
+          "action": "User bestaetigt PIN",
+          "screen": "2FA Setup Dialog",
+          "expected_result": "2FA wird aktiviert und als 'Aktiv' angezeigt",
+          "decision_point": false,
+          "error_scenario": "PIN falsch -> Fehlermeldung und erneute Eingabe"
+        },
+        {
+          "step_number": 5,
+          "action": "User loggt sich aus und wieder ein",
+          "screen": "Login",
+          "expected_result": "Login mit Benutzername/Passwort wird akzeptiert, 2FA-PIN wird angefordert",
+          "decision_point": false,
+          "error_scenario": "Falsche Zugangsdaten -> Login fehlgeschlagen"
+        },
+        {
+          "step_number": 6,
+          "action": "User gibt 6-stelligen PIN ein",
+          "screen": "2FA PIN Eingabe",
+          "expected_result": "Bei korrektem PIN wird Zugriff gewaehrt",
+          "decision_point": true,
+          "error_scenario": "Falscher PIN -> Fehlermeldung und Zugriff verweigert"
+        },
+        {
+          "step_number": 7,
+          "action": "User deaktiviert 2FA in den Sicherheits-Einstellungen",
+          "screen": "Account Settings > Security",
+          "expected_result": "2FA wird deaktiviert und als 'Inaktiv' angezeigt",
+          "decision_point": false,
+          "error_scenario": "Systemfehler beim Speichern"
+        }
+      ],
+      "success_criteria": "2FA wurde erfolgreich aktiviert, fuer Login verwendet und kann bei Bedarf deaktiviert werden",
+      "error_scenarios": [
+        "Falscher 6-stelliger PIN bei Aktivierung oder Login",
+        "PIN nicht erhalten",
+        "Systemfehler beim Aktivieren/Deaktivieren",
+        "Zugriff verweigert, wenn User nicht eingeloggt ist"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Zwei-Faktor-Authentifizierung aktivieren, nutzen und deaktivieren])\n    S1[User oeffnet Sicherheits-Einstellungen]\n    Start --> S1\n    E1[/Zugriff verweigert, falls User nicht eingeloggt ist/]\n    S1 -.-> E1\n    S2[User aktiviert den 2FA-Schalter]\n    S1 --> S2\n    S3{System sendet 6-stelligen PIN und User gibt PIN ein}\n    S2 --> S3\n    E3[/PIN nicht erhalten oder falscher PIN eingegeben/]\n    S3 -.-> E3\n    S4[User bestaetigt PIN]\n    S3 --> S4\n    E4[/PIN falsch -> Fehlermeldung und erneute Eingabe/]\n    S4 -.-> E4\n    S5[User loggt sich aus und wieder ein]\n    S4 --> S5\n    E5[/Falsche Zugangsdaten -> Login fehlgeschlagen/]\n    S5 -.-> E5\n    S6{User gibt 6-stelligen PIN ein}\n    S5 --> S6\n    E6[/Falscher PIN -> Fehlermeldung und Zugriff verweigert/]\n    S6 -.-> E6\n    S7[User deaktiviert 2FA in den Sicherheits-Einstellungen]\n    S6 --> S7\n    E7[/Systemfehler beim Speichern/]\n    S7 -.-> E7\n    S7 --> End([End])\n"
+    },
+    {
+      "id": "FLOW-003",
+      "name": "Biometrische Entsperrung",
+      "description": "Flow zum Entsperren der App per Fingerabdruck oder Face ID",
+      "actor": "Lena Hoffmann",
+      "trigger": "User öffnet die App",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User öffnet die App",
+          "screen": "App-Startbildschirm",
+          "expected_result": "Prüfung, ob biometrische Entsperrung aktiviert und verfügbar ist",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "App fordert biometrische Authentifizierung an",
+          "screen": "Biometrischer Dialog (System)",
+          "expected_result": "Systemdialog für Fingerabdruck oder Face ID wird angezeigt",
+          "decision_point": false,
+          "error_scenario": "Biometrische Schnittstelle nicht verfügbar"
+        },
+        {
+          "step_number": 3,
+          "action": "User authentifiziert sich biometrisch",
+          "screen": "Biometrischer Dialog (System)",
+          "expected_result": "Biometrische Prüfung erfolgreich",
+          "decision_point": true,
+          "error_scenario": "Biometrische Prüfung fehlgeschlagen"
+        },
+        {
+          "step_number": 4,
+          "action": "App gewährt Zugriff",
+          "screen": "Start-/Dashboard",
+          "expected_result": "User ist eingeloggt und sieht das Dashboard",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 5,
+          "action": "User wählt alternative Anmeldung",
+          "screen": "Login (Passwort/PIN)",
+          "expected_result": "User kann sich mit Passwort oder PIN anmelden",
+          "decision_point": false,
+          "error_scenario": "Falsches Passwort/PIN"
+        },
+        {
+          "step_number": 6,
+          "action": "User meldet sich mit Passwort oder PIN an",
+          "screen": "Login (Passwort/PIN)",
+          "expected_result": "User ist eingeloggt und sieht das Dashboard",
+          "decision_point": false,
+          "error_scenario": "Maximale Fehlversuche erreicht"
+        }
+      ],
+      "success_criteria": "User erhält Zugang zur App entweder per Biometrie oder alternativ per Passwort/PIN",
+      "error_scenarios": [
+        "Biometrische Prüfung fehlgeschlagen -> alternative Anmeldung erforderlich",
+        "Gerät unterstützt keine Biometrie oder nicht eingerichtet -> biometrische Option wird nicht angeboten",
+        "Falsches Passwort/PIN oder zu viele Fehlversuche"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Biometrische Entsperrung])\n    S1{User öffnet die App}\n    Start --> S1\n    S2[App fordert biometrische Authentifizierung an]\n    S1 --> S2\n    E2[/Biometrische Schnittstelle nicht verfügbar/]\n    S2 -.-> E2\n    S3{User authentifiziert sich biometrisch}\n    S2 --> S3\n    E3[/Biometrische Prüfung fehlgeschlagen/]\n    S3 -.-> E3\n    S4[App gewährt Zugriff]\n    S3 --> S4\n    S5[User wählt alternative Anmeldung]\n    S4 --> S5\n    E5[/Falsches Passwort/PIN/]\n    S5 -.-> E5\n    S6[User meldet sich mit Passwort oder PIN an]\n    S5 --> S6\n    E6[/Maximale Fehlversuche erreicht/]\n    S6 -.-> E6\n    S6 --> End([End])\n"
+    },
+    {
+      "id": "FLOW-004",
+      "name": "Multi-Device Support",
+      "description": "Flow zur parallelen Nutzung des Systems auf mehreren Geraeten ohne Sitzungsabbruch",
+      "actor": "Lena Hoffmann",
+      "trigger": "User meldet sich auf einem weiteren Geraet mit demselben Account an",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User ist auf Geraet A bereits eingeloggt und arbeitet im System",
+          "screen": "Beliebiger Arbeitsbereich",
+          "expected_result": "Sitzung auf Geraet A ist aktiv",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User oeffnet auf Geraet B die Login-Seite",
+          "screen": "Login",
+          "expected_result": "Login-Formular wird angezeigt",
+          "decision_point": false,
+          "error_scenario": "Login-Seite laedt nicht"
+        },
+        {
+          "step_number": 3,
+          "action": "User gibt Zugangsdaten ein und klickt auf 'Anmelden'",
+          "screen": "Login",
+          "expected_result": "Authentifizierung erfolgreich",
+          "decision_point": true,
+          "error_scenario": "Falsche Zugangsdaten"
+        },
+        {
+          "step_number": 4,
+          "action": "System erkennt bestehende Sitzung auf Geraet A und erlaubt parallele Nutzung",
+          "screen": "Startseite/Dashboard",
+          "expected_result": "Dashboard auf Geraet B wird geladen, Sitzung auf Geraet A bleibt aktiv",
+          "decision_point": false,
+          "error_scenario": "System blockiert parallele Sitzung"
+        },
+        {
+          "step_number": 5,
+          "action": "User fuehrt eine Aktion auf Geraet B aus (z. B. Task aktualisieren)",
+          "screen": "Detailansicht/Editor",
+          "expected_result": "Aktion wird erfolgreich gespeichert, Sitzung auf Geraet A bleibt aktiv",
+          "decision_point": false,
+          "error_scenario": "Speichern fehlschlaegt, Sitzung auf Geraet A wird unerwartet beendet"
+        },
+        {
+          "step_number": 6,
+          "action": "User wechselt zu Geraet A und fuehrt dort eine Aktion aus",
+          "screen": "Detailansicht/Editor",
+          "expected_result": "Aktion wird erfolgreich verarbeitet, Sitzung auf Geraet B bleibt aktiv",
+          "decision_point": false,
+          "error_scenario": "Konflikt bei gleichzeitiger Bearbeitung"
+        },
+        {
+          "step_number": 7,
+          "action": "User startet Login auf Geraet C (drittes Geraet) mit demselben Account",
+          "screen": "Login",
+          "expected_result": "Login-Formular wird angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 8,
+          "action": "User meldet sich an",
+          "screen": "Login",
+          "expected_result": "System erlaubt dritte Sitzung ohne Abmeldung anderer Geraete",
+          "decision_point": false,
+          "error_scenario": "System fordert Abmeldung eines anderen Geraets"
+        }
+      ],
+      "success_criteria": "User kann gleichzeitig auf mehreren Geraeten arbeiten, ohne dass bestehende Sitzungen beendet werden",
+      "error_scenarios": [
+        "Parallele Sitzung wird blockiert",
+        "Sitzung auf einem anderen Geraet wird unerwartet beendet",
+        "Datenkonflikte bei gleichzeitiger Bearbeitung"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Multi-Device Support])\n    S1[User ist auf Geraet A bereits eingeloggt und arbeitet im System]\n    Start --> S1\n    S2[User oeffnet auf Geraet B die Login-Seite]\n    S1 --> S2\n    E2[/Login-Seite laedt nicht/]\n    S2 -.-> E2\n    S3{User gibt Zugangsdaten ein und klickt auf 'Anmelden'}\n    S2 --> S3\n    E3[/Falsche Zugangsdaten/]\n    S3 -.-> E3\n    S4[System erkennt bestehende Sitzung auf Geraet A und erlaubt parallele Nutzung]\n    S3 --> S4\n    E4[/System blockiert parallele Sitzung/]\n    S4 -.-> E4\n    S5[User fuehrt eine Aktion auf Geraet B aus (z. B. Task aktualisieren)]\n    S4 --> S5\n    E5[/Speichern fehlschlaegt, Sitzung auf Geraet A wird unerwartet beendet/]\n    S5 -.-> E5\n    S6[User wechselt zu Geraet A und fuehrt dort eine Aktion aus]\n    S5 --> S6\n    E6[/Konflikt bei gleichzeitiger Bearbeitung/]\n    S6 -.-> E6\n    S7[User startet Login auf Geraet C (drittes Geraet) mit demselben Account]\n    S6 --> S7\n    S8[User meldet sich an]\n    S7 --> S8\n    E8[/System fordert Abmeldung eines anderen Geraets/]\n    S8 -.-> E8\n    S8 --> End([End])\n"
+    },
+    {
+      "id": "FLOW-005",
+      "name": "Passkey-Login",
+      "description": "Flow zur Anmeldung mit Passkey statt Passwort",
+      "actor": "Lena Hoffmann",
+      "trigger": "User klickt auf 'Mit Passkey anmelden' auf der Login-Seite",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "User oeffnet Login-Seite",
+          "screen": "Login",
+          "expected_result": "Login-Optionen werden angezeigt",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 2,
+          "action": "User waehlt 'Mit Passkey anmelden'",
+          "screen": "Login",
+          "expected_result": "System prueft, ob ein Passkey fuer das Konto vorhanden ist",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 3,
+          "action": "System zeigt Hinweis 'Kein Passkey vorhanden' und bietet alternative Login-Methoden",
+          "screen": "Login",
+          "expected_result": "User kann alternative Methode waehlen",
+          "decision_point": false,
+          "error_scenario": "Kein Passkey registriert"
+        },
+        {
+          "step_number": 4,
+          "action": "System startet Passkey-Authentifizierung auf dem Geraet",
+          "screen": "Passkey-Dialog (System)",
+          "expected_result": "User wird zur Geraeteauthentifizierung aufgefordert",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 5,
+          "action": "User bestaetigt Geraeteauthentifizierung (Biometrie/PIN)",
+          "screen": "Passkey-Dialog (System)",
+          "expected_result": "Passkey-Authentifizierung erfolgreich abgeschlossen",
+          "decision_point": true,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 6,
+          "action": "System meldet User erfolgreich an",
+          "screen": "Dashboard",
+          "expected_result": "User ist eingeloggt und sieht das Dashboard",
+          "decision_point": false,
+          "error_scenario": ""
+        },
+        {
+          "step_number": 7,
+          "action": "System zeigt Fehlermeldung und bietet 'Erneut versuchen' oder alternative Login-Methode",
+          "screen": "Login",
+          "expected_result": "User kann Passkey erneut versuchen oder andere Methode waehlen",
+          "decision_point": false,
+          "error_scenario": "Passkey-Authentifizierung fehlgeschlagen oder abgebrochen"
+        }
+      ],
+      "success_criteria": "User ist erfolgreich mit Passkey authentifiziert und eingeloggt",
+      "error_scenarios": [
+        "Kein Passkey registriert",
+        "Passkey-Authentifizierung fehlgeschlagen oder abgebrochen",
+        "Geraeteauthentifizierung nicht verfuegbar"
+      ],
+      "mermaid_diagram": "flowchart TD\n    Start([Start: Passkey-Login])\n    S1[User oeffnet Login-Seite]\n    Start --> S1\n    S2{User waehlt 'Mit Passkey anmelden'}\n    S1 --> S2\n    S3[System zeigt Hinweis 'Kein Passkey vorhanden' und bietet alternative Login-Methoden]\n    S2 --> S3\n    E3[/Kein Passkey registriert/]\n    S3 -.-> E3\n    S4{System startet Passkey-Authentifizierung auf dem Geraet}\n    S3 --> S4\n    S5{User bestaetigt Geraeteauthentifizierung (Biometrie/PIN)}\n    S4 --> S5\n    S6[System meldet User erfolgreich an]\n    S5 --> S6\n    S7[System zeigt Fehlermeldung und bietet 'Erneut versuchen' oder alternative Login-Methode]\n    S6 --> S7\n    E7[/Passkey-Authentifizierung fehlgeschlagen oder abgebrochen/]\n    S7 -.-> E7\n    S7 --> End([End])\n"
+    }
+  ],
+  "information_architecture": [
+    {
+      "id": "IA-001",
+      "name": "Home",
+      "path": "/",
+      "parent_id": "",
+      "children": [
+        "IA-010",
+        "IA-020",
+        "IA-030"
+      ],
+      "content_types": [
+        "dashboard",
+        "quick-actions"
+      ]
+    },
+    {
+      "id": "IA-010",
+      "name": "Onboarding & Auth",
+      "path": "/auth",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-011",
+        "IA-012",
+        "IA-013",
+        "IA-014"
+      ],
+      "content_types": [
+        "flow",
+        "forms"
+      ]
+    },
+    {
+      "id": "IA-011",
+      "name": "Telefonnummer-Registrierung",
+      "path": "/auth/phone-signup",
+      "parent_id": "IA-010",
+      "children": [
+        "IA-011a",
+        "IA-011b"
+      ],
+      "content_types": [
+        "form",
+        "verification"
+      ]
+    },
+    {
+      "id": "IA-011a",
+      "name": "Mobilnummer eingeben",
+      "path": "/auth/phone-signup/enter",
+      "parent_id": "IA-011",
+      "children": [],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-011b",
+      "name": "Code verifizieren",
+      "path": "/auth/phone-signup/verify",
+      "parent_id": "IA-011",
+      "children": [],
+      "content_types": [
+        "verification",
+        "otp"
+      ]
+    },
+    {
+      "id": "IA-012",
+      "name": "Login",
+      "path": "/auth/login",
+      "parent_id": "IA-010",
+      "children": [
+        "IA-012a",
+        "IA-012b"
+      ],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-012a",
+      "name": "Passkey-Login",
+      "path": "/auth/login/passkey",
+      "parent_id": "IA-012",
+      "children": [],
+      "content_types": [
+        "biometric",
+        "system-prompt"
+      ]
+    },
+    {
+      "id": "IA-012b",
+      "name": "Telefonnummer-Login",
+      "path": "/auth/login/phone",
+      "parent_id": "IA-012",
+      "children": [],
+      "content_types": [
+        "form",
+        "verification"
+      ]
+    },
+    {
+      "id": "IA-013",
+      "name": "2FA Verifizierung",
+      "path": "/auth/2fa",
+      "parent_id": "IA-010",
+      "children": [],
+      "content_types": [
+        "pin-entry",
+        "verification"
+      ]
+    },
+    {
+      "id": "IA-014",
+      "name": "Biometrische Entsperrung",
+      "path": "/auth/biometric",
+      "parent_id": "IA-010",
+      "children": [],
+      "content_types": [
+        "system-prompt",
+        "security"
+      ]
+    },
+    {
+      "id": "IA-020",
+      "name": "Profil",
+      "path": "/profile",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-021",
+        "IA-022",
+        "IA-023",
+        "IA-024",
+        "IA-025"
+      ],
+      "content_types": [
+        "profile",
+        "preview"
+      ]
+    },
+    {
+      "id": "IA-021",
+      "name": "Profilbild",
+      "path": "/profile/avatar",
+      "parent_id": "IA-020",
+      "children": [],
+      "content_types": [
+        "upload",
+        "crop"
+      ]
+    },
+    {
+      "id": "IA-022",
+      "name": "Anzeigename",
+      "path": "/profile/display-name",
+      "parent_id": "IA-020",
+      "children": [],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-023",
+      "name": "Info/Status",
+      "path": "/profile/status",
+      "parent_id": "IA-020",
+      "children": [],
+      "content_types": [
+        "form"
+      ]
+    },
+    {
+      "id": "IA-024",
+      "name": "Telefonnummer anzeigen",
+      "path": "/profile/phone",
+      "parent_id": "IA-020",
+      "children": [],
+      "content_types": [
+        "read-only",
+        "details"
+      ]
+    },
+    {
+      "id": "IA-025",
+      "name": "QR-Code Profil",
+      "path": "/profile/qr",
+      "parent_id": "IA-020",
+      "children": [],
+      "content_types": [
+        "qr-code",
+        "share"
+      ]
+    },
+    {
+      "id": "IA-030",
+      "name": "Einstellungen & Sicherheit",
+      "path": "/settings",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-031",
+        "IA-032",
+        "IA-033"
+      ],
+      "content_types": [
+        "settings",
+        "security"
+      ]
+    },
+    {
+      "id": "IA-031",
+      "name": "Zwei-Faktor-Authentifizierung",
+      "path": "/settings/2fa",
+      "parent_id": "IA-030",
+      "children": [
+        "IA-031a",
+        "IA-031b"
+      ],
+      "content_types": [
+        "toggle",
+        "pin-setup"
+      ]
+    },
+    {
+      "id": "IA-031a",
+      "name": "2FA aktivieren",
+      "path": "/settings/2fa/enable",
+      "parent_id": "IA-031",
+      "children": [],
+      "content_types": [
+        "pin-setup",
+        "confirmation"
+      ]
+    },
+    {
+      "id": "IA-031b",
+      "name": "2FA deaktivieren",
+      "path": "/settings/2fa/disable",
+      "parent_id": "IA-031",
+      "children": [],
+      "content_types": [
+        "confirmation"
+      ]
+    },
+    {
+      "id": "IA-032",
+      "name": "Biometrische Entsperrung",
+      "path": "/settings/biometric",
+      "parent_id": "IA-030",
+      "children": [],
+      "content_types": [
+        "toggle",
+        "system-permission"
+      ]
+    },
+    {
+      "id": "IA-033",
+      "name": "Passkeys",
+      "path": "/settings/passkeys",
+      "parent_id": "IA-030",
+      "children": [
+        "IA-033a"
+      ],
+      "content_types": [
+        "list",
+        "manage"
+      ]
+    },
+    {
+      "id": "IA-033a",
+      "name": "Passkey hinzufügen",
+      "path": "/settings/passkeys/add",
+      "parent_id": "IA-033",
+      "children": [],
+      "content_types": [
+        "system-prompt",
+        "confirmation"
+      ]
+    },
+    {
+      "id": "IA-040",
+      "name": "Geräte",
+      "path": "/devices",
+      "parent_id": "IA-001",
+      "children": [
+        "IA-041",
+        "IA-042"
+      ],
+      "content_types": [
+        "list",
+        "status"
+      ]
+    },
+    {
+      "id": "IA-041",
+      "name": "Aktive Geräte",
+      "path": "/devices/active",
+      "parent_id": "IA-040",
+      "children": [],
+      "content_types": [
+        "list",
+        "details"
+      ]
+    },
+    {
+      "id": "IA-042",
+      "name": "Gerät hinzufügen",
+      "path": "/devices/add",
+      "parent_id": "IA-040",
+      "children": [],
+      "content_types": [
+        "flow",
+        "verification"
+      ]
+    }
+  ],
+  "accessibility_requirements": [
+    "WCAG 2.1 Level AA Compliance",
+    "Keyboard Navigation fuer alle Funktionen",
+    "Screen Reader Support",
+    "Kontrastverhältnis mindestens 4.5:1",
+    "Touch Targets mindestens 44x44px"
+  ],
+  "interaction_patterns": [
+    "Modal Dialoge fuer sicherheitskritische Aktionen",
+    "Toast Notifications fuer Feedback",
+    "Inline Validation fuer Formulare",
+    "System Prompts fuer Biometrie und Passkeys",
+    "QR-Code Scan/Share"
+  ],
+  "design_principles": [
+    "Mobile First",
+    "Progressive Disclosure",
+    "Consistency ueber alle Screens",
+    "Fehlertoleranz",
+    "Security by Design"
+  ]
+}

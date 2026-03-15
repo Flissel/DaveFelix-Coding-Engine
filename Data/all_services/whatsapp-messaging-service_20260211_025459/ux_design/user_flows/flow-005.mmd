@@ -1,0 +1,21 @@
+flowchart TD
+    Start([Start: Passkey-Anmeldung])
+    S1[User oeffnet die App und sieht den Login-Bildschirm]
+    Start --> S1
+    S2{User klickt auf 'Mit Passkey anmelden'}
+    S1 --> S2
+    S3[System erkennt, dass kein Passkey vorhanden ist]
+    S2 --> S3
+    E3[/Kein Passkey hinterlegt/]
+    S3 -.-> E3
+    S4{System erkennt, dass ein Passkey vorhanden ist und startet die Geraete-Authentifizierung (Biometrie/PIN)}
+    S3 --> S4
+    S5{User bestaetigt die biometrische oder Geraete-Authentifizierung}
+    S4 --> S5
+    S6[System erstellt eine Session und leitet den User in die App weiter]
+    S5 --> S6
+    S7[Geraete-Authentifizierung schlaegt fehl]
+    S6 --> S7
+    E7[/Biometrie/PIN fehlgeschlagen/]
+    S7 -.-> E7
+    S7 --> End([End])

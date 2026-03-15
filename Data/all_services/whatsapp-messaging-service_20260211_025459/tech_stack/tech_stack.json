@@ -1,0 +1,66 @@
+{
+  "project_name": "whatsapp-messaging-service",
+  "frontend_framework": "React Native 0.74.1",
+  "frontend_languages": [
+    "TypeScript 5.5.4",
+    "JavaScript ES2023"
+  ],
+  "ui_library": "React Native Paper 5.12.3",
+  "state_management": "Redux Toolkit 2.2.6",
+  "backend_language": "Node.js 20.15.1",
+  "backend_framework": "NestJS 10.3.2",
+  "api_style": "REST + WebSocket",
+  "primary_database": "PostgreSQL 16.3",
+  "cache_layer": "Redis 7.2.5",
+  "search_engine": "none",
+  "cloud_provider": "AWS",
+  "container_runtime": "Docker 26.1.4",
+  "orchestration": "Kubernetes 1.30.3",
+  "ci_cd": "GitHub Actions",
+  "message_queue": "Kafka 3.7.1",
+  "api_gateway": "Kong 3.7.1",
+  "rationale": {
+    "frontend_framework": "React Native bietet Mobile-First Entwicklung fuer iOS/Android mit gemeinsamer Codebasis, gutem WebSocket-Support und starker Community, passend fuer Echtzeit-Messaging und Offline-Queue.",
+    "backend_framework": "NestJS liefert modulare Architektur, integrierte WebSocket-Gateways und gute Skalierbarkeit fuer Microservices, ideal fuer E2E-verschluesselte Messaging-Workloads.",
+    "primary_database": "PostgreSQL bietet starke Konsistenz, ACID-Transaktionen, JSONB fuer flexible Payloads und ist bewaehrt fuer User/Message-Daten in DSGVO-konformen Systemen."
+  },
+  "alternatives": {
+    "frontend_framework": [
+      "Flutter 3.22.2",
+      "Kotlin Multiplatform 2.0.20"
+    ],
+    "backend_framework": [
+      "Spring Boot 3.3.2",
+      "Go Fiber 2.52.5"
+    ]
+  },
+  "architecture_pattern": "Microservices",
+  "deployment_model": "Cloud-native",
+  "versions": {
+    "React Native": "0.74.1",
+    "React": "18.3.1",
+    "TypeScript": "5.5.4",
+    "React Native Paper": "5.12.3",
+    "Redux Toolkit": "2.2.6",
+    "Node.js": "20.15.1",
+    "NestJS": "10.3.2",
+    "PostgreSQL": "16.3",
+    "Redis": "7.2.5",
+    "Kafka": "3.7.1",
+    "Docker": "26.1.4",
+    "Kubernetes": "1.30.3",
+    "Kong": "3.7.1"
+  },
+  "package_names": {
+    "React Native": "react-native",
+    "React": "react",
+    "TypeScript": "typescript",
+    "React Native Paper": "react-native-paper",
+    "Redux Toolkit": "@reduxjs/toolkit",
+    "NestJS": "@nestjs/core",
+    "PostgreSQL Driver": "pg",
+    "Redis Client": "ioredis",
+    "Kafka Client": "kafkajs",
+    "WebSocket": "ws"
+  }
+}
