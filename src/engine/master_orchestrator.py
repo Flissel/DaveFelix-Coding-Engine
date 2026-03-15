@@ -55,6 +55,11 @@ class ProjectRequirements:
     features: List[Dict[str, Any]] = field(default_factory=list)
     tech_stack: Dict[str, str] = field(default_factory=dict)
     raw: Dict[str, Any] = field(default_factory=dict)
+    # Enriched context from epic runner (if available)
+    openapi_spec: str = ""          # OpenAPI 3.0 YAML (truncated to key parts)
+    data_dictionary: str = ""       # Entity definitions
+    architecture_doc: str = ""      # Architecture overview
+    epic_runner_dir: str = ""       # Path to epic runner output
 
 
 @dataclass
@@ -221,7 +226,7 @@ class MasterOrchestrator:
     # Load requirements
     # ==================================================================
     def _load_requirements(self) -> Optional[ProjectRequirements]:
-        """Load requirements.json from project path."""
+        """Load requirements.json and any epic runner enrichments."""
         req_file = self.project_path / "requirements.json"
         if not req_file.exists():
             print(f"[!] requirements.json not found in {self.project_path}")
@@ -230,7 +235,7 @@ class MasterOrchestrator:
         with open(req_file, "r", encoding="utf-8") as f:
             raw = json.load(f)
 
-        return ProjectRequirements(
+        reqs = ProjectRequirements(
             name=raw.get("name", self.project_path.name),
             type=raw.get("type", "unknown"),
             description=raw.get("description", ""),
@@ -238,6 +243,52 @@ class MasterOrchestrator:
             tech_stack=raw.get("tech_stack", {}),
             raw=raw,
         )
+
+        # Auto-discover epic runner output
+        # Look for directories matching the project name with timestamps
+        parent = self.project_path.parent
+        project_name = raw.get("name", self.project_path.name)
+        epic_dir = None
+
+        for d in sorted(parent.iterdir(), reverse=True):
+            if d.is_dir() and project_name in d.name and d != self.project_path:
+                # Check if it has epic runner artifacts
+                if (d / "api" / "openapi_spec.yaml").exists() or (d / "MASTER_DOCUMENT.md").exists():
+                    epic_dir = d
+                    break
+
+        if epic_dir:
+            reqs.epic_runner_dir = str(epic_dir)
+            print(f"  [+] Epic runner output found: {epic_dir.name}")
+            reqs.openapi_spec = self._load_epic_file(epic_dir / "api" / "openapi_spec.yaml", max_lines=500)
+            reqs.data_dictionary = self._load_epic_file(epic_dir / "data" / "data_dictionary.md", max_lines=300)
+            reqs.architecture_doc = self._load_epic_file(epic_dir / "architecture" / "architecture.md", max_lines=200)
+
+            if reqs.openapi_spec:
+                print(f"  [+] OpenAPI spec loaded ({len(reqs.openapi_spec)} chars)")
+            if reqs.data_dictionary:
+                print(f"  [+] Data dictionary loaded ({len(reqs.data_dictionary)} chars)")
+            if reqs.architecture_doc:
+                print(f"  [+] Architecture doc loaded ({len(reqs.architecture_doc)} chars)")
+
+        return reqs
+
+    def _load_epic_file(self, path: Path, max_lines: int = 300) -> str:
+        """Load an epic runner file, truncated to max_lines."""
+        if not path.exists():
+            return ""
+        try:
+            with open(path, "r", encoding="utf-8", errors="replace") as f:
+                lines = f.readlines()
+            if len(lines) > max_lines:
+                # Take first and last portions to keep structure
+                half = max_lines // 2
+                truncated = lines[:half] + [f"\n... ({len(lines) - max_lines} lines truncated) ...\n\n"] + lines[-half:]
+                return "".join(truncated)
+            return "".join(lines)
+        except Exception as e:
+            logger.warning("Failed to load %s: %s", path, e)
+            return ""
 
     # ==================================================================
     # Minibook setup
@@ -618,6 +669,55 @@ Return ONLY the JSON array, no markdown, no explanation."""
         tech_stack = self.requirements.tech_stack if self.requirements else {}
         features_brief = ", ".join(f.get("id", "") for f in (self.requirements.features if self.requirements else []))
 
+        # Build epic runner context based on file type
+        epic_context = ""
+        if self.requirements:
+            domain = file_path.split("/")[1] if len(file_path.split("/")) > 1 else ""
+
+            if self.requirements.data_dictionary and (
+                "service.ts" in file_path or "entity" in file_path or
+                "schema.prisma" in file_path or "seed" in file_path or
+                "migration" in file_path
+            ):
+                # Extract relevant entity from data dictionary
+                dd = self.requirements.data_dictionary
+                # Try to find domain-specific section
+                domain_cap = domain.capitalize() if domain else ""
+                if domain_cap and f"### {domain_cap}" in dd:
+                    start_idx = dd.index(f"### {domain_cap}")
+                    next_section = dd.find("\n### ", start_idx + 10)
+                    entity_section = dd[start_idx:next_section] if next_section > 0 else dd[start_idx:start_idx+2000]
+                    epic_context += f"\n\n## Data Dictionary (from spec)\n{entity_section}"
+                elif "schema.prisma" in file_path or "migration" in file_path:
+                    # For schema files, include more of the data dictionary
+                    epic_context += f"\n\n## Data Dictionary (from spec)\n{dd[:6000]}"
+
+            if self.requirements.openapi_spec and (
+                "controller.ts" in file_path or "dto" in file_path or
+                "guard" in file_path or "interceptor" in file_path
+            ):
+                # Extract relevant API endpoints
+                api = self.requirements.openapi_spec
+                if domain and f"/{domain}" in api:
+                    # Find paths section for this domain
+                    lines = api.split("\n")
+                    relevant = []
+                    capturing = False
+                    for line in lines:
+                        if f"/{domain}" in line.lower() or (capturing and (line.startswith("    ") or line.startswith("      "))):
+                            relevant.append(line)
+                            capturing = True
+                        elif capturing and not line.startswith(" "):
+                            capturing = False
+                        if len(relevant) > 100:
+                            break
+                    if relevant:
+                        epic_context += f"\n\n## OpenAPI Spec (from spec)\n```yaml\n" + "\n".join(relevant) + "\n```"
+
+            if self.requirements.architecture_doc and "module.ts" in file_path:
+                # Architecture context for module files
+                epic_context += f"\n\n## Architecture (from spec)\n{self.requirements.architecture_doc[:2000]}"
+
         prompt = f"""Generate the COMPLETE file: `{file_path}`
 
 ## What this file does
@@ -631,6 +731,7 @@ Return ONLY the JSON array, no markdown, no explanation."""
 ## Architecture (summary)
 {arch_context[:4000]}
 {context_block}
+{epic_context}
 
 ## CRITICAL RULES
 1. Output EXACTLY ONE file: `{file_path}`
@@ -681,7 +782,7 @@ Return ONLY the JSON array, no markdown, no explanation."""
             if not file_path:
                 continue
 
-            print(f"  [{idx}/{len(file_list)}] {agent_name} → {file_path}...", end=" ", flush=True)
+            print(f"  [{idx}/{len(file_list)}] {agent_name} -> {file_path}...", end=" ", flush=True)
 
             result = self._generate_single_file(
                 agent_name, file_path, file_desc,
@@ -741,7 +842,7 @@ Return ONLY the JSON array, no markdown, no explanation."""
         print(f"  [*] {len(db_files)} database files to generate")
 
         for idx, (file_path, file_desc) in enumerate(db_files, 1):
-            print(f"  [{idx}/{len(db_files)}] database-gen → {file_path}...", end=" ", flush=True)
+            print(f"  [{idx}/{len(db_files)}] database-gen -> {file_path}...", end=" ", flush=True)
 
             result = self._generate_single_file(
                 "database-gen", file_path, file_desc,
@@ -809,7 +910,7 @@ Return ONLY the JSON array, no markdown, no explanation."""
         print(f"  [*] {len(test_files)} test files to generate")
 
         for idx, (test_path, source_path, test_type) in enumerate(test_files, 1):
-            print(f"  [{idx}/{len(test_files)}] tester → {test_path}...", end=" ", flush=True)
+            print(f"  [{idx}/{len(test_files)}] tester -> {test_path}...", end=" ", flush=True)
 
             # Get source file content for context
             source_context = ""
@@ -957,7 +1058,7 @@ If no fixes needed, say "LGTM" for that file.""",
         print(f"  [*] {len(infra_files)} infrastructure files to generate")
 
         for idx, (file_path, file_desc) in enumerate(infra_files, 1):
-            print(f"  [{idx}/{len(infra_files)}] infra-gen → {file_path}...", end=" ", flush=True)
+            print(f"  [{idx}/{len(infra_files)}] infra-gen -> {file_path}...", end=" ", flush=True)
 
             result = self._generate_single_file(
                 "infra-gen", file_path, file_desc,
