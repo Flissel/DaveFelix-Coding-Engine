@@ -1,0 +1,31 @@
+{
+  "name": "whatsapp-messaging-service",
+  "type": "nestjs",
+  "description": "A WhatsApp-style messaging service with phone registration, 2FA, real-time messaging, and end-to-end encryption.",
+  "features": [
+    {"id": "phone-registration", "priority": "high", "description": "User registration via phone number with SMS verification code"},
+    {"id": "2fa-auth", "priority": "high", "description": "Two-factor authentication with TOTP and SMS fallback"},
+    {"id": "biometric-auth", "priority": "medium", "description": "Biometric authentication support (fingerprint, face) via WebAuthn"},
+    {"id": "session-management", "priority": "high", "description": "JWT-based session management with refresh tokens and device tracking"},
+    {"id": "app-lock", "priority": "medium", "description": "Application lock with PIN or biometric after inactivity"},
+    {"id": "passkeys", "priority": "low", "description": "FIDO2/WebAuthn passkey support for passwordless login"},
+    {"id": "real-time-messaging", "priority": "high", "description": "WebSocket-based real-time message delivery with read receipts"},
+    {"id": "group-chats", "priority": "high", "description": "Group chat creation, management, admin roles, and participant limits"},
+    {"id": "media-sharing", "priority": "medium", "description": "Image, video, audio, and document sharing with thumbnails"},
+    {"id": "message-encryption", "priority": "high", "description": "End-to-end encryption using Signal Protocol (double ratchet)"},
+    {"id": "user-profiles", "priority": "medium", "description": "User profiles with avatar, status text, and online/last-seen"},
+    {"id": "contacts", "priority": "medium", "description": "Contact list syncing and management"},
+    {"id": "push-notifications", "priority": "medium", "description": "Push notifications via FCM/APNs for offline users"},
+    {"id": "message-search", "priority": "low", "description": "Full-text search across all conversations"}
+  ],
+  "tech_stack": {
+    "backend": "NestJS + TypeScript",
+    "database": "PostgreSQL + Prisma ORM",
+    "cache": "Redis",
+    "realtime": "WebSocket (Socket.io)",
+    "auth": "JWT + bcrypt + TOTP",
+    "storage": "S3-compatible object storage",
+    "queue": "BullMQ (Redis-backed)",
+    "testing": "Jest + Supertest + Playwright"
+  }
+}

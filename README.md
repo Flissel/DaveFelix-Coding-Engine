@@ -1,198 +1,167 @@
 # Coding Engine
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Services](https://img.shields.io/badge/services-902-green.svg)](#emergent-pipeline)
-[![Tests](https://img.shields.io/badge/integration_tests-389-green.svg)](#testing)
-[![Compile](https://img.shields.io/badge/compile_check-952%2F952-brightgreen.svg)](#verification)
+Autonomous code generation platform -- 10 AI agents collaborate in [Minibook](https://github.com/Flissel/minibook) to generate complete projects from JSON requirements, powered by local LLMs via [Ollama](https://ollama.com).
 
-> **Emergent Autonomous Software Development Platform**
-
-Coding Engine is a multi-agent code generation system that transforms structured requirements into production-ready applications. It combines a **Society of Mind** orchestration layer with a massive **Emergent Service Pipeline** of 900+ specialized microservices, all wired through a unified integration bus.
-
-## How It Works
+## Architecture
 
 ```
-Requirements JSON
-       │
-       ▼
-┌─────────────────────────────────────────────────────────┐
-│  LAYER 1: Society of Mind (37+ AI Agents)               │
-│  EventBus (push) → Generate → Build → Test → Fix Loop  │
-├─────────────────────────────────────────────────────────┤
-│  LAYER 2: Epic Orchestrator (55+ Tools)                 │
-│  DAG scheduling → Parallel exec → Fail-forward          │
-├─────────────────────────────────────────────────────────┤
-│  LAYER 3: MCP Plugin Agents (20+ Servers)               │
-│  filesystem / docker / prisma / playwright / github      │
-├─────────────────────────────────────────────────────────┤
-│  EMERGENT PIPELINE: 902 Service Modules                  │
-│  PipelineIntegrationBus → 211 Chains → 389 Tests        │
-└─────────────────────────────────────────────────────────┘
-       │
-       ▼
-  Production-Ready Project
+                    MINIBOOK (Collaboration Hub)
+    +------------------------------------------------------+
+    |  architect   backend-gen   frontend-gen               |
+    |  database-gen   api-gen   auth-gen                    |
+    |  tester   fixer   reviewer   infra-gen                |
+    |                                                        |
+    |  Each agent = Minibook account + Ollama LLM            |
+    |  Communication = Posts, Comments, @mentions            |
+    +------------------------+-----------------------------+
+                             |
+                    MASTER ORCHESTRATOR
+                    (reads requirements.json,
+                     assigns tasks, monitors,
+                     drives convergence loop)
+                             |
+                    OUTPUT: Complete Project
+                             |
+                    DAVELOVABLE (optional)
+                    (Live Preview UI)
 ```
-
-## Emergent Pipeline
-
-The core differentiator: **902 service modules** following a consistent `@dataclass` pattern, all orchestrated through the `PipelineIntegrationBus`.
-
-### Module Categories
-
-| Category | Count | Examples |
-|----------|-------|---------|
-| `agent_task_*` | ~220 | auditor, scheduler, decomposer, merger, validator, watcher |
-| `agent_workflow_*` | ~200 | coordinator, dispatcher, governor, balancer, timer, tracker |
-| `pipeline_data_*` | ~200 | transformer, encoder, resolver, compressor, tokenizer, archiver |
-| `pipeline_step_*` | ~200 | optimizer, guard, profiler, sequencer, annotator, versioner |
-| Infrastructure | ~80 | circuit_breaker, health_dashboard, rate_limiter, consensus |
-
-### Module Pattern
-
-Every module follows the same architecture:
-
-```python
-@dataclass
-class ModuleState:
-    entries: Dict[str, dict] = field(default_factory=dict)
-    _seq: int = 0
-    callbacks: Dict[str, Callable] = field(default_factory=dict)
-
-class Module:
-    PREFIX = "xx-"           # Unique ID prefix
-    MAX_ENTRIES = 10000      # Auto-prune oldest 25% when exceeded
-
-    def operation(self, id, key, param="default", metadata=None) -> str:
-        # SHA256 + _seq collision-free IDs
-        # Dict-based return values
-        # Callback firing via _fire(action, **detail)
-
-    def get_stats(self) -> dict      # Metrics
-    def reset(self) -> None           # Full state reset
-    def on_change                     # Property: global callback
-    def remove_callback(name) -> bool # Named callback removal
-```
-
-### Integration Bus
-
-```python
-from src.services.pipeline_integration_bus import PipelineIntegrationBus
-
-bus = PipelineIntegrationBus()
-bus.register_chain("my_pipeline", tags=["production"])
-bus.add_step("my_pipeline", "transform", transform_fn, "pipeline_data_transformer")
-bus.add_step("my_pipeline", "validate", validate_fn, "pipeline_step_validator")
-result = bus.execute("my_pipeline", {"input": data})
-# → {"success": True, "context": {...}, "steps_completed": 2}
-```
-
-## Features
-
-- **Autonomous Code Generation** — Full-stack apps from JSON requirements
-- **902 Emergent Services** — Consistent, tested, wired microservice modules
-- **37+ AI Agents** — Parallel agents for code, schemas, APIs, auth, tests, deployment
-- **3-Layer Architecture** — Society of Mind + Epic Orchestrator + MCP Plugins
-- **Self-Correcting** — Automatic build/test error fixing until convergence
-- **Push-Based EventBus** — Agents communicate via async event queues
-- **Task Enrichment** — LLM-assisted schema discovery before code generation
-- **Cross-Layer Validation** — Static FE/BE consistency checks
-- **Electron Dashboard** — Modern UI for project management and monitoring
-- **Fungus Memory** — RAG-based semantic search for persistent project knowledge
-- **Multi-Tech Support** — React, Vue, Node.js, NestJS, Python, FastAPI, Electron
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.11+
-- Node.js 20+
-- Docker Desktop
-- Anthropic API Key (Claude)
-
-### Installation
-
 ```bash
-git clone https://github.com/Flissel/DaveFelix-Coding-Engine.git
-cd DaveFelix-Coding-Engine
+# 1. Ollama (local LLM)
+ollama pull qwen2.5-coder:7b
 
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
+# 2. Minibook (agent collaboration platform)
+cd ../minibook
 pip install -r requirements.txt
+python run.py  # starts on port 3456
 
-cp .env.example .env
-# Edit .env: set ANTHROPIC_API_KEY
+# 3. Python dependencies
+cd ../Coding_engine
+pip install httpx
 ```
 
-### Usage
+### Run
 
 ```bash
-# Generate project from requirements
-python run_engine.py --project-path Data/all_services/whatsapp
-
-# Compile check all 952 modules
-python check_compile_all.py
-
-# Run integration test suite (389 tests)
-python test_integration_chains.py
-
-# Run unit tests for specific modules
-python -m pytest tests/test_pipeline_data_transformer_v2.py -v -p no:asyncio
-
-# Generate new module batch (update MODULES in gen_phase.py first)
-python gen_phase.py
+python run_engine.py --project Data/all_services/whatsapp
 ```
+
+### Options
+
+```
+--project, -p      Path to project with requirements.json (required)
+--output, -o       Output directory (default: output/<project-name>)
+--model, -m        Ollama model (default: qwen2.5-coder:7b)
+--ollama-url       Ollama URL (default: http://localhost:11434)
+--minibook-url     Minibook URL (default: http://localhost:3456)
+--max-fix-rounds   Bug-fix iterations (default: 3)
+--verbose, -v      Debug logging
+```
+
+## How It Works
+
+### 1. Requirements (Input)
+
+```json
+{
+  "name": "whatsapp-messaging-service",
+  "type": "nestjs",
+  "features": [
+    {"id": "phone-registration", "priority": "high"},
+    {"id": "2fa-auth", "priority": "high"},
+    {"id": "real-time-messaging", "priority": "high"}
+  ],
+  "tech_stack": {
+    "backend": "NestJS + TypeScript",
+    "database": "PostgreSQL + Prisma"
+  }
+}
+```
+
+### 2. Orchestration Phases
+
+| Phase | Agent | What Happens |
+|-------|-------|-------------|
+| 1. Architecture | `architect` | Designs folder structure, DB schema, API contracts |
+| 2. Code Gen | `backend-gen`, `api-gen`, `auth-gen`, `frontend-gen` | Implements all modules |
+| 3. Database | `database-gen` | Creates Prisma schema, migrations, seeds |
+| 4. Testing | `tester` | Writes unit + integration + E2E tests |
+| 5. Fix Loop | `fixer` | Patches failures, re-tests (up to 3 rounds) |
+| 6. Review | `reviewer` | Code quality, security, architecture check |
+| 7. Infra | `infra-gen` | Docker, CI/CD, config, health checks |
+
+### 3. Agent Communication (via Minibook)
+
+Agents don't call each other directly. They communicate through Minibook posts:
+
+```
+Orchestrator -> POST "Design Architecture" (@architect)
+Architect    -> COMMENT with folder structure + DB schema
+Orchestrator -> POST "Implement Backend" (@backend-gen) [includes architect's output]
+Backend-Gen  -> COMMENT with generated NestJS services
+Orchestrator -> POST "Write Tests" (@tester) [includes all generated code]
+...
+```
+
+### 4. Output
+
+Complete project in `output/<project-name>/` with:
+- Full source code (backend + frontend)
+- Database schema + migrations
+- Tests (unit, integration, E2E)
+- Docker + CI/CD configs
+- Documentation
 
 ## Project Structure
 
 ```
 Coding_engine/
-├── src/
-│   ├── mind/              # EventBus, SharedState, Orchestrator
-│   ├── engine/            # HybridPipeline, Slicer, Merger, Contracts
-│   ├── agents/            # 37+ autonomous agents
-│   ├── services/          # 902 emergent service modules
-│   ├── autogen/           # AutoGen teams, TaskEnricher
-│   ├── api/               # FastAPI REST/WebSocket server
-│   ├── tools/             # Claude CLI, test runner, vision analysis
-│   └── validators/        # TypeScript, build, runtime validation
-├── tests/                 # 493 unit test files
-├── mcp_plugins/           # 20+ MCP server plugins
-├── dashboard-app/         # Electron/React dashboard
-├── config/                # LLM models, worker config
-├── infra/                 # Docker & Kubernetes manifests
-├── docs/                  # Architecture documentation
-├── Data/                  # Requirements & project data
-├── run_engine.py          # Main entry point
-├── check_compile_all.py   # Compile verification (952 modules)
-├── test_integration_chains.py  # Integration tests (389 tests, 211 chains)
-└── gen_phase.py           # Module batch generator
+|-- run_engine.py                 # CLI entry point
+|-- src/engine/
+|   |-- ollama_client.py          # Ollama REST API wrapper
+|   |-- minibook_client.py        # Minibook REST API wrapper
+|   |-- minibook_agent.py         # Base agent class
+|   |-- master_orchestrator.py    # Main orchestrator
+|   +-- agents/
+|       |-- architect.py          # Software architect
+|       |-- backend_gen.py        # Backend code generator
+|       |-- frontend_gen.py       # Frontend code generator
+|       |-- database_gen.py       # Database engineer
+|       |-- api_gen.py            # API developer
+|       |-- auth_gen.py           # Auth & security
+|       |-- tester.py             # QA & test engineer
+|       |-- fixer.py              # Bug fixer
+|       |-- reviewer.py           # Code reviewer
+|       +-- infra_gen.py          # DevOps engineer
+|-- Data/all_services/
+|   +-- whatsapp/
+|       +-- requirements.json     # Project requirements
+|-- src/services/                 # 902 emergent pipeline modules
++-- tests/                        # Unit tests
 ```
 
-## Verification
+## Emergent Pipeline
 
-```bash
-# Full system check
-python check_compile_all.py          # Expects: 952/952 clean
-python test_integration_chains.py    # Expects: 389/389 passed
+The engine includes 902 service modules providing infrastructure:
+- Pipeline data processing (validators, transformers, encoders, etc.)
+- Agent workflow management (schedulers, trackers, coordinators, etc.)
+- Pipeline step orchestration (guards, profilers, sequencers, etc.)
+- Agent task lifecycle (estimators, recyclers, dispatchers, etc.)
 
-# Unit tests (any module)
-python -m pytest tests/ -v -p no:asyncio
-```
+952 compile-clean entries, 389 integration tests passing.
 
-## Configuration
+## Connected Projects
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Claude API key | Yes |
-| `OPENROUTER_API_KEY` | OpenRouter key (AutoGen teams) | Optional |
-| `DATABASE_URL` | PostgreSQL connection | Optional |
-| `REDIS_URL` | Redis connection | Optional |
+| Project | Purpose |
+|---------|---------|
+| [Minibook](https://github.com/Flissel/minibook) | Agent collaboration platform (posts, comments, @mentions) |
+| [DaveLovable](https://github.com/Flissel/DaveLovable) | Vibe coding UI with live preview (separate, optional) |
+| [Ollama](https://ollama.com) | Local LLM runtime (qwen2.5-coder) |
 
 ## License
 
-Apache License 2.0
-
----
-
-<p align="center">Built by DaveFelix</p>
+MIT
