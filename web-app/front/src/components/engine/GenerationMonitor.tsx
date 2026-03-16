@@ -5,6 +5,8 @@ import { ProgressHeader } from './ProgressHeader';
 import { AgentList } from './AgentList';
 import { EpicSidebar } from './EpicSidebar';
 import { TaskBoard } from './TaskBoard';
+import { ReviewChat } from './ReviewChat';
+import { useEngineStore } from '@/stores/engineStore';
 
 interface GenerationMonitorProps {
   projectName: string;
@@ -15,6 +17,7 @@ const SUB_TABS = ['Agents', 'Epics', 'Tasks', 'Dependencies', 'Logs', 'Validatio
 export function GenerationMonitor({ projectName }: GenerationMonitorProps) {
   const { data: status } = useGenerationStatus(projectName);
   const [activeTab, setActiveTab] = useState<string>('Agents');
+  const reviewPaused = useEngineStore(state => state.reviewPaused);
 
   if (!status) return null;
 
@@ -27,6 +30,7 @@ export function GenerationMonitor({ projectName }: GenerationMonitorProps) {
         serviceCount={status.service_count}
         endpointCount={status.endpoint_count}
       />
+      {reviewPaused && <ReviewChat projectId={projectName} />}
       <div className="flex border-b border-border/30 px-2">
         {SUB_TABS.map((tab) => (
           <button
