@@ -20,6 +20,10 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
+class CyclicDependencyError(ValueError):
+    """Raised when a cyclic dependency is detected in the service graph."""
+
+
 # ---------------------------------------------------------------------------
 # Data Models
 # ---------------------------------------------------------------------------
@@ -625,6 +629,6 @@ class SpecParser:
 
         if len(result) != len(graph):
             missing = set(graph.keys()) - set(result)
-            raise ValueError(f"Cyclic dependency detected involving: {missing}")
+            raise CyclicDependencyError(f"Cyclic dependency detected involving: {missing}")
 
         return result
