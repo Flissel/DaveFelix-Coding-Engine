@@ -90,11 +90,40 @@ export const engineApi = {
   },
 };
 
+// Epic/Task REST endpoints
+export const getEpics = async (projectPath: string): Promise<any> => {
+  const response = await fetch(`${API_URL}/dashboard/epics?project_path=${encodeURIComponent(projectPath)}`);
+  return response.json();
+};
+
+export const getEpicTasks = async (epicId: string, projectPath: string): Promise<any> => {
+  const response = await fetch(`${API_URL}/dashboard/epic/${epicId}/tasks?project_path=${encodeURIComponent(projectPath)}`);
+  return response.json();
+};
+
+export const runEpic = async (epicId: string, projectPath: string): Promise<any> => {
+  const response = await fetch(`${API_URL}/dashboard/epic/${epicId}/run`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ project_path: projectPath }),
+  });
+  return response.json();
+};
+
+export const rerunTask = async (epicId: string, taskId: string, projectPath: string, fixInstructions?: string): Promise<any> => {
+  const response = await fetch(`${API_URL}/dashboard/epic/${epicId}/task/${taskId}/rerun`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ project_path: projectPath, fix_instructions: fixInstructions }),
+  });
+  return response.json();
+};
+
 // WebSocket connection
 export function createEngineWebSocket(
   onEvent: (type: string, data: any) => void,
 ): WebSocket {
-  const wsUrl = API_URL.replace('http', 'ws').replace('/api/v1', '') + '/api/v1/engine/ws';
+  const wsUrl = API_URL.replace('http', 'ws').replace('/api/v1', '') + '/api/v1/ws';
   const ws = new WebSocket(wsUrl);
 
   ws.onmessage = (event) => {

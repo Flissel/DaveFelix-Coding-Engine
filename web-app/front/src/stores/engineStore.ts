@@ -3,6 +3,15 @@ import { create } from 'zustand';
 import type { AgentInfo, EpicInfo, GenerationPhase } from '@/services/engineApi';
 import { createEngineWebSocket } from '@/services/engineApi';
 
+interface TaskProgress {
+  completed: number;
+  running: number;
+  failed: number;
+  pending: number;
+  total: number;
+  percent: number;
+}
+
 interface EngineState {
   // Connection
   connected: boolean;
@@ -14,6 +23,15 @@ interface EngineState {
   progressPct: number;
   agents: AgentInfo[];
   epics: EpicInfo[];
+
+  // Extended state (from Electron dashboard)
+  selectedEpicId: string | null;
+  reviewPaused: boolean;
+  reviewFeedback: string;
+  vncPreviewUrl: string | null;
+  logs: string[];
+  clarifications: any[];
+  taskProgress: TaskProgress;
 
   // Actions
   connect: () => void;
@@ -30,31 +48,97 @@ export const useEngineStore = create<EngineState>((set, get) => ({
   agents: [],
   epics: [],
 
+  // Extended state defaults
+  selectedEpicId: null,
+  reviewPaused: false,
+  reviewFeedback: '',
+  vncPreviewUrl: null,
+  logs: [],
+  clarifications: [],
+  taskProgress: { completed: 0, running: 0, failed: 0, pending: 0, total: 0, percent: 0 },
+
   connect: () => {
     if (get().ws) return; // Already connected
 
     const ws = createEngineWebSocket((type, data) => {
       switch (type) {
         case 'engine:agent_status':
-          set((s) => ({
-            agents: s.agents.map((a) =>
-              a.name === data.name ? { ...a, ...data } : a
-            ),
-          }));
+        case 'AGENT_STATUS':
+          set((s) => {
+            const agents = [...s.agents];
+            const name = data.agent_name || data.name;
+            const idx = agents.findIndex((a) => a.name === name);
+            const agent: AgentInfo = {
+              name,
+              status: data.status,
+              task: data.task || '',
+              elapsed_seconds: data.elapsed_seconds || data.elapsed || 0,
+            };
+            if (idx >= 0) agents[idx] = agent;
+            else agents.push(agent);
+            return { agents };
+          });
           break;
+
         case 'engine:epic_progress':
           set((s) => ({
             epics: s.epics.map((e) =>
-              e.id === data.id ? { ...e, ...data } : e
+              e.id === data.id
+                ? { ...e, progress_pct: data.progress_pct, tasks_complete: data.tasks_complete }
+                : e
             ),
           }));
           break;
+
         case 'engine:progress':
-          set({ progressPct: data.progress_pct, phase: data.phase });
+          set({ progressPct: data.progress_pct || data.percent || 0, phase: data.phase || get().phase });
           break;
+
         case 'engine:phase_change':
           set({ phase: data.phase });
           break;
+
+        case 'CONVERGENCE_UPDATE':
+          set({ progressPct: data.progress || data.percent || 0, phase: data.phase || get().phase });
+          break;
+
+        case 'REVIEW_PAUSED':
+          set({ reviewPaused: true });
+          break;
+
+        case 'REVIEW_RESUMED':
+          set({ reviewPaused: false });
+          break;
+
+        case 'vnc_preview_ready':
+          set({ vncPreviewUrl: data.url || `http://localhost:${data.vnc_port}/vnc.html` });
+          break;
+
+        case 'task_progress_update':
+        case 'pipeline_progress':
+          set({ taskProgress: data, progressPct: data.percent || get().progressPct });
+          break;
+
+        case 'epic_status_changed':
+          set((s) => ({
+            epics: s.epics.map((e) => (e.id === data.epic_id ? { ...e, ...data } : e)),
+          }));
+          break;
+
+        case 'log_entry':
+          set((s) => ({
+            logs: [...s.logs.slice(-499), data.message || data.text || JSON.stringify(data)],
+          }));
+          break;
+
+        case 'clarification_requested':
+          set((s) => ({ clarifications: [...s.clarifications, data] }));
+          break;
+
+        case 'engine:file_generated':
+          // No-op for now, can be wired to file explorer refresh later
+          break;
+
         default:
           break;
       }
