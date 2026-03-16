@@ -3,6 +3,7 @@ import { Menu, X, GithubIcon } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { EngineStatusPill } from "@/components/engine/EngineStatusPill";
+import { ServiceStatusBar } from "@/components/engine/ServiceStatusBar";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <EngineStatusPill />
+            <ServiceStatusBar />
             <a
               href="https://github.com/davidmonterocrespo24/DaveLovable"
               target="_blank"
