@@ -6,6 +6,7 @@ import { AgentList } from './AgentList';
 import { EpicSidebar } from './EpicSidebar';
 import { TaskBoard } from './TaskBoard';
 import { ReviewChat } from './ReviewChat';
+import { ClarificationPanel } from './ClarificationPanel';
 import { useEngineStore } from '@/stores/engineStore';
 
 interface GenerationMonitorProps {
@@ -54,7 +55,8 @@ export function GenerationMonitor({ projectName }: GenerationMonitorProps) {
       <div className="flex flex-1 overflow-hidden">
         {activeTab === 'Agents' && <AgentList agents={status.agents} />}
         {activeTab === 'Tasks' && <TaskBoard projectPath={projectName} />}
-        {activeTab !== 'Agents' && activeTab !== 'Tasks' && (
+        {activeTab === 'Validation' && <ClarificationPanel />}
+        {activeTab !== 'Agents' && activeTab !== 'Tasks' && activeTab !== 'Validation' && (
           <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
             {activeTab} view coming soon
           </div>
