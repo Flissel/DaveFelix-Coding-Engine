@@ -1,5 +1,5 @@
 // front/src/components/engine/GenerationMonitor.tsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useGenerationStatus } from '@/hooks/useEngine';
 import { ProgressHeader } from './ProgressHeader';
 import { AgentList } from './AgentList';
@@ -8,6 +8,29 @@ import { TaskBoard } from './TaskBoard';
 import { ReviewChat } from './ReviewChat';
 import { ClarificationPanel } from './ClarificationPanel';
 import { useEngineStore } from '@/stores/engineStore';
+
+function LogViewer() {
+  const logs = useEngineStore(state => state.logs);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [logs.length]);
+
+  return (
+    <div ref={containerRef} className="h-full overflow-y-auto font-mono text-xs p-4 bg-black/30 rounded-lg">
+      {logs.length === 0 ? (
+        <div className="text-white/30">No logs yet. Start generation to see output.</div>
+      ) : (
+        logs.map((log, i) => (
+          <div key={i} className="text-white/70 py-0.5 border-b border-white/5">{log}</div>
+        ))
+      )}
+    </div>
+  );
+}
 
 interface GenerationMonitorProps {
   projectName: string;
@@ -56,7 +79,8 @@ export function GenerationMonitor({ projectName }: GenerationMonitorProps) {
         {activeTab === 'Agents' && <AgentList agents={status.agents} />}
         {activeTab === 'Tasks' && <TaskBoard projectPath={projectName} />}
         {activeTab === 'Validation' && <ClarificationPanel />}
-        {activeTab !== 'Agents' && activeTab !== 'Tasks' && activeTab !== 'Validation' && (
+        {activeTab === 'Logs' && <LogViewer />}
+        {activeTab !== 'Agents' && activeTab !== 'Tasks' && activeTab !== 'Validation' && activeTab !== 'Logs' && (
           <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
             {activeTab} view coming soon
           </div>
