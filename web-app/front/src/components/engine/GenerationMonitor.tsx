@@ -4,6 +4,7 @@ import { useGenerationStatus } from '@/hooks/useEngine';
 import { ProgressHeader } from './ProgressHeader';
 import { AgentList } from './AgentList';
 import { EpicSidebar } from './EpicSidebar';
+import { TaskBoard } from './TaskBoard';
 
 interface GenerationMonitorProps {
   projectName: string;
@@ -48,7 +49,8 @@ export function GenerationMonitor({ projectName }: GenerationMonitorProps) {
       </div>
       <div className="flex flex-1 overflow-hidden">
         {activeTab === 'Agents' && <AgentList agents={status.agents} />}
-        {activeTab !== 'Agents' && (
+        {activeTab === 'Tasks' && <TaskBoard projectPath={projectName} />}
+        {activeTab !== 'Agents' && activeTab !== 'Tasks' && (
           <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
             {activeTab} view coming soon
           </div>
