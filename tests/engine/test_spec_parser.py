@@ -32,6 +32,7 @@ class TestDataModels:
 
     def test_parsed_spec_generation_order(self):
         spec = ParsedSpec(
+            project_name="test-project",
             services={}, shared_entities=[],
             dependency_graph={}, generation_order=["auth-service"],
             openapi_version="3.0.3",

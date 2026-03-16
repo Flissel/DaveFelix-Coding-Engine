@@ -88,6 +88,7 @@ class ParsedUserStory:
     id: str
     epic: str
     title: str
+    description: str
     acceptance_criteria: list[str]
     linked_requirements: list[str] = field(default_factory=list)
     linked_endpoints: list[str] = field(default_factory=list)
@@ -108,6 +109,7 @@ class ParsedService:
 
 @dataclass
 class ParsedSpec:
+    project_name: str
     services: dict[str, ParsedService]
     shared_entities: list[ParsedEntity]
     dependency_graph: dict[str, list[str]]
@@ -270,6 +272,7 @@ class SpecParser:
                 id=us.get("id", ""),
                 epic=us.get("parent_epic_id", ""),
                 title=us.get("title", ""),
+                description=us.get("description", ""),
                 acceptance_criteria=ac_list,
                 linked_requirements=us.get("linked_requirement_ids", []),
                 linked_endpoints=[],
@@ -448,6 +451,7 @@ class SpecParser:
         gen_order = self._topological_sort(dep_graph)
 
         return ParsedSpec(
+            project_name=self.project_dir.name,
             services=api_services,
             shared_entities=[e for e in entities if not e.service],
             dependency_graph=dep_graph,
