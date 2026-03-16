@@ -1,13 +1,31 @@
 // front/src/components/engine/VncPreview.tsx
 import { useState, useEffect } from 'react';
+import { platform } from '@/services/platform';
+import { useEngineStore } from '@/stores/engineStore';
 
 interface VncPreviewProps {
   vncUrl?: string;
   projectName: string;
 }
 
-export function VncPreview({ vncUrl, projectName }: VncPreviewProps) {
+export function VncPreview({ vncUrl: propVncUrl, projectName }: VncPreviewProps) {
   const [status, setStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
+  const [vncPort, setVncPort] = useState<number | null>(null);
+  const storeVncUrl = useEngineStore(state => state.vncPreviewUrl);
+
+  // Resolve VNC port via platform adapter
+  useEffect(() => {
+    if (projectName) {
+      platform.ports.getVncPort(projectName).then(port => {
+        if (port) setVncPort(port);
+      });
+    }
+  }, [projectName]);
+
+  // Build VNC URL: prop > store > port-resolved > null
+  const vncUrl = propVncUrl
+    || storeVncUrl
+    || (vncPort ? `http://localhost:${vncPort}/vnc.html?autoconnect=true&resize=scale&reconnect=true` : null);
 
   useEffect(() => {
     if (!vncUrl) {
@@ -17,7 +35,7 @@ export function VncPreview({ vncUrl, projectName }: VncPreviewProps) {
     // Health check
     const check = setInterval(async () => {
       try {
-        const res = await fetch(vncUrl.replace('/vnc.html', '/'), { mode: 'no-cors' });
+        const res = await fetch(vncUrl.replace('/vnc.html', '/').split('?')[0], { mode: 'no-cors' });
         setStatus('connected');
       } catch {
         setStatus('connecting');
