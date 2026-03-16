@@ -491,6 +491,71 @@ class SpecAdapter:
     # DOCUMENTATION FORMAT NORMALIZER
     # =========================================================================
 
+    def _try_structured_parse(self, project_path: Path) -> Optional["NormalizedSpec"]:
+        """Attempt to parse using SpecParser if directory has architecture/ and api/ subdirs.
+
+        Returns a NormalizedSpec built from the structured SpecParser output, or None
+        if the directory does not match the expected structure or parsing fails.
+        """
+        has_architecture = (project_path / "architecture").is_dir()
+        has_api = (project_path / "api").is_dir()
+        if not (has_architecture and has_api):
+            return None
+
+        try:
+            from src.engine.spec_parser import SpecParser
+            parsed = SpecParser(project_path).parse()
+
+            requirements = []
+            req_counter = 0
+            for svc_name, svc in parsed.services.items():
+                for story in svc.stories:
+                    for req_id in story.linked_requirements:
+                        requirements.append(Requirement(
+                            req_id=req_id,
+                            title=story.title,
+                            description=story.description,
+                            tag="functional",
+                            source=f"service:{svc_name}",
+                        ))
+                        req_counter += 1
+                for ep in svc.endpoints:
+                    if not any(r.req_id == f"EP-{ep.method}-{ep.path}" for r in requirements):
+                        requirements.append(Requirement(
+                            req_id=f"EP-{ep.method}-{ep.path}",
+                            title=f"{ep.method} {ep.path}",
+                            description=f"API endpoint for {svc_name}",
+                            tag="functional",
+                            source=f"service:{svc_name}",
+                        ))
+
+            tech_stack = {
+                "id": "nestjs_structured",
+                "name": "NestJS Microservices",
+                "backend": {"framework": "NestJS", "language": "TypeScript"},
+                "database": {"type": "PostgreSQL", "orm": "Prisma"},
+                "deployment": {"platform": "Docker"},
+            }
+
+            logger.info(
+                "structured_parse_succeeded",
+                services=len(parsed.services),
+                requirements=len(requirements),
+                path=str(project_path),
+            )
+
+            return NormalizedSpec(
+                project_name=parsed.project_name,
+                project_description=f"Structured spec with {len(parsed.services)} services",
+                requirements=requirements,
+                tech_stack=tech_stack,
+                context_layers=ContextLayers(),
+                raw_spec={"format": "structured", "path": str(project_path)},
+            )
+        except Exception as e:
+            logger.debug("structured_parse_failed", error=str(e), path=str(project_path))
+            return None
+
     def _normalize_documentation(self, project_path: Path) -> NormalizedSpec:
         """
         Normalize documentation format project to internal format.
@@ -502,6 +567,11 @@ class SpecAdapter:
         - API docs → API specs context
         - Diagrams → Workflow context
         """
+        # Attempt structured parse first (SpecParser — faster, machine-readable)
+        structured = self._try_structured_parse(project_path)
+        if structured is not None:
+            return structured
+
         loader = _get_documentation_loader()
         doc_spec = loader.load(project_path)
 

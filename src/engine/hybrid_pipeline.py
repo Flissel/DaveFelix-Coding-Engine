@@ -182,6 +182,8 @@ class HybridPipeline:
         # Fungus/Redis integration
         enable_fungus: bool = False,
         redis_url: str = "redis://localhost:6379/0",
+        # Service Pipeline v2 (SpecParser + ServiceOrchestrator)
+        use_service_pipeline: bool = False,
     ):
         self.output_dir = Path(output_dir)
         self.max_concurrent = max_concurrent
@@ -204,6 +206,9 @@ class HybridPipeline:
         self.enable_fungus = enable_fungus
         self.redis_url = redis_url
         self._fungus_worker = None
+
+        # Service Pipeline v2 flag
+        self.use_service_pipeline = use_service_pipeline
 
         # Universal spec support (set in execute_from_file)
         self.normalized_spec: Optional[NormalizedSpec] = None
@@ -237,6 +242,21 @@ class HybridPipeline:
         - Rich billing spec: { project: {...}, llms: {...}, agents: {...} }
         - Legacy: { meta: {...}, requirements: [...], tech_stack: {...} }
         """
+        # --- Service Pipeline v2 early-return branch ---
+        # When use_service_pipeline=True and the path is a structured spec directory
+        # (has architecture/ and api/ subdirs), delegate to ServiceOrchestrator.
+        if self.use_service_pipeline:
+            spec_path = Path(requirements_file)
+            if spec_path.is_dir() and (spec_path / "architecture").is_dir() and (spec_path / "api").is_dir():
+                from src.engine.spec_parser import SpecParser
+                from src.engine.service_orchestrator import ServiceOrchestrator
+                self.logger.info("service_pipeline_delegating", path=str(spec_path))
+                parsed_spec = SpecParser(spec_path).parse()
+                orchestrator = ServiceOrchestrator(parsed_spec, self.output_dir)
+                await orchestrator.run_all()
+                return PipelineResult(success=True, job_id=job_id)
+        # --- End Service Pipeline v2 branch ---
+
         # Use SpecAdapter for universal format support
         spec_adapter = SpecAdapter()
         normalized_spec = spec_adapter.load(requirements_file)
