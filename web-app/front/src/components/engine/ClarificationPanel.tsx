@@ -9,7 +9,9 @@ export function ClarificationPanel() {
   const [submitting, setSubmitting] = useState<string | null>(null);
 
   useEffect(() => {
-    getClarifications().then(setClarifications).catch(() => {});
+    getClarifications()
+      .then((data) => setClarifications(Array.isArray(data) ? data : []))
+      .catch(() => setClarifications([]));
   }, [wsClarifications.length]);
 
   const handleChoice = async (clarId: string, choiceId: string) => {

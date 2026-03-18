@@ -120,7 +120,7 @@ def _save_yaml(config: Dict[str, Any]) -> None:
         f.write(yaml_content)
 
 
-VALID_PROVIDERS = {"anthropic", "openrouter"}
+VALID_PROVIDERS = {"anthropic", "openrouter", "openai", "gemini", "ollama", "custom"}
 VALID_ROLES = {"primary", "cli", "mcp_standard", "mcp_agent", "judge", "reasoning", "enrichment"}
 
 
@@ -288,6 +288,154 @@ async def validate_config(request: LLMConfigUpdateRequest) -> LLMConfigValidatio
     Returns validation errors and warnings.
     """
     return _validate_config(request.models)
+
+
+# ── API Key Management ──────────────────────────────────────────────────
+
+# Keys that can be managed via UI (whitelist for security)
+MANAGED_KEY_ENVS = {
+    "ANTHROPIC_API_KEY": "Anthropic",
+    "OPENROUTER_API_KEY": "OpenRouter",
+    "OPENAI_API_KEY": "OpenAI",
+    "GEMINI_API_KEY": "Google Gemini",
+}
+
+
+class APIKeyStatus(BaseModel):
+    """Status of a single API key."""
+    env_var: str
+    provider: str
+    is_set: bool
+    preview: Optional[str] = None  # e.g. "sk-ant-...rdA" (first 6 + last 3)
+
+
+class APIKeySetRequest(BaseModel):
+    """Request to set an API key."""
+    env_var: str
+    value: str
+
+
+class APIKeySetResponse(BaseModel):
+    """Response after setting an API key."""
+    env_var: str
+    provider: str
+    is_set: bool
+    preview: str
+    persisted: bool
+
+
+def _key_preview(key: str) -> str:
+    """Generate safe preview: first 8 chars + ... + last 3 chars."""
+    if not key or len(key) < 12:
+        return "***"
+    return f"{key[:8]}...{key[-3:]}"
+
+
+@router.get("/api-keys", response_model=List[APIKeyStatus])
+async def get_api_key_status() -> List[APIKeyStatus]:
+    """
+    Get the status of all managed API keys (set/unset, safe preview).
+
+    Never returns the full key value.
+    """
+    import os
+    result = []
+    for env_var, provider in MANAGED_KEY_ENVS.items():
+        value = os.environ.get(env_var, "")
+        result.append(APIKeyStatus(
+            env_var=env_var,
+            provider=provider,
+            is_set=bool(value),
+            preview=_key_preview(value) if value else None,
+        ))
+    return result
+
+
+@router.put("/api-keys", response_model=APIKeySetResponse)
+async def set_api_key(request: APIKeySetRequest) -> APIKeySetResponse:
+    """
+    Set an API key in the running process environment.
+
+    Also persists to .env file in project root for container restarts.
+    """
+    import os
+
+    if request.env_var not in MANAGED_KEY_ENVS:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown env var '{request.env_var}'. Allowed: {', '.join(MANAGED_KEY_ENVS.keys())}",
+        )
+
+    if not request.value or not request.value.strip():
+        raise HTTPException(status_code=422, detail="API key value cannot be empty")
+
+    value = request.value.strip()
+
+    # Set in current process environment (immediate effect)
+    os.environ[request.env_var] = value
+
+    # Persist to .env file for container restarts
+    persisted = False
+    try:
+        env_path = Path(__file__).parent.parent.parent.parent / ".env"
+        lines = []
+        found = False
+
+        if env_path.exists():
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip().startswith(f"{request.env_var}="):
+                        lines.append(f"{request.env_var}={value}\n")
+                        found = True
+                    else:
+                        lines.append(line)
+
+        if not found:
+            lines.append(f"{request.env_var}={value}\n")
+
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+        persisted = True
+        logger.info("api_key_persisted", env_var=request.env_var, env_path=str(env_path))
+
+    except Exception as e:
+        logger.warning("api_key_persist_failed", env_var=request.env_var, error=str(e))
+
+    logger.info("api_key_set", env_var=request.env_var, provider=MANAGED_KEY_ENVS[request.env_var])
+
+    return APIKeySetResponse(
+        env_var=request.env_var,
+        provider=MANAGED_KEY_ENVS[request.env_var],
+        is_set=True,
+        preview=_key_preview(value),
+        persisted=persisted,
+    )
+
+
+@router.delete("/api-keys/{env_var}")
+async def remove_api_key(env_var: str):
+    """Remove an API key from the environment."""
+    import os
+
+    if env_var not in MANAGED_KEY_ENVS:
+        raise HTTPException(status_code=422, detail=f"Unknown env var '{env_var}'")
+
+    os.environ.pop(env_var, None)
+
+    # Also remove from .env file
+    try:
+        env_path = Path(__file__).parent.parent.parent.parent / ".env"
+        if env_path.exists():
+            with open(env_path, "r", encoding="utf-8") as f:
+                lines = [l for l in f if not l.strip().startswith(f"{env_var}=")]
+            with open(env_path, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+    except Exception:
+        pass
+
+    logger.info("api_key_removed", env_var=env_var)
+    return {"success": True, "env_var": env_var}
 
 
 @router.post("/reload")

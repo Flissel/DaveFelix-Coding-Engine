@@ -10,6 +10,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import DocsSection from "@/components/DocsSection";
 import { ProjectCard } from "@/components/ProjectCard";
+import { API_URL } from "@/services/api";
 
 interface FileAttachment {
   id: string;
@@ -241,7 +242,7 @@ const Index = () => {
       }
 
       // Call the new endpoint that uses AI to generate project metadata
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/projects/from-message`, {
+      const response = await fetch(`${API_URL}/projects/from-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

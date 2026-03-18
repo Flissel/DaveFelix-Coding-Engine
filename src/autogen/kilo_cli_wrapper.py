@@ -102,6 +102,8 @@ class KiloCLI:
         context_files: Optional[list[str]] = None,
         use_mcp: bool = True,  # Ignored for Kilo, kept for API compatibility
         file_context: str = "",  # Used for meaningful file naming
+        agent_name: Optional[str] = None,  # Ignored for Kilo, kept for API compatibility
+        **kwargs,  # Accept any additional kwargs for forward compatibility
     ) -> KiloCLIResponse:
         """
         Execute a prompt using Kilo CLI in autonomous mode.
@@ -140,29 +142,14 @@ class KiloCLI:
             effective_timeout = timeout or self.timeout
             settings = get_settings()
 
-            # Base command: kilocode --auto
-            cmd_parts = ["kilocode", "--auto"]
+            # Base command: kilo run --auto (v7+)
+            cmd_parts = ["kilo", "run", "--auto"]
 
-            # Add model flag if configured (uses OpenRouter)
+            # Add model flag if configured
             if settings.kilo_model:
                 cmd_parts.extend(["--model", settings.kilo_model])
 
-            # Add JSON output flag
-            if output_format == "json":
-                cmd_parts.append("--json")
-
-            # Add workspace
-            cmd_parts.extend(["--workspace", self.working_dir])
-
-            # Add mode
-            if effective_mode:
-                cmd_parts.extend(["--mode", effective_mode])
-
-            # Add timeout
-            cmd_parts.extend(["--timeout", str(effective_timeout)])
-
-            # Build command string (prompt passed via stdin for safety)
-            cmd = " ".join(cmd_parts)
+            # Note: kilo run v7 doesn't support --output-format, output is parsed from stdout
 
             self.logger.info(
                 "executing_kilo_cli",
@@ -172,23 +159,24 @@ class KiloCLI:
                 output_format=output_format,
             )
 
-            # Run subprocess with UTF-8 encoding
+            # Run subprocess — pass prompt as positional arg to kilo run
             def run_cmd():
                 env = os.environ.copy()
                 env['PYTHONIOENCODING'] = 'utf-8'
                 # Remove CLAUDECODE env var to prevent "nested session" error
                 env.pop('CLAUDECODE', None)
 
+                # kilo run --auto --model X "prompt text"
+                full_cmd = cmd_parts + [sanitized_prompt]
+
                 return subprocess.run(
-                    cmd,
-                    input=sanitized_prompt,
+                    full_cmd,
                     capture_output=True,
                     text=True,
                     encoding='utf-8',
                     errors='replace',
                     timeout=effective_timeout,
                     cwd=self.working_dir,
-                    shell=True,
                     env=env,
                 )
 

@@ -8,7 +8,31 @@ export interface EngineProject {
   service_count: number;
   endpoint_count: number;
   story_count: number;
+  epic_count: number;
+  has_user_stories: boolean;
+  has_api_docs: boolean;
+  has_data_dictionary: boolean;
+  created_at: string | null;
   type: 'engine' | 'vibe';
+}
+
+// Backend response from /dashboard/local-projects
+interface LocalProjectResponse {
+  project_id: string;
+  project_name: string;
+  project_path: string;
+  has_user_stories: boolean;
+  has_api_docs: boolean;
+  has_data_dictionary: boolean;
+  epic_count: number;
+  user_story_count: number;
+  created_at: string | null;
+}
+
+interface LocalProjectsResponse {
+  projects: LocalProjectResponse[];
+  total: number;
+  scan_path: string;
 }
 
 export interface EngineProjectDetail extends EngineProject {
@@ -54,39 +78,155 @@ export interface GenerationStatus {
 // REST API
 export const engineApi = {
   listProjects: async (): Promise<EngineProject[]> => {
-    const res = await fetch(`${API_URL}/engine/projects`);
+    const res = await fetch(`${API_URL}/dashboard/local-projects`);
     if (!res.ok) throw new Error(`Failed to list engine projects: ${res.status}`);
-    return res.json();
+    const data: LocalProjectsResponse = await res.json();
+    // Map backend response to EngineProject format
+    return data.projects.map((p) => ({
+      name: p.project_id,
+      path: p.project_path,
+      service_count: 0, // Not available from scan endpoint
+      endpoint_count: 0,
+      story_count: p.user_story_count,
+      epic_count: p.epic_count,
+      has_user_stories: p.has_user_stories,
+      has_api_docs: p.has_api_docs,
+      has_data_dictionary: p.has_data_dictionary,
+      created_at: p.created_at,
+      type: 'engine' as const,
+    }));
   },
 
   getProject: async (name: string): Promise<EngineProjectDetail> => {
-    const res = await fetch(`${API_URL}/engine/projects/${encodeURIComponent(name)}`);
+    // Use local-projects scan to get project detail
+    const res = await fetch(`${API_URL}/dashboard/local-projects`);
     if (!res.ok) throw new Error(`Failed to get engine project: ${res.status}`);
-    return res.json();
+    const data: LocalProjectsResponse = await res.json();
+    const p = data.projects.find((proj) => proj.project_id === name);
+    if (!p) throw new Error(`Project not found: ${name}`);
+    return {
+      name: p.project_id,
+      path: p.project_path,
+      service_count: 0,
+      endpoint_count: 0,
+      story_count: p.user_story_count,
+      epic_count: p.epic_count,
+      has_user_stories: p.has_user_stories,
+      has_api_docs: p.has_api_docs,
+      has_data_dictionary: p.has_data_dictionary,
+      created_at: p.created_at,
+      type: 'engine' as const,
+      services: [],
+      generation_order: [],
+      dependency_graph: {},
+    };
   },
 
-  getStatus: async (name: string): Promise<GenerationStatus> => {
-    const res = await fetch(`${API_URL}/engine/projects/${encodeURIComponent(name)}/status`);
-    if (!res.ok) throw new Error(`Failed to get generation status: ${res.status}`);
-    return res.json();
+  getStatus: async (_name: string): Promise<GenerationStatus> => {
+    try {
+      const res = await fetch(`${API_URL}/dashboard/project/status?projectId=${encodeURIComponent(_name)}`);
+      if (!res.ok) {
+        // No active generation — return idle status
+        return {
+          project_name: _name,
+          phase: 'idle',
+          progress_pct: 0,
+          agents: [],
+          epics: [],
+          service_count: 0,
+          endpoint_count: 0,
+        };
+      }
+      const data = await res.json();
+      return {
+        project_name: _name,
+        phase: data.phase || data.status || 'idle',
+        progress_pct: data.progress_pct || data.progress || 0,
+        agents: data.agents || [],
+        epics: data.epics || [],
+        service_count: data.service_count || 0,
+        endpoint_count: data.endpoint_count || 0,
+      };
+    } catch {
+      return {
+        project_name: _name,
+        phase: 'idle',
+        progress_pct: 0,
+        agents: [],
+        epics: [],
+        service_count: 0,
+        endpoint_count: 0,
+      };
+    }
   },
 
-  startGeneration: async (name: string, skeletonOnly = false): Promise<GenerationStatus> => {
-    const res = await fetch(`${API_URL}/engine/projects/${encodeURIComponent(name)}/start`, {
+  startGeneration: async (
+    name: string,
+    opts: { projectPath?: string; parallelism?: number } = {},
+  ): Promise<GenerationStatus> => {
+    const projectPath = opts.projectPath || `/app/Data/all_services/${name}`;
+    const outputDir = `/app/output/${name}`;
+
+    // Step 1: Try to start sandbox container (non-blocking, ok to fail)
+    try {
+      await fetch(`${API_URL}/dashboard/project/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId: name,
+          outputDir,
+          vncPort: 6090,
+          appPort: 3100,
+        }),
+      });
+    } catch {
+      // Sandbox container start is optional — generation works without it
+    }
+
+    // Step 2: Start the epic-based generation pipeline
+    const genRes = await fetch(`${API_URL}/dashboard/start-epic-generation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ skeleton_only: skeletonOnly }),
+      body: JSON.stringify({
+        project_path: projectPath,
+        output_dir: outputDir,
+        vnc_port: 6090,
+        app_port: 3100,
+        max_parallel_tasks: opts.parallelism || 1,
+      }),
     });
-    if (!res.ok) throw new Error(`Failed to start generation: ${res.status}`);
-    return res.json();
+    if (!genRes.ok) {
+      const err = await genRes.text();
+      throw new Error(`Failed to start generation: ${genRes.status} - ${err}`);
+    }
+
+    return {
+      project_name: name,
+      phase: 'generation',
+      progress_pct: 0,
+      agents: [],
+      epics: [],
+      service_count: 0,
+      endpoint_count: 0,
+    };
   },
 
   stopGeneration: async (name: string): Promise<GenerationStatus> => {
-    const res = await fetch(`${API_URL}/engine/projects/${encodeURIComponent(name)}/stop`, {
+    const res = await fetch(`${API_URL}/dashboard/stop-generation`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: name }),
     });
     if (!res.ok) throw new Error(`Failed to stop generation: ${res.status}`);
-    return res.json();
+    return {
+      project_name: name,
+      phase: 'idle',
+      progress_pct: 0,
+      agents: [],
+      epics: [],
+      service_count: 0,
+      endpoint_count: 0,
+    };
   },
 };
 

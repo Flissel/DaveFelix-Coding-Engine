@@ -5,7 +5,8 @@ export const isElectron = (): boolean => {
   return typeof window !== 'undefined' && !!window.electronAPI;
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from './api';
+const API_BASE = API_URL;
 
 const jsonPost = (url: string, body?: any) =>
   fetch(url, {
@@ -42,7 +43,7 @@ export const platform = {
   ports: {
     getVncPort: (projectId: string): Promise<number> => isElectron()
       ? window.electronAPI!.ports.getVncPort(projectId)
-      : Promise.resolve(parseInt(import.meta.env.VITE_VNC_PORT || '6080')),
+      : Promise.resolve(parseInt(import.meta.env.VITE_VNC_PORT || '6090')),
     getAppPort: (projectId: string): Promise<number> => isElectron()
       ? window.electronAPI!.ports.getAppPort(projectId)
       : Promise.resolve(parseInt(import.meta.env.VITE_APP_PORT || '5173')),

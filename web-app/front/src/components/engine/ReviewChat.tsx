@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useEngineStore } from '@/stores/engineStore';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/services/api';
+const API_BASE = API_URL;
 
 export function ReviewChat({ projectId }: { projectId: string }) {
   const reviewPaused = useEngineStore(state => state.reviewPaused);

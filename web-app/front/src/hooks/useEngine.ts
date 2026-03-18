@@ -32,15 +32,20 @@ export function useGenerationStatus(name: string, enabled = true) {
     queryKey: engineKeys.status(name),
     queryFn: () => engineApi.getStatus(name),
     enabled: enabled && !!name,
-    refetchInterval: 3000, // Poll every 3s while generation running
+    refetchInterval: 3000, // Always poll — backend generation can start externally
+    retry: 1,
   });
 }
 
 export function useStartGeneration() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, skeletonOnly }: { name: string; skeletonOnly?: boolean }) =>
-      engineApi.startGeneration(name, skeletonOnly),
+    mutationFn: ({ name, projectPath, parallelism }: {
+      name: string;
+      projectPath?: string;
+      parallelism?: number;
+    }) =>
+      engineApi.startGeneration(name, { projectPath, parallelism }),
     onSuccess: (status) => {
       queryClient.setQueryData(engineKeys.status(status.project_name), status);
       queryClient.invalidateQueries({ queryKey: engineKeys.projects() });

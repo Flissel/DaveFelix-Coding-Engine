@@ -68,8 +68,11 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - GIT_SERVER_URL=http://gitea:3000
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_BACKEND=claude
     volumes:
       - ./src:/app/src
+      - ./.env:/app/.env
       - artifact_data:/data/artifacts
     depends_on:
       postgres:

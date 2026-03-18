@@ -27,14 +27,30 @@ function toCardProject(project: Project): CardProject {
 }
 
 function engineToCardProject(project: EngineProject): CardProject {
+  // Clean up name: remove timestamps like _20260211_025459, replace separators
+  const cleanName = project.name
+    .replace(/_\d{8}_\d{6}$/, '')
+    .replace(/[-_]/g, ' ');
+
+  // Build description from available docs
+  const docs: string[] = [];
+  if (project.has_user_stories) docs.push('User Stories');
+  if (project.has_api_docs) docs.push('API Docs');
+  if (project.has_data_dictionary) docs.push('Data Dictionary');
+  const description = docs.length > 0 ? docs.join(' · ') : 'Engine project';
+
+  // Build stats from available data
+  const stats: { label: string; value: string | number }[] = [];
+  if (project.epic_count > 0) stats.push({ label: 'Epics', value: project.epic_count });
+  if (project.story_count > 0) stats.push({ label: 'Stories', value: project.story_count });
+  if (project.endpoint_count > 0) stats.push({ label: 'Endpoints', value: project.endpoint_count });
+  if (stats.length === 0) stats.push({ label: 'Docs', value: docs.length });
+
   return {
     type: 'engine',
-    name: project.name.replace(/_\d+$/, '').replace(/-/g, ' '),
-    description: `${project.service_count} microservices`,
-    stats: [
-      { label: 'Endpoints', value: project.endpoint_count },
-      { label: 'Stories', value: project.story_count },
-    ],
+    name: cleanName,
+    description,
+    stats,
     status: 'ready',
     navigateTo: `/engine-editor/${encodeURIComponent(project.name)}`,
   };

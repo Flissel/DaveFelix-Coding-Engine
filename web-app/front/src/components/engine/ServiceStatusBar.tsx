@@ -1,6 +1,7 @@
 // web-app/front/src/components/engine/ServiceStatusBar.tsx
 import { useState, useEffect } from 'react';
 import { platform, platformEvents, isElectron } from '@/services/platform';
+import { API_URL } from '@/services/api';
 
 interface Status {
   fastapi: boolean;
@@ -17,7 +18,8 @@ export function ServiceStatusBar() {
           const s = await window.electronAPI!.services.getStatus();
           setStatus({ fastapi: s.fastapi, docker: s.docker });
         } else {
-          const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1') + '/engine/projects');
+          // Use root endpoint as health check (returns 200 if API is running)
+          const res = await fetch(API_URL.replace('/api/v1', '/'));
           setStatus({ fastapi: res.ok, docker: false });
         }
       } catch {

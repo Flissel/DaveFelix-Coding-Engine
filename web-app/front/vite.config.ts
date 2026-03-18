@@ -9,8 +9,21 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     headers: {
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
+      // COEP/COOP removed — blocks cross-origin VNC iframe and health checks
+      // Re-add only if SharedArrayBuffer is needed for WASM features
+    },
+    proxy: {
+      // Coding Engine routes (Docker container on port 8000)
+      '/api/v1/dashboard': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/ws': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
+      '/api/v1/jobs': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/colony': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/enrichment': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/artifacts': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/vision': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/llm-config': { target: 'http://localhost:8000', changeOrigin: true },
+      // DaveLovable Vibe Coder (local backend on port 8002) — catch-all for /projects, /chat, /engine
+      '/api/v1': { target: 'http://localhost:8002', changeOrigin: true },
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),

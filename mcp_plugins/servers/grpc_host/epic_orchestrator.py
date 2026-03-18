@@ -354,7 +354,7 @@ class EpicOrchestrator:
             return result
 
         except Exception as e:
-            logger.error(f"Epic execution failed: {e}", epic_id=epic_id)
+            logger.error(f"Epic {epic_id} execution failed: {e}")
             return EpicExecutionResult(
                 epic_id=epic_id,
                 success=False,
@@ -1601,7 +1601,7 @@ class EpicOrchestrator:
 
         for epic_id in epic_ids:
             logger.info(f"Starting epic: {epic_id}")
-            result = await self.run_epic(epic_id)
+            result = await self.run_epic(epic_id, skip_failed_deps=True)
             results[epic_id] = result
 
             # Stop if epic failed (unless it's just a checkpoint pause)

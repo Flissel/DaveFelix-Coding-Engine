@@ -37,9 +37,9 @@ class Settings(BaseSettings):
     default_model: str = "claude-sonnet-4-5"
 
     # LLM Backend Selection
-    # Options: "claude" | "kilo" (default) | "openrouter"
-    # Note: Kilo CLI handles its own auth via interactive login (no API key needed)
-    llm_backend: str = "kilo"
+    # Options: "claude" (default) | "kilo" | "openrouter"
+    # "claude" uses Claude SDK/CLI, "kilo" requires kilocode CLI binary
+    llm_backend: str = "claude"
 
     # CLI Model Configuration
     # Model for Claude Code CLI (passed via --model flag)
@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     # This fallback is only used if llm_config import fails
     cli_model: str = "claude-sonnet-4-20250514"
     # Model for Kilo Code CLI (passed via --model flag)
-    kilo_model: str = "claude-sonnet-4-20250514"
+    kilo_model: str = "kilo/openrouter/free"
 
     # OpenRouter (for free models)
     openrouter_api_key: Optional[str] = None

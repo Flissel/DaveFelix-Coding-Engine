@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Any
 import structlog
 
 from .registry import MCPRegistry, MCPAgentInfo, get_registry
+from .project_config import ProjectMCPConfig, load_project_mcp_config
 
 logger = structlog.get_logger()
 
@@ -39,8 +40,14 @@ class MCPAgentPool:
     and returns structured results. Supports both sequential and
     parallel execution.
 
+    Supports per-project config via .mcp-config.json that overrides
+    global servers.json (env vars, paths, container names).
+
     Usage:
         pool = MCPAgentPool(working_dir="./my-project")
+
+        # With project-specific config
+        pool = MCPAgentPool(working_dir="./output", project_path="/data/projects/my-app")
 
         # Spawn single agent
         result = await pool.spawn("supermemory", "Search for React patterns")
@@ -55,25 +62,40 @@ class MCPAgentPool:
         available = pool.list_available()
     """
 
-    def __init__(self, working_dir: str, registry: MCPRegistry = None):
+    def __init__(self, working_dir: str, registry: MCPRegistry = None,
+                 project_path: str = None):
         """
         Initialize the agent pool.
 
         Args:
             working_dir: Working directory for agent operations
             registry: MCPRegistry instance (uses global if None)
+            project_path: Optional project path to load .mcp-config.json
         """
         self.working_dir = Path(working_dir).resolve()
         self.registry = registry or get_registry()
         self._running: Dict[str, asyncio.subprocess.Process] = {}
+        self._project_config: Optional[ProjectMCPConfig] = None
+
+        # Load project-specific MCP config if available
+        if project_path:
+            self._project_config = load_project_mcp_config(project_path)
+        if not self._project_config:
+            # Try loading from working_dir parent
+            self._project_config = load_project_mcp_config(str(self.working_dir))
 
         logger.info("mcp_agent_pool_initialized",
                    working_dir=str(self.working_dir),
+                   project_config=bool(self._project_config),
                    available_agents=len(self.list_available()))
 
     def _build_command(self, agent_info: MCPAgentInfo, task: str,
                        session_id: str) -> List[str]:
-        """Build command line for spawning an agent."""
+        """Build command line for spawning an agent.
+
+        If project config has args_override for this server, those
+        replace the trailing path arguments (e.g., filesystem root dir).
+        """
         cmd = []
 
         # Resolve command path
@@ -84,6 +106,13 @@ class MCPAgentPool:
 
         cmd.append(command)
 
+        # Check if project config has args override
+        args_override = None
+        if self._project_config:
+            srv_override = self._project_config.servers.get(agent_info.name)
+            if srv_override and srv_override.enabled and srv_override.args_override:
+                args_override = srv_override.args_override
+
         # Add args, resolving paths
         for arg in agent_info.args:
             if arg.startswith("mcp_plugins/"):
@@ -91,6 +120,23 @@ class MCPAgentPool:
                 project_root = Path(__file__).parent.parent.parent
                 arg = str(project_root / arg)
             cmd.append(arg)
+
+        # Replace trailing path args if override exists
+        # (e.g., filesystem server: npx ... @mcp/server-filesystem /old/path → /new/path)
+        if args_override:
+            # Find where path-like args start (after the npm/python command parts)
+            # Override replaces only the trailing non-flag arguments
+            non_flag_end = []
+            for i in range(len(cmd) - 1, 0, -1):
+                if cmd[i].startswith("-") or cmd[i].startswith("@"):
+                    break
+                non_flag_end.insert(0, i)
+            if non_flag_end:
+                # Replace trailing path args with overrides
+                cmd = cmd[:non_flag_end[0]] + args_override
+            else:
+                # Just append
+                cmd.extend(args_override)
 
         # Add standard CLI args for custom Python agents
         if agent_info.server_type == "custom":
@@ -101,10 +147,13 @@ class MCPAgentPool:
         return cmd
 
     def _build_env(self, agent_info: MCPAgentInfo) -> Dict[str, str]:
-        """Build environment variables for spawning."""
+        """Build environment variables for spawning.
+
+        Merges: OS env → servers.json env_vars → project .mcp-config.json overrides
+        """
         env = os.environ.copy()
 
-        # Add agent-specific env vars
+        # 1. Add agent-specific env vars from servers.json
         for key, value in agent_info.env_vars.items():
             if isinstance(value, str) and value.startswith("env:"):
                 # Resolve from environment
@@ -113,6 +162,21 @@ class MCPAgentPool:
                 env[key] = env_value
             else:
                 env[key] = str(value)
+
+        # 2. Override with project-specific config (highest priority)
+        if self._project_config:
+            srv_override = self._project_config.servers.get(agent_info.name)
+            if srv_override and srv_override.enabled:
+                for key, value in srv_override.env_vars.items():
+                    env[key] = str(value)
+
+            # Always inject project context vars
+            env["MCP_PROJECT_ID"] = self._project_config.project_id
+            env["MCP_PROJECT_PATH"] = self._project_config.project_path
+            env["MCP_OUTPUT_DIR"] = self._project_config.output_dir
+            env["MCP_SANDBOX_CONTAINER"] = self._project_config.sandbox_container
+            env["MCP_VNC_PORT"] = str(self._project_config.vnc_port)
+            env["MCP_APP_PORT"] = str(self._project_config.app_port)
 
         # Ensure UTF-8 encoding
         env["PYTHONIOENCODING"] = "utf-8"

@@ -6,12 +6,25 @@ Provides REST endpoints for:
 - Job submission and monitoring
 - Artifact retrieval
 """
+import os
 import sys
 from pathlib import Path
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
+
+# Load .env file for persisted API keys (survives container restarts)
+_env_path = project_root / ".env"
+if _env_path.exists():
+    with open(_env_path) as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _key, _, _val = _line.partition("=")
+                _key, _val = _key.strip(), _val.strip()
+                if _key and _val and _key not in os.environ:
+                    os.environ[_key] = _val
 
 import structlog
 from contextlib import asynccontextmanager

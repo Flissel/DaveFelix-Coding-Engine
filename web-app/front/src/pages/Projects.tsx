@@ -34,7 +34,7 @@ import Footer from "@/components/Footer";
 
 const Projects = () => {
   const navigate = useNavigate();
-  const { data: projects, isLoading } = useProjects();
+  const { data: projects, isLoading, isError: vibeError } = useProjects();
   const { data: engineProjects, isLoading: engineLoading } = useEngineProjects();
   const createProject = useCreateProject();
   const deleteProject = useDeleteProject();
@@ -143,7 +143,9 @@ const Projects = () => {
   };
 
   // Show skeleton UI during loading for better UX
-  const showSkeleton = (isLoading && !projects) || (engineLoading && !engineProjects);
+  // Don't block on Vibe projects if they error (e.g. DB not configured)
+  const vibeStillLoading = isLoading && !projects && !vibeError;
+  const showSkeleton = vibeStillLoading && (engineLoading && !engineProjects);
 
   return (
     <main className="min-h-screen bg-background">

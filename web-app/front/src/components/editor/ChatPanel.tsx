@@ -3,7 +3,7 @@ import { Send, Sparkles, User, Bot, Paperclip, Image as ImageIcon, FileText, X, 
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useChatSession, useChatSessions } from '@/hooks/useChat';
-import { chatApi, gitApi } from '@/services/api';
+import { chatApi, gitApi, API_URL } from '@/services/api';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -164,7 +164,7 @@ export const ChatPanel = forwardRef<ChatPanelRef, ChatPanelProps>(
 
           // Load git commits and convert them to system messages
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/projects/${projectId}/git/history?limit=100`);
+            const response = await fetch(`${API_URL}/projects/${projectId}/git/history?limit=100`);
             if (response.ok) {
               const commits = await response.json();
 
@@ -930,7 +930,7 @@ export const ChatPanel = forwardRef<ChatPanelRef, ChatPanelProps>(
     const handleUndoCommit = async (commitHash: string) => {
       try {
         // Call backend API to revert the commit
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/projects/${projectId}/git/restore/${commitHash}`, {
+        const response = await fetch(`${API_URL}/projects/${projectId}/git/restore/${commitHash}`, {
           method: 'POST',
         });
 

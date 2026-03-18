@@ -83,6 +83,10 @@ class LogsResponse(BaseModel):
 # Project container tracking
 _project_containers: dict = {}
 
+# Generation state tracking (keyed by projectId)
+# Stores: { phase, progress_pct, completed, failed, total, started_at, error }
+_generation_state: dict = {}
+
 logger = structlog.get_logger(__name__)
 
 router = APIRouter(prefix="/api/v1/dashboard", tags=["dashboard"])
@@ -482,32 +486,89 @@ async def stop_project_container(request: ProjectStopRequest) -> SuccessResponse
         return SuccessResponse(success=False, error=str(e))
 
 
-@router.get("/project/status", response_model=ProjectStatusResponse)
-async def get_project_status(projectId: str = Query(..., description="Project ID")) -> ProjectStatusResponse:
+@router.get("/project/status")
+async def get_project_status(projectId: str = Query(..., description="Project ID")):
     """
-    Get project container status.
+    Get project generation status. Returns generation phase, progress, and task counts
+    when generation is active. Falls back to container status otherwise.
     """
+    # Check generation state first
+    gen = _generation_state.get(projectId)
+    if gen and gen.get("phase") not in (None, "idle"):
+        # Lazy-load epics from project if not cached
+        if not gen.get("epics") and gen.get("project_path"):
+            try:
+                from mcp_plugins.servers.grpc_host.epic_task_generator import EpicTaskGenerator
+                etg = EpicTaskGenerator(gen["project_path"])
+                raw_epics = etg.get_epic_list()
+                epic_infos = []
+                for e in raw_epics:
+                    epic_infos.append({
+                        "id": e.get("id", ""),
+                        "name": e.get("name", ""),
+                        "progress_pct": e.get("progress_percent", 0),
+                        "tasks_total": 0,
+                        "tasks_complete": 0,
+                    })
+                gen["epics"] = epic_infos
+            except Exception:
+                # Fallback: try reading tasks files for epic IDs
+                import glob as _glob
+                import json as _json
+                epic_infos = []
+                tasks_dir = Path(gen["project_path"]) / "tasks"
+                for tf in sorted(tasks_dir.glob("epic-*-tasks.json")):
+                    try:
+                        with open(tf) as f:
+                            td = _json.load(f)
+                        tasks = td.get("tasks", [])
+                        completed = sum(1 for t in tasks if t.get("status") == "completed")
+                        total = len(tasks)
+                        epic_id = td.get("epic_id", tf.stem.split("-tasks")[0].upper())
+                        epic_infos.append({
+                            "id": epic_id,
+                            "name": td.get("epic_name", epic_id),
+                            "progress_pct": int(completed * 100 / max(total, 1)),
+                            "tasks_total": total,
+                            "tasks_complete": completed,
+                        })
+                    except Exception:
+                        pass
+                gen["epics"] = epic_infos
+
+        return {
+            "phase": gen.get("phase", "idle"),
+            "progress_pct": gen.get("progress_pct", 0),
+            "agents": gen.get("agents", []),
+            "epics": gen.get("epics", []),
+            "service_count": gen.get("service_count", 0),
+            "endpoint_count": gen.get("endpoint_count", 0),
+            "completed": gen.get("completed", 0),
+            "failed": gen.get("failed", 0),
+            "total": gen.get("total", 0),
+            "running": True,
+        }
+
+    # Fallback: container status
     try:
         container_name = f"project-{projectId}"
-
         stdout, stderr, rc = await run_command(
             f"docker inspect --format='{{{{.State.Status}}}}' {container_name}"
         )
-
         if rc != 0:
-            return ProjectStatusResponse(running=False)
+            return {"phase": "idle", "progress_pct": 0, "agents": [], "epics": [],
+                    "service_count": 0, "endpoint_count": 0, "running": False}
 
         status = stdout.strip().strip("'")
         info = _project_containers.get(projectId, {})
-
-        return ProjectStatusResponse(
-            running=(status == 'running'),
-            vncPort=info.get('vncPort'),
-            appPort=info.get('appPort'),
-            health=status
-        )
+        return {"phase": "idle", "progress_pct": 0, "agents": [], "epics": [],
+                "service_count": 0, "endpoint_count": 0,
+                "running": (status == 'running'),
+                "vncPort": info.get('vncPort'), "appPort": info.get('appPort'),
+                "health": status}
     except Exception:
-        return ProjectStatusResponse(running=False)
+        return {"phase": "idle", "progress_pct": 0, "agents": [], "epics": [],
+                "service_count": 0, "endpoint_count": 0, "running": False}
 
 
 @router.get("/project/logs", response_model=LogsResponse)
@@ -2231,8 +2292,9 @@ class StartEpicGenerationRequest(BaseModel):
     """Request to start full epic-based generation for a project."""
     project_path: str
     output_dir: str
-    vnc_port: int = 6081
-    app_port: int = 3001
+    vnc_port: int = 6090
+    app_port: int = 3100
+    max_parallel_tasks: int = 1  # 1=sequential (default), 2-5=parallel
 
 
 @router.post("/start-epic-generation", response_model=SuccessResponse)
@@ -2274,17 +2336,49 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             project_path=request.project_path,
             output_dir=output_dir,
             event_bus=_event_bus,
-            max_parallel_tasks=1,
+            max_parallel_tasks=request.max_parallel_tasks,
             enable_som=True,
             som_config=som_config,
         )
 
+        # Generate project-specific MCP config for dynamic server configuration
+        try:
+            from src.mcp.project_config import generate_project_mcp_config, save_project_mcp_config
+            project_id = Path(request.project_path).name
+            mcp_config = generate_project_mcp_config(
+                project_id=project_id,
+                project_path=request.project_path,
+                output_dir=output_dir,
+                sandbox_container=f"sandbox-{project_id}",
+                vnc_port=request.vnc_port,
+                app_port=request.app_port,
+            )
+            save_project_mcp_config(mcp_config)
+            logger.info("mcp_config_generated_for_project", project_id=project_id)
+        except Exception as mcp_err:
+            logger.warning("mcp_config_generation_failed", error=str(mcp_err))
+
         # Store orchestrator reference
         _epic_orchestrators[f"all:{request.project_path}"] = orchestrator
 
+        # Set generation state so status endpoint reflects progress
+        project_id = Path(request.project_path).name
+        _generation_state[project_id] = {
+            "phase": "generation",
+            "progress_pct": 0,
+            "completed": 0,
+            "failed": 0,
+            "total": 0,
+            "agents": [],
+            "epics": [],
+            "service_count": 0,
+            "endpoint_count": 0,
+            "project_path": request.project_path,
+        }
+
         # Run all epics in background
         asyncio.create_task(
-            _run_all_epics_background(request.project_path, orchestrator)
+            _run_all_epics_background(request.project_path, orchestrator, project_id)
         )
 
         logger.info(
@@ -2301,8 +2395,43 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
         return SuccessResponse(success=False, error=str(e))
 
 
-async def _run_all_epics_background(project_path: str, orchestrator):
+async def _run_all_epics_background(project_path: str, orchestrator, project_id: str = ""):
     """Background task to run all epics for a project."""
+    if not project_id:
+        project_id = Path(project_path).name
+
+    # Helper to update generation state from task files
+    async def _update_progress():
+        try:
+            import json as _json
+            tasks_dir = Path(project_path) / "tasks"
+            completed = failed = total = 0
+            for tf in tasks_dir.glob("epic-*-tasks.json"):
+                with open(tf) as f:
+                    data = _json.load(f)
+                for t in data.get("tasks", []):
+                    total += 1
+                    s = t.get("status", "pending")
+                    if s == "completed":
+                        completed += 1
+                    elif s == "failed":
+                        failed += 1
+            if project_id in _generation_state:
+                _generation_state[project_id]["completed"] = completed
+                _generation_state[project_id]["failed"] = failed
+                _generation_state[project_id]["total"] = total
+                _generation_state[project_id]["progress_pct"] = int(completed * 100 / max(total, 1))
+        except Exception:
+            pass
+
+    # Start a background progress updater
+    async def _progress_loop():
+        while project_id in _generation_state and _generation_state[project_id].get("phase") == "generation":
+            await _update_progress()
+            await asyncio.sleep(5)
+
+    progress_task = asyncio.create_task(_progress_loop())
+
     try:
         results = await orchestrator.run_all_epics()
 
@@ -2310,6 +2439,13 @@ async def _run_all_epics_background(project_path: str, orchestrator):
         total_completed = sum(r.completed_tasks for r in results.values())
         total_failed = sum(r.failed_tasks for r in results.values())
         all_success = all(r.success for r in results.values())
+
+        # Update final state
+        if project_id in _generation_state:
+            _generation_state[project_id]["phase"] = "complete" if all_success else "failed"
+            _generation_state[project_id]["progress_pct"] = 100 if all_success else _generation_state[project_id].get("progress_pct", 0)
+            _generation_state[project_id]["completed"] = total_completed
+            _generation_state[project_id]["failed"] = total_failed
 
         if _event_bus:
             await _event_bus.publish(Event(
@@ -2336,12 +2472,18 @@ async def _run_all_epics_background(project_path: str, orchestrator):
     except Exception as e:
         logger.error("all_epics_background_failed", project_path=project_path, error=str(e))
 
+        if project_id in _generation_state:
+            _generation_state[project_id]["phase"] = "failed"
+            _generation_state[project_id]["error"] = str(e)
+
         if _event_bus:
             await _event_bus.publish(Event(
                 type=EventType.BUILD_FAILED,
                 source="epic_orchestrator",
                 data={"project_path": project_path, "error": str(e)}
             ))
+    finally:
+        progress_task.cancel()
 
 
 @router.post("/generate-task-lists", response_model=SuccessResponse)
@@ -2378,3 +2520,73 @@ async def generate_all_task_lists(request: GenerateTaskListsRequest):
     except Exception as e:
         logger.error("task_lists_generation_failed", project_path=request.project_path, error=str(e))
         return SuccessResponse(success=False, error=str(e))
+
+
+# ─── Project MCP Config Endpoints ────────────────────────────────────
+
+
+class MCPConfigUpdateRequest(BaseModel):
+    """Request to update project MCP config."""
+    project_path: str
+    updates: dict  # Partial update dict
+
+
+@router.get("/project/mcp-config")
+async def get_project_mcp_config(project_path: str = Query(...)):
+    """
+    Get the MCP server config for a project.
+
+    Returns the .mcp-config.json content showing which MCP servers
+    are configured and their project-specific overrides.
+    """
+    try:
+        from src.mcp.project_config import load_project_mcp_config, generate_project_mcp_config, save_project_mcp_config
+
+        config = load_project_mcp_config(project_path)
+        if not config:
+            # Generate default config if none exists
+            project_id = Path(project_path).name
+            output_dir = str(Path(project_path) / "output")
+            config = generate_project_mcp_config(
+                project_id=project_id,
+                project_path=project_path,
+                output_dir=output_dir,
+            )
+            save_project_mcp_config(config)
+
+        return config.to_dict()
+
+    except Exception as e:
+        logger.error("get_mcp_config_failed", project_path=project_path, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/project/mcp-config")
+async def update_project_mcp_config(request: MCPConfigUpdateRequest):
+    """
+    Update MCP server config for a project.
+
+    Supports partial updates:
+    {
+        "project_path": "/data/projects/my-app",
+        "updates": {
+            "servers": {
+                "postgres": {"env_vars": {"DATABASE_URL": "postgresql://..."}}
+            }
+        }
+    }
+    """
+    try:
+        from src.mcp.project_config import update_project_mcp_config as _update, load_project_mcp_config
+
+        config = _update(request.project_path, request.updates)
+        if not config:
+            raise HTTPException(status_code=404, detail="No MCP config found for project")
+
+        return config.to_dict()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("update_mcp_config_failed", project_path=request.project_path, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
