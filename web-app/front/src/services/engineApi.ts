@@ -241,6 +241,18 @@ export const getEpicTasks = async (epicId: string, projectPath: string): Promise
   return response.json();
 };
 
+// --- DB-backed API endpoints (PostgreSQL) ---
+
+export const getDbProjects = async (): Promise<any[]> => {
+  const response = await fetch(`${API_URL}/dashboard/db/projects`);
+  return response.json();
+};
+
+export const getDbTasks = async (projectId: number): Promise<{ job: any; tasks: any[] }> => {
+  const response = await fetch(`${API_URL}/dashboard/db/projects/${projectId}/tasks`);
+  return response.json();
+};
+
 export const runEpic = async (epicId: string, projectPath: string): Promise<any> => {
   const response = await fetch(`${API_URL}/dashboard/epic/${epicId}/run`, {
     method: 'POST',
