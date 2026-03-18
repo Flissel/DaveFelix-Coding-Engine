@@ -54,7 +54,7 @@ class Task(Base):
     )
 
     # Task identity
-    task_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    task_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     requirement_ids: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
 
     # Task type and agent assignment

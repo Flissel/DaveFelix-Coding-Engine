@@ -2305,6 +2305,7 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
     This is the main entry point when "Generate Code" is clicked on an RE project.
     It parses all epics, creates an EpicOrchestrator, and runs all epics in sequence
     as a background task. Progress updates are pushed via WebSocket events.
+    Data is persisted to PostgreSQL (projects/jobs/tasks tables).
     """
     try:
         import sys as _sys
@@ -2361,6 +2362,57 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
         # Store orchestrator reference
         _epic_orchestrators[f"all:{request.project_path}"] = orchestrator
 
+        # --- Persist Project + Job to PostgreSQL ---
+        db_project_id = None
+        db_job_id = None
+        try:
+            from src.models.base import get_session_factory
+            from src.models.project import Project, ProjectStatus
+            from src.models.job import Job, JobStatus
+            import json as _json
+
+            session_factory = get_session_factory()
+            async with session_factory() as session:
+                project_id_name = Path(request.project_path).name
+                # Upsert project
+                from sqlalchemy import select
+                result = await session.execute(
+                    select(Project).where(Project.name == project_id_name)
+                )
+                db_project = result.scalar_one_or_none()
+                if not db_project:
+                    db_project = Project(
+                        name=project_id_name,
+                        description=f"Generated from {request.project_path}",
+                        status=ProjectStatus.ACTIVE,
+                        config_json=_json.dumps({
+                            "project_path": request.project_path,
+                            "output_dir": output_dir,
+                            "vnc_port": request.vnc_port,
+                            "app_port": request.app_port,
+                        }),
+                    )
+                    session.add(db_project)
+                    await session.flush()
+                else:
+                    db_project.status = ProjectStatus.ACTIVE
+                db_project_id = db_project.id
+
+                # Create job
+                db_job = Job(
+                    project_id=db_project.id,
+                    status=JobStatus.RUNNING,
+                    requirements_json="{}",
+                    source_file=request.project_path,
+                )
+                session.add(db_job)
+                await session.flush()
+                db_job_id = db_job.id
+                await session.commit()
+            logger.info("db_project_job_created", project_id=db_project_id, job_id=db_job_id)
+        except Exception as db_err:
+            logger.warning("db_persist_failed_continuing", error=str(db_err))
+
         # Set generation state so status endpoint reflects progress
         project_id = Path(request.project_path).name
         _generation_state[project_id] = {
@@ -2374,6 +2426,8 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             "service_count": 0,
             "endpoint_count": 0,
             "project_path": request.project_path,
+            "db_project_id": db_project_id,
+            "db_job_id": db_job_id,
         }
 
         # Run all epics in background
@@ -2386,6 +2440,8 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             project_path=request.project_path,
             output_dir=output_dir,
             vnc_port=request.vnc_port,
+            db_project_id=db_project_id,
+            db_job_id=db_job_id,
         )
 
         return SuccessResponse(success=True)
@@ -2396,16 +2452,22 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
 
 
 async def _run_all_epics_background(project_path: str, orchestrator, project_id: str = ""):
-    """Background task to run all epics for a project."""
+    """Background task to run all epics for a project. Persists progress to PostgreSQL."""
     if not project_id:
         project_id = Path(project_path).name
 
-    # Helper to update generation state from task files
+    # Get DB IDs from generation state
+    gen_state = _generation_state.get(project_id, {})
+    db_job_id = gen_state.get("db_job_id")
+    db_project_id = gen_state.get("db_project_id")
+
+    # Helper to update generation state from task files AND sync to DB
     async def _update_progress():
         try:
             import json as _json
             tasks_dir = Path(project_path) / "tasks"
             completed = failed = total = 0
+            task_records = []
             for tf in tasks_dir.glob("epic-*-tasks.json"):
                 with open(tf) as f:
                     data = _json.load(f)
@@ -2416,11 +2478,19 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                         completed += 1
                     elif s == "failed":
                         failed += 1
+                    task_records.append(t)
             if project_id in _generation_state:
                 _generation_state[project_id]["completed"] = completed
                 _generation_state[project_id]["failed"] = failed
                 _generation_state[project_id]["total"] = total
                 _generation_state[project_id]["progress_pct"] = int(completed * 100 / max(total, 1))
+
+            # Sync tasks to PostgreSQL
+            if db_job_id and task_records:
+                try:
+                    await _sync_tasks_to_db(db_job_id, task_records)
+                except Exception as db_err:
+                    logger.debug("db_task_sync_failed", error=str(db_err))
         except Exception:
             pass
 
@@ -2446,6 +2516,32 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
             _generation_state[project_id]["progress_pct"] = 100 if all_success else _generation_state[project_id].get("progress_pct", 0)
             _generation_state[project_id]["completed"] = total_completed
             _generation_state[project_id]["failed"] = total_failed
+
+        # Final DB sync
+        await _update_progress()
+
+        # Update Job status in DB
+        if db_job_id:
+            try:
+                from src.models.base import get_session_factory
+                from src.models.job import Job, JobStatus
+                from src.models.project import Project, ProjectStatus
+                session_factory = get_session_factory()
+                async with session_factory() as session:
+                    job = await session.get(Job, db_job_id)
+                    if job:
+                        job.status = JobStatus.COMPLETED if all_success else JobStatus.FAILED
+                        job.tasks_completed = total_completed
+                        job.tasks_failed = total_failed
+                        job.total_tasks = total_completed + total_failed
+                    if db_project_id:
+                        project = await session.get(Project, db_project_id)
+                        if project:
+                            project.status = ProjectStatus.COMPLETED if all_success else ProjectStatus.FAILED
+                    await session.commit()
+                logger.info("db_job_finalized", job_id=db_job_id, success=all_success)
+            except Exception as db_err:
+                logger.warning("db_job_finalize_failed", error=str(db_err))
 
         if _event_bus:
             await _event_bus.publish(Event(
@@ -2476,6 +2572,21 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
             _generation_state[project_id]["phase"] = "failed"
             _generation_state[project_id]["error"] = str(e)
 
+        # Mark Job as failed in DB
+        if db_job_id:
+            try:
+                from src.models.base import get_session_factory
+                from src.models.job import Job, JobStatus
+                session_factory = get_session_factory()
+                async with session_factory() as session:
+                    job = await session.get(Job, db_job_id)
+                    if job:
+                        job.status = JobStatus.FAILED
+                        job.error_log = str(e)
+                    await session.commit()
+            except Exception:
+                pass
+
         if _event_bus:
             await _event_bus.publish(Event(
                 type=EventType.BUILD_FAILED,
@@ -2484,6 +2595,148 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
             ))
     finally:
         progress_task.cancel()
+
+
+async def _sync_tasks_to_db(job_id: int, task_records: list):
+    """Sync task records from JSON files to PostgreSQL tasks table."""
+    from src.models.base import get_session_factory
+    from src.models.task import Task, TaskStatus, TaskType
+    from sqlalchemy import select
+    import json as _json
+
+    status_map = {
+        "pending": TaskStatus.PENDING,
+        "running": TaskStatus.RUNNING,
+        "completed": TaskStatus.COMPLETED,
+        "failed": TaskStatus.FAILED,
+        "blocked": TaskStatus.BLOCKED,
+        "cancelled": TaskStatus.CANCELLED,
+    }
+
+    session_factory = get_session_factory()
+    async with session_factory() as session:
+        for t in task_records:
+            # Task files use "id" field, model uses "task_id"
+            tid = t.get("id", t.get("task_id", ""))
+            if not tid:
+                continue
+
+            # Check if task exists
+            result = await session.execute(
+                select(Task).where(Task.job_id == job_id, Task.task_id == str(tid))
+            )
+            existing = result.scalar_one_or_none()
+
+            task_status = status_map.get(t.get("status", "pending"), TaskStatus.PENDING)
+
+            if existing:
+                existing.status = task_status
+                existing.status_message = t.get("error_message", t.get("error", t.get("status_message")))
+                if t.get("result"):
+                    existing.agent_response = _json.dumps(t["result"]) if isinstance(t["result"], dict) else str(t["result"])
+            else:
+                # prompt MUST not be null
+                prompt = t.get("command") or t.get("description") or t.get("title") or str(tid)
+                new_task = Task(
+                    job_id=job_id,
+                    task_id=str(tid),
+                    requirement_ids=t.get("related_requirements", []),
+                    title=t.get("title", t.get("description", str(tid))),
+                    description=t.get("description", ""),
+                    prompt=prompt,
+                    depends_on=t.get("dependencies", t.get("depends_on", [])),
+                    status=task_status,
+                    status_message=t.get("error_message"),
+                    retry_count=t.get("retry_count", 0),
+                    max_retries=t.get("max_retries", 3),
+                )
+                session.add(new_task)
+
+        await session.commit()
+
+
+@router.get("/db/projects")
+async def get_db_projects():
+    """Get all projects from PostgreSQL."""
+    try:
+        from src.models.base import get_session_factory
+        from src.models.project import Project
+        from sqlalchemy import select
+        session_factory = get_session_factory()
+        async with session_factory() as session:
+            result = await session.execute(select(Project).order_by(Project.updated_at.desc()))
+            projects = result.scalars().all()
+            return [
+                {
+                    "id": p.id,
+                    "name": p.name,
+                    "description": p.description,
+                    "status": p.status.value if p.status else "unknown",
+                    "created_at": p.created_at.isoformat() if p.created_at else None,
+                    "updated_at": p.updated_at.isoformat() if p.updated_at else None,
+                }
+                for p in projects
+            ]
+    except Exception as e:
+        logger.error("db_projects_fetch_failed", error=str(e))
+        return []
+
+
+@router.get("/db/projects/{project_id}/tasks")
+async def get_db_tasks(project_id: int):
+    """Get all tasks for a project from PostgreSQL (via latest job)."""
+    try:
+        from src.models.base import get_session_factory
+        from src.models.job import Job
+        from src.models.task import Task
+        from sqlalchemy import select
+        session_factory = get_session_factory()
+        async with session_factory() as session:
+            # Get latest job for project
+            result = await session.execute(
+                select(Job).where(Job.project_id == project_id).order_by(Job.created_at.desc()).limit(1)
+            )
+            job = result.scalar_one_or_none()
+            if not job:
+                return {"tasks": [], "job": None}
+
+            # Get tasks for job
+            result = await session.execute(
+                select(Task).where(Task.job_id == job.id).order_by(Task.id)
+            )
+            tasks = result.scalars().all()
+            return {
+                "job": {
+                    "id": job.id,
+                    "status": job.status.value if job.status else "unknown",
+                    "tasks_completed": job.tasks_completed,
+                    "tasks_failed": job.tasks_failed,
+                    "total_tasks": job.total_tasks,
+                    "progress_pct": job.progress_percent,
+                },
+                "tasks": [
+                    {
+                        "id": t.id,
+                        "task_id": t.task_id,
+                        "title": t.title,
+                        "description": t.description,
+                        "status": t.status.value if t.status else "pending",
+                        "status_message": t.status_message,
+                        "task_type": t.task_type.value if t.task_type else "general",
+                        "depends_on": t.depends_on or [],
+                        "retry_count": t.retry_count,
+                        "execution_time_ms": t.execution_time_ms,
+                        "tokens_used": t.tokens_used,
+                        "cost_usd": t.cost_usd,
+                        "created_at": t.created_at.isoformat() if t.created_at else None,
+                        "updated_at": t.updated_at.isoformat() if t.updated_at else None,
+                    }
+                    for t in tasks
+                ],
+            }
+    except Exception as e:
+        logger.error("db_tasks_fetch_failed", error=str(e))
+        return {"tasks": [], "job": None, "error": str(e)}
 
 
 @router.post("/generate-task-lists", response_model=SuccessResponse)
