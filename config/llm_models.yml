@@ -17,51 +17,45 @@
 
 providers:
   anthropic:
-    base_url: null  # Uses Anthropic SDK default
-    api_key_env: "ANTHROPIC_API_KEY"
+    base_url: null
+    api_key_env: ANTHROPIC_API_KEY
   openrouter:
-    base_url: "https://openrouter.ai/api/v1"
-    api_key_env: "OPENROUTER_API_KEY"
-
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
 models:
   primary:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
+    provider: openrouter
+    model: qwen/qwen3-coder:free
     max_tokens: 16384
-    description: "Anthropic SDK direct — base agent, vision analysis, monitor"
-
+    description: Anthropic SDK direct — base agent, vision analysis, monitor
   cli:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
+    provider: openrouter
+    model: qwen/qwen3-coder:free
     max_tokens: 16384
-    description: "Claude CLI --model flag (must be Anthropic-native name, not OpenRouter format)"
-
+    description: Claude CLI --model flag (must be Anthropic-native name, not OpenRouter
+      format)
   mcp_standard:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
+    provider: openrouter
+    model: qwen/qwen3-coder:free
     max_tokens: 8192
-    description: "AutoGen teams, EventFix orchestrator, task executor, LLM search"
-
+    description: AutoGen teams, EventFix orchestrator, task executor, LLM search
   mcp_agent:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
-    max_tokens: 4096
-    description: "Individual MCP plugin agents (filesystem, docker, prisma, etc.)"
-
-  judge:
-    provider: "anthropic"
-    model: "claude-haiku-4-5"
-    max_tokens: 4096
-    description: "MCMP judge, fungus agents, differential analysis, MCP planner"
-
-  reasoning:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
+    provider: openrouter
+    model: qwen/qwen3-coder:free
     max_tokens: 8192
-    description: "Complex reasoning, architecture analysis"
-
+    description: Individual MCP plugin agents (filesystem, docker, prisma, etc.)
+  judge:
+    provider: openrouter
+    model: nvidia/nemotron-3-super-120b-a12b:free
+    max_tokens: 8192
+    description: MCMP judge, fungus agents, differential analysis, MCP planner
+  reasoning:
+    provider: openrouter
+    model: nvidia/nemotron-3-super-120b-a12b:free
+    max_tokens: 16384
+    description: Complex reasoning, architecture analysis
   enrichment:
-    provider: "anthropic"
-    model: "claude-sonnet-4-6"
-    max_tokens: 4096
-    description: "Phase 30 schema discovery and task mapping"
+    provider: openrouter
+    model: qwen/qwen3-next-80b-a3b-instruct:free
+    max_tokens: 8192
+    description: Phase 30 schema discovery and task mapping

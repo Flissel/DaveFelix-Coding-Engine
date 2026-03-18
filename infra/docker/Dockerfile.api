@@ -21,11 +21,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and entry scripts
+# Copy source code, plugins, config and entry scripts
 COPY src/ ./src/
-COPY run_society_hybrid.py ./
-COPY run_hybrid.py ./
-COPY run_job.py ./
+COPY mcp_plugins/ ./mcp_plugins/
+COPY config/ ./config/
+COPY run_engine.py ./
+COPY run_pipeline.py ./
+COPY run_clean.py ./
 
 # Create data directories
 RUN mkdir -p /data/projects /data/logs

@@ -10,13 +10,17 @@ Enhanced with:
 - DocumentRegistry Reports loading
 - Claude Agent SDK integration with CLI fallback
 - Skill-aware prompt enrichment (progressive disclosure)
+- OpenRouter HTTP API backend (no CLI needed)
 
 Backend Selection:
-- Primary: Claude Agent SDK (requires ANTHROPIC_API_KEY)
+- Primary: OpenRouter HTTP API (if configured in LLM config)
+- Secondary: Claude Agent SDK (requires ANTHROPIC_API_KEY)
 - Fallback: Claude CLI (subprocess, uses OAuth login if no API key)
 """
 import asyncio
 import os
+import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Any, TYPE_CHECKING
@@ -303,7 +307,13 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self._using_sdk = False
         self._sdk_backend = None
         self._using_kilo = False
+        self._using_openrouter = False
+        self._openrouter_model = None
+        self._openrouter_max_tokens = 16384
         self._instance_fallback_reason: Optional[str] = None
+
+        # Check if LLM config has OpenRouter models configured
+        self._detect_openrouter_config()
 
         # Check for Kilo backend preference from config
         if settings.llm_backend == "kilo":
@@ -1195,10 +1205,12 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             full_prompt=full_prompt,
         )
 
-        # Execute via SDK (primary) or CLI (fallback)
+        # Execute via OpenRouter (primary) > SDK > CLI (fallback)
         import time
         start_time = time.time()
-        if self._using_sdk and self._sdk_backend:
+        if self._using_openrouter:
+            result = await self._execute_via_openrouter(full_prompt, agent_type=agent_type)
+        elif self._using_sdk and self._sdk_backend:
             result = await self._execute_via_sdk(full_prompt, context_files)
         else:
             result = await self._execute_via_cli(
@@ -1349,9 +1361,188 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             execution_time_ms=response.execution_time_ms,
         )
 
+    def _detect_openrouter_config(self):
+        """Check LLM config for OpenRouter provider and enable HTTP backend."""
+        try:
+            config_path = Path("/app/config/llm_models.yml")
+            if not config_path.exists():
+                # Try local path
+                engine_root = Path(__file__).parent.parent.parent
+                config_path = engine_root / "config" / "llm_models.yml"
+
+            if config_path.exists():
+                import yaml
+                with open(config_path) as f:
+                    cfg = yaml.safe_load(f)
+
+                models = cfg.get("models", {})
+                primary = models.get("primary", {})
+
+                if primary.get("provider") == "openrouter":
+                    self._using_openrouter = True
+                    self._openrouter_model = primary.get("model", "qwen/qwen3-coder:free")
+                    self._openrouter_max_tokens = primary.get("max_tokens", 16384)
+
+                    # Get API key
+                    self._openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
+
+                    if self._openrouter_api_key:
+                        self.logger.info(
+                            "backend_selected",
+                            backend="openrouter",
+                            model=self._openrouter_model,
+                            reason="LLM config has openrouter primary provider",
+                        )
+                    else:
+                        self._using_openrouter = False
+                        self.logger.warning("openrouter_no_api_key", reason="OPENROUTER_API_KEY not set")
+        except Exception as e:
+            self.logger.debug("openrouter_config_detect_failed", error=str(e))
+
+    async def _execute_via_openrouter(
+        self,
+        prompt: str,
+        agent_type: str = "general",
+    ) -> "CodeGenerationResult":
+        """
+        Execute code generation via OpenRouter HTTP API.
+
+        This sends the prompt to OpenRouter's chat completions endpoint
+        and parses generated code files from the response.
+        """
+        import httpx
+
+        url = "https://openrouter.ai/api/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self._openrouter_api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://coding-engine.local",
+            "X-Title": "Coding Engine",
+        }
+
+        # Build system prompt for code generation
+        system_msg = (
+            "You are a code generation assistant. Generate production-ready code files. "
+            "For each file, output it in this format:\n"
+            "```filepath: <relative/path/to/file>\n<code content>\n```\n"
+            "Generate complete, working files. No placeholders or TODOs."
+        )
+
+        payload = {
+            "model": self._openrouter_model,
+            "messages": [
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": prompt},
+            ],
+            "max_tokens": self._openrouter_max_tokens,
+            "temperature": 0.3,
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                resp = await client.post(url, headers=headers, json=payload)
+                resp.raise_for_status()
+                data = resp.json()
+
+            # Extract response text
+            content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+            # Parse generated files from markdown code blocks
+            files = self._parse_code_files(content)
+
+            # Write files to working directory
+            written_files = []
+            if self.working_dir and files:
+                for gf in files:
+                    try:
+                        out_path = Path(self.working_dir) / gf.path
+                        out_path.parent.mkdir(parents=True, exist_ok=True)
+                        out_path.write_text(gf.content, encoding="utf-8")
+                        written_files.append(gf)
+                    except Exception as write_err:
+                        self.logger.warning("file_write_failed", path=gf.path, error=str(write_err))
+
+            model_used = data.get("model", self._openrouter_model)
+            usage = data.get("usage", {})
+
+            self.logger.info(
+                "openrouter_complete",
+                model=model_used,
+                files_generated=len(written_files),
+                prompt_tokens=usage.get("prompt_tokens", 0),
+                completion_tokens=usage.get("completion_tokens", 0),
+            )
+
+            return CodeGenerationResult(
+                success=True,
+                files=written_files if written_files else files,
+                output=content[:500],  # Truncate for logging
+                error=None,
+                execution_time_ms=0,
+            )
+
+        except httpx.HTTPStatusError as e:
+            error_body = e.response.text[:300] if e.response else str(e)
+            self.logger.error("openrouter_http_error", status=e.response.status_code if e.response else 0, error=error_body)
+            return CodeGenerationResult(
+                success=False,
+                error=f"OpenRouter API error {e.response.status_code}: {error_body}",
+            )
+        except Exception as e:
+            self.logger.error("openrouter_execution_failed", error=str(e))
+            return CodeGenerationResult(
+                success=False,
+                error=f"OpenRouter execution failed: {str(e)}",
+            )
+
+    def _parse_code_files(self, content: str) -> list:
+        """Parse code files from LLM response with ```filepath: ... ``` blocks."""
+        files = []
+        # Pattern: ```filepath: path/to/file\n...\n```
+        pattern = r'```(?:filepath:\s*(.+?))\n(.*?)```'
+        matches = re.findall(pattern, content, re.DOTALL)
+
+        for filepath, code in matches:
+            filepath = filepath.strip()
+            if filepath:
+                files.append(GeneratedFile(
+                    path=filepath,
+                    content=code.rstrip(),
+                    language=self._detect_language(filepath),
+                ))
+
+        # Fallback: try standard code blocks with filename in first line
+        if not files:
+            pattern2 = r'```\w*\n(?://|#|/\*)\s*(?:File|filename):\s*(.+?)\n(.*?)```'
+            matches2 = re.findall(pattern2, content, re.DOTALL)
+            for filepath, code in matches2:
+                filepath = filepath.strip()
+                if filepath:
+                    files.append(GeneratedFile(
+                        path=filepath,
+                        content=code.rstrip(),
+                        language=self._detect_language(filepath),
+                    ))
+
+        return files
+
+    def _detect_language(self, filepath: str) -> str:
+        """Detect language from file extension."""
+        ext_map = {
+            '.ts': 'typescript', '.tsx': 'typescript', '.js': 'javascript',
+            '.jsx': 'javascript', '.py': 'python', '.prisma': 'prisma',
+            '.json': 'json', '.yml': 'yaml', '.yaml': 'yaml',
+            '.md': 'markdown', '.css': 'css', '.html': 'html',
+            '.sql': 'sql', '.sh': 'bash', '.dockerfile': 'dockerfile',
+        }
+        ext = Path(filepath).suffix.lower()
+        return ext_map.get(ext, 'text')
+
     @property
     def backend_type(self) -> str:
-        """Return the current backend type ('sdk', 'cli', or 'kilo')."""
+        """Return the current backend type ('openrouter', 'sdk', 'cli', or 'kilo')."""
+        if self._using_openrouter:
+            return "openrouter"
         if self._using_kilo:
             return "kilo"
         return "sdk" if self._using_sdk else "cli"

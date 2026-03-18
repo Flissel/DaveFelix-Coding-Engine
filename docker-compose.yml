@@ -72,8 +72,11 @@ services:
       - LLM_BACKEND=claude
     volumes:
       - ./src:/app/src
+      - ./mcp_plugins:/app/mcp_plugins
+      - ./config:/app/config
       - ./.env:/app/.env
       - artifact_data:/data/artifacts
+      - C:/Users/User/Desktop/Coding_engine/Data:/app/Data
     depends_on:
       postgres:
         condition: service_healthy
