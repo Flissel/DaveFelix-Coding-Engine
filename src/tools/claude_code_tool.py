@@ -1409,6 +1409,8 @@ Use this for implementing features, fixing bugs, or creating new components.""",
 
         This sends the prompt to OpenRouter's chat completions endpoint
         and parses generated code files from the response.
+
+        Includes exponential backoff retry logic for 429 rate limit responses.
         """
         import httpx
 
@@ -1438,62 +1440,124 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             "temperature": 0.3,
         }
 
-        try:
-            async with httpx.AsyncClient(timeout=120.0) as client:
-                resp = await client.post(url, headers=headers, json=payload)
-                resp.raise_for_status()
-                data = resp.json()
+        max_retries = 5
+        last_error = None
 
-            # Extract response text
-            content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        for attempt in range(max_retries):
+            try:
+                async with httpx.AsyncClient(timeout=120.0) as client:
+                    resp = await client.post(url, headers=headers, json=payload)
 
-            # Parse generated files from markdown code blocks
-            files = self._parse_code_files(content)
+                    # Handle 429 rate limit with exponential backoff
+                    if resp.status_code == 429:
+                        retry_after = resp.headers.get("retry-after")
+                        if retry_after:
+                            try:
+                                wait = min(float(retry_after), 60)
+                            except ValueError:
+                                wait = min(2 ** attempt * 2, 60)
+                        else:
+                            wait = min(2 ** attempt * 2, 60)
+                        self.logger.warning(
+                            "openrouter_rate_limited",
+                            attempt=attempt + 1,
+                            max_retries=max_retries,
+                            wait_seconds=wait,
+                        )
+                        await asyncio.sleep(wait)
+                        continue
 
-            # Write files to working directory
-            written_files = []
-            if self.working_dir and files:
-                for gf in files:
-                    try:
-                        out_path = Path(self.working_dir) / gf.path
-                        out_path.parent.mkdir(parents=True, exist_ok=True)
-                        out_path.write_text(gf.content, encoding="utf-8")
-                        written_files.append(gf)
-                    except Exception as write_err:
-                        self.logger.warning("file_write_failed", path=gf.path, error=str(write_err))
+                    resp.raise_for_status()
+                    data = resp.json()
 
-            model_used = data.get("model", self._openrouter_model)
-            usage = data.get("usage", {})
+                # Extract response text
+                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
-            self.logger.info(
-                "openrouter_complete",
-                model=model_used,
-                files_generated=len(written_files),
-                prompt_tokens=usage.get("prompt_tokens", 0),
-                completion_tokens=usage.get("completion_tokens", 0),
-            )
+                # Parse generated files from markdown code blocks
+                files = self._parse_code_files(content)
 
-            return CodeGenerationResult(
-                success=True,
-                files=written_files if written_files else files,
-                output=content[:500],  # Truncate for logging
-                error=None,
-                execution_time_ms=0,
-            )
+                # Write files to working directory
+                written_files = []
+                if self.working_dir and files:
+                    for gf in files:
+                        try:
+                            out_path = Path(self.working_dir) / gf.path
+                            out_path.parent.mkdir(parents=True, exist_ok=True)
+                            out_path.write_text(gf.content, encoding="utf-8")
+                            written_files.append(gf)
+                        except Exception as write_err:
+                            self.logger.warning("file_write_failed", path=gf.path, error=str(write_err))
 
-        except httpx.HTTPStatusError as e:
-            error_body = e.response.text[:300] if e.response else str(e)
-            self.logger.error("openrouter_http_error", status=e.response.status_code if e.response else 0, error=error_body)
-            return CodeGenerationResult(
-                success=False,
-                error=f"OpenRouter API error {e.response.status_code}: {error_body}",
-            )
-        except Exception as e:
-            self.logger.error("openrouter_execution_failed", error=str(e))
-            return CodeGenerationResult(
-                success=False,
-                error=f"OpenRouter execution failed: {str(e)}",
-            )
+                model_used = data.get("model", self._openrouter_model)
+                usage = data.get("usage", {})
+
+                self.logger.info(
+                    "openrouter_complete",
+                    model=model_used,
+                    files_generated=len(written_files),
+                    prompt_tokens=usage.get("prompt_tokens", 0),
+                    completion_tokens=usage.get("completion_tokens", 0),
+                )
+
+                return CodeGenerationResult(
+                    success=True,
+                    files=written_files if written_files else files,
+                    output=content[:500],  # Truncate for logging
+                    error=None,
+                    execution_time_ms=0,
+                )
+
+            except httpx.HTTPStatusError as e:
+                status = e.response.status_code if e.response else 0
+                error_body = e.response.text[:300] if e.response else str(e)
+
+                # Retry on 429 (caught here if raise_for_status fires before our check)
+                # and on 502/503/504 server errors
+                if status in (429, 502, 503, 504) and attempt < max_retries - 1:
+                    wait = min(2 ** attempt * 2, 60)
+                    self.logger.warning(
+                        "openrouter_retryable_error",
+                        status=status,
+                        attempt=attempt + 1,
+                        max_retries=max_retries,
+                        wait_seconds=wait,
+                    )
+                    await asyncio.sleep(wait)
+                    last_error = f"OpenRouter API error {status}: {error_body}"
+                    continue
+
+                self.logger.error("openrouter_http_error", status=status, error=error_body)
+                return CodeGenerationResult(
+                    success=False,
+                    error=f"OpenRouter API error {status}: {error_body}",
+                )
+            except Exception as e:
+                # Retry on connection errors
+                if attempt < max_retries - 1:
+                    wait = min(2 ** attempt * 2, 60)
+                    self.logger.warning(
+                        "openrouter_connection_error",
+                        error=str(e),
+                        attempt=attempt + 1,
+                        max_retries=max_retries,
+                        wait_seconds=wait,
+                    )
+                    await asyncio.sleep(wait)
+                    last_error = str(e)
+                    continue
+
+                self.logger.error("openrouter_execution_failed", error=str(e))
+                return CodeGenerationResult(
+                    success=False,
+                    error=f"OpenRouter execution failed: {str(e)}",
+                )
+
+        # All retries exhausted
+        self.logger.error("openrouter_all_retries_exhausted", attempts=max_retries, last_error=last_error)
+        return CodeGenerationResult(
+            success=False,
+            error=f"OpenRouter failed after {max_retries} retries: {last_error}",
+        )
 
     def _parse_code_files(self, content: str) -> list:
         """Parse code files from LLM response with ```filepath: ... ``` blocks."""

@@ -17,6 +17,7 @@ Features:
 import asyncio
 import json
 import logging
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -43,6 +44,13 @@ except ImportError:
         ContextInjector = _ci_mod.ContextInjector
     except Exception:
         ContextInjector = None
+
+# NemoClaw browser debug bridge (optional)
+try:
+    from mcp_plugins.servers.nemoclaw_bridge import NemoClawBridge, BrowserCheckResult
+except ImportError:
+    NemoClawBridge = None
+    BrowserCheckResult = None
 
 
 # =============================================================================
@@ -239,6 +247,11 @@ class TaskExecutor:
         self.use_mcp_orchestrator: bool = False
         self._mcp_orchestrator = None  # Lazy-initialized EventFixOrchestrator
 
+        # NemoClaw browser debug bridge (lazy-initialized)
+        self._nemoclaw_bridge = None
+        self._nemoclaw_retry_counts: Dict[str, int] = {}  # task_id -> browser check retry count
+        self._nemoclaw_max_retries: int = 3
+
         logger.info(f"TaskExecutor initialized | input={project_path} | output={self.output_dir} | headless={headless_mode} | two_stage={two_stage}")
 
     # =========================================================================
@@ -365,6 +378,36 @@ class TaskExecutor:
                     logger.info(f"Retrying task {task.id} (attempt {task.retry_count}/{task.max_retries})")
                     return await self.execute_task(task)
 
+            # 5b. NemoClaw browser check (after successful code-gen tasks)
+            if result.success and agent_name not in ("BashExecutor", "CheckpointHandler", "NotificationHandler"):
+                browser_result = await self._run_nemoclaw_check(task)
+                if browser_result and not browser_result.passed and not browser_result.skipped:
+                    retries = self._nemoclaw_retry_counts.get(task.id, 0)
+                    if retries < self._nemoclaw_max_retries:
+                        self._nemoclaw_retry_counts[task.id] = retries + 1
+                        browser_errors = "; ".join(browser_result.errors[:5])
+                        logger.info(
+                            f"NemoClaw browser check failed for {task.id} "
+                            f"(attempt {retries + 1}/{self._nemoclaw_max_retries}): {browser_errors}"
+                        )
+                        # Re-execute with browser error context appended to task description
+                        original_desc = task.description or ""
+                        task.description = (
+                            f"{original_desc}\n\n"
+                            f"[AUTO-FIX] Browser check found errors after previous generation:\n"
+                            f"{browser_errors}\n"
+                            f"Fix these browser/UI issues in the generated code."
+                        )
+                        task.retry_count += 1
+                        return await self.execute_task(task)
+                    else:
+                        logger.warning(
+                            f"NemoClaw browser check still failing after "
+                            f"{self._nemoclaw_max_retries} retries for {task.id}"
+                        )
+                        # Clear retry counter, don't block completion
+                        self._nemoclaw_retry_counts.pop(task.id, None)
+
             # 6. Update final status
             if result.success:
                 await self._update_task_status(task, TaskStatus.COMPLETED.value)
@@ -386,6 +429,65 @@ class TaskExecutor:
                 error=error_msg,
                 duration_seconds=time.time() - start_time,
             )
+
+    # =========================================================================
+    # NemoClaw Browser Debug Check
+    # =========================================================================
+
+    def _get_nemoclaw_bridge(self):
+        """Lazy-initialize the NemoClaw browser debug bridge."""
+        if self._nemoclaw_bridge is not None:
+            return self._nemoclaw_bridge
+        if NemoClawBridge is None:
+            return None
+        try:
+            # Use sandbox app URL; if som_bridge has a container, use its port
+            app_url = os.environ.get("SANDBOX_APP_URL", "http://localhost:3100")
+            if self.som_bridge and hasattr(self.som_bridge, 'config'):
+                app_port = getattr(self.som_bridge.config, 'app_port', 3100)
+                app_url = f"http://localhost:{app_port}"
+
+            screenshot_dir = str(self.output_dir / "reports" / "screenshots")
+            self._nemoclaw_bridge = NemoClawBridge(
+                app_url=app_url,
+                screenshot_dir=screenshot_dir,
+                enable_ai_analysis=bool(os.environ.get("OPENROUTER_API_KEY")),
+            )
+            logger.info(f"NemoClaw bridge initialized | app_url={app_url}")
+            return self._nemoclaw_bridge
+        except Exception as e:
+            logger.debug(f"NemoClaw bridge init failed: {e}")
+            return None
+
+    async def _run_nemoclaw_check(self, task) -> "Optional[BrowserCheckResult]":
+        """Run NemoClaw browser check after a successful code generation task.
+
+        Returns None if bridge is unavailable or sandbox is not running.
+        Returns BrowserCheckResult with check outcomes otherwise.
+        Gracefully degrades if anything is unavailable.
+        """
+        bridge = self._get_nemoclaw_bridge()
+        if bridge is None:
+            return None
+
+        # Quick reachability check before full browser launch
+        try:
+            reachable = await bridge.is_sandbox_reachable()
+            if not reachable:
+                logger.debug(f"nemoclaw: sandbox not reachable, skipping check for {task.id}")
+                return None
+        except Exception:
+            return None
+
+        try:
+            result = await bridge.run_check()
+            if result.skipped:
+                logger.debug(f"nemoclaw: check skipped for {task.id}: {result.skip_reason}")
+                return None
+            return result
+        except Exception as e:
+            logger.debug(f"nemoclaw: check failed for {task.id}: {e}")
+            return None
 
     # =========================================================================
     # Claude Tool Execution (LLM Code Generation)
