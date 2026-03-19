@@ -539,34 +539,6 @@ async def get_project_status(projectId: str = Query(..., description="Project ID
                         pass
                 gen["epics"] = epic_infos
 
-        # Synthesize agent info from running tasks in DB
-        agents = gen.get("agents", [])
-        if not agents:
-            try:
-                from src.models.base import async_session_factory
-                from sqlalchemy import text as _text
-                async with async_session_factory() as sess:
-                    result = await sess.execute(_text(
-                        "SELECT task_id, title, status, updated_at FROM tasks "
-                        "WHERE status='RUNNING' ORDER BY updated_at DESC LIMIT 10"
-                    ))
-                    rows = result.fetchall()
-                    import time as _time
-                    now = _time.time()
-                    agents = []
-                    for r in rows:
-                        elapsed = 0
-                        if r[3]:
-                            elapsed = now - r[3].timestamp()
-                        agents.append({
-                            "name": (r[1] or r[0] or "agent")[:30],
-                            "status": "running",
-                            "task": r[0] or "",
-                            "elapsed_seconds": max(0, int(elapsed)),
-                        })
-            except Exception:
-                pass
-
         return {
             "phase": gen.get("phase", "idle"),
             "progress_pct": gen.get("progress_pct", 0),
@@ -2515,6 +2487,28 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                 _generation_state[project_id]["failed"] = failed
                 _generation_state[project_id]["total"] = total
                 _generation_state[project_id]["progress_pct"] = int(completed * 100 / max(total, 1))
+
+                # Track real running agents from task status
+                import time as _time
+                running_agents = []
+                for t in task_records:
+                    if t.get("status") == "running":
+                        started = t.get("started_at", "")
+                        elapsed = 0
+                        if started:
+                            try:
+                                from datetime import datetime as _dt
+                                st = _dt.fromisoformat(started.replace("Z", "+00:00"))
+                                elapsed = int(_time.time() - st.timestamp())
+                            except Exception:
+                                pass
+                        running_agents.append({
+                            "name": (t.get("title") or t.get("command") or t.get("id", ""))[:30],
+                            "status": "running",
+                            "task": t.get("id", ""),
+                            "elapsed_seconds": max(0, elapsed),
+                        })
+                _generation_state[project_id]["agents"] = running_agents[:20]
 
             # Sync tasks to PostgreSQL
             if db_job_id and task_records:
