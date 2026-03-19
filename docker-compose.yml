@@ -70,6 +70,9 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - LLM_BACKEND=openrouter
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_BOT_TOKEN_ANALYZER=${DISCORD_BOT_TOKEN_ANALYZER}
+      - DISCORD_CHANNEL_ID=1484160715580510242
     volumes:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
