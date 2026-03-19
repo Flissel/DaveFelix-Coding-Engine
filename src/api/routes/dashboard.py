@@ -2916,3 +2916,47 @@ async def verify_single_task(request: VerifyTaskRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# Alias: /status -> /project/status (frontend tries this first)
+@router.get("/status")
+async def get_status_alias(projectId: str = Query("", description="Project ID")):
+    """Alias for /project/status -- frontend compatibility."""
+    return await get_project_status(projectId or "whatsapp")
+
+
+# Container logs endpoint for LogViewer
+# Uses create_subprocess_exec with explicit args (no shell injection)
+@router.get("/container-logs")
+async def get_container_logs(
+    project: str = Query("coding-engine-api", description="Container name"),
+    tail: int = Query(200, description="Number of lines"),
+):
+    """Get Docker container logs for the LogViewer tab."""
+    # Whitelist allowed container names to prevent injection
+    allowed_prefixes = ("coding-engine", "trae-")
+    if not any(project.startswith(p) for p in allowed_prefixes):
+        return {"logs": [], "container": project, "error": "Container not in whitelist"}
+    try:
+        # Find actual container name (Swarm adds suffixes)
+        find_proc = await asyncio.create_subprocess_exec(
+            "docker", "ps", "--format", "{{.Names}}",
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        find_out, _ = await asyncio.wait_for(find_proc.communicate(), timeout=5)
+        containers = find_out.decode().strip().split("\n")
+        actual = project
+        for c in containers:
+            if c.startswith(project):
+                actual = c
+                break
+        proc = await asyncio.create_subprocess_exec(
+            "docker", "logs", actual, "--tail", str(min(tail, 500)),
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=10)
+        lines = stdout.decode("utf-8", errors="replace").strip().split("\n")
+        return {"logs": lines[-tail:], "container": project, "count": len(lines)}
+    except Exception as e:
+        return {"logs": [], "container": project, "error": str(e)}
