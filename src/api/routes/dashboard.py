@@ -629,6 +629,182 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
         return SuccessResponse(success=False, error=str(e))
 
 
+# ============================================================================
+# Single-file code generation via LLM
+# ============================================================================
+
+class GenerateCodeRequest(BaseModel):
+    """Request to generate code for a single file via OpenRouter LLM."""
+    file_path: str  # e.g. "src/components/Login.tsx"
+    task_description: str  # What the code should do
+    task_id: str = ""  # Optional task ID for MCMP context
+    model: str = ""  # Override model (empty = use config default)
+    backend: str = "openrouter"  # "openrouter" | "kilo" | "claude"
+    max_tokens: int = 4000
+
+class GenerateCodeResponse(BaseModel):
+    success: bool
+    file_path: str = ""
+    code_length: int = 0
+    deployed: bool = False
+    build_result: str = ""
+    error: str = ""
+
+@router.post("/generate-code", response_model=GenerateCodeResponse)
+async def generate_code(request: GenerateCodeRequest):
+    """
+    Generate code for a single file via LLM, write to sandbox, verify build.
+
+    Pipeline: Prompt -> MCMP context -> LLM -> Write file -> Build check
+    """
+    import httpx
+
+    try:
+        # 1. Get MCMP context enrichment
+        mcmp_context = ""
+        try:
+            from src.services.mcmp_prerun import get_prerun
+            prerun = get_prerun()
+            ctx = await prerun.get_task_context(
+                task_id=request.task_id or request.file_path,
+                task_name=request.file_path.split("/")[-1],
+                task_description=request.task_description[:300],
+                file_path=request.file_path,
+            )
+            mcmp_context = ctx.get("enriched_prompt", "")
+        except Exception:
+            pass  # Continue without MCMP
+
+        # 2. Build prompt
+        prompt = (
+            "You are a senior TypeScript/React developer.\n"
+            "Generate the complete file for: %s\n"
+            "Task: %s\n"
+            "%s"
+            "Reply with ONLY the complete file content (no markdown fences, no explanation). "
+            "Use TypeScript, React functional components, proper types."
+            % (request.file_path, request.task_description, mcmp_context)
+        )
+
+        # 3. Call LLM based on backend
+        code = ""
+        if request.backend == "kilo":
+            try:
+                from src.autogen.kilo_cli_wrapper import KiloCLI
+                kilo = KiloCLI()
+                result = await kilo.generate(prompt)
+                code = result.get("code", "")
+            except Exception as e:
+                code = ""
+                logger.warning("kilo_backend_failed", error=str(e))
+
+        if request.backend == "claude":
+            try:
+                from src.tools.claude_code_tool import ClaudeCodeTool
+                tool = ClaudeCodeTool()
+                result = await tool.execute(prompt)
+                code = result.get("output", "") if isinstance(result, dict) else str(result)
+            except Exception as e:
+                code = ""
+                logger.warning("claude_backend_failed", error=str(e))
+
+        if not code:  # Default: OpenRouter
+            from src.llm_config import get_model, get_api_key
+            model = request.model or get_model("primary")
+            api_key = get_api_key("primary")
+
+            if not api_key:
+                return GenerateCodeResponse(success=False, error="No OPENROUTER_API_KEY configured")
+
+            async with httpx.AsyncClient(timeout=60) as client:
+                for attempt in range(3):
+                    resp = await client.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={
+                            "Authorization": "Bearer %s" % api_key,
+                            "HTTP-Referer": "https://coding-engine.local",
+                            "X-Title": "DaveFelix Coding Engine",
+                        },
+                        json={
+                            "model": model,
+                            "messages": [{"role": "user", "content": prompt}],
+                            "max_tokens": request.max_tokens,
+                        },
+                    )
+                    if resp.status_code == 429:
+                        await asyncio.sleep((attempt + 1) * 10)
+                        continue
+                    if resp.status_code == 200:
+                        code = resp.json().get("choices", [{}])[0].get("message", {}).get("content", "")
+                        break
+                    else:
+                        return GenerateCodeResponse(
+                            success=False, error="LLM API error %d: %s" % (resp.status_code, resp.text[:200])
+                        )
+
+        if not code:
+            return GenerateCodeResponse(success=False, error="LLM returned empty response")
+
+        # Strip markdown code fences
+        if code.startswith("```"):
+            lines = code.split("\n")
+            code = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+
+        # 4. Write to sandbox via Docker
+        sandbox_path = "/workspace/app/%s" % request.file_path
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                "docker", "exec", "coding-engine-sandbox",
+                "sh", "-c", "mkdir -p $(dirname %s)" % sandbox_path,
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+            )
+            await asyncio.wait_for(proc.communicate(), timeout=5)
+
+            # Write via stdin pipe
+            write_proc = await asyncio.create_subprocess_exec(
+                "docker", "exec", "-i", "coding-engine-sandbox",
+                "sh", "-c", "cat > %s" % sandbox_path,
+                stdin=asyncio.subprocess.PIPE,
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+            )
+            await asyncio.wait_for(
+                write_proc.communicate(input=code.encode("utf-8")), timeout=10
+            )
+            deployed = write_proc.returncode == 0
+        except Exception as e:
+            return GenerateCodeResponse(
+                success=True, file_path=request.file_path,
+                code_length=len(code), deployed=False,
+                build_result="Write failed: %s" % str(e)[:100],
+            )
+
+        # 5. Build check
+        build_result = "skipped"
+        if deployed:
+            try:
+                build_proc = await asyncio.create_subprocess_exec(
+                    "docker", "exec", "coding-engine-sandbox",
+                    "sh", "-c", "cd /workspace/app && npx vite build --mode development 2>&1 | tail -5",
+                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+                )
+                build_out, _ = await asyncio.wait_for(build_proc.communicate(), timeout=30)
+                build_result = "OK" if build_proc.returncode == 0 else build_out.decode()[:200]
+            except Exception:
+                build_result = "timeout"
+
+        return GenerateCodeResponse(
+            success=True,
+            file_path=request.file_path,
+            code_length=len(code),
+            deployed=deployed,
+            build_result=build_result,
+        )
+
+    except Exception as e:
+        logger.error("generate_code_failed", error=str(e))
+        return GenerateCodeResponse(success=False, error=str(e)[:300])
+
+
 class StopGenerationRequest(BaseModel):
     """Request to stop any running generation."""
     project_id: str
@@ -1703,7 +1879,7 @@ _epic_orchestrators: dict = {}
 
 
 async def _run_epic_background(epic_id: str, orchestrator):
-    """Background task to run epic execution."""
+    """Background task to run epic execution + MCMP post-epic verification."""
     try:
         result = await orchestrator.run_epic(epic_id)
 
@@ -1730,6 +1906,12 @@ async def _run_epic_background(epic_id: str, orchestrator):
             failed=result.failed_tasks,
         )
 
+        # --- MCMP Post-Epic Verification ---
+        try:
+            await _mcmp_post_epic_verify(epic_id, result)
+        except Exception as ve:
+            logger.warning("mcmp_post_epic_verify_error", epic_id=epic_id, error=str(ve))
+
     except Exception as e:
         logger.error("epic_run_background_failed", epic_id=epic_id, error=str(e))
 
@@ -1739,6 +1921,91 @@ async def _run_epic_background(epic_id: str, orchestrator):
                 source="epic_orchestrator",
                 data={"epic_id": epic_id, "error": str(e)}
             ))
+
+
+async def _mcmp_post_epic_verify(epic_id: str, result):
+    """Run MCMP 200-agent swarm to verify epic completeness, post to Discord."""
+    from src.services.mcmp_prerun import get_prerun
+
+    prerun = get_prerun()
+
+    # Re-index project to pick up newly generated files
+    doc_count = await prerun.index_project()
+    logger.info("mcmp_post_verify_indexed", epic_id=epic_id, documents=doc_count)
+
+    # Extract expected requirements from task names
+    requirements = []
+    if hasattr(result, 'task_results'):
+        for tr in result.task_results:
+            if hasattr(tr, 'task_name') and tr.task_name:
+                requirements.append(tr.task_name)
+
+    # Run completeness check
+    verify = await prerun.verify_epic_completeness(
+        epic_id=epic_id,
+        requirements=requirements or None,
+    )
+
+    coverage = verify.get("coverage", 0)
+    missing = verify.get("missing", [])
+    is_complete = verify.get("complete", False)
+
+    logger.info(
+        "mcmp_post_verify_done",
+        epic_id=epic_id,
+        coverage=coverage,
+        missing_count=len(missing),
+        complete=is_complete,
+    )
+
+    # Post result to Discord
+    try:
+        from src.tools.discord_agent import DiscordAgent
+        bot_token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        ch_done = os.environ.get("DISCORD_CH_DONE", "1484193417381679225")
+
+        if bot_token:
+            agent = DiscordAgent(bot_token=bot_token, channel_id=ch_done)
+
+            if is_complete:
+                msg = (
+                    "**MCMP VERIFICATION PASSED**\n"
+                    "Epic: `%s`\n"
+                    "Coverage: **%.0f%%**\n"
+                    "All requirements verified by 200-agent swarm."
+                    % (epic_id, coverage * 100)
+                )
+            else:
+                missing_list = "\n".join("- %s" % m for m in missing[:10])
+                msg = (
+                    "**MCMP VERIFICATION INCOMPLETE**\n"
+                    "Epic: `%s`\n"
+                    "Coverage: **%.0f%%**\n"
+                    "Missing:\n%s\n"
+                    "Action: Re-run generation for missing items."
+                    % (epic_id, coverage * 100, missing_list)
+                )
+
+            await agent.send(msg)
+            logger.info("mcmp_verify_posted_to_discord", epic_id=epic_id)
+
+            # If incomplete, also post to #fixes for the fix agent to pick up
+            if not is_complete and missing:
+                ch_fixes = os.environ.get("DISCORD_CH_FIXES", "1484193412679733302")
+                fix_agent = DiscordAgent(bot_token=bot_token, channel_id=ch_fixes)
+                for m in missing[:5]:
+                    fix_msg = (
+                        "TYPE=FIX_NEEDED\n"
+                        "EPIC=%s\n"
+                        "TASK=VERIFY-%s\n"
+                        "ERROR=Missing implementation: %s\n"
+                        "ACTION=CODE"
+                        % (epic_id, m.replace(" ", "-")[:30], m)
+                    )
+                    await fix_agent.send(fix_msg)
+                logger.info("mcmp_missing_posted_to_fixes", count=min(5, len(missing)))
+    except Exception as de:
+        logger.warning("mcmp_discord_post_failed", error=str(de))
 
 
 @router.post("/epic/{epic_id}/rerun", response_model=SuccessResponse)
@@ -3070,6 +3337,22 @@ async def get_container_logs(
 # ============================================================
 _agent_pipeline = None
 
+# Active code generation backend (shared with discord_mq)
+_active_backend = {"name": "openrouter", "model": ""}
+
+
+class BackendConfigRequest(BaseModel):
+    backend: str = "openrouter"  # "openrouter" | "kilo" | "claude"
+    model: str = ""  # Override specific model
+
+
+class BackendConfigResponse(BaseModel):
+    success: bool
+    active_backend: str = ""
+    active_model: str = ""
+    available_backends: list = []
+    error: str = ""
+
 
 @router.post("/pipeline/start")
 async def start_agent_pipeline():
@@ -3081,6 +3364,16 @@ async def start_agent_pipeline():
             await _agent_pipeline.stop_all()
         _agent_pipeline = create_default_pipeline()
         asyncio.create_task(_agent_pipeline.start_all())
+
+        # Also start Discord->CLI trigger for error routing
+        try:
+            from src.services.discord_cli_trigger import get_discord_cli_trigger
+            trigger = get_discord_cli_trigger()
+            await trigger.start()
+            logger.info("discord_cli_trigger_started")
+        except Exception as e:
+            logger.warning("discord_cli_trigger_start_failed", error=str(e))
+
         return {
             "success": True,
             "agents": list(_agent_pipeline.agents.keys()),
@@ -3101,6 +3394,62 @@ async def stop_agent_pipeline():
     return {"success": True, "message": "No pipeline running"}
 
 
+class DebugRequest(BaseModel):
+    file_path: str = ""
+    task_id: str = ""
+    error: str = ""
+    sandbox_url: str = "http://coding-engine-sandbox:3100"
+
+
+@router.post("/pipeline/debug")
+async def debug_with_automation_ui(request: DebugRequest):
+    """Trigger Automation UI to debug a specific file/component in the sandbox."""
+    import httpx
+
+    try:
+        intent = "Debug the component at %s in the sandbox app at %s." % (
+            request.file_path or request.task_id, request.sandbox_url
+        )
+        if request.error:
+            intent += " Error context: %s" % request.error[:300]
+
+        async with httpx.AsyncClient(timeout=60) as client:
+            resp = await client.post(
+                os.environ.get("AUTOMATION_UI_URL", "http://coding-engine-automation-ui:8007") + "/api/llm/intent",
+                json={"intent": intent, "conversation_id": "debug-%s" % (request.task_id or "manual")},
+            )
+            if resp.status_code == 200:
+                return {"success": True, "result": resp.json()}
+            return {"success": False, "error": "Automation UI returned %d" % resp.status_code}
+    except httpx.ConnectError:
+        return {"success": False, "error": "Automation UI not available at localhost:8007"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+class VerifyEpicRequest(BaseModel):
+    epic_id: str
+    expected_files: list = []
+    requirements: list = []
+
+
+@router.post("/pipeline/verify-epic")
+async def verify_epic(request: VerifyEpicRequest):
+    """Manually trigger post-epic MCMP verification."""
+    try:
+        from src.services.mcmp_prerun import get_prerun
+        prerun = get_prerun()
+        await prerun.index_project()
+        result = await prerun.verify_epic_completeness(
+            epic_id=request.epic_id,
+            expected_files=request.expected_files,
+            requirements=request.requirements,
+        )
+        return {"success": True, **result}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 @router.get("/pipeline/status")
 async def pipeline_status():
     """Get pipeline status."""
@@ -3113,3 +3462,95 @@ async def pipeline_status():
             for a in _agent_pipeline.agents.values()
         ],
     }
+
+
+# ============================================================
+# Backend Selection API
+# ============================================================
+
+
+@router.get("/pipeline/backend")
+async def get_backend_config():
+    """Get current code generation backend configuration."""
+    from src.llm_config import get_model
+    return BackendConfigResponse(
+        success=True,
+        active_backend=_active_backend["name"],
+        active_model=_active_backend.get("model") or get_model("primary"),
+        available_backends=["openrouter", "kilo", "claude"],
+    )
+
+
+@router.post("/pipeline/backend", response_model=BackendConfigResponse)
+async def set_backend_config(request: BackendConfigRequest):
+    """Switch code generation backend (openrouter/kilo/claude)."""
+    valid = ["openrouter", "kilo", "claude"]
+    if request.backend not in valid:
+        return BackendConfigResponse(success=False, error="Backend must be one of: %s" % ", ".join(valid))
+
+    _active_backend["name"] = request.backend
+    _active_backend["model"] = request.model
+
+    # Verify backend is available
+    if request.backend == "kilo":
+        try:
+            import shutil
+            if not shutil.which("kilo"):
+                return BackendConfigResponse(
+                    success=True, active_backend="kilo",
+                    active_model=request.model or "kilo/openrouter/free",
+                    available_backends=valid,
+                    error="Warning: kilo CLI not found in PATH, install with: npm install -g kilocode",
+                )
+        except Exception:
+            pass
+
+    if request.backend == "claude":
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        if not api_key:
+            return BackendConfigResponse(
+                success=True, active_backend="claude",
+                active_model=request.model or "claude-sonnet-4-6",
+                available_backends=valid,
+                error="Warning: ANTHROPIC_API_KEY not set",
+            )
+
+    from src.llm_config import get_model
+    model = request.model or get_model("primary") if request.backend == "openrouter" else request.model
+
+    logger.info("backend_switched", backend=request.backend, model=model)
+    return BackendConfigResponse(
+        success=True,
+        active_backend=request.backend,
+        active_model=model,
+        available_backends=valid,
+    )
+
+
+# ============================================================
+# Discord → CLI Trigger
+# ============================================================
+
+
+@router.post("/pipeline/discord-trigger/start")
+async def start_discord_trigger():
+    """Start the Discord->CLI trigger that watches for errors and routes to tools."""
+    try:
+        from src.services.discord_cli_trigger import get_discord_cli_trigger
+        trigger = get_discord_cli_trigger()
+        await trigger.start()
+        return {"success": True, "status": "running"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/pipeline/discord-trigger/stop")
+async def stop_discord_trigger():
+    """Stop the Discord->CLI trigger."""
+    try:
+        from src.services.discord_cli_trigger import get_discord_cli_trigger
+        trigger = get_discord_cli_trigger()
+        await trigger.stop()
+        return {"success": True, "status": "stopped"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}

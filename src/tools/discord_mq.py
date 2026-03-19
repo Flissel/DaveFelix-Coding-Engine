@@ -33,6 +33,9 @@ from src.tools.discord_structured import (
 MAX_RETRIES_PER_TASK = 3
 _retry_counts: dict = {}
 
+# Epic tracking for post-epic MCMP verification
+_epic_task_counts: dict = {}  # epic_id -> {total: N, done: N}
+
 
 async def _call_llm(prompt: str, model: str = "qwen/qwen3-coder:free", max_tokens: int = 800) -> str:
     """Call OpenRouter LLM with 429 retry backoff."""
@@ -294,6 +297,26 @@ async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
         else:
             file_path = "src/%s.ts" % msg.task_id.split("-")[-1][:20]
 
+    # --- MCMP Pre-Run: Get enriched context before code generation ---
+    mcmp_context = ""
+    try:
+        from src.services.mcmp_prerun import get_prerun
+        prerun = get_prerun()
+        is_fix = msg.action == "FIX_AND_RETEST" and msg.error
+        ctx = await prerun.get_task_context(
+            task_id=msg.task_id,
+            task_name=msg.task_name or msg.task_id,
+            task_description=msg.context[:300] if msg.context else "",
+            file_path=file_path,
+            mode="repair" if is_fix else "steering",
+        )
+        mcmp_context = ctx.get("enriched_prompt", "")
+        if mcmp_context:
+            logger.info("[Dev] MCMP enriched %s with %d relevant files (confidence=%.2f)",
+                        msg.task_id, len(ctx.get("relevant_files", [])), ctx.get("confidence", 0))
+    except Exception as e:
+        logger.warning("[Dev] MCMP pre-run failed (continuing without): %s", e)
+
     # Build better prompt based on task type
     is_fix = msg.action == "FIX_AND_RETEST" and msg.error
     if is_fix:
@@ -301,8 +324,9 @@ async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
             "You are a senior TypeScript/React developer.\n"
             "Fix this error in %s:\n```\n%s\n```\n"
             "Context: %s\n"
+            "%s"
             "Reply with ONLY the complete fixed file content (no markdown, no explanation)."
-            % (file_path, msg.error[:500], msg.context[:200])
+            % (file_path, msg.error[:500], msg.context[:200], mcmp_context)
         )
     else:
         prompt = (
@@ -311,9 +335,10 @@ async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
             "File path: %s\n"
             "Task: %s\n"
             "Requirements: %s\n"
+            "%s"
             "Reply with ONLY the complete file content (no markdown, no explanation). "
             "Use TypeScript, React functional components, proper types."
-            % (msg.task_name or msg.task_id, file_path, msg.task_id, msg.context[:300])
+            % (msg.task_name or msg.task_id, file_path, msg.task_id, msg.context[:300], mcmp_context)
         )
 
     try:
@@ -398,6 +423,14 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
                 requirements=msg.context,
             )
             if result.success and not result.errors:
+                # Track epic progress for MCMP verification
+                if msg.epic_id:
+                    if msg.epic_id not in _epic_task_counts:
+                        _epic_task_counts[msg.epic_id] = {"total": 0, "done": 0}
+                    _epic_task_counts[msg.epic_id]["done"] += 1
+                    tracker = _epic_task_counts[msg.epic_id]
+                    if tracker["done"] >= 3 and tracker["done"] % 5 == 0:
+                        asyncio.ensure_future(_verify_epic_and_notify(msg.epic_id))
                 return StructuredMessage(
                     msg_type=MessageType.TASK_VERIFIED, scope=msg.scope,
                     epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
@@ -417,6 +450,36 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
             logger.warning("[QA] OpenClaw not available, using HTTP check fallback")
     except Exception as e:
         logger.error("[QA] Browser test error: %s", e)
+
+    # --- Automation UI Debug ---
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=30) as client:
+            intent = "Debug and test the component at %s. Check for: visual rendering, console errors, functionality." % (
+                msg.file_path or msg.task_id
+            )
+            if msg.error:
+                intent += " Previous error: %s" % msg.error[:200]
+
+            resp = await client.post(
+                "http://coding-engine-automation-ui:8007/api/llm/intent",
+                json={"intent": intent, "conversation_id": "qa-%s" % msg.task_id},
+            )
+            if resp.status_code == 200:
+                result = resp.json()
+                # Check if Automation UI found issues
+                if result.get("success") and result.get("summary"):
+                    summary = result["summary"]
+                    if any(kw in summary.lower() for kw in ["error", "fail", "broken", "missing", "crash"]):
+                        return StructuredMessage(
+                            msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
+                            epic_id=msg.epic_id, task_id=msg.task_id,
+                            error="Automation UI found issues: %s" % summary[:300],
+                            file_path=msg.file_path, action="FIX_AND_RETEST",
+                        )
+                    logger.info("[QA] Automation UI check passed for %s", msg.task_id)
+    except Exception as e:
+        logger.warning("[QA] Automation UI debug unavailable: %s", e)
 
     # Fallback: HTTP check + console error check on sandbox
     try:
@@ -439,6 +502,14 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
                         error="Vite build error: %s" % vite_output[:300],
                         file_path=msg.file_path, action="FIX_AND_RETEST",
                     )
+                # Track epic progress for MCMP verification
+                if msg.epic_id:
+                    if msg.epic_id not in _epic_task_counts:
+                        _epic_task_counts[msg.epic_id] = {"total": 0, "done": 0}
+                    _epic_task_counts[msg.epic_id]["done"] += 1
+                    tracker = _epic_task_counts[msg.epic_id]
+                    if tracker["done"] >= 3 and tracker["done"] % 5 == 0:
+                        asyncio.ensure_future(_verify_epic_and_notify(msg.epic_id))
                 return StructuredMessage(
                     msg_type=MessageType.TASK_VERIFIED, scope=msg.scope,
                     epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
@@ -454,6 +525,14 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     except Exception:
         pass
 
+    # Track epic progress for MCMP verification
+    if msg.epic_id:
+        if msg.epic_id not in _epic_task_counts:
+            _epic_task_counts[msg.epic_id] = {"total": 0, "done": 0}
+        _epic_task_counts[msg.epic_id]["done"] += 1
+        tracker = _epic_task_counts[msg.epic_id]
+        if tracker["done"] >= 3 and tracker["done"] % 5 == 0:
+            asyncio.ensure_future(_verify_epic_and_notify(msg.epic_id))
     return StructuredMessage(
         msg_type=MessageType.TASK_VERIFIED, scope=msg.scope,
         epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
@@ -487,9 +566,75 @@ async def _fix_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     )
 
 
+async def _verify_epic_and_notify(epic_id: str, expected_files: list = None, requirements: list = None):
+    """Post-epic MCMP verification: re-index project, check completeness, notify Discord."""
+    try:
+        from src.services.mcmp_prerun import get_prerun
+        prerun = get_prerun()
+
+        # Re-index to pick up all generated files
+        await prerun.index_project()
+
+        result = await prerun.verify_epic_completeness(
+            epic_id=epic_id,
+            expected_files=expected_files,
+            requirements=requirements,
+        )
+
+        coverage = result.get("coverage", 0)
+        missing = result.get("missing", [])
+        complete = result.get("complete", False)
+
+        # Post to Discord #done or #general channel
+        import httpx
+        bot_token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        channel_id = CHANNELS.get("done", CHANNELS.get("general"))
+
+        if complete:
+            msg_text = "✅ **Epic %s VERIFIED** — %.0f%% coverage\nAll expected outputs generated." % (epic_id, coverage * 100)
+        else:
+            missing_list = "\n".join("• %s" % m for m in missing[:10])
+            msg_text = "⚠️ **Epic %s INCOMPLETE** — %.0f%% coverage\n**Missing:**\n%s" % (epic_id, coverage * 100, missing_list)
+
+        if bot_token and channel_id:
+            async with httpx.AsyncClient(timeout=10) as client:
+                await client.post(
+                    "https://discord.com/api/v10/channels/%s/messages" % channel_id,
+                    headers={"Authorization": "Bot %s" % bot_token},
+                    json={"content": msg_text[:2000]},
+                )
+
+        logger.info("[MCMP] Epic %s verification: complete=%s, coverage=%.2f", epic_id, complete, coverage)
+        return result
+    except Exception as e:
+        logger.warning("[MCMP] Epic verification failed: %s", e)
+        return {"complete": False, "error": str(e)}
+
+
+async def _index_mcmp_on_start():
+    """Index project code into MCMP on pipeline start (background)."""
+    try:
+        from src.services.mcmp_prerun import get_prerun
+        prerun = get_prerun()
+        count = await prerun.index_project()
+        logger.info("[Pipeline] MCMP pre-indexed %d documents for context enrichment", count)
+    except Exception as e:
+        logger.warning("[Pipeline] MCMP indexing failed (non-fatal): %s", e)
+
+
 def create_default_pipeline() -> AgentPipeline:
     """Create the standard agent pipeline matching Dave's architecture."""
     pipeline = AgentPipeline()
+
+    # Trigger MCMP indexing in background when pipeline starts
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            asyncio.ensure_future(_index_mcmp_on_start())
+        else:
+            loop.run_until_complete(_index_mcmp_on_start())
+    except Exception:
+        pass  # Will index lazily on first task
 
     # Fix #3: Slower poll intervals to avoid rate limiting
     # PM Agent — reads orchestrator queue, posts to dev-tasks
