@@ -87,7 +87,18 @@ class QueueAgent:
     async def start(self):
         """Start the polling loop."""
         self._running = True
-        logger.info("[%s] Started polling #%s", self.name, self.listen_channel)
+        # Set last_seen to current latest message to skip history
+        try:
+            agent = DiscordAgent(
+                bot_token=self.discord.agent.bot_token,
+                channel_id=self.listen_channel,
+            )
+            raw = await agent.read_recent(limit=1)
+            if raw:
+                self._last_seen_id = raw[0].get("id", "0")
+        except Exception:
+            pass
+        logger.info("[%s] Started polling #%s (after msg %s)", self.name, self.listen_channel, self._last_seen_id)
 
         while self._running:
             try:
@@ -111,21 +122,17 @@ class QueueAgent:
         if not raw:
             return
 
-        # Process newest first, skip already seen
+        # Process oldest first, skip already seen
         for msg in reversed(raw):
             msg_id = msg.get("id", "0")
-            if msg_id <= self._last_seen_id:
+            # Compare as integers (Discord snowflake IDs)
+            if int(msg_id) <= int(self._last_seen_id):
                 continue
-
-            # Skip own bot messages
-            author = msg.get("author", {})
-            if author.get("bot", False):
-                # Only skip if it's from OUR bot
-                pass
 
             content = msg.get("content", "")
             parsed = StructuredMessage.from_discord(content)
             if not parsed:
+                self._last_seen_id = msg_id
                 continue
 
             self._last_seen_id = msg_id
