@@ -68,10 +68,13 @@ export function TaskBoard({ projectPath }: { projectPath: string }) {
     try {
       const projects = await getDbProjects();
       setDbProjects(projects);
-      // Auto-select first project
+      // Auto-select project matching current URL path
       if (projects.length > 0 && !selectedProjectId) {
-        setSelectedProjectId(projects[0].id);
-        loadDbTasks(projects[0].id);
+        const pathName = projectPath.split('/').pop() || '';
+        const match = projects.find(p => p.name === pathName || projectPath.includes(p.name));
+        const selected = match || projects[0];
+        setSelectedProjectId(selected.id);
+        loadDbTasks(selected.id);
       }
     } catch (e) {
       console.error('Failed to load projects:', e);

@@ -263,6 +263,24 @@ async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     except Exception as e:
         llm_reply = "LLM error: %s" % str(e)[:200]
 
+    # Deploy to sandbox via docker cp (create_subprocess_exec, no shell)
+    if msg.file_path and llm_reply and "error" not in llm_reply.lower()[:20]:
+        try:
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.ts', delete=False) as f:
+                f.write(llm_reply)
+                tmp = f.name
+            fname = msg.file_path.replace("/", "_").replace("\\", "_")[-60:]
+            proc = await asyncio.create_subprocess_exec(
+                "docker", "cp", tmp, "coding-engine-sandbox:/workspace/app/" + fname,
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+            )
+            await asyncio.wait_for(proc.communicate(), timeout=10)
+            os.unlink(tmp)
+            logger.info("[Dev] Deployed to sandbox: %s", fname)
+        except Exception:
+            pass
+
     return StructuredMessage(
         msg_type=MessageType.FIX_APPLIED, scope=msg.scope,
         epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
