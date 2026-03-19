@@ -22,8 +22,10 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-OPENCLAW_CONTAINER = "openclaw-openclaw-gateway-1"
-OPENCLAW_GATEWAY_TOKEN = "49a0747f7a1b615d4a4dc326fd2554b344fe51c258aba8b6"
+import os
+
+OPENCLAW_CONTAINER = os.environ.get("OPENCLAW_CONTAINER", "openclaw-openclaw-gateway-1")
+OPENCLAW_GATEWAY_TOKEN = os.environ.get("OPENCLAW_GATEWAY_TOKEN", "")
 
 
 @dataclass

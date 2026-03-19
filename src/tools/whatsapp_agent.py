@@ -15,8 +15,10 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-OPENCLAW_CONTAINER = "openclaw-openclaw-gateway-1"
-DEFAULT_WHATSAPP_NUMBER = "+491749708452"
+import os
+
+OPENCLAW_CONTAINER = os.environ.get("OPENCLAW_CONTAINER", "openclaw-openclaw-gateway-1")
+DEFAULT_WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+491749708452")
 
 
 @dataclass
