@@ -2982,3 +2982,53 @@ async def get_container_logs(
         return {"logs": lines[-tail:], "container": project, "count": len(lines)}
     except Exception as e:
         return {"logs": [], "container": project, "error": str(e)}
+
+
+# ============================================================
+# Discord MQ Agent Pipeline
+# ============================================================
+_agent_pipeline = None
+
+
+@router.post("/pipeline/start")
+async def start_agent_pipeline():
+    """Start the Discord MQ agent pipeline (all 5 agents)."""
+    global _agent_pipeline
+    try:
+        from src.tools.discord_mq import create_default_pipeline
+        if _agent_pipeline:
+            await _agent_pipeline.stop_all()
+        _agent_pipeline = create_default_pipeline()
+        await _agent_pipeline.start_all()
+        return {
+            "success": True,
+            "agents": list(_agent_pipeline.agents.keys()),
+            "message": "Pipeline started with %d agents" % len(_agent_pipeline.agents),
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/pipeline/stop")
+async def stop_agent_pipeline():
+    """Stop the Discord MQ agent pipeline."""
+    global _agent_pipeline
+    if _agent_pipeline:
+        await _agent_pipeline.stop_all()
+        _agent_pipeline = None
+        return {"success": True, "message": "Pipeline stopped"}
+    return {"success": True, "message": "No pipeline running"}
+
+
+@router.get("/pipeline/status")
+async def pipeline_status():
+    """Get pipeline status."""
+    if not _agent_pipeline:
+        return {"running": False, "agents": []}
+    return {
+        "running": True,
+        "agents": [
+            {"name": a.name, "listen": a.listen_channel, "output": a.output_channel}
+            for a in _agent_pipeline.agents.values()
+        ],
+    }
