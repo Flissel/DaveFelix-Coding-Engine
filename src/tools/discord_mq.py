@@ -253,43 +253,23 @@ async def _pm_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
 
 
 async def _write_to_sandbox(file_path: str, content: str) -> bool:
-    """Write a file into the sandbox container and git commit it."""
-    import tempfile
+    """Write a file to shared volume so both API and Sandbox can see it.
+    API writes to /app/Data/generated/<path> (mounted from host ./Data)
+    Sandbox sees it at /workspace/data/generated/<path>
+    """
+    from pathlib import Path
     try:
-        # Determine target path inside sandbox
-        # Convert task-style paths to real paths: src/auth/auth.controller.ts
         clean_path = file_path.lstrip("/")
         if not clean_path:
             return False
 
-        # Write to temp file
-        suffix = ".tsx" if ".tsx" in clean_path else ".ts" if ".ts" in clean_path else ".jsx"
-        with tempfile.NamedTemporaryFile(mode='w', suffix=suffix, delete=False) as f:
-            f.write(content)
-            tmp = f.name
+        # Write to shared Data volume
+        gen_dir = Path("/app/Data/generated")
+        target = gen_dir / clean_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
 
-        # Ensure directory exists in sandbox
-        target_dir = "/workspace/app/src"
-        if "/" in clean_path:
-            sub_dir = "/".join(clean_path.split("/")[:-1])
-            target_dir = "/workspace/app/%s" % sub_dir
-
-        await asyncio.create_subprocess_exec(
-            "docker", "exec", "coding-engine-sandbox",
-            "mkdir", "-p", target_dir,
-            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-        )
-
-        # Copy file into sandbox
-        target = "coding-engine-sandbox:/workspace/app/%s" % clean_path
-        proc = await asyncio.create_subprocess_exec(
-            "docker", "cp", tmp, target,
-            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-        )
-        await asyncio.wait_for(proc.communicate(), timeout=10)
-        os.unlink(tmp)
-
-        logger.info("[Dev] Wrote file to sandbox: %s", clean_path)
+        logger.info("[Dev] Wrote %d bytes to %s", len(content), target)
         return True
     except Exception as e:
         logger.error("[Dev] Write failed: %s", e)
