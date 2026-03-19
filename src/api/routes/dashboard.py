@@ -2846,3 +2846,73 @@ async def update_project_mcp_config(request: MCPConfigUpdateRequest):
     except Exception as e:
         logger.error("update_mcp_config_failed", project_path=request.project_path, error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
+# Task Verification + Kill/Restart Control Endpoints
+# ============================================================
+
+@router.post("/kill")
+async def kill_verification():
+    """Stop all running verification loops. Called by Minibook."""
+    try:
+        from src.tools.task_verifier import request_kill
+        request_kill()
+        return {"success": True, "message": "Kill signal sent"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.post("/restart")
+async def restart_verification():
+    """Reset kill signal and prepare for next project. Called by Minibook."""
+    try:
+        from src.tools.task_verifier import reset_kill
+        reset_kill()
+        return {"success": True, "message": "Ready for next project"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/verification-status")
+async def verification_status():
+    """Get current task verification progress."""
+    try:
+        from src.tools.task_verifier import is_killed
+        return {
+            "kill_active": is_killed(),
+            "status": "stopped" if is_killed() else "running",
+        }
+    except Exception as e:
+        return {"kill_active": False, "status": "unknown", "error": str(e)}
+
+
+class VerifyTaskRequest(BaseModel):
+    task_id: str
+    task_name: str = ""
+    preview_url: str = "http://localhost:3100"
+    component: str = ""
+    requirements: str = ""
+
+
+@router.post("/verify-task")
+async def verify_single_task(request: VerifyTaskRequest):
+    """Manually trigger verification for a single task."""
+    try:
+        from src.tools.task_verifier import TaskVerifier
+        verifier = TaskVerifier(preview_url=request.preview_url)
+        result = await verifier.verify_task(
+            task_id=request.task_id,
+            task_name=request.task_name or request.task_id,
+            component=request.component,
+            requirements=request.requirements,
+        )
+        return {
+            "task_id": result.task_id,
+            "status": result.status.value,
+            "errors": result.errors,
+            "attempts": result.attempts,
+            "fix_applied": result.fix_applied,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
