@@ -542,7 +542,7 @@ async def get_project_status(projectId: str = Query(..., description="Project ID
         return {
             "phase": gen.get("phase", "idle"),
             "progress_pct": gen.get("progress_pct", 0),
-            "agents": agents,
+            "agents": gen.get("agents", []),
             "epics": gen.get("epics", []),
             "service_count": gen.get("service_count", 0),
             "endpoint_count": gen.get("endpoint_count", 0),
