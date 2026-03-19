@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       // Coding Engine routes (Docker container on port 8000)
       '/api/v1/dashboard': { target: 'http://localhost:8000', changeOrigin: true },
-      '/api/v1/db': { target: 'http://localhost:8000', changeOrigin: true },
+      // /api/v1/dashboard/db/* is covered by the /api/v1/dashboard proxy above
       '/api/v1/ws': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
       '/api/v1/engine/generation/ws': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
       '/api/v1/engine': { target: 'http://localhost:8000', changeOrigin: true },

@@ -256,13 +256,13 @@ export const getEpicTasks = async (epicId: string, projectPath: string): Promise
 // --- DB-backed API endpoints (PostgreSQL) ---
 
 export const getDbProjects = async (): Promise<any[]> => {
-  const response = await fetch(`${API_URL}/db/projects`);
+  const response = await fetch(`${API_URL}/dashboard/db/projects`);
   if (!response.ok) throw new Error(`Failed to load projects: ${response.status}`);
   return response.json();
 };
 
 export const getDbTasks = async (projectId: number): Promise<{ job: any; tasks: any[] }> => {
-  const response = await fetch(`${API_URL}/db/projects/${projectId}/tasks`);
+  const response = await fetch(`${API_URL}/dashboard/db/projects/${projectId}/tasks`);
   if (!response.ok) throw new Error(`Failed to load tasks: ${response.status}`);
   return response.json();
 };
