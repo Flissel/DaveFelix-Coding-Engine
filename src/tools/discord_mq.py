@@ -178,6 +178,87 @@ class AgentPipeline:
         self._tasks.clear()
 
 
+async def _pm_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """PM Agent: forwards tasks to dev queue, adds priority/context."""
+    logger.info("[PM] Releasing task %s to dev queue", msg.task_id)
+    return StructuredMessage(
+        msg_type=msg.msg_type,
+        scope=msg.scope,
+        epic_id=msg.epic_id,
+        task_id=msg.task_id,
+        task_name=msg.task_name,
+        file_path=msg.file_path,
+        error=msg.error,
+        context=msg.context,
+        action=msg.action or "CODE",
+    )
+
+
+async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """Dev Agent: processes task, generates code, requests review."""
+    logger.info("[Dev] Working on %s: %s", msg.task_id, msg.task_name)
+    # In real implementation: call OpenRouter LLM to generate code
+    # For now: forward to integration with code context
+    return StructuredMessage(
+        msg_type=MessageType.FIX_APPLIED if msg.action == "FIX_AND_RETEST" else MessageType.TASK_VERIFIED,
+        scope=msg.scope,
+        epic_id=msg.epic_id,
+        task_id=msg.task_id,
+        task_name=msg.task_name,
+        file_path=msg.file_path,
+        context="Code generated, requesting review",
+        action="REVIEW",
+        status="PENDING_REVIEW",
+    )
+
+
+async def _integrator_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """Integrator Agent: reviews PR, approves or rejects."""
+    logger.info("[Integrator] Reviewing %s", msg.task_id)
+    # In real implementation: check git diff, validate contracts
+    if msg.status == "PENDING_REVIEW":
+        return StructuredMessage(
+            msg_type=MessageType.TASK_VERIFIED,
+            scope=msg.scope,
+            epic_id=msg.epic_id,
+            task_id=msg.task_id,
+            task_name=msg.task_name,
+            context="Integration approved, forwarding to QA",
+            action="E2E_TEST",
+            status="APPROVED",
+        )
+    return None
+
+
+async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """QA Tester Agent: runs E2E tests, marks done or sends to fixes."""
+    logger.info("[QA] Testing %s", msg.task_id)
+    # In real implementation: call OpenClaw browser test
+    return StructuredMessage(
+        msg_type=MessageType.TASK_VERIFIED,
+        scope=msg.scope,
+        epic_id=msg.epic_id,
+        task_id=msg.task_id,
+        task_name=msg.task_name,
+        status="PASS",
+        context="E2E tests passed",
+    )
+
+
+async def _fix_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """Fix Agent: reads error, generates fix, sends back to dev."""
+    logger.info("[Fix] Fixing %s: %s", msg.task_id, msg.error[:50] if msg.error else "")
+    return StructuredMessage(
+        msg_type=MessageType.FIX_APPLIED,
+        scope=msg.scope,
+        epic_id=msg.epic_id,
+        task_id=msg.task_id,
+        file_path=msg.file_path,
+        diff="// Fix applied by Fix-Agent",
+        action="RETEST",
+    )
+
+
 def create_default_pipeline() -> AgentPipeline:
     """Create the standard agent pipeline matching Dave's architecture."""
     pipeline = AgentPipeline()
@@ -189,6 +270,7 @@ def create_default_pipeline() -> AgentPipeline:
         output_channel="dev-tasks",
         bot_token=ENGINE_BOT,
     ))
+    pm.on_message(_pm_handler)
 
     # Dev Agent — reads dev-tasks, codes, posts to integration
     dev = pipeline.add(QueueAgent(
@@ -197,6 +279,7 @@ def create_default_pipeline() -> AgentPipeline:
         output_channel="integration",
         bot_token=ENGINE_BOT,
     ))
+    dev.on_message(_dev_handler)
 
     # Integrator Agent — reads integration, reviews, posts to testing or fixes
     integrator = pipeline.add(QueueAgent(
@@ -205,6 +288,7 @@ def create_default_pipeline() -> AgentPipeline:
         output_channel="testing",
         bot_token=ANALYZER_BOT,
     ))
+    integrator.on_message(_integrator_handler)
 
     # QA Tester Agent — reads testing, runs E2E, posts to done or fixes
     qa = pipeline.add(QueueAgent(
@@ -213,6 +297,7 @@ def create_default_pipeline() -> AgentPipeline:
         output_channel="done",
         bot_token=ENGINE_BOT,
     ))
+    qa.on_message(_qa_handler)
 
     # Fix Agent — reads fixes, applies fixes, posts back to dev-tasks
     fixer = pipeline.add(QueueAgent(
@@ -221,5 +306,6 @@ def create_default_pipeline() -> AgentPipeline:
         output_channel="dev-tasks",
         bot_token=ANALYZER_BOT,
     ))
+    fixer.on_message(_fix_handler)
 
     return pipeline

@@ -2999,7 +2999,7 @@ async def start_agent_pipeline():
         if _agent_pipeline:
             await _agent_pipeline.stop_all()
         _agent_pipeline = create_default_pipeline()
-        await _agent_pipeline.start_all()
+        asyncio.create_task(_agent_pipeline.start_all())
         return {
             "success": True,
             "agents": list(_agent_pipeline.agents.keys()),
