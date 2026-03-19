@@ -386,13 +386,13 @@ async def _integrator_handler(msg: StructuredMessage) -> Optional[StructuredMess
                 msg.task_id, msg.diff[:600]
             )
             review = await _call_llm(prompt, model="nvidia/nemotron-3-super-120b-a12b:free", max_tokens=200)
-                if "REJECT" in review.upper():
-                    return StructuredMessage(
-                        msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
-                        epic_id=msg.epic_id, task_id=msg.task_id,
-                        error="Review rejected: %s" % review[:300],
-                        action="FIX_AND_RETEST",
-                    )
+            if "REJECT" in review.upper():
+                return StructuredMessage(
+                    msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
+                    epic_id=msg.epic_id, task_id=msg.task_id,
+                    error="Review rejected: %s" % review[:300],
+                    action="FIX_AND_RETEST",
+                )
     except Exception as e:
         logger.warning("[Integrator] LLM review failed: %s", e)
 
