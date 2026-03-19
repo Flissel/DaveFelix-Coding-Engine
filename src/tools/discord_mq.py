@@ -28,6 +28,50 @@ from src.tools.discord_structured import (
     StructuredMessage, StructuredDiscord, MessageType, Scope
 )
 
+# --- Fix #2: Loop prevention ---
+# Track retry attempts per task_id. Max 3 retries then skip.
+MAX_RETRIES_PER_TASK = 3
+_retry_counts: dict = {}
+
+
+async def _call_llm(prompt: str, model: str = "qwen/qwen3-coder:free", max_tokens: int = 800) -> str:
+    """Call OpenRouter LLM with 429 retry backoff."""
+    import httpx
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
+        return "No OPENROUTER_API_KEY set"
+    for attempt in range(3):
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={"Authorization": "Bearer %s" % api_key},
+                    json={"model": model, "messages": [{"role": "user", "content": prompt}], "max_tokens": max_tokens},
+                )
+                if resp.status_code == 429:
+                    wait = (attempt + 1) * 10
+                    logger.warning("OpenRouter 429 rate limit, waiting %ds", wait)
+                    await asyncio.sleep(wait)
+                    continue
+                data = resp.json()
+                return data.get("choices", [{}])[0].get("message", {}).get("content", "No response")
+        except Exception as e:
+            logger.error("LLM call failed: %s", e)
+            await asyncio.sleep(5)
+    return "LLM failed after 3 attempts"
+
+
+def _check_retry(task_id: str) -> bool:
+    """Returns True if task can be retried, False if max retries reached."""
+    if not task_id:
+        return True
+    count = _retry_counts.get(task_id, 0)
+    if count >= MAX_RETRIES_PER_TASK:
+        logger.warning("Task %s hit max retries (%d), skipping", task_id, MAX_RETRIES_PER_TASK)
+        return False
+    _retry_counts[task_id] = count + 1
+    return True
+
 logger = logging.getLogger(__name__)
 
 # Channel IDs — set via env or hardcoded from creation
@@ -212,28 +256,10 @@ async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     """Dev Agent: processes task with OpenRouter LLM, requests review."""
     logger.info("[Dev] Working on %s: %s", msg.task_id, msg.task_name)
     try:
-        import httpx
-        import os
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
-        if not api_key:
-            logger.warning("[Dev] No OPENROUTER_API_KEY, skipping LLM call")
-            return StructuredMessage(
-                msg_type=MessageType.FIX_APPLIED, scope=msg.scope,
-                epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
-                context="No API key — forwarding without LLM", action="REVIEW",
-                status="PENDING_REVIEW",
-            )
         prompt = "You are a senior developer. Task: %s\nFile: %s\nError: %s\nContext: %s\nGenerate a concise fix. Reply with ONLY the diff." % (
             msg.task_name or msg.task_id, msg.file_path, msg.error[:300], msg.context[:200]
         )
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers={"Authorization": "Bearer %s" % api_key},
-                json={"model": "qwen/qwen3-coder:free", "messages": [{"role": "user", "content": prompt}], "max_tokens": 1000},
-            )
-            data = resp.json()
-            llm_reply = data.get("choices", [{}])[0].get("message", {}).get("content", "No response")
+        llm_reply = await _call_llm(prompt, max_tokens=1000)
     except Exception as e:
         llm_reply = "LLM error: %s" % str(e)[:200]
 
@@ -253,21 +279,11 @@ async def _integrator_handler(msg: StructuredMessage) -> Optional[StructuredMess
         return None
 
     try:
-        import httpx
-        import os
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
-        if api_key and msg.diff:
+        if msg.diff:
             prompt = "Review this code change. Reply APPROVE if it looks correct, or REJECT with reason.\nTask: %s\nDiff:\n%s" % (
                 msg.task_id, msg.diff[:600]
             )
-            async with httpx.AsyncClient(timeout=20) as client:
-                resp = await client.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={"Authorization": "Bearer %s" % api_key},
-                    json={"model": "nvidia/nemotron-3-super-120b-a12b:free", "messages": [{"role": "user", "content": prompt}], "max_tokens": 200},
-                )
-                data = resp.json()
-                review = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+            review = await _call_llm(prompt, model="nvidia/nemotron-3-super-120b-a12b:free", max_tokens=200)
                 if "REJECT" in review.upper():
                     return StructuredMessage(
                         msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
@@ -331,29 +347,18 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
 async def _fix_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     """Fix Agent: analyzes error with OpenRouter LLM, generates fix."""
     logger.info("[Fix] Fixing %s: %s", msg.task_id, msg.error[:50] if msg.error else "")
+    # Fix #2: Check retry limit
+    if not _check_retry(msg.task_id):
+        return StructuredMessage(
+            msg_type=MessageType.TASK_VERIFIED, task_id=msg.task_id,
+            epic_id=msg.epic_id, status="FAIL",
+            context="Max retries (%d) reached, task skipped" % MAX_RETRIES_PER_TASK,
+        )
     try:
-        import httpx
-        import os
-        api_key = os.environ.get("OPENROUTER_API_KEY", os.environ.get("DISCORD_BOT_TOKEN_ANALYZER", ""))
-        # Use analyzer's OpenRouter key or fallback
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
-        if not api_key:
-            return StructuredMessage(
-                msg_type=MessageType.FIX_APPLIED, task_id=msg.task_id,
-                file_path=msg.file_path, diff="// No API key for Fix-Agent",
-                action="RETEST",
-            )
         prompt = "You are a bug-fixing expert. Error in %s:\n```\n%s\n```\nContext: %s\nProvide ONLY the minimal code fix as a diff." % (
             msg.file_path or msg.task_id, msg.error[:500], msg.context[:200]
         )
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers={"Authorization": "Bearer %s" % api_key},
-                json={"model": "qwen/qwen3-coder:free", "messages": [{"role": "user", "content": prompt}], "max_tokens": 800},
-            )
-            data = resp.json()
-            fix = data.get("choices", [{}])[0].get("message", {}).get("content", "No fix generated")
+        fix = await _call_llm(prompt)
     except Exception as e:
         fix = "Fix-Agent error: %s" % str(e)[:200]
 
@@ -369,12 +374,14 @@ def create_default_pipeline() -> AgentPipeline:
     """Create the standard agent pipeline matching Dave's architecture."""
     pipeline = AgentPipeline()
 
+    # Fix #3: Slower poll intervals to avoid rate limiting
     # PM Agent — reads orchestrator queue, posts to dev-tasks
     pm = pipeline.add(QueueAgent(
         name="PM-Agent",
         listen_channel="orchestrator",
         output_channel="dev-tasks",
         bot_token=ENGINE_BOT,
+        poll_interval=10,
     ))
     pm.on_message(_pm_handler)
 
@@ -384,6 +391,7 @@ def create_default_pipeline() -> AgentPipeline:
         listen_channel="dev-tasks",
         output_channel="integration",
         bot_token=ENGINE_BOT,
+        poll_interval=15,  # Slower — LLM calls take time
     ))
     dev.on_message(_dev_handler)
 
@@ -393,6 +401,7 @@ def create_default_pipeline() -> AgentPipeline:
         listen_channel="integration",
         output_channel="testing",
         bot_token=ANALYZER_BOT,
+        poll_interval=15,
     ))
     integrator.on_message(_integrator_handler)
 
@@ -402,6 +411,7 @@ def create_default_pipeline() -> AgentPipeline:
         listen_channel="testing",
         output_channel="done",
         bot_token=ENGINE_BOT,
+        poll_interval=10,
     ))
     qa.on_message(_qa_handler)
 

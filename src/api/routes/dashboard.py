@@ -2401,15 +2401,22 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
                     db_project.status = ProjectStatus.ACTIVE
                 db_project_id = db_project.id
 
-                # Create job
-                db_job = Job(
-                    project_id=db_project.id,
-                    status=JobStatus.RUNNING,
-                    requirements_json="{}",
-                    source_file=request.project_path,
-                )
-                session.add(db_job)
-                await session.flush()
+                # Fix #10: Reuse existing RUNNING job instead of creating duplicate
+                existing_job = (await session.execute(
+                    select(Job).where(Job.project_id == db_project.id, Job.status == JobStatus.RUNNING)
+                )).scalar_one_or_none()
+                if existing_job:
+                    db_job = existing_job
+                    logger.info("reusing_existing_job", job_id=existing_job.id)
+                else:
+                    db_job = Job(
+                        project_id=db_project.id,
+                        status=JobStatus.RUNNING,
+                        requirements_json="{}",
+                        source_file=request.project_path,
+                    )
+                    session.add(db_job)
+                    await session.flush()
                 db_job_id = db_job.id
                 await session.commit()
             logger.info("db_project_job_created", project_id=db_project_id, job_id=db_job_id)
