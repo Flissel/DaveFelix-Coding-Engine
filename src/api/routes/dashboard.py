@@ -539,10 +539,38 @@ async def get_project_status(projectId: str = Query(..., description="Project ID
                         pass
                 gen["epics"] = epic_infos
 
+        # Synthesize agent info from running tasks in DB
+        agents = gen.get("agents", [])
+        if not agents:
+            try:
+                from src.models.base import async_session_factory
+                from sqlalchemy import text as _text
+                async with async_session_factory() as sess:
+                    result = await sess.execute(_text(
+                        "SELECT task_id, title, status, updated_at FROM tasks "
+                        "WHERE status='RUNNING' ORDER BY updated_at DESC LIMIT 10"
+                    ))
+                    rows = result.fetchall()
+                    import time as _time
+                    now = _time.time()
+                    agents = []
+                    for r in rows:
+                        elapsed = 0
+                        if r[3]:
+                            elapsed = now - r[3].timestamp()
+                        agents.append({
+                            "name": (r[1] or r[0] or "agent")[:30],
+                            "status": "running",
+                            "task": r[0] or "",
+                            "elapsed_seconds": max(0, int(elapsed)),
+                        })
+            except Exception:
+                pass
+
         return {
             "phase": gen.get("phase", "idle"),
             "progress_pct": gen.get("progress_pct", 0),
-            "agents": gen.get("agents", []),
+            "agents": agents,
             "epics": gen.get("epics", []),
             "service_count": gen.get("service_count", 0),
             "endpoint_count": gen.get("endpoint_count", 0),
