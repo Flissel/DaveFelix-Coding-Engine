@@ -16,9 +16,12 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 import os
+from src.utils.secrets import get_secret
 
 OPENCLAW_CONTAINER = os.environ.get("OPENCLAW_CONTAINER", "openclaw-openclaw-gateway-1")
 DEFAULT_WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "+491749708452")
+# Token loaded via get_secret for Swarm compatibility
+_OPENCLAW_TOKEN = get_secret("openclaw_gateway_token", env_fallback="OPENCLAW_GATEWAY_TOKEN")
 
 
 @dataclass

@@ -18,10 +18,12 @@ from typing import Optional
 
 import httpx
 
+from src.utils.secrets import get_secret
+
 logger = logging.getLogger(__name__)
 
 DISCORD_API = "https://discord.com/api/v10"
-DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN", "")
+DISCORD_BOT_TOKEN = get_secret("discord_bot_token_engine", env_fallback="DISCORD_BOT_TOKEN")
 DISCORD_CHANNEL_ID = os.environ.get("DISCORD_CHANNEL_ID", "")
 
 
