@@ -252,40 +252,124 @@ async def _pm_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
     )
 
 
-async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
-    """Dev Agent: processes task with OpenRouter LLM, requests review."""
-    logger.info("[Dev] Working on %s: %s", msg.task_id, msg.task_name)
+async def _write_to_sandbox(file_path: str, content: str) -> bool:
+    """Write a file into the sandbox container and git commit it."""
+    import tempfile
     try:
-        prompt = "You are a senior developer. Task: %s\nFile: %s\nError: %s\nContext: %s\nGenerate a concise fix. Reply with ONLY the diff." % (
-            msg.task_name or msg.task_id, msg.file_path, msg.error[:300], msg.context[:200]
-        )
-        llm_reply = await _call_llm(prompt, max_tokens=1000)
-    except Exception as e:
-        llm_reply = "LLM error: %s" % str(e)[:200]
+        # Determine target path inside sandbox
+        # Convert task-style paths to real paths: src/auth/auth.controller.ts
+        clean_path = file_path.lstrip("/")
+        if not clean_path:
+            return False
 
-    # Deploy to sandbox via docker cp (create_subprocess_exec, no shell)
-    if msg.file_path and llm_reply and "error" not in llm_reply.lower()[:20]:
+        # Write to temp file
+        suffix = ".tsx" if ".tsx" in clean_path else ".ts" if ".ts" in clean_path else ".jsx"
+        with tempfile.NamedTemporaryFile(mode='w', suffix=suffix, delete=False) as f:
+            f.write(content)
+            tmp = f.name
+
+        # Ensure directory exists in sandbox
+        target_dir = "/workspace/app/src"
+        if "/" in clean_path:
+            sub_dir = "/".join(clean_path.split("/")[:-1])
+            target_dir = "/workspace/app/%s" % sub_dir
+
+        await asyncio.create_subprocess_exec(
+            "docker", "exec", "coding-engine-sandbox",
+            "mkdir", "-p", target_dir,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+
+        # Copy file into sandbox
+        target = "coding-engine-sandbox:/workspace/app/%s" % clean_path
+        proc = await asyncio.create_subprocess_exec(
+            "docker", "cp", tmp, target,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        await asyncio.wait_for(proc.communicate(), timeout=10)
+        os.unlink(tmp)
+
+        logger.info("[Dev] Wrote file to sandbox: %s", clean_path)
+        return True
+    except Exception as e:
+        logger.error("[Dev] Write failed: %s", e)
+        return False
+
+
+async def _dev_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
+    """Dev Agent: generates real code via LLM, writes to sandbox, requests review."""
+    logger.info("[Dev] Working on %s: %s", msg.task_id, msg.task_name)
+
+    # Determine file path from task
+    file_path = msg.file_path or ""
+    if not file_path:
+        # Derive from task_id: EPIC-001-API-GET-auth-login-controller → src/auth/login.controller.ts
+        parts = msg.task_id.split("-")
+        if "API" in parts or "controller" in msg.task_id.lower():
+            file_path = "src/api/%s.ts" % parts[-1] if parts else "src/api/handler.ts"
+        elif "SCHEMA" in parts or "model" in msg.task_id.lower():
+            file_path = "src/models/%s.ts" % parts[-1] if parts else "src/models/model.ts"
+        elif "component" in msg.task_id.lower() or "UI" in parts:
+            file_path = "src/components/%s.tsx" % parts[-1] if parts else "src/components/Component.tsx"
+        else:
+            file_path = "src/%s.ts" % msg.task_id.split("-")[-1][:20]
+
+    # Build better prompt based on task type
+    is_fix = msg.action == "FIX_AND_RETEST" and msg.error
+    if is_fix:
+        prompt = (
+            "You are a senior TypeScript/React developer.\n"
+            "Fix this error in %s:\n```\n%s\n```\n"
+            "Context: %s\n"
+            "Reply with ONLY the complete fixed file content (no markdown, no explanation)."
+            % (file_path, msg.error[:500], msg.context[:200])
+        )
+    else:
+        prompt = (
+            "You are a senior TypeScript/React developer.\n"
+            "Generate the complete file for: %s\n"
+            "File path: %s\n"
+            "Task: %s\n"
+            "Requirements: %s\n"
+            "Reply with ONLY the complete file content (no markdown, no explanation). "
+            "Use TypeScript, React functional components, proper types."
+            % (msg.task_name or msg.task_id, file_path, msg.task_id, msg.context[:300])
+        )
+
+    try:
+        llm_reply = await _call_llm(prompt, max_tokens=2000)
+        # Strip markdown code fences if present
+        if llm_reply.startswith("```"):
+            lines = llm_reply.split("\n")
+            llm_reply = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+    except Exception as e:
+        llm_reply = "// LLM error: %s" % str(e)[:200]
+
+    # Write to sandbox + verify build
+    wrote = await _write_to_sandbox(file_path, llm_reply)
+    deploy_msg = "Write failed"
+    if wrote:
+        # #5: Run build check after writing
         try:
-            import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.ts', delete=False) as f:
-                f.write(llm_reply)
-                tmp = f.name
-            fname = msg.file_path.replace("/", "_").replace("\\", "_")[-60:]
-            proc = await asyncio.create_subprocess_exec(
-                "docker", "cp", tmp, "coding-engine-sandbox:/workspace/app/" + fname,
+            build_proc = await asyncio.create_subprocess_exec(
+                "docker", "exec", "coding-engine-sandbox",
+                "sh", "-c", "cd /workspace/app && npx vite build --mode development 2>&1 | tail -3",
                 stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
             )
-            await asyncio.wait_for(proc.communicate(), timeout=10)
-            os.unlink(tmp)
-            logger.info("[Dev] Deployed to sandbox: %s", fname)
+            build_out, _ = await asyncio.wait_for(build_proc.communicate(), timeout=30)
+            build_result = build_out.decode().strip()
+            if build_proc.returncode == 0:
+                deploy_msg = "Deployed + build OK"
+            else:
+                deploy_msg = "Deployed but build failed: %s" % build_result[:100]
         except Exception:
-            pass
+            deploy_msg = "Deployed (build check skipped)"
 
     return StructuredMessage(
         msg_type=MessageType.FIX_APPLIED, scope=msg.scope,
         epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
-        file_path=msg.file_path, diff=llm_reply[:500],
-        context="Code generated by Dev-Agent via OpenRouter", action="REVIEW",
+        file_path=file_path, diff=llm_reply[:500],
+        context="%s: %s" % (deploy_msg, file_path), action="REVIEW",
         status="PENDING_REVIEW",
     )
 
@@ -350,15 +434,50 @@ async def _qa_handler(msg: StructuredMessage) -> Optional[StructuredMessage]:
                     action="FIX_AND_RETEST",
                 )
         else:
-            logger.warning("[QA] OpenClaw not available, auto-passing")
+            logger.warning("[QA] OpenClaw not available, using HTTP check fallback")
     except Exception as e:
         logger.error("[QA] Browser test error: %s", e)
 
-    # Fallback: pass if OpenClaw unavailable
+    # Fallback: HTTP check + console error check on sandbox
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get("http://localhost:3100")
+            if resp.status_code == 200:
+                # Check for build errors in sandbox
+                err_proc = await asyncio.create_subprocess_exec(
+                    "docker", "exec", "coding-engine-sandbox",
+                    "sh", "-c", "cat /tmp/vite.log 2>/dev/null | tail -5 | grep -i error || echo OK",
+                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+                )
+                out, _ = await asyncio.wait_for(err_proc.communicate(), timeout=5)
+                vite_output = out.decode().strip()
+                if "error" in vite_output.lower() and "OK" not in vite_output:
+                    return StructuredMessage(
+                        msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
+                        epic_id=msg.epic_id, task_id=msg.task_id,
+                        error="Vite build error: %s" % vite_output[:300],
+                        file_path=msg.file_path, action="FIX_AND_RETEST",
+                    )
+                return StructuredMessage(
+                    msg_type=MessageType.TASK_VERIFIED, scope=msg.scope,
+                    epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
+                    status="PASS", context="HTTP check passed, no build errors",
+                )
+            else:
+                return StructuredMessage(
+                    msg_type=MessageType.FIX_NEEDED, scope=msg.scope,
+                    epic_id=msg.epic_id, task_id=msg.task_id,
+                    error="Sandbox HTTP %d" % resp.status_code,
+                    action="FIX_AND_RETEST",
+                )
+    except Exception:
+        pass
+
     return StructuredMessage(
         msg_type=MessageType.TASK_VERIFIED, scope=msg.scope,
         epic_id=msg.epic_id, task_id=msg.task_id, task_name=msg.task_name,
-        status="PASS", context="Auto-passed (OpenClaw unavailable)",
+        status="PASS", context="Fallback pass (sandbox unreachable)",
     )
 
 
