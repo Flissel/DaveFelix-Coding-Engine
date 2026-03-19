@@ -2516,8 +2516,55 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                     await _sync_tasks_to_db(db_job_id, task_records)
                 except Exception as db_err:
                     logger.debug("db_task_sync_failed", error=str(db_err))
+
+            # Post newly completed/failed tasks to Discord MQ
+            try:
+                await _post_task_changes_to_discord(task_records, project_id)
+            except Exception:
+                pass
         except Exception:
             pass
+
+    # Track which tasks we already posted to Discord
+    _posted_tasks: set = set()
+
+    async def _post_task_changes_to_discord(tasks: list, proj_id: str):
+        """Post task completions/failures to Discord #dev-tasks channel."""
+        try:
+            from src.tools.discord_agent import DiscordAgent
+            discord = DiscordAgent()
+            if not discord.bot_token:
+                return
+
+            from src.tools.discord_mq import CHANNELS
+            dev_ch = CHANNELS.get("dev-tasks", "")
+            fixes_ch = CHANNELS.get("fixes", "")
+            done_ch = CHANNELS.get("done", "")
+
+            for t in tasks:
+                tid = t.get("id", "")
+                status = t.get("status", "")
+                if not tid or tid in _posted_tasks:
+                    continue
+
+                if status == "completed":
+                    _posted_tasks.add(tid)
+                    await discord.send(
+                        "**TASK_VERIFIED** | %s\nTask: `%s`\nStatus: **PASS**\n||`{\"type\":\"TASK_VERIFIED\",\"task\":\"%s\",\"status\":\"PASS\"}`||"
+                        % (t.get("epic_id", ""), tid, tid),
+                        channel_id=done_ch,
+                    )
+                elif status == "failed":
+                    _posted_tasks.add(tid)
+                    error = t.get("error", t.get("result", "unknown error"))
+                    scope = "BACKEND" if "api" in tid.lower() or "service" in tid.lower() else "FRONTEND"
+                    await discord.send(
+                        "**FIX_NEEDED** | %s\nEpic: `%s`\nTask: `%s`\nName: %s\n```\n%s\n```\n**Action:** `FIX_AND_RETEST`\n||`{\"type\":\"FIX_NEEDED\",\"scope\":\"%s\",\"task\":\"%s\",\"action\":\"FIX_AND_RETEST\"}`||"
+                        % (scope, t.get("epic_id", ""), tid, t.get("title", tid), str(error)[:500], scope, tid),
+                        channel_id=fixes_ch,
+                    )
+        except Exception as e:
+            logger.debug("discord_post_failed: %s", e)
 
     # Start a background progress updater
     async def _progress_loop():
