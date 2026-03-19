@@ -420,7 +420,8 @@ async def stop_docker_engine() -> SuccessResponse:
 @router.post("/project/start", response_model=SuccessResponse)
 async def start_project_container(request: ProjectStartRequest) -> SuccessResponse:
     """
-    Start a project container with VNC for live preview.
+    Start the sandbox container via docker-compose for live preview with VNC.
+    Gracefully handles sandbox not being available (does not block generation).
     """
     try:
         container_name = f"project-{request.projectId}"
@@ -431,28 +432,29 @@ async def start_project_container(request: ProjectStartRequest) -> SuccessRespon
             if info.get('status') == 'running':
                 return SuccessResponse(success=True)
 
-        # Stop existing container if any (use uppercase NUL for Windows compatibility)
-        await run_command(f'docker stop {container_name} 2>NUL || true')
-        await run_command(f'docker rm {container_name} 2>NUL || true')
+        engine_root = Path(__file__).parent.parent.parent.parent
+        compose_file = engine_root / "docker-compose.yml"
 
-        # Build docker run command
-        cmd = f'''docker run -d \
-            --name {container_name} \
-            -v "{request.outputDir}:/app" \
-            -p {request.vncPort}:6080 \
-            -p {request.appPort}:5173 \
-            -e ENABLE_VNC=true \
-            -e NODE_ENV=development \
-            coding-engine/sandbox:latest'''
-
-        stdout, stderr, rc = await run_command(cmd.replace('\n', ' ').replace('\\', ''))
+        # Start sandbox service via docker-compose
+        cmd = (
+            f'docker-compose -f "{compose_file}" up -d sandbox'
+        )
+        stdout, stderr, rc = await run_command(cmd, cwd=str(engine_root))
 
         if rc != 0:
-            return SuccessResponse(success=False, error=stderr or stdout)
+            # Sandbox failed to start — log but don't block generation
+            logger.warning(
+                "sandbox_start_failed_non_blocking",
+                projectId=request.projectId,
+                error=stderr or stdout,
+            )
+            return SuccessResponse(
+                success=False,
+                error=f"Sandbox unavailable (generation continues): {stderr or stdout}",
+            )
 
-        container_id = stdout.strip()
         _project_containers[request.projectId] = {
-            'id': container_id,
+            'id': 'coding-engine-sandbox',
             'vncPort': request.vncPort,
             'appPort': request.appPort,
             'status': 'running'
@@ -461,8 +463,9 @@ async def start_project_container(request: ProjectStartRequest) -> SuccessRespon
         logger.info("project_container_started", projectId=request.projectId, vncPort=request.vncPort)
         return SuccessResponse(success=True)
     except Exception as e:
-        logger.error("project_start_failed", projectId=request.projectId, error=str(e))
-        return SuccessResponse(success=False, error=str(e))
+        # Sandbox errors must not block the generation pipeline
+        logger.warning("project_start_failed_non_blocking", projectId=request.projectId, error=str(e))
+        return SuccessResponse(success=False, error=f"Sandbox unavailable: {str(e)}")
 
 
 @router.post("/project/stop", response_model=SuccessResponse)

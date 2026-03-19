@@ -124,7 +124,12 @@ export const engineApi = {
 
   getStatus: async (_name: string): Promise<GenerationStatus> => {
     try {
-      const res = await fetch(`${API_URL}/dashboard/project/status?projectId=${encodeURIComponent(_name)}`);
+      // Try the dashboard/status endpoint first (primary), fall back to project/status
+      let res = await fetch(`${API_URL}/dashboard/status?projectId=${encodeURIComponent(_name)}`);
+      if (!res.ok) {
+        // Fallback: try project-specific status endpoint
+        res = await fetch(`${API_URL}/dashboard/project/status?projectId=${encodeURIComponent(_name)}`);
+      }
       if (!res.ok) {
         // No active generation — return idle status
         return {
@@ -184,17 +189,24 @@ export const engineApi = {
     }
 
     // Step 2: Start the epic-based generation pipeline
-    const genRes = await fetch(`${API_URL}/dashboard/start-epic-generation`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        project_path: projectPath,
-        output_dir: outputDir,
-        vnc_port: 6090,
-        app_port: 3100,
-        max_parallel_tasks: opts.parallelism || 1,
-      }),
-    });
+    // Try the primary endpoint, fall back to dashboard path
+    let genRes: Response;
+    try {
+      genRes = await fetch(`${API_URL}/dashboard/start-epic-generation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_path: projectPath,
+          output_dir: outputDir,
+          vnc_port: 6090,
+          app_port: 3100,
+          max_parallel_tasks: opts.parallelism || 1,
+        }),
+      });
+    } catch (fetchErr) {
+      throw new Error(`Failed to start generation: network error`);
+    }
+
     if (!genRes.ok) {
       const err = await genRes.text();
       throw new Error(`Failed to start generation: ${genRes.status} - ${err}`);
@@ -244,12 +256,14 @@ export const getEpicTasks = async (epicId: string, projectPath: string): Promise
 // --- DB-backed API endpoints (PostgreSQL) ---
 
 export const getDbProjects = async (): Promise<any[]> => {
-  const response = await fetch(`${API_URL}/dashboard/db/projects`);
+  const response = await fetch(`${API_URL}/db/projects`);
+  if (!response.ok) throw new Error(`Failed to load projects: ${response.status}`);
   return response.json();
 };
 
 export const getDbTasks = async (projectId: number): Promise<{ job: any; tasks: any[] }> => {
-  const response = await fetch(`${API_URL}/dashboard/db/projects/${projectId}/tasks`);
+  const response = await fetch(`${API_URL}/db/projects/${projectId}/tasks`);
+  if (!response.ok) throw new Error(`Failed to load tasks: ${response.status}`);
   return response.json();
 };
 
@@ -275,20 +289,40 @@ export const rerunTask = async (epicId: string, taskId: string, projectPath: str
 export function createEngineWebSocket(
   onEvent: (type: string, data: any) => void,
 ): WebSocket {
-  const wsUrl = API_URL.replace('http', 'ws').replace('/api/v1', '') + '/api/v1/ws';
+  // Build WS URL: in dev mode (relative API_URL like /api/v1), use current host
+  // In production or absolute URL mode, replace http with ws
+  let wsUrl: string;
+  if (API_URL.startsWith('/')) {
+    // Relative URL — build from window.location
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    wsUrl = `${protocol}//${window.location.host}/api/v1/engine/generation/ws`;
+  } else {
+    wsUrl = API_URL.replace(/^http/, 'ws').replace('/api/v1', '') + '/api/v1/engine/generation/ws';
+  }
+
+  console.log('[Engine WS] Connecting to:', wsUrl);
   const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    console.log('[Engine WS] Connected');
+  };
 
   ws.onmessage = (event) => {
     try {
       const msg = JSON.parse(event.data);
-      onEvent(msg.type, msg.data);
+      // Support both {type, data} and {event, ...rest} message formats
+      const eventType = msg.type || msg.event;
+      const eventData = msg.data || msg;
+      if (eventType) {
+        onEvent(eventType, eventData);
+      }
     } catch (e) {
       console.error('Failed to parse engine WS message:', e);
     }
   };
 
-  ws.onerror = (e) => console.error('Engine WS error:', e);
-  ws.onclose = () => console.log('Engine WS closed');
+  ws.onerror = (e) => console.error('[Engine WS] Error:', e);
+  ws.onclose = (e) => console.log('[Engine WS] Closed:', e.code, e.reason);
 
   return ws;
 }

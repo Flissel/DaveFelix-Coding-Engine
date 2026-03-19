@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useProjects, useCreateProject, useDeleteProject, useFavoriteProject } from '@/hooks/useProjects';
-import { useEngineProjects } from '@/hooks/useEngine';
+import { useEngineProjects, useDbProjects } from '@/hooks/useEngine';
 import { Button } from '@/components/ui/button';
 import { Plus, Folder, ArrowRight, Sparkles } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectCard';
@@ -36,6 +36,7 @@ const Projects = () => {
   const navigate = useNavigate();
   const { data: projects, isLoading, isError: vibeError } = useProjects();
   const { data: engineProjects, isLoading: engineLoading } = useEngineProjects();
+  const { data: dbProjects, isLoading: dbLoading } = useDbProjects();
   const createProject = useCreateProject();
   const deleteProject = useDeleteProject();
   const favoriteProject = useFavoriteProject();
@@ -60,9 +61,11 @@ const Projects = () => {
   // Filter logic
   const filteredVibeProjects = filter === 'all' || filter === 'vibe' ? sortedProjects : [];
   const filteredEngineProjects = filter === 'all' || filter === 'engine' ? engineProjects : [];
+  const filteredDbProjects = filter === 'all' || filter === 'engine' ? dbProjects : [];
   // "running" filter: in the future, filter engine projects with active generation
   const hasAnyProjects = (filteredVibeProjects && filteredVibeProjects.length > 0) ||
-    (filteredEngineProjects && filteredEngineProjects.length > 0);
+    (filteredEngineProjects && filteredEngineProjects.length > 0) ||
+    (filteredDbProjects && filteredDbProjects.length > 0);
 
   const handleCreateProject = async () => {
     if (!projectName.trim()) {
@@ -145,7 +148,7 @@ const Projects = () => {
   // Show skeleton UI during loading for better UX
   // Don't block on Vibe projects if they error (e.g. DB not configured)
   const vibeStillLoading = isLoading && !projects && !vibeError;
-  const showSkeleton = vibeStillLoading && (engineLoading && !engineProjects);
+  const showSkeleton = vibeStillLoading && (engineLoading && !engineProjects) && (dbLoading && !dbProjects);
 
   return (
     <main className="min-h-screen bg-background">
@@ -237,7 +240,59 @@ const Projects = () => {
               </div>
             ) : (
               <div className="space-y-10 animate-fade-in-up delay-200">
-                {/* Engine Projects Section */}
+                {/* DB Projects Section (PostgreSQL-backed) */}
+                {filteredDbProjects && filteredDbProjects.length > 0 && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <span className="text-emerald-400">Generation Projects</span>
+                      <span className="text-xs text-muted-foreground font-normal bg-muted/50 px-2 py-0.5 rounded-full">
+                        {filteredDbProjects.length}
+                      </span>
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredDbProjects.map((dp: any) => (
+                        <div
+                          key={`db-${dp.id}`}
+                          onClick={() => navigate(`/engine-editor/${encodeURIComponent(dp.name)}`)}
+                          className="group bg-card rounded-2xl overflow-hidden border border-border/30 hover:border-emerald-500/40 transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl"
+                        >
+                          <div className="h-28 flex items-center justify-center relative bg-gradient-to-br from-emerald-950/50 to-background">
+                            <span className="text-4xl opacity-20">{'\u2699'}</span>
+                            <span className="absolute top-3 right-3 text-[10px] font-semibold px-2.5 py-1 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+                              DB
+                            </span>
+                            <span className={`absolute bottom-3 left-3 text-[10px] font-medium px-2 py-0.5 rounded-full glass capitalize ${
+                              dp.status === 'running' ? 'text-blue-400' :
+                              dp.status === 'completed' ? 'text-green-400' :
+                              dp.status === 'failed' ? 'text-red-400' :
+                              'text-muted-foreground'
+                            }`}>
+                              {dp.status || 'ready'}
+                            </span>
+                          </div>
+                          <div className="p-5">
+                            <h3 className="text-base font-bold capitalize group-hover:text-emerald-400 transition-colors line-clamp-1">
+                              {dp.name?.replace(/[-_]/g, ' ')}
+                            </h3>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{dp.description || 'Generation project'}</p>
+                            <div className="flex gap-4 mt-3 text-[11px] text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <span className="font-semibold text-foreground/70">{dp.id}</span> ID
+                              </span>
+                              {dp.created_at && (
+                                <span className="flex items-center gap-1">
+                                  {new Date(dp.created_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Engine Projects Section (local scan) */}
                 {filteredEngineProjects && filteredEngineProjects.length > 0 && (
                   <div>
                     <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">

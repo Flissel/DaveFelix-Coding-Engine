@@ -15,13 +15,17 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       // Coding Engine routes (Docker container on port 8000)
       '/api/v1/dashboard': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/db': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/ws': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
+      '/api/v1/engine/generation/ws': { target: 'http://localhost:8000', changeOrigin: true, ws: true },
+      '/api/v1/engine': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/jobs': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/colony': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/enrichment': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/artifacts': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/vision': { target: 'http://localhost:8000', changeOrigin: true },
       '/api/v1/llm-config': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api/v1/clarifications': { target: 'http://localhost:8000', changeOrigin: true },
       // DaveLovable Vibe Coder (local backend on port 8002) — catch-all for /projects, /chat, /engine
       '/api/v1': { target: 'http://localhost:8002', changeOrigin: true },
     },

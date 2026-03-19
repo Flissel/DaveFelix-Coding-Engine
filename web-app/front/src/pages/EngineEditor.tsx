@@ -1,7 +1,8 @@
 // front/src/pages/EngineEditor.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEngineProject, useGenerationStatus, useStartGeneration, useStopGeneration } from '@/hooks/useEngine';
+import { useEngineStore } from '@/stores/engineStore';
 import { WorkTabs } from '@/components/engine/WorkTabs';
 import { VncPreview } from '@/components/engine/VncPreview';
 import { GenerationMonitor } from '@/components/engine/GenerationMonitor';
@@ -15,6 +16,19 @@ const EngineEditor = () => {
   const startGen = useStartGeneration();
   const stopGen = useStopGeneration();
   const [parallelism, setParallelism] = useState(1);
+  const { connect, disconnect, setActiveProject, connected } = useEngineStore();
+
+  // Auto-connect WebSocket and set active project on mount
+  useEffect(() => {
+    if (projectName) {
+      setActiveProject(projectName);
+      connect();
+    }
+    return () => {
+      disconnect();
+      setActiveProject(null);
+    };
+  }, [projectName]);
 
   if (!projectName) return <div>No project selected</div>;
   if (isLoading) return <div className="flex items-center justify-center h-screen text-muted-foreground">Loading project...</div>;
@@ -39,6 +53,8 @@ const EngineEditor = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* WS connection indicator */}
+          <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} title={connected ? 'WebSocket connected' : 'WebSocket disconnected'} />
           {/* Parallelism indicator */}
           {parallelism > 1 && (
             <span className="text-[10px] px-2 py-0.5 rounded-full border bg-yellow-500/10 text-yellow-400 border-yellow-500/25">

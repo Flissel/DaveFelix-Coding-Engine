@@ -60,8 +60,9 @@ export const useEngineStore = create<EngineState>((set, get) => ({
   connect: () => {
     if (get().ws) return; // Already connected
 
-    const ws = createEngineWebSocket((type, data) => {
-      switch (type) {
+    const connectWithRetry = () => {
+      const ws = createEngineWebSocket((type, data) => {
+        switch (type) {
         case 'engine:agent_status':
         case 'AGENT_STATUS':
           set((s) => {
@@ -144,16 +145,30 @@ export const useEngineStore = create<EngineState>((set, get) => ({
       }
     });
 
-    ws.onopen = () => set({ connected: true });
-    ws.onclose = () => set({ connected: false, ws: null });
+      ws.onopen = () => set({ connected: true });
+      ws.onclose = (e) => {
+        set({ connected: false, ws: null });
+        // Auto-reconnect after 3 seconds unless manually disconnected
+        if (e.code !== 1000) {
+          console.log('[EngineStore] WS closed unexpectedly, reconnecting in 3s...');
+          setTimeout(() => {
+            if (!get().ws) {
+              connectWithRetry();
+            }
+          }, 3000);
+        }
+      };
 
-    set({ ws });
+      set({ ws });
+    };
+
+    connectWithRetry();
   },
 
   disconnect: () => {
     const { ws } = get();
     if (ws) {
-      ws.close();
+      ws.close(1000, 'Manual disconnect'); // Code 1000 prevents auto-reconnect
       set({ ws: null, connected: false });
     }
   },

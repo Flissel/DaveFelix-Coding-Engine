@@ -15,51 +15,106 @@ import type { EpicInfo } from '@/services/engineApi';
 function LogViewer({ projectName }: { projectName: string }) {
   const wsLogs = useEngineStore(state => state.logs);
   const [polledLogs, setPolledLogs] = useState<string[]>([]);
+  const [containerLogs, setContainerLogs] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
 
-  // Poll backend events as log lines
+  // Poll backend status + container logs
   useEffect(() => {
     let active = true;
     const poll = async () => {
       try {
-        const res = await fetch(`${API_URL}/dashboard/project/status?projectId=${encodeURIComponent(projectName)}`);
+        // Fetch generation status for summary lines
+        const res = await fetch(`${API_URL}/dashboard/status?projectId=${encodeURIComponent(projectName)}`);
         if (res.ok) {
           const data = await res.json();
           const lines: string[] = [];
           if (data.phase) lines.push(`[Phase] ${data.phase}`);
-          if (data.completed !== undefined) lines.push(`[Progress] ${data.completed}/${data.total} tasks completed (${data.progress_pct}%)`);
+          if (data.completed !== undefined) lines.push(`[Progress] ${data.completed}/${data.total} tasks completed (${data.progress_pct || 0}%)`);
           if (data.failed > 0) lines.push(`[Warning] ${data.failed} tasks failed`);
           if (data.epics?.length > 0) {
             data.epics.forEach((e: EpicInfo) => {
-              lines.push(`[Epic] ${e.id}: ${e.name} — ${e.tasks_complete}/${e.tasks_total} tasks (${e.progress_pct}%)`);
+              lines.push(`[Epic] ${e.id}: ${e.name} -- ${e.tasks_complete}/${e.tasks_total} tasks (${e.progress_pct}%)`);
             });
           }
           if (active) setPolledLogs(lines);
         }
       } catch { /* ignore */ }
+
+      // Fetch real container logs
+      try {
+        const logRes = await fetch(`${API_URL}/engine/docker/project/${encodeURIComponent(projectName)}/logs?tail=200`);
+        if (logRes.ok) {
+          const logData = await logRes.json();
+          const logLines = typeof logData === 'string'
+            ? logData.split('\n').filter(Boolean)
+            : Array.isArray(logData) ? logData : logData.logs ? logData.logs.split('\n').filter(Boolean) : [];
+          if (active && logLines.length > 0) setContainerLogs(logLines);
+        }
+      } catch { /* container logs not available is fine */ }
     };
     poll();
     const interval = setInterval(poll, 5000);
     return () => { active = false; clearInterval(interval); };
   }, [projectName]);
 
-  const displayLogs = wsLogs.length > 0 ? wsLogs : polledLogs;
+  // Merge logs: WS logs take priority, then container logs, then polled status
+  const displayLogs = wsLogs.length > 0
+    ? wsLogs
+    : containerLogs.length > 0
+      ? containerLogs
+      : polledLogs;
 
+  // Auto-scroll to bottom when new logs arrive
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && autoScroll) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [displayLogs.length]);
+  }, [displayLogs.length, autoScroll]);
+
+  // Detect manual scroll to pause auto-scroll
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    setAutoScroll(scrollHeight - scrollTop - clientHeight < 50);
+  };
 
   return (
-    <div ref={containerRef} className="h-full overflow-y-auto font-mono text-xs p-4 bg-black/30 rounded-lg">
-      {displayLogs.length === 0 ? (
-        <div className="text-white/30">No logs yet. Start generation to see output.</div>
-      ) : (
-        displayLogs.map((log, i) => (
-          <div key={i} className="text-white/70 py-0.5 border-b border-white/5">{log}</div>
-        ))
-      )}
+    <div className="flex flex-col h-full flex-1">
+      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-white/5 shrink-0">
+        <span className="text-[10px] text-white/40">
+          {displayLogs.length} log lines
+          {wsLogs.length > 0 ? ' (live)' : containerLogs.length > 0 ? ' (container)' : ' (status)'}
+        </span>
+        {!autoScroll && (
+          <button
+            onClick={() => { setAutoScroll(true); }}
+            className="text-[10px] px-2 py-0.5 bg-primary/20 text-primary rounded hover:bg-primary/30 ml-auto"
+          >
+            Resume auto-scroll
+          </button>
+        )}
+      </div>
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto font-mono text-xs p-4 bg-black/30 rounded-lg"
+      >
+        {displayLogs.length === 0 ? (
+          <div className="text-white/30">No logs yet. Start generation to see output.</div>
+        ) : (
+          displayLogs.map((log, i) => {
+            // Color-code log lines
+            const isError = /error|fail|exception/i.test(log);
+            const isWarning = /warn|warning/i.test(log);
+            const isPhase = /^\[Phase\]/.test(log);
+            const colorClass = isError ? 'text-red-400' : isWarning ? 'text-yellow-400' : isPhase ? 'text-blue-400' : 'text-white/70';
+            return (
+              <div key={i} className={`${colorClass} py-0.5 border-b border-white/5 whitespace-pre-wrap break-all`}>{log}</div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }

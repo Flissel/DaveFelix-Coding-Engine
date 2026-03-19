@@ -6,11 +6,16 @@
 # - Node.js API backends
 # - Python FastAPI/Flask apps
 #
+# Ports:
+#   3100 - App dev server (live preview of generated code)
+#   6090 - noVNC web client (browser-based VNC access)
+#   5900 - VNC server (raw VNC protocol)
+#
 # Build:
 #   docker build -t sandbox-test -f infra/docker/Dockerfile.sandbox .
 #
-# Usage (via SandboxTool):
-#   docker run --rm -v ./project:/app sandbox-test
+# Usage (via docker-compose):
+#   docker-compose up sandbox
 
 FROM node:20-slim
 
@@ -65,7 +70,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     x11vnc \
     novnc \
     websockify \
-    # Chromium for web app VNC streaming
+    # Chromium for web app VNC streaming and browser-based testing
     chromium \
     && rm -rf /var/lib/apt/lists/*
 
@@ -97,22 +102,22 @@ ENV DISPLAY=:99
 # VNC streaming configuration
 ENV ENABLE_VNC=false
 ENV VNC_PORT=5900
-ENV NOVNC_PORT=6080
+ENV NOVNC_PORT=6090
 # Chromium configuration for VNC browser display
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage"
 
-# Expose VNC ports for screen streaming
-EXPOSE 5900 6080
+# Expose ports: VNC raw, noVNC web client, app dev server
+EXPOSE 5900 6090 3100
 
-WORKDIR /app
+WORKDIR /workspace
 
-# Copy entrypoint script
-COPY sandbox-entrypoint.sh /usr/local/bin/sandbox-entrypoint.sh
+# Copy entrypoint script (build context is project root)
+COPY infra/docker/sandbox-entrypoint.sh /usr/local/bin/sandbox-entrypoint.sh
 RUN chmod +x /usr/local/bin/sandbox-entrypoint.sh
 
-# Healthcheck tries multiple common ports
+# Healthcheck tries the app dev server port and common alternatives
 HEALTHCHECK --interval=5s --timeout=3s --start-period=15s --retries=5 \
-    CMD curl -sf http://localhost:5173/ || curl -sf http://localhost:3000/ || curl -sf http://localhost:4173/ || curl -sf http://localhost:8000/ || curl -sf http://localhost:5000/ || exit 1
+    CMD curl -sf http://localhost:3100/ || curl -sf http://localhost:5173/ || curl -sf http://localhost:3000/ || curl -sf http://localhost:8000/ || exit 1
 
 ENTRYPOINT ["/usr/local/bin/sandbox-entrypoint.sh"]
 CMD ["test"]

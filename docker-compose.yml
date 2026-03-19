@@ -84,6 +84,25 @@ services:
         condition: service_healthy
     command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 
+  # Sandbox - Live preview with VNC access
+  sandbox:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.sandbox
+    container_name: coding-engine-sandbox
+    ports:
+      - "6090:6090"   # noVNC web client
+      - "3100:3100"   # App dev server preview
+    volumes:
+      - ./Data:/workspace/data
+    environment:
+      - DISPLAY=:99
+      - ENABLE_VNC=true
+      - NOVNC_PORT=6090
+      - ENGINE_API_URL=http://api:8000
+    depends_on:
+      - api
+
   # Worker Service
   worker:
     build:

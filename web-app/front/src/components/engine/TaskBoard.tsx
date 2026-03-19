@@ -1,7 +1,6 @@
 // web-app/front/src/components/engine/TaskBoard.tsx
 import { useState, useEffect } from 'react';
 import { getDbProjects, getDbTasks } from '@/services/engineApi';
-import { platform } from '@/services/platform';
 import { useEngineStore } from '@/stores/engineStore';
 
 interface DbTask {
@@ -82,8 +81,14 @@ export function TaskBoard({ projectPath }: { projectPath: string }) {
   const loadDbTasks = async (projectId: number) => {
     try {
       const result = await getDbTasks(projectId);
-      setDbTasks(result.tasks || []);
-      setJobInfo(result.job || null);
+      // Handle both {job, tasks} and direct array formats
+      if (Array.isArray(result)) {
+        setDbTasks(result);
+        setJobInfo(null);
+      } else {
+        setDbTasks(result.tasks || []);
+        setJobInfo(result.job || null);
+      }
     } catch (e) {
       console.error('Failed to load DB tasks:', e);
     }
@@ -137,7 +142,7 @@ export function TaskBoard({ projectPath }: { projectPath: string }) {
   };
 
   return (
-    <div className="flex flex-col h-full gap-3">
+    <div className="flex flex-col h-full gap-3 p-3 flex-1 overflow-hidden">
       {/* Header with project selector and job progress */}
       <div className="flex items-center gap-3 flex-wrap">
         {/* Project selector */}

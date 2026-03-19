@@ -1,10 +1,11 @@
 // front/src/hooks/useEngine.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { engineApi, type EngineProject, type EngineProjectDetail, type GenerationStatus } from '@/services/engineApi';
+import { engineApi, getDbProjects, type EngineProject, type EngineProjectDetail, type GenerationStatus } from '@/services/engineApi';
 
 export const engineKeys = {
   all: ['engine'] as const,
   projects: () => [...engineKeys.all, 'projects'] as const,
+  dbProjects: () => [...engineKeys.all, 'db-projects'] as const,
   project: (name: string) => [...engineKeys.all, 'project', name] as const,
   status: (name: string) => [...engineKeys.all, 'status', name] as const,
 };
@@ -12,9 +13,32 @@ export const engineKeys = {
 export function useEngineProjects() {
   return useQuery({
     queryKey: engineKeys.projects(),
-    queryFn: () => engineApi.listProjects(),
+    queryFn: async () => {
+      // Try local-projects scan, but don't fail if it errors
+      try {
+        return await engineApi.listProjects();
+      } catch {
+        return [] as EngineProject[];
+      }
+    },
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  });
+}
+
+// DB-backed projects from PostgreSQL (/api/v1/db/projects)
+export function useDbProjects() {
+  return useQuery({
+    queryKey: engineKeys.dbProjects(),
+    queryFn: async () => {
+      try {
+        return await getDbProjects();
+      } catch {
+        return [];
+      }
+    },
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
   });
 }
 
