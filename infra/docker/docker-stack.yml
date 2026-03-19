@@ -68,6 +68,7 @@ services:
       DISCORD_CHANNEL_ID: "1484160715580510242"
     volumes:
       - artifact_data:/data/artifacts
+      - generation_data:/app/Data
     networks:
       - backend
       - frontend

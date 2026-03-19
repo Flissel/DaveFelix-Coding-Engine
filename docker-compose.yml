@@ -172,3 +172,13 @@ volumes:
   redis_data:
   gitea_data:
   artifact_data:
+
+# Secrets from .env file (docker-compose v3.1+)
+# In Swarm mode, use external secrets instead
+secrets:
+  openrouter_api_key:
+    environment: OPENROUTER_API_KEY
+  discord_bot_token:
+    environment: DISCORD_BOT_TOKEN
+  discord_bot_token_analyzer:
+    environment: DISCORD_BOT_TOKEN_ANALYZER

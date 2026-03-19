@@ -103,6 +103,21 @@ export const useEngineStore = create<EngineState>((set, get) => ({
           set({ progressPct: data.progress || data.percent || 0, phase: data.phase || get().phase });
           break;
 
+        case 'generation_progress':
+          set({
+            progressPct: data.progress_pct || 0,
+            phase: data.phase || 'generation',
+            taskProgress: {
+              completed: data.completed || 0,
+              failed: data.failed || 0,
+              total: data.total || 0,
+              running: data.agents || 0,
+              pending: (data.total || 0) - (data.completed || 0) - (data.failed || 0),
+              percent: data.progress_pct || 0,
+            },
+          });
+          break;
+
         case 'REVIEW_PAUSED':
           set({ reviewPaused: true });
           break;

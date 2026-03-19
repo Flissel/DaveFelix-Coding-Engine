@@ -2517,6 +2517,23 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                         })
                 _generation_state[project_id]["agents"] = running_agents[:20]
 
+            # #6: Broadcast progress via WebSocket
+            try:
+                from src.api.routes.dashboard_websocket import dashboard_manager
+                if dashboard_manager.active_connections:
+                    await dashboard_manager.broadcast({
+                        "type": "generation_progress",
+                        "project_id": project_id,
+                        "phase": "generation",
+                        "progress_pct": int(completed * 100 / max(total, 1)),
+                        "completed": completed,
+                        "failed": failed,
+                        "total": total,
+                        "agents": len(running_agents),
+                    })
+            except Exception:
+                pass
+
             # Sync tasks to PostgreSQL
             if db_job_id and task_records:
                 try:
