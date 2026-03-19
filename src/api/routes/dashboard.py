@@ -2343,6 +2343,16 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             max_parallel_tasks=request.max_parallel_tasks,
             enable_som=True,
             som_config=som_config,
+            # Fungus Context System — semantic code search via MCMP
+            enable_fungus=True,
+            fungus_judge_provider="openrouter",
+            fungus_judge_model="nvidia/nemotron-3-super-120b-a12b:free",
+            # Fungus Validation — autonomous MCMP validation
+            enable_fungus_validation=True,
+            fungus_validation_interval=10,
+            # Fungus Memory — memory-augmented search
+            enable_fungus_memory=True,
+            fungus_memory_interval=10,
         )
 
         # Generate project-specific MCP config for dynamic server configuration
