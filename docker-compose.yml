@@ -125,6 +125,39 @@ services:
       redis:
         condition: service_healthy
 
+  # Automation_ui - Component Debug Agent
+  # Provides LLM-driven desktop/browser automation for debugging generated components.
+  # The backend runs on port 8007 and exposes the /api/llm/intent endpoint
+  # that the coding engine's automation_ui_bridge.py calls after code generation.
+  automation-ui-backend:
+    build:
+      context: ./external/Automation_ui/backend
+      dockerfile: Dockerfile
+    container_name: coding-engine-automation-ui
+    ports:
+      - "8007:8007"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - LOG_LEVEL=INFO
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - CORS_ORIGINS=http://localhost:3100,http://localhost:5173,http://localhost:8000
+      # Point at sandbox for browser debug
+      - SANDBOX_APP_URL=http://sandbox:3100
+    volumes:
+      - ./external/Automation_ui/backend:/app:ro
+      - ./Data:/workspace/data:ro
+    depends_on:
+      - sandbox
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8007/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
 volumes:
   postgres_data:
   redis_data:

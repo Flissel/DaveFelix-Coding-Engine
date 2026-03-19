@@ -52,6 +52,13 @@ except ImportError:
     NemoClawBridge = None
     BrowserCheckResult = None
 
+# Automation_ui debug bridge (optional)
+try:
+    from mcp_plugins.servers.automation_ui_bridge import AutomationUIBridge, AutomationDebugResult
+except ImportError:
+    AutomationUIBridge = None
+    AutomationDebugResult = None
+
 
 # =============================================================================
 # Task Execution Result
@@ -252,6 +259,11 @@ class TaskExecutor:
         self._nemoclaw_retry_counts: Dict[str, int] = {}  # task_id -> browser check retry count
         self._nemoclaw_max_retries: int = 3
 
+        # Automation_ui debug bridge (lazy-initialized)
+        self._automation_ui_bridge = None
+        self._automation_ui_retry_counts: Dict[str, int] = {}
+        self._automation_ui_max_retries: int = 2
+
         logger.info(f"TaskExecutor initialized | input={project_path} | output={self.output_dir} | headless={headless_mode} | two_stage={two_stage}")
 
     # =========================================================================
@@ -408,6 +420,35 @@ class TaskExecutor:
                         # Clear retry counter, don't block completion
                         self._nemoclaw_retry_counts.pop(task.id, None)
 
+            # 5c. Automation_ui component debug (after successful code-gen tasks)
+            if result.success and agent_name not in ("BashExecutor", "CheckpointHandler", "NotificationHandler"):
+                auto_debug_result = await self._run_automation_ui_debug(task)
+                if auto_debug_result and not auto_debug_result.passed and not auto_debug_result.skipped:
+                    retries = self._automation_ui_retry_counts.get(task.id, 0)
+                    if retries < self._automation_ui_max_retries:
+                        self._automation_ui_retry_counts[task.id] = retries + 1
+                        debug_errors = "; ".join(auto_debug_result.errors[:5])
+                        logger.info(
+                            f"Automation_ui debug found issues for {task.id} "
+                            f"(attempt {retries + 1}/{self._automation_ui_max_retries}): {debug_errors}"
+                        )
+                        # Re-execute with debug error context appended to task description
+                        original_desc = task.description or ""
+                        task.description = (
+                            f"{original_desc}\n\n"
+                            f"[AUTO-FIX] Automation_ui debug found errors after previous generation:\n"
+                            f"{debug_errors}\n"
+                            f"Fix these issues in the generated code."
+                        )
+                        task.retry_count += 1
+                        return await self.execute_task(task)
+                    else:
+                        logger.warning(
+                            f"Automation_ui debug still finding issues after "
+                            f"{self._automation_ui_max_retries} retries for {task.id}"
+                        )
+                        self._automation_ui_retry_counts.pop(task.id, None)
+
             # 6. Update final status
             if result.success:
                 await self._update_task_status(task, TaskStatus.COMPLETED.value)
@@ -487,6 +528,82 @@ class TaskExecutor:
             return result
         except Exception as e:
             logger.debug(f"nemoclaw: check failed for {task.id}: {e}")
+            return None
+
+    # =========================================================================
+    # Automation_ui Component Debug
+    # =========================================================================
+
+    def _get_automation_ui_bridge(self):
+        """Lazy-initialize the Automation_ui debug bridge."""
+        if self._automation_ui_bridge is not None:
+            return self._automation_ui_bridge
+        if AutomationUIBridge is None:
+            return None
+        try:
+            backend_url = os.environ.get("AUTOMATION_UI_URL", "http://localhost:8007")
+            sandbox_url = os.environ.get("SANDBOX_APP_URL", "http://localhost:3100")
+            if self.som_bridge and hasattr(self.som_bridge, 'config'):
+                app_port = getattr(self.som_bridge.config, 'app_port', 3100)
+                sandbox_url = f"http://localhost:{app_port}"
+
+            self._automation_ui_bridge = AutomationUIBridge(
+                backend_url=backend_url,
+                sandbox_url=sandbox_url,
+            )
+            logger.info(
+                f"Automation_ui bridge initialized | "
+                f"backend={backend_url} | sandbox={sandbox_url}"
+            )
+            return self._automation_ui_bridge
+        except Exception as e:
+            logger.debug(f"Automation_ui bridge init failed: {e}")
+            return None
+
+    async def _run_automation_ui_debug(self, task) -> "Optional[AutomationDebugResult]":
+        """Run Automation_ui debug check for a generated component.
+
+        Extracts component name and file path from the task metadata,
+        then sends a debug instruction to Automation_ui's LLM intent agent.
+
+        Returns None if bridge is unavailable.
+        Returns AutomationDebugResult with findings otherwise.
+        Gracefully degrades if Automation_ui is not running.
+        """
+        bridge = self._get_automation_ui_bridge()
+        if bridge is None:
+            return None
+
+        # Extract component info from task
+        component_name = getattr(task, 'title', '') or task.id
+        file_path = ""
+        if hasattr(task, 'files') and task.files:
+            file_path = task.files[0] if isinstance(task.files, list) else str(task.files)
+        elif hasattr(task, 'target_file'):
+            file_path = str(task.target_file)
+
+        # Use task description as extra context if available
+        extra_context = ""
+        if hasattr(task, 'description') and task.description:
+            # Truncate to avoid overwhelming the LLM
+            desc = task.description[:500]
+            extra_context = f"Task description: {desc}"
+
+        try:
+            result = await bridge.debug_component(
+                task_type=getattr(task, 'type', 'fe_component'),
+                component_name=component_name,
+                file_path=file_path,
+                extra_context=extra_context,
+            )
+            if result.skipped:
+                logger.debug(
+                    f"automation_ui: debug skipped for {task.id}: {result.skip_reason}"
+                )
+                return None
+            return result
+        except Exception as e:
+            logger.debug(f"automation_ui: debug failed for {task.id}: {e}")
             return None
 
     # =========================================================================
