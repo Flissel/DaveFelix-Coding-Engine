@@ -69,7 +69,7 @@ services:
       - GIT_SERVER_URL=http://gitea:3000
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - LLM_BACKEND=claude
+      - LLM_BACKEND=openrouter
     volumes:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
@@ -141,6 +141,10 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - LOG_LEVEL=INFO
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      # LLM models — all OpenRouter free
+      - LLM_MODEL=qwen/qwen3-coder:free
+      - VISION_MODEL=nvidia/nemotron-nano-12b-v2-vl:free
+      - COMPACTION_MODEL=qwen/qwen3-next-80b-a3b-instruct:free
       - CORS_ORIGINS=http://localhost:3100,http://localhost:5173,http://localhost:8000
       # Point at sandbox for browser debug
       - SANDBOX_APP_URL=http://sandbox:3100
