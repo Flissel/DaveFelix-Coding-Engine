@@ -250,3 +250,95 @@ class OpenClawBridge:
             logger.warning("Component %s still has issues: %s", component, result.errors[:3])
 
         return result
+
+    # ── Phase 2: Skill-Aware Agent Execution ──────────────────────────
+
+    SKILL_MAP = {
+        "code-generation": "dev",
+        "debugging": "debug",
+        "e2e-testing": "qa",
+        "ux-review": "design",
+        "test-generation": "test",
+        "validation": "validator",
+    }
+
+    def _load_skill(self, skill_name: str) -> str:
+        """Load a skill's SKILL.md content for injection into OpenClaw agent prompt."""
+        import pathlib
+        # Try multiple skill locations
+        for base in [
+            pathlib.Path("/app/.claude/skills"),
+            pathlib.Path(__file__).parent.parent.parent / ".claude" / "skills",
+        ]:
+            skill_file = base / skill_name / "SKILL.md"
+            if skill_file.exists():
+                content = skill_file.read_text(encoding="utf-8", errors="replace")
+                # Truncate to ~2000 chars for prompt budget
+                if len(content) > 2000:
+                    content = content[:2000] + "\n...(truncated)"
+                return content
+        return ""
+
+    async def run_with_skill(
+        self,
+        task_description: str,
+        skill_name: str,
+        context: str = "",
+        file_paths: list = None,
+    ) -> DebugResult:
+        """
+        Run OpenClaw agent with a Coding Engine skill injected as system context.
+
+        This exposes our 12 skills to OpenClaw agents, so they can generate code,
+        debug errors, run tests, etc. using the same quality standards.
+        """
+        skill_content = self._load_skill(skill_name)
+        agent_id = self.SKILL_MAP.get(skill_name, "main")
+
+        parts = [
+            "=== SKILL INSTRUCTIONS ===",
+            skill_content if skill_content else "(no skill loaded for %s)" % skill_name,
+            "",
+            "=== TASK ===",
+            task_description,
+        ]
+        if context:
+            parts.extend(["", "=== CONTEXT ===", context])
+        if file_paths:
+            parts.extend(["", "=== FILES ===", "\n".join(file_paths)])
+
+        prompt = "\n".join(parts)
+        logger.info("OpenClaw skill-agent [%s/%s]: %s...", agent_id, skill_name, task_description[:80])
+        return await self.run_agent(message=prompt, agent_id=agent_id, thinking="high")
+
+    async def generate_code(self, task: dict, fungus_context: str = "") -> DebugResult:
+        """Use OpenClaw + code-generation skill to produce real code."""
+        desc = task.get("description", task.get("title", ""))
+        files = task.get("files", [])
+        return await self.run_with_skill(
+            task_description="Generate production-ready code for: %s" % desc,
+            skill_name="code-generation",
+            context=fungus_context,
+            file_paths=files,
+        )
+
+    async def debug_error(self, error: str, file_path: str = "", stack: str = "") -> DebugResult:
+        """Use OpenClaw + debugging skill to analyze and fix an error."""
+        return await self.run_with_skill(
+            task_description="Debug this error:\n%s\n\nFile: %s\nStack: %s" % (error, file_path, stack),
+            skill_name="debugging",
+        )
+
+    async def run_e2e_test(self, preview_url: str, test_spec: str = "") -> DebugResult:
+        """Use OpenClaw + e2e-testing skill to run browser tests."""
+        return await self.run_with_skill(
+            task_description="Run E2E tests on %s\n\nTest spec:\n%s" % (preview_url, test_spec),
+            skill_name="e2e-testing",
+        )
+
+    async def review_ux(self, preview_url: str, screenshot_path: str = "") -> DebugResult:
+        """Use OpenClaw + ux-review skill to analyze UI quality."""
+        return await self.run_with_skill(
+            task_description="Review UX quality of %s\nScreenshot: %s" % (preview_url, screenshot_path),
+            skill_name="ux-review",
+        )
