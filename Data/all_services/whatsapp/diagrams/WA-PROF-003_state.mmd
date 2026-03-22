@@ -1,6 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> DisplayingInfo : Show Info/Status Text
-    DisplayingInfo --> Idle : Hide Info/Status Text
-    DisplayingInfo --> UpdatingInfo : Update Info/Status Text
-    UpdatingInfo --> DisplayingInfo : Info/Status Text Updated

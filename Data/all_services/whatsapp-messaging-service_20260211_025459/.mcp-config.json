@@ -1,0 +1,52 @@
+{
+  "project_id": "whatsapp-messaging-service_20260211_025459",
+  "project_path": "/app/Data/all_services/whatsapp-messaging-service_20260211_025459",
+  "output_dir": "/app/output/whatsapp-messaging-service_20260211_025459",
+  "sandbox_container": "sandbox-whatsapp-messaging-service_20260211_025459",
+  "vnc_port": 6090,
+  "app_port": 3100,
+  "servers": {
+    "filesystem": {
+      "enabled": true,
+      "env_vars": {},
+      "args_override": [
+        "/app/output/whatsapp-messaging-service_20260211_025459"
+      ],
+      "notes": "Scoped to project output: /app/output/whatsapp-messaging-service_20260211_025459"
+    },
+    "docker": {
+      "enabled": true,
+      "env_vars": {
+        "SANDBOX_CONTAINER": "sandbox-whatsapp-messaging-service_20260211_025459",
+        "VNC_PORT": "6090",
+        "APP_PORT": "3100"
+      },
+      "args_override": [],
+      "notes": "Sandbox: sandbox-whatsapp-messaging-service_20260211_025459"
+    },
+    "prisma": {
+      "enabled": true,
+      "env_vars": {
+        "PRISMA_SCHEMA_PATH": "/app/output/whatsapp-messaging-service_20260211_025459/prisma/schema.prisma"
+      },
+      "args_override": [],
+      "notes": "Schema: /app/output/whatsapp-messaging-service_20260211_025459/prisma/schema.prisma"
+    },
+    "playwright": {
+      "enabled": true,
+      "env_vars": {
+        "PLAYWRIGHT_BASE_URL": "http://localhost:3100"
+      },
+      "args_override": [],
+      "notes": "App at port 3100"
+    },
+    "npm": {
+      "enabled": true,
+      "env_vars": {
+        "NPM_PROJECT_DIR": "/app/output/whatsapp-messaging-service_20260211_025459"
+      },
+      "args_override": [],
+      "notes": "Project: /app/output/whatsapp-messaging-service_20260211_025459"
+    }
+  }
+}

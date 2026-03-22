@@ -1,8 +1,0 @@
-flowchart TD
-    A[Unbekannte Absender] --> B{Ist der Absender bekannt?}
-    B -- Ja --> C[Normale Verarbeitung]
-    B -- Nein --> D[Gesonderte Behandlung]
-    D --> E[Überprüfung der Absenderinformationen]
-    E --> F{Absender verifiziert?}
-    F -- Ja --> G[Zugriff gewähren]
-    F -- Nein --> H[Zugriff verweigern]

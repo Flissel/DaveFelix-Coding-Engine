@@ -1,6 +1,6 @@
 {
   "epic_id": "EPIC-002",
-  "epic_name": "Profil- und Identitätsverwaltung",
+  "epic_name": "Profil- und Identit\u00e4tsverwaltung",
   "tasks": [
     {
       "id": "EPIC-002-SCHEMA-UserPrivacySetting-model",
@@ -8,7 +8,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: UserPrivacySetting",
       "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -30,8 +30,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-UserPrivacySetting-relations",
@@ -39,7 +38,7 @@
       "type": "schema_relations",
       "title": "Define relations for: UserPrivacySetting",
       "description": "Set up Prisma relations for UserPrivacySetting with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-SCHEMA-UserPrivacySetting-model"
       ],
@@ -63,8 +62,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-UserPrivacySetting-migration",
@@ -72,13 +70,13 @@
       "type": "schema_migration",
       "title": "Run migration for: UserPrivacySetting",
       "description": "Execute prisma migrate dev for UserPrivacySetting changes.",
-      "status": "pending",
+      "status": "failed",
       "dependencies": [
         "EPIC-002-SCHEMA-UserPrivacySetting-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": null,
+      "error_message": "no configuration file provided: not found\n",
       "output_files": [
         "prisma/migrations/*_userprivacysetting/"
       ],
@@ -96,8 +94,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-user_profile-model",
@@ -105,7 +102,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: user_profile",
       "description": "Define user_profile model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -127,8 +124,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-user_profile-relations",
@@ -136,7 +132,7 @@
       "type": "schema_relations",
       "title": "Define relations for: user_profile",
       "description": "Set up Prisma relations for user_profile with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-SCHEMA-user_profile-model"
       ],
@@ -160,8 +156,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-user_profile-migration",
@@ -169,7 +164,7 @@
       "type": "schema_migration",
       "title": "Run migration for: user_profile",
       "description": "Execute prisma migrate dev for user_profile changes.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-002-SCHEMA-user_profile-relations"
       ],
@@ -193,8 +188,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-whatsapp_user-model",
@@ -202,7 +196,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: whatsapp_user",
       "description": "Define whatsapp_user model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -224,8 +218,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-whatsapp_user-relations",
@@ -233,7 +226,7 @@
       "type": "schema_relations",
       "title": "Define relations for: whatsapp_user",
       "description": "Set up Prisma relations for whatsapp_user with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-model"
       ],
@@ -257,8 +250,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-SCHEMA-whatsapp_user-migration",
@@ -266,13 +258,13 @@
       "type": "schema_migration",
       "title": "Run migration for: whatsapp_user",
       "description": "Execute prisma migrate dev for whatsapp_user changes.",
-      "status": "pending",
+      "status": "failed",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": null,
+      "error_message": "no configuration file provided: not found\n",
       "output_files": [
         "prisma/migrations/*_whatsapp_user/"
       ],
@@ -290,8 +282,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-schema",
@@ -299,7 +290,7 @@
       "type": "verify_schema",
       "title": "Validate Prisma schema",
       "description": "Run prisma validate to check schema integrity.",
-      "status": "pending",
+      "status": "failed",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-model",
         "EPIC-002-SCHEMA-whatsapp_user-relations",
@@ -307,7 +298,7 @@
       ],
       "estimated_minutes": 1,
       "actual_minutes": null,
-      "error_message": null,
+      "error_message": "Prisma schema loaded from prisma/schema.prisma.\n\nError: Prisma schema validation - (validate wasm)\nError code: P1012\n\u001b[1;91merror\u001b[0m: \u001b[1mType \"user_profile\" is neither a built-in type, nor refers to another model, composite type, or enum.\u001b[0m\n  \u001b[1;94m-->\u001b[0m  \u001b[4mprisma/schema.prisma:34\u001b[0m\n\u001b[1;94m   | \u001b[0m\n\u001b[1;94m33 | \u001b[0m  contacts_as_target       user_contact[]         @relation(\"ContactTarget\")\n\u001b[1;94m34 | \u001b[0m  profile                  \u001b[1;91muser_profile\u001b[0m?          @relation(\"UserProfile\")\n\u001b[1;94m   | \u001b[0m\n\u001b[1;91merror\u001b[0m: \u001b[1mThe datasource property `directUrl` is no longer supported in schema files. Move connection URLs to `prisma.config.ts`. See https://pris.ly/d/config-datasource\u001b[0m\n  \u001b[1;94m-->\u001b[0m  \u001b[4mprisma/schema.prisma:8\u001b[0m\n\u001b[1;94m   | \u001b[0m\n\u001b[1;94m 7 | \u001b[0m  provider  = \"postgresql\"\n\u001b[1;94m 8 | \u001b[0m  \u001b[1;91mdirectUrl = env(\"DATABASE_URL\")\u001b[0m\n\u001b[1;94m   | \u001b[0m\n\nValidation Error Count: 2\n[Context: validate]\n\nPrisma CLI Version : 7.5.0\n",
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -323,8 +314,7 @@
       "command": "npx prisma validate",
       "success_criteria": "prisma validate exits with code 0",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-CHECKPOINT-schema",
@@ -332,7 +322,7 @@
       "type": "checkpoint_schema",
       "title": "Checkpoint: Review Schema",
       "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-VERIFY-schema"
       ],
@@ -354,8 +344,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_profile-images-controller",
@@ -389,8 +378,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_profile-images-service",
@@ -424,8 +412,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_profile-images-dto",
@@ -459,8 +446,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_profile-images-guard",
@@ -494,8 +480,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_profile-images-validation",
@@ -529,8 +514,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-images_current-controller",
@@ -564,8 +548,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-images_current-service",
@@ -599,8 +582,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-images_current-dto",
@@ -634,8 +616,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-images_current-guard",
@@ -669,8 +650,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-images_current-validation",
@@ -704,8 +684,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile-images_current-controller",
@@ -739,8 +718,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile-images_current-service",
@@ -774,8 +752,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile-images_current-dto",
@@ -809,8 +786,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile-images_current-guard",
@@ -844,8 +820,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile-images_current-validation",
@@ -879,8 +854,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-DELETE-api_v1_users_userId_profile-images_current-controller",
@@ -888,7 +862,7 @@
       "type": "api_controller",
       "title": "Controller: DELETE /api/v1/users/{userId}/profile-images/current",
       "description": "Delete current profile image\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -914,8 +888,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-DELETE-api_v1_users_userId_profile-images_current-service",
@@ -949,8 +922,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-DELETE-api_v1_users_userId_profile-images_current-dto",
@@ -984,8 +956,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-DELETE-api_v1_users_userId_profile-images_current-guard",
@@ -1019,8 +990,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-DELETE-api_v1_users_userId_profile-images_current-validation",
@@ -1054,8 +1024,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-controller",
@@ -1063,7 +1032,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/users/{userId}/profile",
       "description": "Get user profile\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -1089,8 +1058,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-service",
@@ -1124,8 +1092,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-guard",
@@ -1159,8 +1126,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile-validation",
@@ -1194,8 +1160,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_display-name-controller",
@@ -1229,8 +1194,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_display-name-service",
@@ -1264,8 +1228,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_display-name-dto",
@@ -1299,8 +1262,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_display-name-guard",
@@ -1334,8 +1296,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_display-name-validation",
@@ -1369,8 +1330,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile_info-text-controller",
@@ -1378,7 +1338,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/users/{userId}/profile/info-text",
       "description": "Get profile info text\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -1404,8 +1364,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile_info-text-service",
@@ -1439,8 +1398,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile_info-text-guard",
@@ -1474,8 +1432,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_profile_info-text-validation",
@@ -1509,8 +1466,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_info-text-controller",
@@ -1544,8 +1500,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_info-text-service",
@@ -1579,8 +1534,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_info-text-dto",
@@ -1614,8 +1568,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_info-text-guard",
@@ -1649,8 +1602,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_profile_info-text-validation",
@@ -1684,8 +1636,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_qr-codes-controller",
@@ -1693,7 +1644,7 @@
       "type": "api_controller",
       "title": "Controller: POST /api/v1/users/{userId}/qr-codes",
       "description": "Generate a new profile QR code\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -1719,8 +1670,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_qr-codes-service",
@@ -1754,8 +1704,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_qr-codes-dto",
@@ -1789,8 +1738,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_qr-codes-guard",
@@ -1824,8 +1772,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-POST-api_v1_users_userId_qr-codes-validation",
@@ -1859,8 +1806,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_qr-codes_qrCodeId-controller",
@@ -1894,8 +1840,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_qr-codes_qrCodeId-service",
@@ -1929,8 +1874,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_qr-codes_qrCodeId-dto",
@@ -1964,8 +1908,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_qr-codes_qrCodeId-guard",
@@ -1999,8 +1942,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_qr-codes_qrCodeId-validation",
@@ -2034,8 +1976,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility-controller",
@@ -2069,8 +2010,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility-service",
@@ -2104,8 +2044,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility-dto",
@@ -2139,8 +2078,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility-guard",
@@ -2174,8 +2112,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility-validation",
@@ -2209,8 +2146,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_presence-visibility-controller",
@@ -2244,8 +2180,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_presence-visibility-service",
@@ -2279,8 +2214,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_presence-visibility-dto",
@@ -2314,8 +2248,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_presence-visibility-guard",
@@ -2349,8 +2282,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_presence-visibility-validation",
@@ -2384,8 +2316,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_allowed-users-controller",
@@ -2419,8 +2350,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_allowed-users-service",
@@ -2454,8 +2384,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_allowed-users-dto",
@@ -2489,8 +2418,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_allowed-users-guard",
@@ -2524,8 +2452,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_allowed-users-validation",
@@ -2559,8 +2486,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_denied-users-controller",
@@ -2594,8 +2520,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_denied-users-service",
@@ -2629,8 +2554,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_denied-users-dto",
@@ -2664,8 +2588,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_denied-users-guard",
@@ -2699,8 +2622,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_presence-visibility_denied-users-validation",
@@ -2734,8 +2656,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_read-receipts-controller",
@@ -2769,8 +2690,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_read-receipts-service",
@@ -2804,8 +2724,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_read-receipts-dto",
@@ -2839,8 +2758,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_read-receipts-guard",
@@ -2874,8 +2792,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_read-receipts-validation",
@@ -2909,8 +2826,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_read-receipts-controller",
@@ -2944,8 +2860,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_read-receipts-service",
@@ -2979,8 +2894,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_read-receipts-dto",
@@ -3014,8 +2928,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_read-receipts-guard",
@@ -3049,8 +2962,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_read-receipts-validation",
@@ -3084,8 +2996,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_profile-picture-visibility-controller",
@@ -3119,8 +3030,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_profile-picture-visibility-service",
@@ -3154,8 +3064,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_profile-picture-visibility-guard",
@@ -3189,8 +3098,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_settings_profile-picture-visibility-validation",
@@ -3224,8 +3132,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_profile-picture-visibility-controller",
@@ -3259,8 +3166,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_profile-picture-visibility-service",
@@ -3294,8 +3200,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_profile-picture-visibility-dto",
@@ -3329,8 +3234,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_profile-picture-visibility-guard",
@@ -3364,8 +3268,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_settings_profile-picture-visibility-validation",
@@ -3399,8 +3302,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_privacy_infoVisibility-controller",
@@ -3408,7 +3310,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/users/{userId}/privacy/infoVisibility",
       "description": "Get info/status text visibility settings\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -3434,8 +3336,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_privacy_infoVisibility-service",
@@ -3469,8 +3370,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_privacy_infoVisibility-dto",
@@ -3504,8 +3404,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_privacy_infoVisibility-guard",
@@ -3539,8 +3438,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-GET-api_v1_users_userId_privacy_infoVisibility-validation",
@@ -3574,8 +3472,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-controller",
@@ -3583,7 +3480,7 @@
       "type": "api_controller",
       "title": "Controller: PUT /api/v1/users/{userId}/privacy/infoVisibility",
       "description": "Update info/status text visibility settings\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -3609,8 +3506,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-service",
@@ -3644,8 +3540,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-dto",
@@ -3679,8 +3574,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-guard",
@@ -3688,7 +3582,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/privacy/infoVisibility",
       "description": "JWT authentication guard for PUT /api/v1/users/{userId}/privacy/infoVisibility",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-controller"
       ],
@@ -3714,8 +3608,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-API-PUT-api_v1_users_userId_privacy_infoVisibility-validation",
@@ -3749,8 +3642,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-build-api",
@@ -3784,8 +3676,7 @@
       "command": "npm run build",
       "success_criteria": "Build completes without errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-typecheck-api",
@@ -3815,8 +3706,7 @@
       "command": "npx tsc --noEmit",
       "success_criteria": "No TypeScript errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-integration",
@@ -3846,8 +3736,7 @@
       "command": "npm run test:integration",
       "success_criteria": "All integration tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-build-api",
@@ -3878,8 +3767,7 @@
       "command": "docker-compose build api",
       "success_criteria": "Docker image built successfully",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-start-api",
@@ -3909,8 +3797,7 @@
       "command": "docker-compose up -d api",
       "success_criteria": "API container running",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-health-api",
@@ -3940,8 +3827,7 @@
       "command": "curl -f http://localhost:3000/health",
       "success_criteria": "Health endpoint returns 200 OK",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-CHECKPOINT-api",
@@ -3973,8 +3859,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-FE-EPIC002Page-page",
@@ -4016,8 +3901,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-FE-EPIC002Page-components",
@@ -4049,8 +3933,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-FE-EPIC002Page-hook",
@@ -4082,8 +3965,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-FE-EPIC002Page-api",
@@ -4115,8 +3997,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-build-fe",
@@ -4149,8 +4030,7 @@
       "command": "npm run build",
       "success_criteria": "Frontend build completes without errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-lint",
@@ -4180,8 +4060,7 @@
       "command": "npm run lint",
       "success_criteria": "No linting errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-typecheck-fe",
@@ -4211,8 +4090,7 @@
       "command": "npx tsc --noEmit",
       "success_criteria": "No TypeScript errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-unit",
@@ -4242,8 +4120,7 @@
       "command": "npm run test:unit",
       "success_criteria": "All unit tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-CHECKPOINT-frontend",
@@ -4275,8 +4152,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-TEST-unit",
@@ -4308,8 +4184,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-TEST-integration",
@@ -4341,8 +4216,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-TEST-e2e",
@@ -4384,8 +4258,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-VERIFY-e2e",
@@ -4417,8 +4290,7 @@
       "command": "npm run test:e2e",
       "success_criteria": "All E2E tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-build-prod",
@@ -4448,8 +4320,7 @@
       "command": "docker-compose -f docker-compose.prod.yml build",
       "success_criteria": "Production image built",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-start-prod",
@@ -4479,8 +4350,7 @@
       "command": "docker-compose -f docker-compose.prod.yml up -d",
       "success_criteria": "All containers running",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-health-prod",
@@ -4510,8 +4380,7 @@
       "command": "docker-compose -f docker-compose.prod.yml ps",
       "success_criteria": "All containers healthy",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-DOCKER-logs-prod",
@@ -4541,8 +4410,7 @@
       "command": "docker-compose -f docker-compose.prod.yml logs --tail=100",
       "success_criteria": "Logs collected, no critical errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-CHECKPOINT-deploy",
@@ -4574,8 +4442,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-002-INTEGRATION",
@@ -4605,16 +4472,15 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     }
   ],
   "total_tasks": 134,
-  "completed_tasks": 0,
-  "failed_tasks": 0,
-  "progress_percent": 0.0,
+  "completed_tasks": 11,
+  "failed_tasks": 3,
+  "progress_percent": 8.208955223880597,
   "run_count": 0,
-  "last_run_at": null,
-  "created_at": "2026-02-18T14:56:29.400223",
+  "last_run_at": "2026-03-18T09:14:04.598799",
+  "created_at": "2026-03-17T23:48:50.237715",
   "estimated_total_minutes": 885
 }

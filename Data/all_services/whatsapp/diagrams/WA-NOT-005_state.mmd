@@ -1,6 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> NotificationSent : Reaktion auf Nachricht
-    NotificationSent --> Idle : Benachrichtigung gelesen
-    NotificationSent --> Error : Fehler beim Senden
-    Error --> Idle : Fehler behoben

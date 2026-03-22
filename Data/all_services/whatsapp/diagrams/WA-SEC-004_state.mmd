@@ -1,7 +1,0 @@
-stateDiagram-v2
-    [*] --> Unblocked
-    Unblocked --> Blocking : Request to block
-    Blocking --> Blocked : Confirm block
-    Blocked --> Unblocking : Request to unblock
-    Unblocking --> Unblocked : Confirm unblock
-    Blocked --> [*]

@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Sending : Send Nachricht
-    Sending --> Sent : Nachricht gesendet
-    Sent --> Viewing : Nachricht wird angezeigt
-    Viewing --> Disappearing : Nachricht verschwindet
-    Disappearing --> [*] : Nachricht gelöscht
-    Viewing --> [*] : Nachricht abgebrochen

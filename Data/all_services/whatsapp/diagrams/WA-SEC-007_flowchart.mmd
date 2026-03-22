@@ -1,9 +1,0 @@
-flowchart TD
-    A[Start] --> B[Nachricht empfangen]
-    B --> C[Textanalyse durchführen]
-    C --> D{Enthält Schlüsselwörter?}
-    D -->|Ja| E[Nachricht als Spam markieren]
-    D -->|Nein| F[Nachricht als Nicht-Spam markieren]
-    E --> G[Benachrichtigung an Benutzer senden]
-    F --> G
-    G --> H[Ende]

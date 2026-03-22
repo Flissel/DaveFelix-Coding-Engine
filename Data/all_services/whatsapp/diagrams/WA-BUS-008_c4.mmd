@@ -1,9 +1,0 @@
-%%{init: {'theme': 'default'}}%%
-graph TD
-    A[User] -->|Initiates payment| B(WhatsApp Pay)
-    B -->|Processes payment| C[Payment Gateway]
-    B -->|Updates transaction status| D[User's Bank]
-    B -->|Notifies| E[Merchant]
-    A -->|Receives confirmation| B
-    E -->|Receives payment| B
-    C -->|Confirms transaction| D

@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Monitoring : Start Monitoring
-    Monitoring --> DataUsage : Collect Data
-    DataUsage --> Analyzing : Analyze Data
-    Analyzing --> Reporting : Generate Report
-    Reporting --> Idle : End Monitoring
-    Reporting --> Monitoring : Continue Monitoring

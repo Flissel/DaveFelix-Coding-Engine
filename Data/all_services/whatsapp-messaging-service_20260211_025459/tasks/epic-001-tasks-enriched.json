@@ -1,15 +1,15 @@
 {
   "epic_id": "EPIC-001",
   "epic_name": "Authentifizierung und Kontosicherheit",
-  "enrichment_timestamp": "2026-02-18T19:37:17.061622",
+  "enrichment_timestamp": "2026-03-18T09:10:52.030122",
   "enrichment_stats": {
     "total_tasks": 263,
-    "tasks_with_requirements": 12,
-    "tasks_with_user_stories": 219,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 0,
     "tasks_with_diagrams": 219,
     "tasks_with_warnings": 116,
     "tasks_with_dtos": 3,
-    "tasks_with_success_criteria": 225,
+    "tasks_with_success_criteria": 0,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 0,
@@ -1635,7 +1635,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/phone-registrations/{registrationId}/verify",
       "description": "Business logic for Verify phone registration",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_phone-registrations_registrationId_verify-controller"
       ],
@@ -1781,7 +1781,7 @@
       "type": "api_validation",
       "title": "Validation: POST /api/v1/phone-registrations/{registrationId}/verify",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_phone-registrations_registrationId_verify-dto"
       ],
@@ -2451,7 +2451,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/users/{userId}/2fa",
       "description": "Business logic for Enable 2FA with 6-digit PIN",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_users_userId_2fa-controller"
       ],
@@ -2573,7 +2573,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/2fa",
       "description": "JWT authentication guard for POST /api/v1/users/{userId}/2fa",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_users_userId_2fa-controller"
       ],
@@ -2817,7 +2817,7 @@
       "type": "api_dto",
       "title": "DTO: DisableTwoFactorRequest",
       "description": "Request/Response DTO for DELETE /api/v1/users/{userId}/2fa",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-DELETE-api_v1_users_userId_2fa-controller"
       ],
@@ -2939,7 +2939,7 @@
       "type": "api_validation",
       "title": "Validation: DELETE /api/v1/users/{userId}/2fa",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-DELETE-api_v1_users_userId_2fa-dto"
       ],
@@ -3122,7 +3122,7 @@
       "type": "api_dto",
       "title": "DTO: GetTwoFactorStatusRequest",
       "description": "Request/Response DTO for GET /api/v1/users/{userId}/2fa",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_2fa-controller"
       ],
@@ -3183,7 +3183,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/2fa",
       "description": "JWT authentication guard for GET /api/v1/users/{userId}/2fa",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_2fa-controller"
       ],
@@ -3244,7 +3244,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/users/{userId}/2fa",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_2fa-dto"
       ],
@@ -3366,7 +3366,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/biometric/registration-options",
       "description": "Business logic for Create biometric registration challenge",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_registration-options-controller"
       ],
@@ -3488,7 +3488,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/biometric/registration-options",
       "description": "JWT authentication guard for POST /api/v1/biometric/registration-options",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_registration-options-controller"
       ],
@@ -3732,7 +3732,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/biometric/credentials",
       "description": "JWT authentication guard for POST /api/v1/biometric/credentials",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_credentials-controller"
       ],
@@ -3793,7 +3793,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/biometric/credentials",
       "description": "List biometric credentials\nImplement controller method with 2 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -3854,7 +3854,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/biometric/credentials",
       "description": "Business logic for List biometric credentials",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_biometric_credentials-controller"
       ],
@@ -3915,7 +3915,7 @@
       "type": "api_dto",
       "title": "DTO: ListBiometricCredentialsRequest",
       "description": "Request/Response DTO for GET /api/v1/biometric/credentials",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_biometric_credentials-controller"
       ],
@@ -3976,7 +3976,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/biometric/credentials",
       "description": "JWT authentication guard for GET /api/v1/biometric/credentials",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_biometric_credentials-controller"
       ],
@@ -4037,7 +4037,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/biometric/credentials",
       "description": "Input validation for 2 parameters",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_biometric_credentials-dto"
       ],
@@ -4647,7 +4647,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/biometric/authenticate",
       "description": "Business logic for Authenticate with biometrics",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_authenticate-controller"
       ],
@@ -4708,7 +4708,7 @@
       "type": "api_dto",
       "title": "DTO: BiometricAuthenticateRequest",
       "description": "Request/Response DTO for POST /api/v1/biometric/authenticate",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_authenticate-controller"
       ],
@@ -4769,7 +4769,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/biometric/authenticate",
       "description": "JWT authentication guard for POST /api/v1/biometric/authenticate",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_biometric_authenticate-controller"
       ],
@@ -5013,7 +5013,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/devices",
       "description": "JWT authentication guard for POST /api/v1/devices",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_devices-controller"
       ],
@@ -7087,7 +7087,7 @@
       "type": "api_dto",
       "title": "DTO: PasskeyAuthenticationOptionsRequest",
       "description": "Request/Response DTO for POST /api/v1/auth/passkeys/authentication/options",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_auth_passkeys_authentication_options-controller"
       ],
@@ -7270,7 +7270,7 @@
       "type": "api_dto",
       "title": "DTO: PasskeyAuthenticationVerifyRequest",
       "description": "Request/Response DTO for POST /api/v1/auth/passkeys/authentication/verify",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_auth_passkeys_authentication_verify-controller"
       ],
@@ -7453,7 +7453,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/users/{userId}/passkeys",
       "description": "Business logic for List user's passkeys",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_passkeys-controller"
       ],
@@ -7575,7 +7575,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/passkeys",
       "description": "JWT authentication guard for GET /api/v1/users/{userId}/passkeys",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_passkeys-controller"
       ],
@@ -7636,7 +7636,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/users/{userId}/passkeys",
       "description": "Input validation for 3 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_passkeys-dto"
       ],
@@ -7880,7 +7880,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/passkeys/{credentialId}",
       "description": "JWT authentication guard for DELETE /api/v1/users/{userId}/passkeys/{credentialId}",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-DELETE-api_v1_users_userId_passkeys_credentialId-controller"
       ],
@@ -8050,7 +8050,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/crypto/keys",
       "description": "Business logic for Register or update client encryption keys",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_crypto_keys-controller"
       ],
@@ -8242,7 +8242,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/crypto/prekeys/{recipientId}",
       "description": "Business logic for Fetch recipient prekeys",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_crypto_prekeys_recipientId-controller"
       ],
@@ -8482,7 +8482,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/messages",
       "description": "Business logic for Send encrypted message",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_messages-controller"
       ],
@@ -8530,7 +8530,7 @@
       "type": "api_dto",
       "title": "DTO: SendEncryptedMessageRequest",
       "description": "Request/Response DTO for POST /api/v1/messages",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_messages-controller"
       ],
@@ -8914,7 +8914,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/messages/{messageId}/ack",
       "description": "Business logic for Acknowledge message delivery",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_messages_messageId_ack-controller"
       ],
@@ -9010,7 +9010,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/messages/{messageId}/ack",
       "description": "JWT authentication guard for POST /api/v1/messages/{messageId}/ack",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_messages_messageId_ack-controller"
       ],
@@ -9058,7 +9058,7 @@
       "type": "api_validation",
       "title": "Validation: POST /api/v1/messages/{messageId}/ack",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_messages_messageId_ack-dto"
       ],
@@ -9159,7 +9159,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/security-code-verifications",
       "description": "Business logic for Initiate manual security code verification",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_security-code-verifications-controller"
       ],
@@ -9212,7 +9212,7 @@
       "type": "api_dto",
       "title": "DTO: CreateSecurityCodeVerificationRequest",
       "description": "Request/Response DTO for POST /api/v1/security-code-verifications",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_security-code-verifications-controller"
       ],
@@ -9371,7 +9371,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/security-code-verifications/{verificationId}",
       "description": "Business logic for Get verification session details",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications_verificationId-controller"
       ],
@@ -9424,7 +9424,7 @@
       "type": "api_dto",
       "title": "DTO: GetSecurityCodeVerificationRequest",
       "description": "Request/Response DTO for GET /api/v1/security-code-verifications/{verificationId}",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications_verificationId-controller"
       ],
@@ -9477,7 +9477,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/security-code-verifications/{verificationId}",
       "description": "JWT authentication guard for GET /api/v1/security-code-verifications/{verificationId}",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications_verificationId-controller"
       ],
@@ -9530,7 +9530,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/security-code-verifications/{verificationId}",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications_verificationId-dto"
       ],
@@ -9848,7 +9848,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/security-code-verifications",
       "description": "List verification sessions\nImplement controller method with 3 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -9901,7 +9901,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/security-code-verifications",
       "description": "Business logic for List verification sessions",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications-controller"
       ],
@@ -9954,7 +9954,7 @@
       "type": "api_dto",
       "title": "DTO: ListSecurityCodeVerificationsRequest",
       "description": "Request/Response DTO for GET /api/v1/security-code-verifications",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications-controller"
       ],
@@ -10007,7 +10007,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/security-code-verifications",
       "description": "JWT authentication guard for GET /api/v1/security-code-verifications",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications-controller"
       ],
@@ -10060,7 +10060,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/security-code-verifications",
       "description": "Input validation for 3 parameters",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_security-code-verifications-dto"
       ],
@@ -10113,7 +10113,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/app-lock",
       "description": "Get app lock status\nImplement controller method with 0 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -10166,7 +10166,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/app-lock",
       "description": "Business logic for Get app lock status",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_app-lock-controller"
       ],
@@ -10219,7 +10219,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/app-lock",
       "description": "JWT authentication guard for GET /api/v1/app-lock",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_app-lock-controller"
       ],
@@ -10643,7 +10643,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/app-lock/verify",
       "description": "JWT authentication guard for POST /api/v1/app-lock/verify",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_app-lock_verify-controller"
       ],
@@ -10749,7 +10749,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/auth/pin/verify",
       "description": "Business logic for Verify PIN during two-step verification",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_auth_pin_verify-controller"
       ],
@@ -10802,7 +10802,7 @@
       "type": "api_dto",
       "title": "DTO: VerifyPinRequest",
       "description": "Request/Response DTO for POST /api/v1/auth/pin/verify",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_auth_pin_verify-controller"
       ],
@@ -10855,7 +10855,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/auth/pin/verify",
       "description": "JWT authentication guard for POST /api/v1/auth/pin/verify",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_auth_pin_verify-controller"
       ],
@@ -11014,7 +11014,7 @@
       "type": "api_dto",
       "title": "DTO: EnablePinRequest",
       "description": "Request/Response DTO for POST /api/v1/users/{userId}/pin",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_users_userId_pin-controller"
       ],
@@ -11120,7 +11120,7 @@
       "type": "api_validation",
       "title": "Validation: POST /api/v1/users/{userId}/pin",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_users_userId_pin-dto"
       ],
@@ -11385,7 +11385,7 @@
       "type": "api_validation",
       "title": "Validation: PUT /api/v1/users/{userId}/pin",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-PUT-api_v1_users_userId_pin-dto"
       ],
@@ -11491,7 +11491,7 @@
       "type": "api_service",
       "title": "Service: DELETE /api/v1/users/{userId}/pin",
       "description": "Business logic for Disable additional PIN security",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-DELETE-api_v1_users_userId_pin-controller"
       ],
@@ -11809,7 +11809,7 @@
       "type": "api_dto",
       "title": "DTO: GetPinStatusRequest",
       "description": "Request/Response DTO for GET /api/v1/users/{userId}/pin",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_pin-controller"
       ],
@@ -11915,7 +11915,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/users/{userId}/pin",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_pin-dto"
       ],
@@ -12127,7 +12127,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/spam-checks",
       "description": "JWT authentication guard for POST /api/v1/spam-checks",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_spam-checks-controller"
       ],
@@ -12392,7 +12392,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/spam-checks/{spamCheckId}",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_spam-checks_spamCheckId-dto"
       ],
@@ -12445,7 +12445,7 @@
       "type": "api_controller",
       "title": "Controller: GET /api/v1/users/{userId}/call-privacy-settings",
       "description": "Get call privacy settings\nImplement controller method with 1 parameters.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -12498,7 +12498,7 @@
       "type": "api_service",
       "title": "Service: GET /api/v1/users/{userId}/call-privacy-settings",
       "description": "Business logic for Get call privacy settings",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_call-privacy-settings-controller"
       ],
@@ -12551,7 +12551,7 @@
       "type": "api_dto",
       "title": "DTO: GetCallPrivacySettingsRequest",
       "description": "Request/Response DTO for GET /api/v1/users/{userId}/call-privacy-settings",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_call-privacy-settings-controller"
       ],
@@ -12604,7 +12604,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/call-privacy-settings",
       "description": "JWT authentication guard for GET /api/v1/users/{userId}/call-privacy-settings",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_call-privacy-settings-controller"
       ],
@@ -12657,7 +12657,7 @@
       "type": "api_validation",
       "title": "Validation: GET /api/v1/users/{userId}/call-privacy-settings",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-GET-api_v1_users_userId_call-privacy-settings-dto"
       ],
@@ -12763,7 +12763,7 @@
       "type": "api_service",
       "title": "Service: PUT /api/v1/users/{userId}/call-privacy-settings",
       "description": "Business logic for Update call privacy settings",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-PUT-api_v1_users_userId_call-privacy-settings-controller"
       ],
@@ -12869,7 +12869,7 @@
       "type": "api_guard",
       "title": "Auth Guard: /api/v1/users/{userId}/call-privacy-settings",
       "description": "JWT authentication guard for PUT /api/v1/users/{userId}/call-privacy-settings",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-PUT-api_v1_users_userId_call-privacy-settings-controller"
       ],
@@ -12922,7 +12922,7 @@
       "type": "api_validation",
       "title": "Validation: PUT /api/v1/users/{userId}/call-privacy-settings",
       "description": "Input validation for 1 parameters",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-PUT-api_v1_users_userId_call-privacy-settings-dto"
       ],
@@ -13028,7 +13028,7 @@
       "type": "api_service",
       "title": "Service: POST /api/v1/call-sessions",
       "description": "Business logic for Create call session with IP masking",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_call-sessions-controller"
       ],
@@ -13081,7 +13081,7 @@
       "type": "api_dto",
       "title": "DTO: CreateCallSessionRequest",
       "description": "Request/Response DTO for POST /api/v1/call-sessions",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-001-API-POST-api_v1_call-sessions-controller"
       ],
@@ -13187,7 +13187,7 @@
       "type": "verify_build",
       "title": "Build backend",
       "description": "Run npm run build for NestJS backend.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-API-PUT-api_v1_users_userId_call-privacy-settings-validation",
         "EPIC-001-API-POST-api_v1_call-sessions-controller",
@@ -13208,7 +13208,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (API)",
       "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-build-api"
       ],
@@ -13225,7 +13225,7 @@
       "type": "verify_integration",
       "title": "Run API integration tests",
       "description": "Execute integration tests against API endpoints.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-api"
       ],
@@ -13242,7 +13242,7 @@
       "type": "docker_build",
       "title": "Build API Docker image",
       "description": "Build Docker image for NestJS backend.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-api",
         "EPIC-001-VERIFY-integration"
@@ -13260,7 +13260,7 @@
       "type": "docker_start",
       "title": "Start API container",
       "description": "Start backend container with docker-compose.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-build-api"
       ],
@@ -13277,7 +13277,7 @@
       "type": "docker_health",
       "title": "API health check",
       "description": "Verify API container is healthy via /health endpoint.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-start-api"
       ],
@@ -13294,7 +13294,7 @@
       "type": "checkpoint_api",
       "title": "Checkpoint: Review Api",
       "description": "User approval required before continuing. Review the api phase results.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-build-api",
         "EPIC-001-DOCKER-start-api",
@@ -13313,7 +13313,7 @@
       "type": "fe_page",
       "title": "Page: LoginPage",
       "description": "Create LoginPage page component implementing 3 user stories.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -13399,7 +13399,7 @@
       "type": "fe_component",
       "title": "Components: LoginPage",
       "description": "Create reusable components for LoginPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-LoginPage-page"
       ],
@@ -13481,7 +13481,7 @@
       "type": "fe_hook",
       "title": "Hook: useLoginPage",
       "description": "Create custom hook for LoginPage state and logic",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-LoginPage-page"
       ],
@@ -13563,7 +13563,7 @@
       "type": "fe_api_client",
       "title": "API Client: LoginPage",
       "description": "Create API client functions for LoginPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-LoginPage-hook"
       ],
@@ -13645,7 +13645,7 @@
       "type": "fe_form",
       "title": "Form: LoginPageForm",
       "description": "Create form component with validation for LoginPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-LoginPage-components"
       ],
@@ -13727,7 +13727,7 @@
       "type": "fe_page",
       "title": "Page: RegisterPage",
       "description": "Create RegisterPage page component implementing 3 user stories.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -13813,7 +13813,7 @@
       "type": "fe_component",
       "title": "Components: RegisterPage",
       "description": "Create reusable components for RegisterPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-page"
       ],
@@ -13895,7 +13895,7 @@
       "type": "fe_hook",
       "title": "Hook: useRegisterPage",
       "description": "Create custom hook for RegisterPage state and logic",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-page"
       ],
@@ -13977,7 +13977,7 @@
       "type": "fe_api_client",
       "title": "API Client: RegisterPage",
       "description": "Create API client functions for RegisterPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-hook"
       ],
@@ -14059,7 +14059,7 @@
       "type": "fe_form",
       "title": "Form: RegisterPageForm",
       "description": "Create form component with validation for RegisterPage",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-components"
       ],
@@ -14141,7 +14141,7 @@
       "type": "fe_page",
       "title": "Page: TwoFactorAuth",
       "description": "Create TwoFactorAuth page component implementing 3 user stories.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -14227,7 +14227,7 @@
       "type": "fe_component",
       "title": "Components: TwoFactorAuth",
       "description": "Create reusable components for TwoFactorAuth",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-page"
       ],
@@ -14309,7 +14309,7 @@
       "type": "fe_hook",
       "title": "Hook: useTwoFactorAuth",
       "description": "Create custom hook for TwoFactorAuth state and logic",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-page"
       ],
@@ -14391,7 +14391,7 @@
       "type": "fe_api_client",
       "title": "API Client: TwoFactorAuth",
       "description": "Create API client functions for TwoFactorAuth",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-hook"
       ],
@@ -14473,7 +14473,7 @@
       "type": "verify_build",
       "title": "Build frontend",
       "description": "Run npm run build for React frontend.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-form",
         "EPIC-001-FE-TwoFactorAuth-page",
@@ -14494,7 +14494,7 @@
       "type": "verify_lint",
       "title": "Run ESLint",
       "description": "Check code quality with ESLint.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-build-fe"
       ],
@@ -14511,7 +14511,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (Frontend)",
       "description": "Run tsc --noEmit for frontend.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-lint"
       ],
@@ -14528,7 +14528,7 @@
       "type": "verify_unit",
       "title": "Run unit tests",
       "description": "Execute vitest unit tests.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-fe"
       ],
@@ -14545,7 +14545,7 @@
       "type": "checkpoint_fe",
       "title": "Checkpoint: Review Frontend",
       "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-lint",
         "EPIC-001-VERIFY-typecheck-fe",
@@ -14564,7 +14564,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-001",
       "description": "Create Vitest unit tests for all EPIC-001 services and utilities. NO MOCKS - use real implementations.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-CHECKPOINT-frontend"
       ],
@@ -14583,7 +14583,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-001",
       "description": "Create Vitest integration tests for EPIC-001 API endpoints with real database.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-TEST-unit"
       ],
@@ -14602,7 +14602,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-001",
       "description": "Create Playwright E2E tests for 11 user stories in EPIC-001.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-TEST-integration"
       ],
@@ -14633,7 +14633,7 @@
       "type": "verify_e2e",
       "title": "Run E2E tests",
       "description": "Execute Playwright E2E test suite.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-TEST-unit",
         "EPIC-001-TEST-integration",
@@ -14652,7 +14652,7 @@
       "type": "docker_build",
       "title": "Build production image",
       "description": "Build optimized production Docker image.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-VERIFY-e2e"
       ],
@@ -14669,7 +14669,7 @@
       "type": "docker_start",
       "title": "Start production container",
       "description": "Start full stack in production mode.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-build-prod"
       ],
@@ -14686,7 +14686,7 @@
       "type": "docker_health",
       "title": "Production health check",
       "description": "Verify all services are healthy.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-start-prod"
       ],
@@ -14703,7 +14703,7 @@
       "type": "docker_logs",
       "title": "Collect production logs",
       "description": "Collect logs from all production containers.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-health-prod"
       ],
@@ -14720,7 +14720,7 @@
       "type": "checkpoint_deploy",
       "title": "Checkpoint: Review Deploy",
       "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-DOCKER-start-prod",
         "EPIC-001-DOCKER-health-prod",
@@ -14739,7 +14739,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-001",
       "description": "Run all EPIC-001 tests, validate build, and verify all 11 user stories are implemented.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-001-CHECKPOINT-deploy"
       ],

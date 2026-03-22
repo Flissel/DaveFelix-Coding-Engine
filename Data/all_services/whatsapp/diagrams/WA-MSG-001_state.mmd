@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Composing : Start composing
-    Composing --> Sending : Send message
-    Sending --> Sent : Message sent
-    Sent --> Idle : Return to idle
-    Composing --> Cancelled : Cancel message
-    Cancelled --> Idle : Return to idle

@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> AwaitingStatusRequest : Request Status
-    AwaitingStatusRequest --> Processing : Process Request
-    Processing --> SendingResponse : Generate Response
-    SendingResponse --> Idle : Send Response
-    SendingResponse --> Error : Error Occurred
-    Error --> Idle : Handle Error

@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant User as Nutzer
-    participant System as System
-    participant MessageQueue as Nachrichtenwarteschlange
-
-    User->>System: Anfrage zur Synchronisation
-    System->>MessageQueue: Nachricht senden
-    MessageQueue-->>System: Bestätigung der Nachricht
-    System-->>User: Synchronisation erfolgreich

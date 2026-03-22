@@ -1,8 +1,0 @@
-flowchart TD
-    A[Nachricht empfangen] --> B{Nachricht weiterleiten?}
-    B -- Ja --> C[Empfänger auswählen]
-    C --> D[Nachricht an Empfänger senden]
-    D --> E[Bestätigung erhalten]
-    B -- Nein --> F[Nachricht speichern]
-    F --> G[Prozess beendet]
-    E --> G

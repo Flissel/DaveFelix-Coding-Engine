@@ -1,8 +1,0 @@
-flowchart TD
-    A[Start] --> B[Datensammlung]
-    B --> C{Datenvalidierung}
-    C -->|Gültig| D[Statistiken generieren]
-    C -->|Ungültig| E[Fehlerprotokollierung]
-    D --> F[Statistiken anzeigen]
-    F --> G[Ende]
-    E --> G

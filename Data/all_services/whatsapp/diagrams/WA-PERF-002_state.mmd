@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Initializing
-    Initializing --> Ready : App loaded
-    Ready --> Running : User starts app
-    Running --> Idle : User inactivity
-    Idle --> Running : User interaction
-    Running --> Closing : User closes app
-    Closing --> [*] : App closed

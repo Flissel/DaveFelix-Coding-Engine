@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant User as Nutzer
-    participant System as System
-    participant VideoService as VideoDienst
-
-    Nutzer->>System: Video senden anfordern
-    System->>VideoDienst: Video hochladen
-    VideoDienst-->>System: Bestätigung des Uploads
-    System-->>Nutzer: Video erfolgreich gesendet

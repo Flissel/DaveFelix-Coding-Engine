@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant User as Nutzer
-    participant System as System
-    participant TranscriptionService as Transkriptionsdienst
-
-    User->>System: Sprachnachricht hochladen
-    System->>TranscriptionService: Anfrage zur Transkription
-    TranscriptionService-->>System: Transkription bereitstellen
-    System-->>User: Transkription anzeigen

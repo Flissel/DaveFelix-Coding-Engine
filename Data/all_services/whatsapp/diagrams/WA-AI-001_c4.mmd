@@ -1,9 +1,0 @@
-%%{ init : { "theme" : "default" } }%%
-C4Context
-    title Meta AI Chat System Context Diagram
-    Person(user, "User", "A person interacting with the AI assistant.")
-    System(metaAIChat, "Meta AI Chat", "A system providing AI assistant integration.")
-    System_Ext(thirdPartyService, "Third Party Services", "External services for data and functionality.")
-    
-    Rel(user, metaAIChat, "Interacts with")
-    Rel(metaAIChat, thirdPartyService, "Uses for additional data and services")

@@ -1,8 +1,0 @@
-flowchart TD
-    A[Start] --> B[System Initialization]
-    B --> C{One-Way-Broadcast-Kanäle?}
-    C -- Yes --> D[Implement One-Way-Broadcast-Kanäle]
-    C -- No --> E[Error: One-Way-Broadcast-Kanäle nicht unterstützt]
-    D --> F[System Ready]
-    E --> F
-    F --> G[End]

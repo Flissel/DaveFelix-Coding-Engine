@@ -1,9 +1,0 @@
-flowchart TD
-    A[Start] --> B{Abwesenheitsnachricht erforderlich?}
-    B -- Ja --> C[Nachricht erstellen]
-    B -- Nein --> D[Prozess beenden]
-    C --> E{Automatische Nachricht aktivieren?}
-    E -- Ja --> F[Nachricht speichern]
-    E -- Nein --> D
-    F --> G[Nachricht aktivieren]
-    G --> H[Prozess beenden]
