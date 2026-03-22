@@ -603,6 +603,8 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
     """
     try:
         engine_root = Path(__file__).parent.parent.parent.parent
+        project_id = Path(request.requirementsPath).parent.name
+        output_dir = request.outputDir or "/app/output/%s" % project_id
 
         # Generate project MCP config (scoped to output dir)
         try:
@@ -626,30 +628,19 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
         except Exception as e:
             logger.warning("mcp_config_generation_failed", error=str(e))
 
-        # Derive output dir from requirements path if not provided
-        output_dir = request.outputDir or "/data/projects/%s" % Path(request.requirementsPath).parent.name
-
-        # Build command
-        cmd = f'python run_society_hybrid.py "{request.requirementsPath}" --output-dir "{output_dir}" --fast'
-
-        # Start generation in background
-        # Remove CLAUDECODE env var to prevent "nested session" error
-        # when the generation pipeline spawns Claude CLI subprocesses
-        env = os.environ.copy()
-        env.pop('CLAUDECODE', None)
-
-        process = subprocess.Popen(
-            cmd,
-            shell=True,
-            cwd=str(engine_root),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            env=env,
-            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0
+        # Delegate to start_epic_generation (in-process, not subprocess)
+        epic_request = StartEpicGenerationRequest(
+            project_path=str(Path(request.requirementsPath).parent),
+            output_dir=output_dir,
+            vnc_port=6090,
+            app_port=3100,
         )
 
-        logger.info("generation_started", requirements=request.requirementsPath, output=request.outputDir)
-        return SuccessResponse(success=True)
+        logger.info("generation_started",
+                     requirements=request.requirementsPath,
+                     output=output_dir,
+                     method="epic_orchestrator")
+        return await start_epic_generation(epic_request)
     except Exception as e:
         logger.error("generation_start_failed", error=str(e))
         return SuccessResponse(success=False, error=str(e))
@@ -2248,6 +2239,7 @@ def _build_fix_prompt(task_id: str, epic_id: str, error: str,
 async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
     """Run Kilo or Claude CLI to apply the fix."""
     import asyncio as _asyncio
+    from src.config import get_settings
 
     settings = get_settings()
 
@@ -2331,6 +2323,7 @@ async def _verify_fix(project_path: str) -> dict:
 async def _post_fix_result(task_id: str, attempts: int, success: bool,
                            error: str = ""):
     """Post fix result to Discord #dev-tasks."""
+    import json
     try:
         from src.tools.discord_agent import DiscordAgent
 
@@ -3060,9 +3053,44 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
 
     # Track which tasks we already posted to Discord
     _posted_tasks: set = set()
+    _discord_queue: list = []  # Batched messages
+    _last_discord_post = 0.0
 
     async def _post_task_changes_to_discord(tasks: list, proj_id: str):
-        """Post task completions/failures to Discord #dev-tasks channel."""
+        """Batch task changes and post summary to Discord (max 1 msg / 10s)."""
+        nonlocal _last_discord_post
+        import time as _time
+
+        now = _time.time()
+        new_completed = []
+        new_failed = []
+
+        for t in tasks:
+            tid = t.get("id", "")
+            status = t.get("status", "")
+            if not tid or tid in _posted_tasks:
+                continue
+
+            if status == "completed":
+                _posted_tasks.add(tid)
+                new_completed.append(tid)
+            elif status == "failed":
+                _posted_tasks.add(tid)
+                error = (
+                    t.get("error_message")
+                    or t.get("error")
+                    or t.get("result")
+                    or "No error details"
+                )
+                new_failed.append((tid, t.get("title", tid), str(error)[:200]))
+
+        if not new_completed and not new_failed:
+            return
+
+        # Rate limit: max 1 Discord post per 10 seconds
+        if now - _last_discord_post < 10:
+            return
+
         try:
             from src.tools.discord_agent import DiscordAgent
             discord = DiscordAgent()
@@ -3070,39 +3098,44 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                 return
 
             from src.tools.discord_mq import CHANNELS
-            dev_ch = CHANNELS.get("dev-tasks", "")
             fixes_ch = CHANNELS.get("fixes", "")
             done_ch = CHANNELS.get("done", "")
 
-            for t in tasks:
-                tid = t.get("id", "")
-                status = t.get("status", "")
-                if not tid or tid in _posted_tasks:
-                    continue
+            # Post completed summary (batch)
+            if new_completed and done_ch:
+                msg = "**BATCH_VERIFIED** | %d tasks completed\n`%s`" % (
+                    len(new_completed),
+                    "`, `".join(new_completed[:10]),
+                )
+                if len(new_completed) > 10:
+                    msg += "\n... and %d more" % (len(new_completed) - 10)
+                try:
+                    await discord.send(msg[:2000], channel_id=done_ch)
+                except Exception:
+                    pass
 
-                if status == "completed":
-                    _posted_tasks.add(tid)
-                    await discord.send(
-                        "**TASK_VERIFIED** | %s\nTask: `%s`\nStatus: **PASS**\n||`{\"type\":\"TASK_VERIFIED\",\"task\":\"%s\",\"status\":\"PASS\"}`||"
-                        % (t.get("epic_id", ""), tid, tid),
-                        channel_id=done_ch,
-                    )
-                elif status == "failed":
-                    _posted_tasks.add(tid)
-                    error = (
-                        t.get("error_message")
-                        or t.get("error")
-                        or t.get("result")
-                        or "No error details captured"
-                    )
+            # Post failed summary (batch, max 3 detailed)
+            if new_failed and fixes_ch:
+                lines = ["**BATCH_FIX_NEEDED** | %d tasks failed" % len(new_failed)]
+                for tid, title, error in new_failed[:3]:
                     scope = "BACKEND" if "api" in tid.lower() or "service" in tid.lower() else "FRONTEND"
-                    await discord.send(
-                        "**FIX_NEEDED** | %s\nEpic: `%s`\nTask: `%s`\nName: %s\n```\n%s\n```\n**Action:** `FIX_AND_RETEST`\n||`{\"type\":\"FIX_NEEDED\",\"scope\":\"%s\",\"task\":\"%s\",\"action\":\"FIX_AND_RETEST\"}`||"
-                        % (scope, t.get("epic_id", ""), tid, t.get("title", tid), str(error)[:500], scope, tid),
-                        channel_id=fixes_ch,
+                    lines.append(
+                        "\n**%s** | `%s`\n%s\n```\n%s\n```" % (scope, tid, title, error[:150])
                     )
+                if len(new_failed) > 3:
+                    lines.append("\n... and %d more failed tasks" % (len(new_failed) - 3))
+                lines.append(
+                    "\n||`%s`||" % json.dumps({"type": "FIX_NEEDED", "batch": True, "count": len(new_failed)})
+                )
+                try:
+                    await discord.send("\n".join(lines)[:2000], channel_id=fixes_ch)
+                except Exception:
+                    pass
+
+            _last_discord_post = _time.time()
+
         except Exception as e:
-            logger.debug("discord_post_failed: %s", e)
+            logger.debug("discord_batch_post_failed: %s", e)
 
     # Start a background progress updater
     async def _progress_loop():
