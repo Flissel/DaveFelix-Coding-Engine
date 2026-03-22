@@ -570,6 +570,221 @@ function MCPConfigSection({ projectName }: { projectName: string }) {
   );
 }
 
+// ─── Backend Selector ────────────────────────────────────────────────
+
+type Backend = 'kilo' | 'claude' | 'openrouter';
+
+interface BackendAuthStatus {
+  ready: boolean;
+  reason: string;
+}
+
+interface BackendData {
+  active_backend: Backend;
+  active_model: string;
+  auth_status?: Record<Backend, BackendAuthStatus>;
+}
+
+const BACKENDS: { id: Backend; label: string; desc: string; badge?: string; badgeColor?: string; keyEnvVar?: string; keyLabel?: string }[] = [
+  { id: 'kilo', label: 'Kilo CLI', desc: 'Free — Kilo Code CLI', badge: 'FREE', badgeColor: 'green', keyEnvVar: 'OPENROUTER_API_KEY', keyLabel: 'OpenRouter Key' },
+  { id: 'claude', label: 'Claude CLI', desc: 'Claude Code CLI (needs API key)', badge: 'PRO', badgeColor: 'purple', keyEnvVar: 'ANTHROPIC_API_KEY', keyLabel: 'Anthropic Key' },
+  { id: 'openrouter', label: 'OpenRouter', desc: 'OpenRouter API (free models)', badge: 'API', badgeColor: 'yellow', keyEnvVar: 'OPENROUTER_API_KEY', keyLabel: 'OpenRouter Key' },
+];
+
+function BackendSelector() {
+  const queryClient = useQueryClient();
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [keyValue, setKeyValue] = useState('');
+  const [showKey, setShowKey] = useState(false);
+
+  const { data, isLoading } = useQuery<BackendData>({
+    queryKey: ['pipeline-backend'],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/dashboard/pipeline/backend`);
+      if (!res.ok) throw new Error(`Failed: ${res.status}`);
+      return res.json();
+    },
+    staleTime: 10000,
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (backend: Backend) => {
+      const res = await fetch(`${API_URL}/dashboard/pipeline/backend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ backend }),
+      });
+      if (!res.ok) throw new Error(`Failed: ${res.status}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pipeline-backend'] });
+    },
+  });
+
+  const saveKeyMutation = useMutation({
+    mutationFn: async ({ envVar, value }: { envVar: string; value: string }) => {
+      const res = await fetch(`${API_URL}/llm-config/api-keys`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ env_var: envVar, value }),
+      });
+      if (!res.ok) throw new Error(`Failed: ${res.status}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      setEditingKey(null);
+      setKeyValue('');
+      setShowKey(false);
+      queryClient.invalidateQueries({ queryKey: ['pipeline-backend'] });
+      queryClient.invalidateQueries({ queryKey: ['api-keys'] });
+    },
+  });
+
+  const current = data?.active_backend || 'kilo';
+  const authStatus = data?.auth_status;
+
+  return (
+    <div className="space-y-2">
+      {isLoading ? (
+        <div className="flex items-center gap-2 py-2 justify-center text-muted-foreground">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          <span className="text-[10px]">Loading...</span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-1.5">
+          {BACKENDS.map((b) => {
+            const isActive = current === b.id;
+            const auth = authStatus?.[b.id];
+            const badgeColors: Record<string, string> = {
+              green:  'bg-green-500/15 text-green-400 border-green-500/30',
+              purple: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+              yellow: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30',
+            };
+            return (
+              <button
+                key={b.id}
+                onClick={() => mutation.mutate(b.id)}
+                disabled={mutation.isPending}
+                className={`flex flex-col items-center gap-1 px-2 py-2 rounded-lg border transition text-center ${
+                  isActive
+                    ? 'bg-primary/15 border-primary/40 text-primary'
+                    : 'bg-muted/20 border-border/30 text-muted-foreground hover:text-foreground hover:border-border/50'
+                } disabled:opacity-50`}
+              >
+                {b.badge && (
+                  <span className={`text-[8px] font-bold px-1 py-0.5 rounded border ${badgeColors[b.badgeColor || 'green']}`}>
+                    {b.badge}
+                  </span>
+                )}
+                <span className="text-[10px] font-medium">{b.label}</span>
+                <span className="text-[8px] text-muted-foreground/60 leading-tight">{b.desc}</span>
+                {auth && (
+                  <span className={`text-[8px] flex items-center gap-0.5 mt-0.5 ${auth.ready ? 'text-green-400' : 'text-red-400'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${auth.ready ? 'bg-green-400' : 'bg-red-400'}`} />
+                    {auth.ready ? 'Ready' : 'Not ready'}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Auth warning + inline key setup for active backend */}
+      {authStatus && !authStatus[current]?.ready && (() => {
+        const backendDef = BACKENDS.find((b) => b.id === current);
+        const envVar = backendDef?.keyEnvVar;
+        const isEditing = editingKey === envVar;
+        return (
+          <div className="px-2 py-1.5 bg-yellow-500/10 border border-yellow-500/25 rounded space-y-1.5">
+            <div className="flex items-center gap-1.5 text-[10px] text-yellow-400">
+              <AlertTriangle className="w-3 h-3 shrink-0" />
+              <span>{authStatus[current]?.reason}</span>
+            </div>
+            {envVar && !isEditing && (
+              <button
+                onClick={() => { setEditingKey(envVar); setKeyValue(''); setShowKey(false); }}
+                className="flex items-center gap-1 text-[9px] px-2 py-1 rounded border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10 font-medium transition"
+              >
+                <Key className="w-3 h-3" />
+                Set {backendDef?.keyLabel || envVar}
+              </button>
+            )}
+            {envVar && isEditing && (
+              <div className="flex items-center gap-1">
+                <div className="relative flex-1">
+                  <input
+                    type={showKey ? 'text' : 'password'}
+                    value={keyValue}
+                    onChange={(e) => setKeyValue(e.target.value)}
+                    placeholder={`${envVar}...`}
+                    className="w-full text-[10px] font-mono px-2 py-1 pr-6 rounded border border-primary/30 bg-background
+                      placeholder:text-muted-foreground/30 focus:border-primary/50 focus:outline-none"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && keyValue.trim()) saveKeyMutation.mutate({ envVar, value: keyValue.trim() });
+                      if (e.key === 'Escape') { setEditingKey(null); setKeyValue(''); }
+                    }}
+                  />
+                  <button
+                    onClick={() => setShowKey(!showKey)}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground"
+                  >
+                    {showKey ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  </button>
+                </div>
+                <button
+                  onClick={() => { if (keyValue.trim()) saveKeyMutation.mutate({ envVar, value: keyValue.trim() }); }}
+                  disabled={!keyValue.trim() || saveKeyMutation.isPending}
+                  className="p-1 text-green-400 hover:text-green-300 disabled:opacity-30"
+                >
+                  {saveKeyMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                </button>
+                <button
+                  onClick={() => { setEditingKey(null); setKeyValue(''); }}
+                  className="p-1 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+            {saveKeyMutation.isError && (
+              <div className="text-[9px] text-red-400">{(saveKeyMutation.error as Error).message}</div>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Key saved confirmation */}
+      {saveKeyMutation.isSuccess && (
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 border border-green-500/25 rounded text-[10px] text-green-400">
+          <Check className="w-3 h-3" />
+          Key saved — backend ready
+        </div>
+      )}
+
+      {mutation.isSuccess && (
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 border border-green-500/25 rounded text-[10px] text-green-400">
+          <Check className="w-3 h-3" />
+          Backend switched to {current}
+        </div>
+      )}
+      {mutation.isError && (
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500/10 border border-red-500/25 rounded text-[10px] text-red-400">
+          <AlertTriangle className="w-3 h-3" />
+          {(mutation.error as Error).message}
+        </div>
+      )}
+      {data?.active_model && (
+        <p className="text-[9px] text-muted-foreground/60 px-1">
+          Active model: <code className="text-primary/60">{data.active_model}</code>
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Settings Panel ─────────────────────────────────────────────
 
 interface SettingsPanelProps {
@@ -602,6 +817,18 @@ export function SettingsPanel({ projectName, parallelism, onParallelismChange }:
           <span className="text-xs font-medium">Task Parallelism</span>
         </div>
         <ParallelismSlider value={parallelism} onChange={onParallelismChange} />
+      </div>
+
+      {/* Code Generation Backend */}
+      <div className="p-3 bg-muted/10 border border-border/20 rounded-lg space-y-2">
+        <div className="flex items-center gap-1.5">
+          <Server className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="text-xs font-medium">Code Generation Backend</span>
+          <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 rounded">
+            Stage 2
+          </span>
+        </div>
+        <BackendSelector />
       </div>
 
       {/* API Keys */}

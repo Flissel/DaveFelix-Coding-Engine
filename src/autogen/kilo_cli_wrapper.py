@@ -91,6 +91,22 @@ class KiloCLI:
         self.mode = mode if mode in self.MODES else "code"
         self.agent_name = agent_name
         self.logger = logger.bind(component="kilo_cli")
+        self._mcp_config_written = False
+
+    def _ensure_mcp_config(self):
+        """Write MCP config to working dir so Kilo CLI can discover MCP servers."""
+        if self._mcp_config_written:
+            return
+        self._mcp_config_written = True
+        try:
+            from src.mcp.project_config import generate_cli_mcp_config
+            config_path = generate_cli_mcp_config(
+                working_dir=self.working_dir,
+                output_path=os.path.join(self.working_dir, ".kilo", "mcp.json"),
+            )
+            self.logger.info("kilo_mcp_config_written", path=str(config_path))
+        except Exception as e:
+            self.logger.warning("kilo_mcp_config_failed", error=str(e))
 
     async def execute(
         self,
@@ -159,6 +175,9 @@ class KiloCLI:
                 output_format=output_format,
             )
 
+            # Ensure MCP config exists for Kilo CLI
+            self._ensure_mcp_config()
+
             # Run subprocess — pass prompt as positional arg to kilo run
             def run_cmd():
                 env = os.environ.copy()
@@ -203,10 +222,17 @@ class KiloCLI:
                 error_msg = result.stderr or f"Exit code: {result.returncode}"
 
                 # Check for specific error types
-                if result.returncode == 124:
+                if result.returncode == 1 and not result.stderr:
+                    error_msg = (
+                        "KILO_SILENT_FAILURE: Exit code 1 with no stderr. "
+                        "This usually means missing auth. Check OPENROUTER_API_KEY env var "
+                        "or run 'kilo auth login'. stdout: %s"
+                        % (result.stdout[:200] if result.stdout else "empty")
+                    )
+                elif result.returncode == 124:
                     error_msg = f"KILO_TIMEOUT: Command timed out after {effective_timeout}s"
                 elif "command not found" in error_msg.lower() or "not recognized" in error_msg.lower():
-                    error_msg = f"KILO_NOT_INSTALLED: kilocode CLI not found. Install with 'npm install -g @kilocode/cli'. Original: {error_msg}"
+                    error_msg = f"KILO_NOT_INSTALLED: Kilo CLI not found. Install with 'npm install -g @kilocode/cli'. Original: {error_msg}"
                 elif "rate limit" in error_msg.lower():
                     error_msg = f"KILO_RATE_LIMIT: API rate limit exceeded. Original: {error_msg}"
 

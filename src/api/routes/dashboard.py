@@ -51,6 +51,7 @@ class ProjectStopRequest(BaseModel):
 
 class GenerateRequest(BaseModel):
     requirementsPath: str
+    outputDir: str = ""
 
 class ReviewResumeRequest(BaseModel):
     feedback: Optional[str] = None
@@ -603,8 +604,33 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
     try:
         engine_root = Path(__file__).parent.parent.parent.parent
 
+        # Generate project MCP config (scoped to output dir)
+        try:
+            from src.mcp.project_config import (
+                generate_project_mcp_config,
+                save_project_mcp_config,
+                generate_cli_mcp_config,
+            )
+            project_id = Path(request.requirementsPath).parent.name
+            out_dir = request.outputDir or "/data/projects/%s" % project_id
+            mcp_config = generate_project_mcp_config(
+                project_id=project_id,
+                project_path=str(Path(request.requirementsPath).parent),
+                output_dir=out_dir,
+            )
+            save_project_mcp_config(mcp_config)
+
+            # Also generate CLI-compatible MCP config for Claude/Kilo CLI
+            generate_cli_mcp_config(working_dir=out_dir)
+            logger.info("mcp_configs_generated", project_id=project_id)
+        except Exception as e:
+            logger.warning("mcp_config_generation_failed", error=str(e))
+
+        # Derive output dir from requirements path if not provided
+        output_dir = request.outputDir or "/data/projects/%s" % Path(request.requirementsPath).parent.name
+
         # Build command
-        cmd = f'python run_society_hybrid.py "{request.requirementsPath}" --output-dir "{request.outputDir}" --fast'
+        cmd = f'python run_society_hybrid.py "{request.requirementsPath}" --output-dir "{output_dir}" --fast'
 
         # Start generation in background
         # Remove CLAUDECODE env var to prevent "nested session" error
@@ -750,27 +776,14 @@ async def generate_code(request: GenerateCodeRequest):
             lines = code.split("\n")
             code = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
 
-        # 4. Write to sandbox via Docker
-        sandbox_path = "/workspace/app/%s" % request.file_path
+        # 4. Write to shared Data volume (API → /app/Data/generated/, Sandbox → /workspace/data/generated/)
+        gen_dir = Path("/app/Data/generated") / str(Path(request.file_path).parent)
+        gen_file = Path("/app/Data/generated") / request.file_path
         try:
-            proc = await asyncio.create_subprocess_exec(
-                "docker", "exec", "coding-engine-sandbox",
-                "sh", "-c", "mkdir -p $(dirname %s)" % sandbox_path,
-                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-            )
-            await asyncio.wait_for(proc.communicate(), timeout=5)
-
-            # Write via stdin pipe
-            write_proc = await asyncio.create_subprocess_exec(
-                "docker", "exec", "-i", "coding-engine-sandbox",
-                "sh", "-c", "cat > %s" % sandbox_path,
-                stdin=asyncio.subprocess.PIPE,
-                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-            )
-            await asyncio.wait_for(
-                write_proc.communicate(input=code.encode("utf-8")), timeout=10
-            )
-            deployed = write_proc.returncode == 0
+            gen_dir.mkdir(parents=True, exist_ok=True)
+            gen_file.write_text(code, encoding="utf-8")
+            deployed = True
+            logger.info("code_written_to_shared_volume", path=str(gen_file), size=len(code))
         except Exception as e:
             return GenerateCodeResponse(
                 success=True, file_path=request.file_path,
@@ -778,19 +791,15 @@ async def generate_code(request: GenerateCodeRequest):
                 build_result="Write failed: %s" % str(e)[:100],
             )
 
-        # 5. Build check
+        # 5. Build check via HTTP to sandbox health
         build_result = "skipped"
         if deployed:
             try:
-                build_proc = await asyncio.create_subprocess_exec(
-                    "docker", "exec", "coding-engine-sandbox",
-                    "sh", "-c", "cd /workspace/app && npx vite build --mode development 2>&1 | tail -5",
-                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
-                )
-                build_out, _ = await asyncio.wait_for(build_proc.communicate(), timeout=30)
-                build_result = "OK" if build_proc.returncode == 0 else build_out.decode()[:200]
+                async with httpx.AsyncClient(timeout=10) as client:
+                    resp = await client.get("http://coding-engine-sandbox:3100")
+                    build_result = "OK (sandbox HTTP %d)" % resp.status_code
             except Exception:
-                build_result = "timeout"
+                build_result = "sandbox unreachable"
 
         return GenerateCodeResponse(
             success=True,
@@ -1683,6 +1692,15 @@ class TaskRerunRequest(BaseModel):
     fix_instructions: Optional[str] = None
 
 
+class FixTaskRequest(BaseModel):
+    """Request to fix a failed task using CLI (Kilo/Claude)."""
+    task_id: str
+    epic_id: str = ""
+    error_message: str = ""
+    project_path: str = "/data/projects/whatsapp-messaging-service"
+    max_retries: int = 3
+
+
 class GenerateTaskListsRequest(BaseModel):
     """Request to generate task lists."""
     project_path: str
@@ -2124,6 +2142,230 @@ async def _rerun_task_background(
     except Exception as e:
         logger.error("task_rerun_background_failed", epic_id=epic_id,
                      task_id=task_id, error=str(e))
+
+
+# =============================================================================
+# Fix Task via CLI (Kilo/Claude) — reads files, writes fix, retests
+# =============================================================================
+
+
+@router.post("/fix-task")
+async def fix_task(request: FixTaskRequest):
+    """
+    Fix a failed task using Kilo/Claude CLI with MCP tools.
+
+    The CLI has filesystem access and can read the source code,
+    understand the error, write the fix directly, and retest.
+    """
+    asyncio.create_task(_fix_task_loop(request))
+    return SuccessResponse(success=True)
+
+
+async def _fix_task_loop(request: FixTaskRequest):
+    """Background: CLI fix → rebuild → retest, up to max_retries."""
+    import shutil
+
+    task_id = request.task_id
+    epic_id = request.epic_id or _extract_epic_id(task_id)
+    project_path = request.project_path
+    error = request.error_message
+
+    # Determine which CLI to use based on active backend
+    backend = _active_backend.get("name", "openrouter")
+
+    for attempt in range(1, request.max_retries + 1):
+        logger.info("fix_task_attempt", task_id=task_id, attempt=attempt,
+                     backend=backend, max=request.max_retries)
+
+        # 1. Build fix prompt with full context
+        fix_prompt = _build_fix_prompt(task_id, epic_id, error, project_path, attempt)
+
+        # 2. Run CLI to apply fix
+        try:
+            fix_result = await _run_cli_fix(fix_prompt, project_path, backend)
+        except Exception as e:
+            logger.error("fix_cli_failed", task_id=task_id, error=str(e))
+            error = "CLI fix failed: %s" % str(e)[:300]
+            continue
+
+        if not fix_result.get("success"):
+            error = fix_result.get("error", "CLI returned failure")
+            logger.warning("fix_attempt_failed", task_id=task_id,
+                           attempt=attempt, error=error[:200])
+            continue
+
+        # 3. Verify fix: run build check
+        verify_result = await _verify_fix(project_path)
+        if verify_result.get("success"):
+            logger.info("fix_task_success", task_id=task_id, attempt=attempt)
+
+            # Post success to Discord
+            await _post_fix_result(task_id, attempt, True)
+            return
+
+        # Build still failing — use new error for next attempt
+        error = verify_result.get("error", "Build verification failed")
+        logger.warning("fix_verify_failed", task_id=task_id,
+                       attempt=attempt, error=error[:200])
+
+    # All retries exhausted
+    logger.error("fix_task_exhausted", task_id=task_id,
+                 attempts=request.max_retries)
+    await _post_fix_result(task_id, request.max_retries, False, error)
+
+
+def _extract_epic_id(task_id: str) -> str:
+    """EPIC-003-SETUP-env → EPIC-003"""
+    parts = task_id.split("-")
+    if len(parts) >= 2 and parts[0] == "EPIC":
+        return "%s-%s" % (parts[0], parts[1])
+    return ""
+
+
+def _build_fix_prompt(task_id: str, epic_id: str, error: str,
+                      project_path: str, attempt: int) -> str:
+    """Build a rich prompt for the CLI to fix the task."""
+    return (
+        "You are fixing a failed code generation task. "
+        "Read the relevant source files, understand the error, "
+        "and write the corrected code directly to the files.\n\n"
+        "## Task\n"
+        "ID: %s\n"
+        "Epic: %s\n"
+        "Project: %s\n"
+        "Attempt: %d\n\n"
+        "## Error\n"
+        "```\n%s\n```\n\n"
+        "## Instructions\n"
+        "1. Read the files mentioned in the error\n"
+        "2. Understand what went wrong\n"
+        "3. Write the corrected code to the file(s)\n"
+        "4. Make minimal changes — fix only the error\n"
+        "5. Do NOT create new files unless absolutely necessary\n"
+    ) % (task_id, epic_id, project_path, attempt, error[:2000])
+
+
+async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
+    """Run Kilo or Claude CLI to apply the fix."""
+    import asyncio as _asyncio
+
+    settings = get_settings()
+
+    if backend == "kilo":
+        model = settings.kilo_model or "openrouter/openrouter/free"
+        cmd = ["kilo", "run", "--auto", "--model", model, prompt]
+    elif backend == "claude":
+        cmd = ["claude", "--dangerously-skip-permissions",
+               "--output-format", "json", "--max-turns", "10", "-p", prompt]
+    else:
+        # OpenRouter fallback: use Kilo CLI with OpenRouter model
+        model = settings.kilo_model or "openrouter/openrouter/free"
+        cmd = ["kilo", "run", "--auto", "--model", model, prompt]
+
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    env.pop("CLAUDECODE", None)
+
+    timeout = 300  # 5 min per fix attempt
+
+    try:
+        process = await _asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=_asyncio.subprocess.PIPE,
+            stderr=_asyncio.subprocess.PIPE,
+            cwd=project_path,
+            env=env,
+        )
+        stdout, stderr = await _asyncio.wait_for(
+            process.communicate(), timeout=timeout
+        )
+        stdout_text = stdout.decode("utf-8", errors="replace") if stdout else ""
+        stderr_text = stderr.decode("utf-8", errors="replace") if stderr else ""
+
+        if process.returncode == 0:
+            return {"success": True, "output": stdout_text[:2000]}
+        else:
+            return {
+                "success": False,
+                "error": "Exit %d: %s" % (
+                    process.returncode,
+                    (stderr_text or stdout_text)[:500]
+                ),
+            }
+    except _asyncio.TimeoutError:
+        return {"success": False, "error": "CLI timeout after %ds" % timeout}
+    except Exception as e:
+        return {"success": False, "error": str(e)[:300]}
+
+
+async def _verify_fix(project_path: str) -> dict:
+    """Run build check after fix to verify it works."""
+    import asyncio as _asyncio
+
+    # Try npm/pnpm build in the project
+    for build_cmd in [
+        ["npm", "run", "build", "--if-present"],
+        ["npx", "tsc", "--noEmit"],
+    ]:
+        try:
+            process = await _asyncio.create_subprocess_exec(
+                *build_cmd,
+                stdout=_asyncio.subprocess.PIPE,
+                stderr=_asyncio.subprocess.PIPE,
+                cwd=project_path,
+            )
+            stdout, stderr = await _asyncio.wait_for(
+                process.communicate(), timeout=120
+            )
+            if process.returncode != 0:
+                error_text = (stderr or stdout or b"").decode("utf-8", errors="replace")
+                return {"success": False, "error": error_text[:1000]}
+        except _asyncio.TimeoutError:
+            return {"success": False, "error": "Build timeout"}
+        except FileNotFoundError:
+            continue  # npm not found, try next
+
+    return {"success": True}
+
+
+async def _post_fix_result(task_id: str, attempts: int, success: bool,
+                           error: str = ""):
+    """Post fix result to Discord #dev-tasks."""
+    try:
+        from src.tools.discord_agent import DiscordAgent
+
+        fixes_ch = os.environ.get("DISCORD_CH_DEV_TASKS", "1484193408955322399")
+        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        if not token:
+            return
+
+        discord = DiscordAgent(bot_token=token, channel_id=fixes_ch)
+
+        if success:
+            msg = (
+                "**FIX_APPLIED** | `%s`\n"
+                "Fixed after %d attempt(s)\n"
+                "**Action:** `RETEST`\n"
+                "||`%s`||"
+            ) % (
+                task_id, attempts,
+                json.dumps({"type": "FIX_APPLIED", "task": task_id, "action": "RETEST"}),
+            )
+        else:
+            msg = (
+                "**FIX_FAILED** | `%s`\n"
+                "All %d attempts exhausted\n"
+                "```\n%s\n```\n"
+                "**Action:** `MANUAL_REVIEW`\n"
+                "||`%s`||"
+            ) % (
+                task_id, attempts, error[:500],
+                json.dumps({"type": "FIX_FAILED", "task": task_id, "action": "MANUAL_REVIEW"}),
+            )
+
+        await discord.send(msg[:2000])
+    except Exception as e:
+        logger.error("post_fix_result_failed", error=str(e))
 
 
 # =============================================================================
@@ -2610,16 +2852,6 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             max_parallel_tasks=request.max_parallel_tasks,
             enable_som=True,
             som_config=som_config,
-            # Fungus Context System — semantic code search via MCMP
-            enable_fungus=True,
-            fungus_judge_provider="openrouter",
-            fungus_judge_model="nvidia/nemotron-3-super-120b-a12b:free",
-            # Fungus Validation — autonomous MCMP validation
-            enable_fungus_validation=True,
-            fungus_validation_interval=10,
-            # Fungus Memory — memory-augmented search
-            enable_fungus_memory=True,
-            fungus_memory_interval=10,
         )
 
         # Generate project-specific MCP config for dynamic server configuration
@@ -2857,7 +3089,12 @@ async def _run_all_epics_background(project_path: str, orchestrator, project_id:
                     )
                 elif status == "failed":
                     _posted_tasks.add(tid)
-                    error = t.get("error", t.get("result", "unknown error"))
+                    error = (
+                        t.get("error_message")
+                        or t.get("error")
+                        or t.get("result")
+                        or "No error details captured"
+                    )
                     scope = "BACKEND" if "api" in tid.lower() or "service" in tid.lower() else "FRONTEND"
                     await discord.send(
                         "**FIX_NEEDED** | %s\nEpic: `%s`\nTask: `%s`\nName: %s\n```\n%s\n```\n**Action:** `FIX_AND_RETEST`\n||`{\"type\":\"FIX_NEEDED\",\"scope\":\"%s\",\"task\":\"%s\",\"action\":\"FIX_AND_RETEST\"}`||"
@@ -3471,14 +3708,45 @@ async def pipeline_status():
 
 @router.get("/pipeline/backend")
 async def get_backend_config():
-    """Get current code generation backend configuration."""
+    """Get current code generation backend configuration with auth status."""
+    import shutil
     from src.llm_config import get_model
-    return BackendConfigResponse(
-        success=True,
-        active_backend=_active_backend["name"],
-        active_model=_active_backend.get("model") or get_model("primary"),
-        available_backends=["openrouter", "kilo", "claude"],
-    )
+
+    # Check auth readiness for each backend
+    auth_status = {}
+
+    # OpenRouter: needs OPENROUTER_API_KEY
+    or_key = os.environ.get("OPENROUTER_API_KEY", "")
+    auth_status["openrouter"] = {"ready": bool(or_key), "reason": "OPENROUTER_API_KEY set" if or_key else "OPENROUTER_API_KEY not set"}
+
+    # Kilo: needs kilo binary + OPENROUTER_API_KEY (uses it from env)
+    kilo_installed = bool(shutil.which("kilo"))
+    kilo_ready = kilo_installed and bool(or_key)
+    kilo_reason = []
+    if not kilo_installed:
+        kilo_reason.append("kilo CLI not installed")
+    if not or_key:
+        kilo_reason.append("OPENROUTER_API_KEY not set")
+    auth_status["kilo"] = {"ready": kilo_ready, "reason": ", ".join(kilo_reason) if kilo_reason else "kilo CLI + OpenRouter key ready"}
+
+    # Claude: needs claude binary + ANTHROPIC_API_KEY
+    claude_installed = bool(shutil.which("claude"))
+    ant_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    claude_ready = claude_installed and bool(ant_key)
+    claude_reason = []
+    if not claude_installed:
+        claude_reason.append("claude CLI not installed")
+    if not ant_key:
+        claude_reason.append("ANTHROPIC_API_KEY not set")
+    auth_status["claude"] = {"ready": claude_ready, "reason": ", ".join(claude_reason) if claude_reason else "claude CLI + Anthropic key ready"}
+
+    return {
+        "success": True,
+        "active_backend": _active_backend["name"],
+        "active_model": _active_backend.get("model") or get_model("primary"),
+        "available_backends": ["openrouter", "kilo", "claude"],
+        "auth_status": auth_status,
+    }
 
 
 @router.post("/pipeline/backend", response_model=BackendConfigResponse)

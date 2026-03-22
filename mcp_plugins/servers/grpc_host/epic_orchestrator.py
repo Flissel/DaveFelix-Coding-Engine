@@ -618,6 +618,7 @@ class EpicOrchestrator:
                     if result.success:
                         completed_ids.add(task.id)
                         completed += 1
+                        task.status = "completed"
                         # Mark deps as tested when test tasks pass
                         if task.type.startswith("test_"):
                             for dep_id in task.dependencies:
@@ -627,8 +628,10 @@ class EpicOrchestrator:
                     else:
                         failed += 1
                         failed_ids.add(task.id)
+                        task.status = "failed"
+                        task.error_message = result.error or "Task execution failed (no details)"
                         logger.warning(
-                            f"Task {task.id} failed, continuing with independent tasks"
+                            f"Task {task.id} failed: {task.error_message[:100]}"
                         )
             else:
                 # Sequential execution
@@ -646,6 +649,7 @@ class EpicOrchestrator:
                     if result.success:
                         completed_ids.add(task.id)
                         completed += 1
+                        task.status = "completed"
                         # Mark deps as tested when test tasks pass
                         if task.type.startswith("test_"):
                             for dep_id in task.dependencies:
@@ -655,8 +659,10 @@ class EpicOrchestrator:
                     else:
                         failed += 1
                         failed_ids.add(task.id)
+                        task.status = "failed"
+                        task.error_message = result.error or "Task execution failed (no details)"
                         logger.warning(
-                            f"Task {task.id} failed, continuing with independent tasks"
+                            f"Task {task.id} failed: {task.error_message[:100]}"
                         )
 
         # Calculate final result
@@ -1153,6 +1159,7 @@ class EpicOrchestrator:
                         if result.success:
                             completed_ids.add(task_id)
                             completed_count += 1
+                            task.status = "completed"
                             logger.info(
                                 f"[Pipeline] Completed {task_id} "
                                 f"({completed_count}/{len(tasks_to_execute)})"
@@ -1170,11 +1177,13 @@ class EpicOrchestrator:
                         else:
                             failed_ids.add(task_id)
                             failed_count += 1
+                            task.status = "failed"
+                            task.error_message = result.error or "Task execution failed (no details)"
                             logger.warning(
-                                f"[Pipeline] Failed {task_id}: {result.error}"
+                                f"[Pipeline] Failed {task_id}: {task.error_message[:200]}"
                             )
                             await self._publish_log(
-                                f"FAILED {task_id}: {result.error or 'Unknown error'}",
+                                f"FAILED {task_id}: {task.error_message[:300]}",
                                 level="ERROR"
                             )
                     except Exception as e:

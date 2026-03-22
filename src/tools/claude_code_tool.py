@@ -1470,8 +1470,9 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                     resp.raise_for_status()
                     data = resp.json()
 
-                # Extract response text
-                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+                # Extract response text (some models like nemotron use 'reasoning' instead of 'content')
+                msg = data.get("choices", [{}])[0].get("message", {})
+                content = msg.get("content") or msg.get("reasoning") or ""
 
                 # Parse generated files from markdown code blocks
                 files = self._parse_code_files(content)

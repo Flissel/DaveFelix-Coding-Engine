@@ -172,18 +172,39 @@ class ClaudeCLI:
             )
 
     async def _ensure_mcp_initialized(self) -> Optional[Path]:
-        """Initialize MCP servers if needed and return config path."""
+        """Initialize MCP servers if needed and return config path.
+
+        Generates a .claude/mcp.json from servers.json with all active
+        stdio MCP servers so Claude CLI can use them via --mcp-config.
+        """
         if self._mcp_initialized:
+            if self._mcp_config_path and self._mcp_config_path.exists():
+                return self._mcp_config_path
             if self.mcp_manager:
                 return self.mcp_manager.get_config_path()
             return None
 
-        # Create MCP manager if playwright is enabled
+        self._mcp_initialized = True
+        self._mcp_config_path = None
+
+        # Generate CLI MCP config from servers.json (all active stdio servers)
+        try:
+            from ..mcp.project_config import generate_cli_mcp_config
+            self._mcp_config_path = generate_cli_mcp_config(
+                working_dir=self.working_dir,
+            )
+            self.logger.info(
+                "mcp_cli_config_generated",
+                path=str(self._mcp_config_path),
+            )
+        except Exception as e:
+            self.logger.warning("mcp_cli_config_failed", error=str(e))
+
+        # Also start Playwright via MCPServerManager if enabled
         if self.enable_playwright and not self.mcp_manager:
             from ..mcp import MCPServerManager
             self.mcp_manager = MCPServerManager(working_dir=self.working_dir)
 
-        # Start Playwright if enabled
         if self.enable_playwright and self.mcp_manager:
             try:
                 await self.mcp_manager.start_from_template("playwright")
@@ -191,8 +212,8 @@ class ClaudeCLI:
             except Exception as e:
                 self.logger.warning("mcp_playwright_failed", error=str(e))
 
-        self._mcp_initialized = True
-
+        if self._mcp_config_path and self._mcp_config_path.exists():
+            return self._mcp_config_path
         if self.mcp_manager:
             return self.mcp_manager.get_config_path()
         return None

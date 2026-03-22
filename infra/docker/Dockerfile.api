@@ -17,6 +17,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     docker.io \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Node.js 22 LTS (for Kilo CLI + Claude CLI)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Kilo CLI + Claude CLI (always latest version on build)
+RUN npm install -g @kilocode/cli@latest @anthropic-ai/claude-code@latest \
+    && npm cache clean --force
+
+# Pre-install MCP server packages globally (avoids npx download on every spawn)
+RUN npm install -g \
+    @playwright/mcp@latest \
+    @modelcontextprotocol/server-filesystem \
+    @modelcontextprotocol/server-memory \
+    @modelcontextprotocol/server-sequential-thinking \
+    @modelcontextprotocol/server-redis \
+    @upstash/context7-mcp@latest \
+    && npm cache clean --force
+
+# Install Playwright browsers (chromium only to keep image small)
+RUN npx playwright install --with-deps chromium 2>/dev/null || true
+
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

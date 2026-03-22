@@ -1,5 +1,5 @@
 {
-  "comment": "MCP Server Registry - Active servers have agent.py implementations",
+  "comment": "MCP Server Registry - Docker/Linux paths for container execution",
   "grpc_config": {
     "base_port": 50061,
     "port_range": "50061-50090",
@@ -8,115 +8,108 @@
   "servers": [
     {
       "name": "playwright",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50061,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
         "--yes",
         "@playwright/mcp@latest",
-        "--browser=msedge",
+        "--browser=chromium",
         "--viewport-size=1280,720"
       ],
       "read_timeout_seconds": 120,
-      "description": "Playwright MCP - DISABLED (testing with minimal servers first)"
+      "description": "Playwright MCP - Browser automation, DOM interaction, screenshots"
     },
     {
       "name": "github",
       "active": false,
       "type": "stdio",
       "grpc_port": 50062,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN=%GITHUB_TOKEN% ghcr.io/github/github-mcp-server"
+        "--yes",
+        "@modelcontextprotocol/server-github"
       ],
+      "env_vars": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "env:GITHUB_TOKEN"
+      },
       "read_timeout_seconds": 120,
-      "description": "GitHub MCP - DISABLED (Docker-based, causes connection issues)"
+      "description": "GitHub MCP - Repository management, issues, PRs (needs GITHUB_TOKEN)"
     },
     {
       "name": "docker",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50063,
-      "command": "C:\\Python312\\python.exe",
+      "command": "python",
       "args": [
         "-m",
         "mcp_server_docker"
       ],
       "read_timeout_seconds": 120,
-      "description": "Docker MCP - DISABLED (mcp_server_docker entry point issue)"
+      "description": "Docker MCP - Container operations, compose, logs"
     },
     {
       "name": "desktop",
       "active": false,
       "type": "stdio",
       "grpc_port": 50064,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
+        "--yes",
         "@wonderwhy-er/desktop-commander@latest"
       ],
       "read_timeout_seconds": 120,
-      "description": "Desktop Commander MCP - DISABLED (type None field error)"
+      "description": "Desktop Commander MCP - Not applicable in Docker"
     },
     {
       "name": "context7",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50065,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@upstash/context7-mcp@latest"
       ],
       "read_timeout_seconds": 120,
       "env_vars": {
         "DEFAULT_MINIMUM_TOKENS": "10000"
       },
-      "description": "Context7 MCP for documentation lookup and context retrieval"
+      "description": "Context7 MCP - Up-to-date library documentation and code examples"
     },
     {
       "name": "redis",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50066,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-redis"
       ],
       "read_timeout_seconds": 120,
       "env_vars": {
         "REDIS_URL": "env:REDIS_URL"
       },
-      "description": "Redis MCP - DISABLED (package may not exist)"
+      "description": "Redis MCP - Key-value store, caching"
     },
     {
       "name": "supabase",
       "active": false,
       "type": "stdio",
       "grpc_port": 50067,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@supabase/mcp-server-supabase@latest"
       ],
       "env_vars": {
         "SUPABASE_ACCESS_TOKEN": "env:SUPABASE_ACCESS_TOKEN"
       },
-      "note": "Set SUPABASE_ACCESS_TOKEN in .env",
       "read_timeout_seconds": 120,
-      "description": "Supabase MCP - DISABLED (connection issues)"
+      "description": "Supabase MCP - PostgreSQL, auth, storage (needs SUPABASE_ACCESS_TOKEN)"
     },
     {
       "name": "time",
@@ -129,189 +122,106 @@
         "mcp_server_time"
       ],
       "read_timeout_seconds": 120,
-      "description": "Time MCP server for current time and timezone operations"
+      "description": "Time MCP - Current time and timezone operations"
     },
     {
       "name": "taskmanager",
       "active": false,
       "type": "stdio",
       "grpc_port": 50069,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@kazuph/mcp-taskmanager"
       ],
       "read_timeout_seconds": 120,
       "env_vars": {
-        "TASK_MANAGER_FILE_PATH": "~/Documents/tasks.json"
+        "TASK_MANAGER_FILE_PATH": "/data/tasks.json"
       },
-      "description": "TaskManager MCP for task tracking and management"
-    },
-    {
-      "name": "windows-core",
-      "active": false,
-      "type": "stdio",
-      "grpc_port": 50070,
-      "command": "python",
-      "args": [
-        "mcp_plugins/servers/windows-core/server.py"
-      ],
-      "cwd": "env:PROJECT_ROOT",
-      "read_timeout_seconds": 120,
-      "description": "Windows Core MCP - DISABLED (connection issues)"
+      "description": "TaskManager MCP - Task tracking"
     },
     {
       "name": "memory",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50071,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-memory"
       ],
       "read_timeout_seconds": 120,
-      "description": "Memory MCP for knowledge graph storage and retrieval"
+      "description": "Memory MCP - Knowledge graph with entities and relations"
     },
     {
       "name": "filesystem",
       "active": true,
       "type": "stdio",
       "grpc_port": 50072,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-filesystem",
-        "C:\\Users\\User\\Desktop\\Coding_engine"
+        "/app"
       ],
       "read_timeout_seconds": 120,
-      "description": "Filesystem MCP for file and directory operations with project root as allowed directory"
+      "description": "Filesystem MCP - File and directory operations scoped to /app"
     },
     {
       "name": "brave-search",
       "active": false,
       "type": "stdio",
       "grpc_port": 50073,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-brave-search"
       ],
       "read_timeout_seconds": 120,
       "env_vars": {
         "BRAVE_API_KEY": "env:BRAVE_API_KEY"
       },
-      "description": "Brave Search MCP - DISABLED (connection issues)",
-      "api_key_required": true,
-      "api_key_source": "https://brave.com/search/api/"
+      "description": "Brave Search MCP (needs BRAVE_API_KEY)",
+      "api_key_required": true
     },
     {
       "name": "fetch",
       "active": true,
       "type": "stdio",
       "grpc_port": 50074,
-      "command": "C:\\Python312\\python.exe",
+      "command": "python",
       "args": [
         "-m",
         "mcp_server_fetch"
       ],
       "read_timeout_seconds": 120,
-      "description": "Fetch MCP for HTTP requests and web fetching"
-    },
-    {
-      "name": "youtube",
-      "active": false,
-      "type": "stdio",
-      "grpc_port": 50075,
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "youtube-transcript-mcp-server"
-      ],
-      "read_timeout_seconds": 120,
-      "description": "YouTube MCP - DISABLED"
-    },
-    {
-      "name": "n8n",
-      "active": false,
-      "type": "stdio",
-      "grpc_port": 50076,
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "n8n-mcp"
-      ],
-      "read_timeout_seconds": 120,
-      "env_vars": {
-        "N8N_API_URL": "env:N8N_API_URL",
-        "N8N_API_KEY": "env:N8N_API_KEY",
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error"
-      },
-      "description": "n8n MCP - DISABLED"
+      "description": "Fetch MCP - HTTP requests and web content retrieval"
     },
     {
       "name": "sequential-thinking",
-      "active": false,
+      "active": true,
       "type": "stdio",
       "grpc_port": 50077,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "read_timeout_seconds": 120,
-      "env_vars": {
-        "DISABLE_THOUGHT_LOGGING": "false"
-      },
-      "description": "Sequential Thinking MCP - DISABLED (package may not exist)"
-    },
-    {
-      "name": "tavily",
-      "active": false,
-      "type": "stdio",
-      "grpc_port": 50078,
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "tavily-mcp@latest"
-      ],
-      "read_timeout_seconds": 120,
-      "env_vars": {
-        "TAVILY_API_KEY": "env:TAVILY_API_KEY"
-      },
-      "description": "Tavily MCP - DISABLED (requires API key)"
+      "description": "Sequential Thinking MCP - Structured problem-solving through thought sequences"
     },
     {
       "name": "git",
       "active": false,
       "type": "stdio",
       "grpc_port": 50079,
-      "command": "C:\\Windows\\System32\\cmd.exe",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
-        "-y",
+        "--yes",
         "@modelcontextprotocol/server-git"
       ],
       "read_timeout_seconds": 120,
-      "description": "Git MCP server for local repository operations: status, diff, log, remote, branch listing (DISABLED - package not found)"
+      "description": "Git MCP - DISABLED (npm package not found, git CLI available directly)"
     },
     {
       "name": "npm",
@@ -398,89 +308,10 @@
       ],
       "cwd": "env:PROJECT_ROOT",
       "read_timeout_seconds": 600,
-      "description": "Claude Code MCP - Wraps Claude CLI/SDK for AI code generation. Tools: claude_execute, claude_execute_with_context, claude_conversation, claude_code_generation, claude_status."
-    },
-    {
-      "name": "puppeteer",
-      "active": false,
-      "type": "stdio",
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-puppeteer"
-      ],
-      "read_timeout_seconds": 120,
-      "description": "Puppeteer MCP for headless browser automation (alternative to Playwright)"
-    },
-    {
-      "name": "huggingface",
-      "active": false,
-      "type": "stdio",
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-huggingface"
-      ],
-      "read_timeout_seconds": 120,
-      "env_vars": {
-        "HUGGINGFACE_API_KEY": "env:HUGGINGFACE_API_KEY"
-      },
-      "description": "Hugging Face MCP - INACTIVE (npm package @modelcontextprotocol/server-huggingface not found)"
-    },
-    {
-      "name": "elevenlabs",
-      "active": false,
-      "type": "stdio",
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "elevenlabs-mcp"
-      ],
-      "read_timeout_seconds": 120,
-      "env_vars": {
-        "ELEVENLABS_API_KEY": "env:ELEVENLABS_API_KEY"
-      },
-      "description": "ElevenLabs MCP - INACTIVE (npm package elevenlabs-mcp may not exist)"
-    },
-    {
-      "name": "mindsdb",
-      "active": false,
-      "type": "stdio",
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "mindsdb-mcp-server"
-      ],
-      "read_timeout_seconds": 120,
-      "env_vars": {
-        "MINDSDB_API_KEY": "env:MINDSDB_API_KEY"
-      },
-      "description": "MindsDB MCP - INACTIVE (npm package mindsdb-mcp-server may not exist)"
-    },
-    {
-      "name": "gpt-researcher",
-      "active": false,
-      "type": "stdio",
-      "command": "C:\\Windows\\System32\\cmd.exe",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "gpt-researcher-mcp"
-      ],
-      "read_timeout_seconds": 180,
-      "description": "GPT Researcher MCP for autonomous research, web scraping, and report generation (package may not exist - set active:false)"
+      "description": "Claude Code MCP - Wraps Claude CLI/SDK for AI code generation"
     }
   ],
-  "inactive_servers_note": "The following servers are inactive: puppeteer (using Playwright instead), huggingface, elevenlabs, mindsdb, gpt-researcher (npm packages not available or non-functional)",
-  "active_agents_count": 26,
-  "custom_agents": ["npm", "prisma", "postgres", "qdrant", "supermemory", "windows-core"]
+  "inactive_servers_note": "Disabled: github (needs token), desktop (not in Docker), supabase (needs token), brave-search (needs key), taskmanager, youtube, n8n, tavily, puppeteer, huggingface, elevenlabs, mindsdb, gpt-researcher",
+  "active_agents_count": 17,
+  "custom_agents": ["npm", "prisma", "postgres", "qdrant", "supermemory", "claude-code"]
 }

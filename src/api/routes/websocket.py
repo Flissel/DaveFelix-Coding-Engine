@@ -56,6 +56,21 @@ async def global_websocket(
     await websocket_endpoint(websocket, client_id, session_id=None)
 
 
+@router.websocket("/engine/generation/ws")
+async def generation_websocket(
+    websocket: WebSocket,
+    client_id: Optional[str] = Query(default=None),
+):
+    """
+    WebSocket endpoint for generation event streaming.
+    Used by the frontend Engine Editor for real-time updates.
+    """
+    if not client_id:
+        client_id = f"gen_{uuid.uuid4().hex[:8]}"
+
+    await websocket_endpoint(websocket, client_id, session_id=None)
+
+
 @router.get("/ws/stats")
 async def websocket_stats():
     """Get WebSocket connection statistics."""

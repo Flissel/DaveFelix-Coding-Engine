@@ -449,6 +449,15 @@ class Orchestrator:
                 shared_state=self.shared_state,
             )
 
+        # Discord Notifier for live status updates
+        try:
+            from src.services.discord_notifier import init_discord_notifier
+            self.discord_notifier = init_discord_notifier(event_bus=self.event_bus)
+            self.logger.info("discord_notifier_initialized")
+        except Exception as e:
+            self.discord_notifier = None
+            self.logger.debug("discord_notifier_skipped", reason=str(e))
+
         # Document Registry for inter-agent communication
         self.document_registry = DocumentRegistry(working_dir)
 

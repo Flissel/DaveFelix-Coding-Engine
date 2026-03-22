@@ -73,6 +73,7 @@ services:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - DISCORD_BOT_TOKEN_ANALYZER=${DISCORD_BOT_TOKEN_ANALYZER}
       - DISCORD_CHANNEL_ID=1484160715580510242
+      - DISCORD_CH_DEV_TASKS=1484193408955322399
     volumes:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
@@ -80,6 +81,7 @@ services:
       - ./.env:/app/.env
       - artifact_data:/data/artifacts
       - C:/Users/User/Desktop/Coding_engine/Data:/app/Data
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       postgres:
         condition: service_healthy
@@ -146,11 +148,16 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - LOG_LEVEL=INFO
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN_ANALYZER}
+      - DISCORD_CH_FIXES=1484193412679733302
+      - DISCORD_CH_DEV_TASKS=1484193408955322399
       # LLM models — all OpenRouter free
       - LLM_MODEL=qwen/qwen3-coder:free
       - VISION_MODEL=nvidia/nemotron-nano-12b-v2-vl:free
       - COMPACTION_MODEL=qwen/qwen3-next-80b-a3b-instruct:free
       - CORS_ORIGINS=["http://localhost:3100","http://localhost:5173","http://localhost:8000"]
+      # Point at API container for !commands
+      - CODING_ENGINE_API_URL=http://api:8000
       # Point at sandbox for browser debug
       - SANDBOX_APP_URL=http://sandbox:3100
     volumes:
@@ -161,11 +168,49 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8007/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8007/api/health/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
+
+  # OpenClaw Gateway - Master Orchestrator (GPT-5.4)
+  # Receives WhatsApp/Discord commands, orchestrates code generation,
+  # manages Git branches/PRs, and runs fix loops via CLI
+  openclaw:
+    build:
+      context: ../../openclaw
+      dockerfile: Dockerfile
+      args:
+        OPENCLAW_EXTENSIONS: "coding-engine-bridge hotel-concierge discord whatsapp ollama"
+    container_name: coding-engine-openclaw
+    environment:
+      - HOME=/home/node
+      - TERM=xterm-256color
+      - NODE_OPTIONS=--max-old-space-size=8192
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - CODING_ENGINE_API_URL=http://api:8000
+      - TZ=Europe/Berlin
+    volumes:
+      - ../../openclaw/data/openclaw:/home/node/.openclaw
+    ports:
+      - "18789:18789"
+    init: true
+    restart: unless-stopped
+    command: ["sh", "-c", "find /home/node/.openclaw/extensions -maxdepth 1 -type d -exec chmod 755 {} + 2>/dev/null; find /home/node/.openclaw/extensions -type f -exec chmod 644 {} + 2>/dev/null; exec node dist/index.js gateway --bind lan --port 18789 --verbose"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    depends_on:
+      api:
+        condition: service_healthy
 
 volumes:
   postgres_data:

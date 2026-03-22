@@ -326,3 +326,92 @@ def _has_docker_service(search_dir: Path, service_name: str) -> bool:
             except Exception:
                 pass
     return False
+
+
+# ─── CLI MCP Config Generator ──────────────────────────────────────
+
+
+def generate_cli_mcp_config(
+    working_dir: str,
+    output_path: Optional[str] = None,
+) -> Path:
+    """
+    Generate a Claude-CLI-compatible MCP config from servers.json.
+
+    Reads all active stdio servers from servers.json and writes a
+    .claude/mcp.json file that Claude CLI understands.
+
+    Format: {"mcpServers": {"name": {"command": "...", "args": [...], "env": {...}}}}
+
+    Args:
+        working_dir: Directory where .claude/mcp.json will be written
+        output_path: Override output path (default: {working_dir}/.claude/mcp.json)
+
+    Returns:
+        Path to the generated config file
+    """
+    servers_json_path = Path(__file__).parent.parent.parent / "mcp_plugins" / "servers" / "servers.json"
+    if not servers_json_path.exists():
+        # Try Docker path
+        servers_json_path = Path("/app/mcp_plugins/servers/servers.json")
+
+    mcp_servers: Dict[str, dict] = {}
+
+    if servers_json_path.exists():
+        try:
+            with open(servers_json_path, "r") as f:
+                data = json.load(f)
+
+            for server in data.get("servers", []):
+                if not server.get("active", False):
+                    continue
+
+                name = server["name"]
+                server_type = server.get("type", "stdio")
+
+                # Only stdio servers can be passed to Claude CLI
+                if server_type != "stdio":
+                    continue
+
+                entry: dict = {
+                    "command": server.get("command", "npx"),
+                    "args": server.get("args", []),
+                }
+
+                # Resolve env vars (replace "env:VAR" with actual values)
+                env_vars = server.get("env_vars", {})
+                if env_vars:
+                    resolved_env: Dict[str, str] = {}
+                    for key, val in env_vars.items():
+                        if isinstance(val, str) and val.startswith("env:"):
+                            resolved = os.environ.get(val[4:], "")
+                            if resolved:
+                                resolved_env[key] = resolved
+                        elif isinstance(val, str):
+                            resolved_env[key] = val
+                    if resolved_env:
+                        entry["env"] = resolved_env
+
+                mcp_servers[name] = entry
+        except Exception as e:
+            logger.warning("cli_mcp_config_parse_failed", error=str(e))
+
+    config = {"mcpServers": mcp_servers}
+
+    # Write config
+    if output_path:
+        config_path = Path(output_path)
+    else:
+        config_path = Path(working_dir) / ".claude" / "mcp.json"
+
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2)
+
+    logger.info(
+        "cli_mcp_config_generated",
+        path=str(config_path),
+        servers=list(mcp_servers.keys()),
+        count=len(mcp_servers),
+    )
+    return config_path
