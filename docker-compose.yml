@@ -69,6 +69,7 @@ services:
       - GIT_SERVER_URL=http://gitea:3000
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - LLM_BACKEND=openrouter
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - DISCORD_BOT_TOKEN_ANALYZER=${DISCORD_BOT_TOKEN_ANALYZER}
@@ -81,6 +82,7 @@ services:
       - ./.env:/app/.env
       - artifact_data:/data/artifacts
       - C:/Users/User/Desktop/Coding_engine/Data:/app/Data
+      - C:/Users/User/Desktop/Coding_engine/Data/generated:/app/output
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       postgres:
@@ -100,13 +102,14 @@ services:
       - "3100:3100"   # App dev server preview
     volumes:
       - ./Data:/workspace/data
+      - C:/Users/User/Desktop/Coding_engine/Data/generated:/workspace/app
     environment:
       - DISPLAY=:99
       - ENABLE_VNC=true
       - NOVNC_PORT=6090
       - ENGINE_API_URL=http://api:8000
       - PROJECT_TYPE=react
-      - START_CMD=cd /workspace && npx serve -s /workspace/data -l 3100 -C
+      - START_CMD=cd /workspace && npx serve -s /workspace/app -l 3100 -C
     depends_on:
       - api
 

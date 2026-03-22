@@ -647,6 +647,44 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
 
 
 # ============================================================================
+# Sandbox exec — run commands in sandbox or API container
+# ============================================================================
+
+
+class SandboxExecRequest(BaseModel):
+    command: str
+    container: str = "coding-engine-sandbox"
+    timeout: int = 30
+
+
+@router.post("/sandbox/exec")
+async def sandbox_exec(request: SandboxExecRequest):
+    """Execute a command in the API container (has access to /app/output)."""
+    import asyncio as _aio
+
+    # Rewrite /workspace/app paths to /app/output (API container has the files)
+    cmd = request.command.replace("/workspace/app", "/app/output")
+
+    try:
+        proc = await _aio.create_subprocess_shell(
+            cmd,
+            stdout=_aio.subprocess.PIPE,
+            stderr=_aio.subprocess.PIPE,
+            cwd="/app/output",
+        )
+        stdout, stderr = await _aio.wait_for(
+            proc.communicate(), timeout=request.timeout
+        )
+        return {
+            "stdout": (stdout or b"").decode("utf-8", errors="replace"),
+            "stderr": (stderr or b"").decode("utf-8", errors="replace"),
+            "exit_code": proc.returncode,
+        }
+    except Exception as e:
+        return {"stdout": "", "stderr": str(e), "exit_code": -1}
+
+
+# ============================================================================
 # Single-file code generation via LLM
 # ============================================================================
 
