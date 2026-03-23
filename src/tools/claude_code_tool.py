@@ -1599,7 +1599,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             pattern2 = r'```\w+:([\w/._-]+\.\w+)\n(.*?)```'
             for filepath, code in re.findall(pattern2, content, re.DOTALL):
                 filepath = filepath.strip()
-                if filepath and "/" in filepath:
+                if filepath:
                     files.append(GeneratedFile(
                         path=filepath, content=code.rstrip(),
                         language=self._detect_language(filepath),
@@ -1610,7 +1610,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             pattern3 = r'```\w*\n(?://|#|/\*)\s*(?:File|filename|path):\s*(.+?)\n(.*?)```'
             for filepath, code in re.findall(pattern3, content, re.DOTALL):
                 filepath = filepath.strip()
-                if filepath and "/" in filepath:
+                if filepath:
                     files.append(GeneratedFile(
                         path=filepath, content=code.rstrip(),
                         language=self._detect_language(filepath),
@@ -1621,7 +1621,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             pattern4 = r'\*\*(?:File|Path)\*?\*?:?\s*`([^`]+)`\s*\n+```\w*\n(.*?)```'
             for filepath, code in re.findall(pattern4, content, re.DOTALL):
                 filepath = filepath.strip()
-                if filepath and "/" in filepath:
+                if filepath:
                     files.append(GeneratedFile(
                         path=filepath, content=code.rstrip(),
                         language=self._detect_language(filepath),
