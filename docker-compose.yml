@@ -79,6 +79,7 @@ services:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
       - ./config:/app/config
+      - ./run_generation.py:/app/run_generation.py
       - ./.env:/app/.env
       - artifact_data:/data/artifacts
       - C:/Users/User/Desktop/Coding_engine/Data:/app/Data

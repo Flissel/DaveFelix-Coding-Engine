@@ -628,19 +628,34 @@ async def start_generation(request: GenerateRequest) -> SuccessResponse:
         except Exception as e:
             logger.warning("mcp_config_generation_failed", error=str(e))
 
-        # Delegate to start_epic_generation (in-process, not subprocess)
-        epic_request = StartEpicGenerationRequest(
-            project_path=str(Path(request.requirementsPath).parent),
-            output_dir=output_dir,
-            vnc_port=6090,
-            app_port=3100,
+        # Run generation as SEPARATE PROCESS (does not block API event loop)
+        project_path = str(Path(request.requirementsPath).parent)
+        cmd = [
+            "python", "run_generation.py",
+            "--project-path", project_path,
+            "--output-dir", output_dir,
+            "--vnc-port", "6090",
+            "--app-port", "3100",
+            "--parallelism", "1",
+        ]
+
+        env = os.environ.copy()
+        env.pop("CLAUDECODE", None)
+
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(engine_root),
+            stdout=open(str(Path(output_dir) / "generation.log"), "a"),
+            stderr=subprocess.STDOUT,
+            env=env,
         )
 
         logger.info("generation_started",
                      requirements=request.requirementsPath,
                      output=output_dir,
-                     method="epic_orchestrator")
-        return await start_epic_generation(epic_request)
+                     method="subprocess",
+                     pid=process.pid)
+        return SuccessResponse(success=True)
     except Exception as e:
         logger.error("generation_start_failed", error=str(e))
         return SuccessResponse(success=False, error=str(e))

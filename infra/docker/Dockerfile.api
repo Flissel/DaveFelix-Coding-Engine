@@ -50,6 +50,7 @@ COPY config/ ./config/
 COPY run_engine.py ./
 COPY run_pipeline.py ./
 COPY run_clean.py ./
+COPY run_generation.py ./
 
 # Create data directories
 RUN mkdir -p /data/projects /data/logs
