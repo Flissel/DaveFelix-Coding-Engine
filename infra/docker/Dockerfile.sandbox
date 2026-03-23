@@ -151,7 +151,8 @@ COPY infra/docker/sandbox-entrypoint.sh /usr/local/bin/sandbox-entrypoint.sh
 RUN chmod +x /usr/local/bin/sandbox-entrypoint.sh
 
 # Healthcheck tries the app dev server port and common alternatives
-HEALTHCHECK --interval=5s --timeout=3s --start-period=15s --retries=5 \
+# Relaxed healthcheck: emulator + npm install can take 2+ minutes
+HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=10 \
     CMD curl -sf http://localhost:3100/ || curl -sf http://localhost:5173/ || curl -sf http://localhost:3000/ || curl -sf http://localhost:8000/ || exit 1
 
 ENTRYPOINT ["/usr/local/bin/sandbox-entrypoint.sh"]
