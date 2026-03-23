@@ -450,6 +450,37 @@ class EpicOrchestrator:
 
         return task_list
 
+    async def _start_dev_server(self):
+        """Auto-start NestJS dev server in the output dir after setup_deps completes."""
+        import subprocess as _sp
+        try:
+            output_dir = self.output_dir or self.project_path
+            # Find the project dir (has package.json)
+            pkg = output_dir / "package.json"
+            if not pkg.exists():
+                # Check subdirectories
+                for p in output_dir.iterdir():
+                    if p.is_dir() and (p / "package.json").exists():
+                        output_dir = p
+                        break
+
+            if not (output_dir / "package.json").exists():
+                logger.warning("No package.json found, skipping dev server start")
+                return
+
+            logger.info(f"Starting NestJS dev server in {output_dir}")
+            # Start in background — nohup + &
+            _sp.Popen(
+                ["npx", "nest", "start", "--watch"],
+                cwd=str(output_dir),
+                stdout=open(str(output_dir / ".nest.log"), "w"),
+                stderr=open(str(output_dir / ".nest.err"), "w"),
+                start_new_session=True,
+            )
+            logger.info("Dev server started (nest start --watch)")
+        except Exception as e:
+            logger.warning(f"Failed to start dev server: {e}")
+
     def _save_task_list(self, task_list: EpicTaskList):
         """Save task list to JSON file."""
         task_file = self._get_task_file_path(task_list.epic_id)
@@ -619,6 +650,9 @@ class EpicOrchestrator:
                         completed_ids.add(task.id)
                         completed += 1
                         task.status = "completed"
+                        # Auto-start dev server after setup_deps completes
+                        if task.type == "setup_deps":
+                            await self._start_dev_server()
                         # Mark deps as tested when test tasks pass
                         if task.type.startswith("test_"):
                             for dep_id in task.dependencies:
