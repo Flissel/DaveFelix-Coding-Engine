@@ -1634,27 +1634,21 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         return files
 
     def _sync_to_sandbox(self, files: list):
-        """Sync generated files to sandbox container for live preview."""
-        import subprocess as _sp
-        sandbox = os.getenv("SANDBOX_CONTAINER", "coding-engine-sandbox")
-        sandbox_base = "/workspace/app"
+        """Write generated files to output dir (shared volume → sandbox sees them)."""
+        from pathlib import Path as _P
 
+        written = 0
         for gf in files:
             try:
-                target = f"{sandbox_base}/{gf.path}"
-                target_dir = "/".join(target.split("/")[:-1])
-                # Create directory + write file in one exec call
-                _sp.run(
-                    ["docker", "exec", sandbox, "sh", "-c",
-                     f"mkdir -p '{target_dir}' && cat > '{target}'"],
-                    input=gf.content.encode("utf-8"),
-                    capture_output=True, timeout=10,
-                )
+                target = _P(self.working_dir) / gf.path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(gf.content, encoding="utf-8")
+                written += 1
             except Exception as e:
-                self.logger.debug("sandbox_sync_failed", path=gf.path, error=str(e)[:100])
+                self.logger.debug("file_write_failed", path=gf.path, error=str(e)[:100])
 
-        self.logger.info("sandbox_synced", files=len(files),
-                        container=sandbox)
+        self.logger.info("sandbox_synced", files=written,
+                        working_dir=self.working_dir)
 
     def _detect_language(self, filepath: str) -> str:
         """Detect language from file extension."""
