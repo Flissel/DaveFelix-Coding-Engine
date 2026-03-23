@@ -796,6 +796,9 @@ class EpicOrchestrator:
                         completed_ids.add(task.id)
                         completed += 1
                         task.status = "completed"
+                        # Auto-start dev servers after setup completes
+                        if task.type == "setup_deps" or "SETUP-frontend" in task.id:
+                            await self._start_dev_server()
                         # Mark deps as tested when test tasks pass
                         if task.type.startswith("test_"):
                             for dep_id in task.dependencies:
@@ -1306,6 +1309,9 @@ class EpicOrchestrator:
                             completed_ids.add(task_id)
                             completed_count += 1
                             task.status = "completed"
+                            # Auto-start dev servers after setup completes
+                            if task.type == "setup_deps" or "SETUP-frontend" in task.id:
+                                await self._start_dev_server()
                             logger.info(
                                 f"[Pipeline] Completed {task_id} "
                                 f"({completed_count}/{len(tasks_to_execute)})"
