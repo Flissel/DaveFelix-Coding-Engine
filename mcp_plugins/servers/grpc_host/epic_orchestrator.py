@@ -451,20 +451,21 @@ class EpicOrchestrator:
         return task_list
 
     async def _start_dev_server(self):
-        """Auto-start dev server after setup_deps completes.
+        """Auto-start dev server with autonomous debug loop.
 
-        Uses CLI (kilo/claude) to intelligently:
-        1. Detect project type (NestJS, Express, Next.js, etc.)
-        2. Run required setup (prisma generate, build, etc.)
-        3. Start the correct dev server
-        4. Verify it's running
-
-        This works for ANY project type, not just NestJS.
+        1. Detect framework from package.json
+        2. Run prisma generate if needed
+        3. Start server → wait → check if running
+        4. If crash → read error → send to CLI for fix → restart
+        5. Max 5 attempts before giving up
         """
         import subprocess as _sp
+        import time as _time
+
+        MAX_FIX_ATTEMPTS = 5
+
         try:
             output_dir = self.output_dir or self.project_path
-            # Find the project dir (has package.json)
             pkg = output_dir / "package.json"
             if not pkg.exists():
                 for p in output_dir.iterdir():
@@ -476,25 +477,7 @@ class EpicOrchestrator:
                 logger.warning("No package.json found, skipping dev server start")
                 return
 
-            logger.info(f"Auto-starting dev server in {output_dir}")
-
-            # Use kilo/claude CLI to handle setup + start intelligently
-            prompt = (
-                "You are in a freshly generated project directory. "
-                "Read package.json to detect the framework. Then:\n"
-                "1. If prisma/schema.prisma exists: run `npx prisma generate`\n"
-                "2. Run `npm run build` if a build script exists\n"
-                "3. Start the dev server with the correct command:\n"
-                "   - NestJS: `node_modules/.bin/ts-node -T src/main.ts`\n"
-                "   - Express: `node src/index.js` or `npx ts-node src/index.ts`\n"
-                "   - Next.js: `npx next dev`\n"
-                "   - React (CRA/Vite): `npm run dev` or `npm start`\n"
-                "4. The server should listen on port 3000\n"
-                "5. Set NODE_OPTIONS=--max-old-space-size=512 if needed\n"
-                "Do NOT ask questions. Just detect and run."
-            )
-
-            # Try kilo first (free), fallback to direct commands
+            # Build env
             env = dict(os.environ)
             env.pop("CLAUDECODE", None)
             env["NODE_OPTIONS"] = "--max-old-space-size=512"
@@ -503,20 +486,12 @@ class EpicOrchestrator:
                 "postgresql://postgres:postgres@postgres:5432/coding_engine"
             )
 
-            # Quick path: detect framework and run directly (no LLM needed)
-            pkg_content = (output_dir / "package.json").read_text()
+            # Detect framework
             import json as _json
-            pkg_data = _json.loads(pkg_content)
+            pkg_data = _json.loads((output_dir / "package.json").read_text())
             deps = {**pkg_data.get("dependencies", {}), **pkg_data.get("devDependencies", {})}
             scripts = pkg_data.get("scripts", {})
 
-            # Prisma generate if schema exists
-            if (output_dir / "prisma" / "schema.prisma").exists():
-                logger.info("Running prisma generate...")
-                _sp.run(["npx", "prisma", "generate"], cwd=str(output_dir),
-                        capture_output=True, timeout=30, env=env)
-
-            # Detect start command
             if "@nestjs/core" in deps:
                 start_cmd = ["node_modules/.bin/ts-node", "-T", "src/main.ts"]
             elif "next" in deps:
@@ -530,14 +505,90 @@ class EpicOrchestrator:
             else:
                 start_cmd = ["node", "src/main.ts"]
 
-            logger.info(f"Detected start command: {start_cmd}")
-            _sp.Popen(
-                start_cmd, cwd=str(output_dir), env=env,
-                stdout=open(str(output_dir / ".dev-server.log"), "w"),
-                stderr=open(str(output_dir / ".dev-server.err"), "w"),
-                start_new_session=True,
-            )
-            logger.info("Dev server started")
+            log_file = str(output_dir / ".dev-server.log")
+            err_file = str(output_dir / ".dev-server.err")
+
+            for attempt in range(1, MAX_FIX_ATTEMPTS + 1):
+                logger.info(f"Dev server attempt {attempt}/{MAX_FIX_ATTEMPTS}: {start_cmd}")
+
+                # Prisma generate before each attempt
+                if (output_dir / "prisma" / "schema.prisma").exists():
+                    _sp.run(["npx", "prisma", "generate"], cwd=str(output_dir),
+                            capture_output=True, timeout=30, env=env)
+
+                # Start server
+                proc = _sp.Popen(
+                    start_cmd, cwd=str(output_dir), env=env,
+                    stdout=open(log_file, "w"),
+                    stderr=open(err_file, "w"),
+                    start_new_session=True,
+                )
+
+                # Wait for it to start or crash
+                await asyncio.sleep(8)
+
+                if proc.poll() is not None:
+                    # Process exited — read error
+                    error_text = ""
+                    try:
+                        error_text = Path(err_file).read_text()[:1500]
+                        if not error_text.strip():
+                            error_text = Path(log_file).read_text()[:1500]
+                    except Exception:
+                        pass
+
+                    logger.warning(f"Dev server crashed (attempt {attempt}): {error_text[:200]}")
+
+                    if attempt >= MAX_FIX_ATTEMPTS:
+                        logger.error("Dev server failed after all attempts")
+                        break
+
+                    # Use CLI to fix the error
+                    fix_prompt = (
+                        "The dev server crashed with this error. "
+                        "Read the source files, fix the issue, and write the corrected files.\n"
+                        "IMPORTANT: Write ONLY the fixed file(s) as code blocks.\n\n"
+                        f"## Error\n```\n{error_text[:1000]}\n```\n\n"
+                        "## Common fixes:\n"
+                        "- Wrong import path → fix the import\n"
+                        "- Missing module → create the file\n"
+                        "- Type error → fix the type\n"
+                        "- Missing dependency → add to package.json and note it\n"
+                    )
+
+                    logger.info(f"Auto-fixing dev server error (attempt {attempt})...")
+
+                    try:
+                        claude_tool = self._get_claude_tool()
+                        if claude_tool:
+                            fix_result = await claude_tool.execute(
+                                prompt=fix_prompt,
+                                agent_type="debugging",
+                                max_turns=5,
+                            )
+                            if fix_result.success and fix_result.files:
+                                logger.info(f"Fix applied: {len(fix_result.files)} files")
+                            else:
+                                logger.warning(f"Fix attempt produced no files")
+                    except Exception as fix_err:
+                        logger.warning(f"Auto-fix failed: {fix_err}")
+
+                    continue
+                else:
+                    # Process still running — check health
+                    import urllib.request
+                    try:
+                        url = "http://localhost:3000/api/health"
+                        req = urllib.request.urlopen(url, timeout=5)
+                        if req.status == 200:
+                            logger.info(f"Dev server healthy on attempt {attempt}")
+                            return
+                    except Exception:
+                        # Server running but no health endpoint yet — that's OK
+                        logger.info(f"Dev server running (no health endpoint yet)")
+                        return
+
+            logger.error("Dev server could not be started after %d attempts" % MAX_FIX_ATTEMPTS)
 
         except Exception as e:
             logger.warning(f"Failed to start dev server: {e}")
