@@ -100,7 +100,7 @@ services:
     ports:
       - "6090:6090"   # noVNC web client
       - "3100:3100"   # Static file browser
-      - "3000:3000"   # NestJS dev server (auto-started after setup)
+      - "3200:3000"   # NestJS dev server (auto-started after setup)
     volumes:
       - ./Data:/workspace/data
       - C:/Users/User/Desktop/Coding_engine/Data/generated:/workspace/app
