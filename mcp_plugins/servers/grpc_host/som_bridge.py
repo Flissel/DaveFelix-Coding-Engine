@@ -737,10 +737,15 @@ class SoMBridge:
         """Wait for SoM agents to fix an error before retry.
 
         Returns True if a CODE_FIXED event was received within timeout.
-        """
-        timeout = timeout or self.config.fix_wait_timeout
-        fix_event = self._fix_events.get(task.id)
 
+        In subprocess mode (no shared event bus with API), we use a short
+        timeout (10s) since fixes come from external agents (bot/OpenClaw),
+        not from in-process SoM agents.
+        """
+        # Short timeout in subprocess mode — don't block generation
+        timeout = min(timeout or self.config.fix_wait_timeout, 10)
+
+        fix_event = self._fix_events.get(task.id)
         if not fix_event:
             return False
 
@@ -750,7 +755,6 @@ class SoMBridge:
 
         def on_code_fixed(event):
             nonlocal fixed
-            # Check if fix is relevant to this task
             task_id = event.data.get("task_id", "")
             if task_id == task.id or not task_id:
                 fixed = True
@@ -761,7 +765,7 @@ class SoMBridge:
         try:
             await asyncio.wait_for(fix_event.wait(), timeout=timeout)
         except asyncio.TimeoutError:
-            logger.info(f"Fix wait timed out for task {task.id} after {timeout}s")
+            logger.debug(f"Fix wait timed out for {task.id} after {timeout}s (expected in subprocess mode)")
         finally:
             self.event_bus.unsubscribe(EventType.CODE_FIXED, on_code_fixed)
             self._fix_events.pop(task.id, None)
