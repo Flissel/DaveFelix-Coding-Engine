@@ -36,8 +36,30 @@ export function VncPreview({
   const [containerLogs, setContainerLogs] = useState<string>('');
   const [vncPort, setVncPort] = useState<number | null>(null);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
+  const [previewMode, setPreviewMode] = useState<'app' | 'vnc' | 'files'>('app');
+  const [appStatus, setAppStatus] = useState<'checking' | 'running' | 'error'>('checking');
   const healthCheckRef = useRef<NodeJS.Timeout | null>(null);
   const storeVncUrl = useEngineStore((state) => state.vncPreviewUrl);
+
+  // App preview URL (NestJS dev server on port 3200)
+  const appPreviewUrl = 'http://localhost:3200';
+  const filesPreviewUrl = 'http://localhost:3100';
+
+  // Check if app server is running
+  useEffect(() => {
+    const checkApp = async () => {
+      try {
+        const res = await fetch(`${appPreviewUrl}/api/health`, { mode: 'no-cors' });
+        setAppStatus('running');
+        if (previewMode === 'app') setStatus('connected');
+      } catch {
+        setAppStatus('checking');
+      }
+    };
+    checkApp();
+    const interval = setInterval(checkApp, 5000);
+    return () => clearInterval(interval);
+  }, [previewMode]);
 
   // Resolve VNC port via platform adapter
   useEffect(() => {
@@ -158,37 +180,75 @@ export function VncPreview({
 
   return (
     <div className="flex flex-col h-full border-l border-border/30">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border/30">
-        <span className="text-sm text-muted-foreground font-medium">Live Preview</span>
+      {/* Header with mode tabs */}
+      <div className="flex items-center gap-1 px-2 py-1.5 border-b border-border/30">
+        {(['app', 'files', 'vnc'] as const).map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setPreviewMode(mode)}
+            className={`text-[10px] px-2 py-1 rounded transition-colors ${
+              previewMode === mode
+                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+            }`}
+          >
+            {mode === 'app' ? '🚀 App' : mode === 'files' ? '📁 Files' : '🖥 VNC'}
+          </button>
+        ))}
         <span
           className={`ml-auto text-[10px] px-2 py-0.5 rounded-full border ${
-            status === 'connected'
+            previewMode === 'app' && appStatus === 'running'
               ? 'bg-green-500/10 text-green-400 border-green-500/25'
-              : status === 'error'
-                ? 'bg-red-500/10 text-red-400 border-red-500/25'
-                : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25'
+              : status === 'connected'
+                ? 'bg-green-500/10 text-green-400 border-green-500/25'
+                : status === 'error'
+                  ? 'bg-red-500/10 text-red-400 border-red-500/25'
+                  : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25'
           }`}
         >
-          {status === 'connected'
-            ? 'Connected'
-            : status === 'error'
-              ? 'Error'
-              : status === 'loading'
-                ? 'Connecting...'
-                : `Waiting (${healthCheckCount}/${MAX_HEALTH_CHECKS})`}
+          {previewMode === 'app'
+            ? appStatus === 'running' ? 'Running' : 'Starting...'
+            : status === 'connected'
+              ? 'Connected'
+              : status === 'error'
+                ? 'Error'
+                : 'Waiting...'}
         </span>
       </div>
 
       {/* Main content area */}
       <div className="relative flex-1 bg-black m-1.5 rounded-md overflow-hidden">
-        {/* noVNC iframe - only after health check passes */}
-        {showIframe && vncUrl && (
+        {/* App Preview iframe */}
+        {previewMode === 'app' && (
           <iframe
-            key={key}
+            key={`app-${key}`}
+            src={appPreviewUrl}
+            className="w-full h-full border-0"
+            title={`App Preview: ${projectName}`}
+            sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
+            onLoad={() => setStatus('connected')}
+          />
+        )}
+
+        {/* File Browser iframe */}
+        {previewMode === 'files' && (
+          <iframe
+            key={`files-${key}`}
+            src={filesPreviewUrl}
+            className="w-full h-full border-0"
+            title={`Files: ${projectName}`}
+            sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
+            onLoad={() => setStatus('connected')}
+          />
+        )}
+
+        {/* noVNC iframe - only after health check passes */}
+        {previewMode === 'vnc' && showIframe && vncUrl && (
+          <iframe
+            key={`vnc-${key}`}
             src={vncUrl}
             className="w-full h-full border-0"
-            title={`Preview: ${projectName}`}
+            title={`VNC: ${projectName}`}
             sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
             allow="clipboard-read; clipboard-write"
             onLoad={handleLoad}
@@ -300,7 +360,21 @@ export function VncPreview({
 
       {/* Footer */}
       <div className="px-3 py-1.5 text-[10px] text-muted-foreground bg-background/50 flex items-center gap-2">
-        <span>{vncUrl || `localhost:${resolvedPort}/vnc.html`}</span>
+        <span>
+          {previewMode === 'app' ? appPreviewUrl
+            : previewMode === 'files' ? filesPreviewUrl
+            : vncUrl || `localhost:${resolvedPort}/vnc.html`}
+        </span>
+        <button
+          onClick={() => {
+            const url = previewMode === 'app' ? appPreviewUrl
+              : previewMode === 'files' ? filesPreviewUrl : vncUrl;
+            if (url) window.open(url, '_blank');
+          }}
+          className="ml-auto hover:text-foreground transition-colors"
+        >
+          <ExternalLink className="w-3 h-3" />
+        </button>
       </div>
     </div>
   );
