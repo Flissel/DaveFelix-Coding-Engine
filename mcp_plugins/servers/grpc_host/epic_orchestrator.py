@@ -711,8 +711,8 @@ class EpicOrchestrator:
                         completed_ids.add(task.id)
                         completed += 1
                         task.status = "completed"
-                        # Auto-start dev server after setup_deps completes
-                        if task.type == "setup_deps":
+                        # Auto-start dev servers after setup completes
+                        if task.type == "setup_deps" or "SETUP-frontend" in task.id:
                             await self._start_dev_server()
                         # Mark deps as tested when test tasks pass
                         if task.type.startswith("test_"):

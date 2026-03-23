@@ -41,15 +41,16 @@ export function VncPreview({
   const healthCheckRef = useRef<NodeJS.Timeout | null>(null);
   const storeVncUrl = useEngineStore((state) => state.vncPreviewUrl);
 
-  // App preview URL (NestJS dev server on port 3200)
-  const appPreviewUrl = 'http://localhost:3200';
+  // App preview URLs
+  const APP_PORT = 3200;
+  const appPreviewUrl = `http://localhost:${APP_PORT}/api/health`;
   const filesPreviewUrl = 'http://localhost:3100';
 
   // Check if app server is running
   useEffect(() => {
     const checkApp = async () => {
       try {
-        const res = await fetch(`${appPreviewUrl}/api/health`, { mode: 'no-cors' });
+        await fetch(`http://localhost:${APP_PORT}/api/health`, { mode: 'no-cors' });
         setAppStatus('running');
         if (previewMode === 'app') setStatus('connected');
       } catch {
