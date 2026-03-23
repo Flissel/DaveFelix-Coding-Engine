@@ -120,3 +120,6 @@ dashboard-app/electron-bin.exe
 
 # Hook logs (may contain secrets from commands)
 .claude/hooks/command-log.txt
+discord_debug.py
+discord_monitor.py
+test_mcmp_prerun.py
