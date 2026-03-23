@@ -11,7 +11,7 @@
 #   VNC_PORT: VNC server port (default: 5900)
 #   NOVNC_PORT: noVNC web port (default: 6080)
 
-set -e
+set +e  # Don't exit on errors — keep container alive for debugging
 
 echo "=== Sandbox Test Starting ==="
 echo "Project Type: ${PROJECT_TYPE:-auto}"
@@ -653,8 +653,15 @@ APPJSON
     echo "  Files:     http://localhost:3100"
     echo "  VNC:       http://localhost:${NOVNC_PORT}/vnc.html"
 
-    # Keep alive
-    wait $EXPO_PID 2>/dev/null || true
+    # Keep container alive — wait on file server (most stable process)
+    # Don't wait on Expo (may crash) or emulator (may take long to boot)
+    while true; do
+        sleep 30
+        # Log status
+        EMU_BOOT=$(${ANDROID_HOME}/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null || echo "0")
+        EXPO_UP=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:19006 2>/dev/null || echo "000")
+        echo "[status] emulator_booted=${EMU_BOOT} expo_web=${EXPO_UP}"
+    done
 }
 
 # Start application
