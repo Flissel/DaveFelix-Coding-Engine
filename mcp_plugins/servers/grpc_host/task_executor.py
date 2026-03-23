@@ -780,16 +780,32 @@ Output ONLY the execution plan, nothing else."""
         Wrap the execution plan with essential project rules for Stage 2.
         This is what Claude CLI actually receives.
         """
+        is_setup = task.type.startswith("setup_")
+
         parts = [
             f"# Execute: {task.title}",
             "",
             "## Project Rules (MUST follow)",
             "- Output directory: . (current working directory — do NOT repeat the full path in file writes)",
-            "- Write ALL source files to `src/` directory - NEVER to `generated/`",
-            "- Import Prisma client from `../../generated/prisma` (relative to module)",
-            "- Use existing patterns from the codebase (valibot for validation, class-based services)",
-            "",
         ]
+
+        if is_setup:
+            # Setup tasks write root config files (package.json, tsconfig.json, .env, etc.)
+            parts.extend([
+                "- Write config files to project ROOT: package.json, tsconfig.json, .env, docker-compose.yml",
+                "- Write source code to `src/` directory",
+                "- Write Prisma schema to `prisma/schema.prisma`",
+                "- EVERY file MUST be a complete code block: ```language:path/to/file",
+                "- Include ALL dependencies with exact versions in package.json",
+            ])
+        else:
+            parts.extend([
+                "- Write ALL source files to `src/` directory - NEVER to `generated/`",
+                "- Import Prisma client from `../../generated/prisma` (relative to module)",
+                "- Use existing patterns from the codebase (valibot for validation, class-based services)",
+            ])
+
+        parts.append("")
 
         if task.output_files:
             parts.extend([
@@ -803,12 +819,28 @@ Output ONLY the execution plan, nothing else."""
             "",
             plan,
             "",
-            "## Final Check",
-            "- All files written under `src/`?",
-            "- All imports resolve correctly?",
-            "- All Prisma types match schema?",
-            "- Error handling for all edge cases?",
         ])
+
+        if is_setup:
+            parts.extend([
+                "## CRITICAL: Output Format",
+                "Output EVERY file as a fenced code block with path:",
+                "```json:package.json",
+                "{ ... }",
+                "```",
+                "```json:tsconfig.json",
+                "{ ... }",
+                "```",
+                "Do NOT describe files. WRITE them as code blocks.",
+            ])
+        else:
+            parts.extend([
+                "## Final Check",
+                "- All files written under `src/`?",
+                "- All imports resolve correctly?",
+                "- All Prisma types match schema?",
+                "- Error handling for all edge cases?",
+            ])
 
         return "\n".join(parts)
 
