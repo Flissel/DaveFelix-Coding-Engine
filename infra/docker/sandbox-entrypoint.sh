@@ -599,10 +599,10 @@ start_mobile_preview() {
 APPJSON
     fi
 
-    # Install deps if needed
-    if [ ! -d "node_modules" ]; then
-        npm install --legacy-peer-deps 2>&1 | tail -5
-    fi
+    # Install deps + Expo Web requirements
+    echo "Installing dependencies..."
+    npm install --legacy-peer-deps 2>&1 | tail -5
+    npm install expo react-dom react-native-web @expo/metro-runtime 2>&1 | tail -3
 
     # Start Expo Web on port 19006
     echo "Starting Expo Web..."
@@ -612,10 +612,12 @@ APPJSON
     # Start Android Emulator if KVM available
     if [ -e /dev/kvm ] && [ -d "${ANDROID_HOME}/emulator" ]; then
         echo "Starting Android Emulator (KVM available)..."
+        # Clean stale AVD locks
+        rm -rf /root/.android/avd/sandbox.avd/*.lock 2>/dev/null
         ${ANDROID_HOME}/emulator/emulator -avd sandbox \
             -no-audio -no-boot-anim -gpu swiftshader_indirect \
-            -skin 1080x2340 -no-snapshot -no-window \
-            -qemu -display sdl 2>&1 | tee /tmp/emulator.log &
+            -skin 1080x2340 -no-snapshot -read-only \
+            2>&1 | tee /tmp/emulator.log &
         EMU_PID=$!
 
         echo "Waiting for emulator to boot..."
