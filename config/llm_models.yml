@@ -22,40 +22,42 @@ providers:
   openrouter:
     base_url: https://openrouter.ai/api/v1
     api_key_env: OPENROUTER_API_KEY
+  openai:
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
 models:
   primary:
-    provider: openrouter
-    model: qwen/qwen3-coder:free
-    max_tokens: 16384
-    description: Anthropic SDK direct — base agent, vision analysis, monitor
+    provider: openai
+    model: gpt-5.4
+    max_tokens: 32768
+    description: OpenAI GPT-4.1 — primary code generation model
   cli:
-    provider: openrouter
-    model: qwen/qwen3-coder:free
-    max_tokens: 16384
-    description: Claude CLI --model flag (must be Anthropic-native name, not OpenRouter
-      format)
+    provider: openai
+    model: gpt-5.4
+    max_tokens: 32768
+    description: Claude CLI --model flag
   mcp_standard:
-    provider: openrouter
-    model: qwen/qwen3-coder:free
-    max_tokens: 8192
+    provider: openai
+    model: gpt-5.4-mini
+    max_tokens: 16384
     description: AutoGen teams, EventFix orchestrator, task executor, LLM search
   mcp_agent:
-    provider: openrouter
-    model: qwen/qwen3-coder:free
-    max_tokens: 8192
+    provider: openai
+    model: gpt-5.4-mini
+    max_tokens: 16384
     description: Individual MCP plugin agents (filesystem, docker, prisma, etc.)
   judge:
-    provider: openrouter
-    model: nvidia/nemotron-3-super-120b-a12b:free
-    max_tokens: 8192
+    provider: openai
+    model: gpt-5.4
+    max_tokens: 16384
     description: MCMP judge, fungus agents, differential analysis, MCP planner
   reasoning:
-    provider: openrouter
-    model: nvidia/nemotron-3-super-120b-a12b:free
-    max_tokens: 16384
+    provider: openai
+    model: o4-mini
+    max_tokens: 32768
     description: Complex reasoning, architecture analysis
   enrichment:
-    provider: openrouter
-    model: qwen/qwen3-next-80b-a3b-instruct:free
-    max_tokens: 8192
+    provider: openai
+    model: gpt-5.4-mini
+    max_tokens: 16384
     description: Phase 30 schema discovery and task mapping

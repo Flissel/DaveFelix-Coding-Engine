@@ -1378,24 +1378,30 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                 models = cfg.get("models", {})
                 primary = models.get("primary", {})
 
-                if primary.get("provider") == "openrouter":
+                provider = primary.get("provider", "")
+                if provider in ("openrouter", "openai"):
                     self._using_openrouter = True
                     self._openrouter_model = primary.get("model", "qwen/qwen3-coder:free")
                     self._openrouter_max_tokens = primary.get("max_tokens", 16384)
 
-                    # Get API key
-                    self._openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
+                    # Get API key + base URL based on provider
+                    if provider == "openai":
+                        self._openrouter_api_key = os.getenv("OPENAI_API_KEY", "")
+                        self._openrouter_base_url = "https://api.openai.com/v1"
+                    else:
+                        self._openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
+                        self._openrouter_base_url = "https://openrouter.ai/api/v1"
 
                     if self._openrouter_api_key:
                         self.logger.info(
                             "backend_selected",
-                            backend="openrouter",
+                            backend=provider,
                             model=self._openrouter_model,
-                            reason="LLM config has openrouter primary provider",
+                            reason="LLM config has %s primary provider" % provider,
                         )
                     else:
                         self._using_openrouter = False
-                        self.logger.warning("openrouter_no_api_key", reason="OPENROUTER_API_KEY not set")
+                        self.logger.warning("api_no_key", reason="%s API key not set" % provider.upper())
         except Exception as e:
             self.logger.debug("openrouter_config_detect_failed", error=str(e))
 
@@ -1414,7 +1420,8 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         """
         import httpx
 
-        url = "https://openrouter.ai/api/v1/chat/completions"
+        base_url = getattr(self, "_openrouter_base_url", "https://openrouter.ai/api/v1")
+        url = f"{base_url}/chat/completions"
         headers = {
             "Authorization": f"Bearer {self._openrouter_api_key}",
             "Content-Type": "application/json",
@@ -1430,13 +1437,18 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             "Generate complete, working files. No placeholders or TODOs."
         )
 
+        # GPT-5.4+ requires max_completion_tokens instead of max_tokens
+        base_url = getattr(self, "_openrouter_base_url", "https://openrouter.ai/api/v1")
+        is_openai = "openai.com" in base_url
+        token_key = "max_completion_tokens" if is_openai else "max_tokens"
+
         payload = {
             "model": self._openrouter_model,
             "messages": [
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": prompt},
             ],
-            "max_tokens": self._openrouter_max_tokens,
+            token_key: self._openrouter_max_tokens,
             "temperature": 0.3,
         }
 
@@ -1474,10 +1486,14 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                 msg = data.get("choices", [{}])[0].get("message", {})
                 content = msg.get("content") or msg.get("reasoning") or ""
 
+                self.logger.info("openai_response_received",
+                                content_length=len(content),
+                                preview=content[:200])
+
                 # Parse generated files from markdown code blocks
                 files = self._parse_code_files(content)
 
-                # Write files to working directory
+                # Write files to working directory + sync to sandbox for live preview
                 written_files = []
                 if self.working_dir and files:
                     for gf in files:
@@ -1488,6 +1504,10 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                             written_files.append(gf)
                         except Exception as write_err:
                             self.logger.warning("file_write_failed", path=gf.path, error=str(write_err))
+
+                    # Sync to sandbox container for live preview
+                    if written_files:
+                        self._sync_to_sandbox(written_files)
 
                 model_used = data.get("model", self._openrouter_model)
                 usage = data.get("usage", {})
@@ -1561,35 +1581,80 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         )
 
     def _parse_code_files(self, content: str) -> list:
-        """Parse code files from LLM response with ```filepath: ... ``` blocks."""
+        """Parse code files from LLM response. Supports multiple formats."""
         files = []
-        # Pattern: ```filepath: path/to/file\n...\n```
-        pattern = r'```(?:filepath:\s*(.+?))\n(.*?)```'
-        matches = re.findall(pattern, content, re.DOTALL)
 
-        for filepath, code in matches:
+        # Pattern 1: ```filepath: path/to/file\n...\n```
+        pattern1 = r'```(?:filepath:\s*(.+?))\n(.*?)```'
+        for filepath, code in re.findall(pattern1, content, re.DOTALL):
             filepath = filepath.strip()
-            if filepath:
+            if filepath and "/" in filepath:
                 files.append(GeneratedFile(
-                    path=filepath,
-                    content=code.rstrip(),
+                    path=filepath, content=code.rstrip(),
                     language=self._detect_language(filepath),
                 ))
 
-        # Fallback: try standard code blocks with filename in first line
+        # Pattern 2: ```language:path/to/file.ext\n...\n``` (GPT-5.4 format)
         if not files:
-            pattern2 = r'```\w*\n(?://|#|/\*)\s*(?:File|filename):\s*(.+?)\n(.*?)```'
-            matches2 = re.findall(pattern2, content, re.DOTALL)
-            for filepath, code in matches2:
+            pattern2 = r'```\w+:([\w/._-]+\.\w+)\n(.*?)```'
+            for filepath, code in re.findall(pattern2, content, re.DOTALL):
                 filepath = filepath.strip()
-                if filepath:
+                if filepath and "/" in filepath:
                     files.append(GeneratedFile(
-                        path=filepath,
-                        content=code.rstrip(),
+                        path=filepath, content=code.rstrip(),
                         language=self._detect_language(filepath),
                     ))
 
+        # Pattern 3: ```language\n// File: path/to/file\n...\n```
+        if not files:
+            pattern3 = r'```\w*\n(?://|#|/\*)\s*(?:File|filename|path):\s*(.+?)\n(.*?)```'
+            for filepath, code in re.findall(pattern3, content, re.DOTALL):
+                filepath = filepath.strip()
+                if filepath and "/" in filepath:
+                    files.append(GeneratedFile(
+                        path=filepath, content=code.rstrip(),
+                        language=self._detect_language(filepath),
+                    ))
+
+        # Pattern 4: **File:** `path/to/file.ext` followed by code block
+        if not files:
+            pattern4 = r'\*\*(?:File|Path)\*?\*?:?\s*`([^`]+)`\s*\n+```\w*\n(.*?)```'
+            for filepath, code in re.findall(pattern4, content, re.DOTALL):
+                filepath = filepath.strip()
+                if filepath and "/" in filepath:
+                    files.append(GeneratedFile(
+                        path=filepath, content=code.rstrip(),
+                        language=self._detect_language(filepath),
+                    ))
+
+        if files:
+            self.logger.info("parsed_code_files", count=len(files),
+                           paths=[f.path for f in files[:5]])
+
         return files
+
+    def _sync_to_sandbox(self, files: list):
+        """Sync generated files to sandbox container for live preview."""
+        import subprocess as _sp
+        sandbox = os.getenv("SANDBOX_CONTAINER", "coding-engine-sandbox")
+        sandbox_base = "/workspace/app"
+
+        for gf in files:
+            try:
+                target = f"{sandbox_base}/{gf.path}"
+                target_dir = "/".join(target.split("/")[:-1])
+                # Create directory + write file in one exec call
+                _sp.run(
+                    ["docker", "exec", sandbox, "sh", "-c",
+                     f"mkdir -p '{target_dir}' && cat > '{target}'"],
+                    input=gf.content.encode("utf-8"),
+                    capture_output=True, timeout=10,
+                )
+            except Exception as e:
+                self.logger.debug("sandbox_sync_failed", path=gf.path, error=str(e)[:100])
+
+        self.logger.info("sandbox_synced", files=len(files),
+                        container=sandbox)
 
     def _detect_language(self, filepath: str) -> str:
         """Detect language from file extension."""
