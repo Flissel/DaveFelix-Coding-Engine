@@ -36,29 +36,43 @@ export function VncPreview({
   const [containerLogs, setContainerLogs] = useState<string>('');
   const [vncPort, setVncPort] = useState<number | null>(null);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
-  const [previewMode, setPreviewMode] = useState<'app' | 'vnc' | 'files'>('app');
+  const [previewMode, setPreviewMode] = useState<'app' | 'vnc' | 'files' | 'expo'>('files');
   const [appStatus, setAppStatus] = useState<'checking' | 'running' | 'error'>('checking');
+  const [expoStatus, setExpoStatus] = useState<'checking' | 'running' | 'off'>('checking');
   const healthCheckRef = useRef<NodeJS.Timeout | null>(null);
   const storeVncUrl = useEngineStore((state) => state.vncPreviewUrl);
 
-  // App preview URLs
-  const APP_PORT = 3200;
-  const appPreviewUrl = `http://localhost:${APP_PORT}/api/health`;
-  const filesPreviewUrl = 'http://localhost:3100';
+  // Preview URLs (auto-detected based on what's running)
+  const APP_PORT = 3200;     // NestJS/Backend
+  const FILES_PORT = 3100;   // Static file browser
+  const EXPO_PORT = 19006;   // Expo Web (React Native)
+  const appPreviewUrl = `http://localhost:${APP_PORT}`;
+  const filesPreviewUrl = `http://localhost:${FILES_PORT}`;
+  const expoPreviewUrl = `http://localhost:${EXPO_PORT}`;
 
-  // Check if app server is running
+  // Check which servers are running → auto-select best tab
   useEffect(() => {
-    const checkApp = async () => {
+    const checkServers = async () => {
+      // Check Expo Web (React Native)
       try {
-        await fetch(`http://localhost:${APP_PORT}/api/health`, { mode: 'no-cors' });
+        await fetch(`http://localhost:${EXPO_PORT}`, { mode: 'no-cors' });
+        setExpoStatus('running');
+        // Auto-switch to Expo if it just came online
+        if (previewMode === 'files') setPreviewMode('expo');
+      } catch {
+        setExpoStatus('checking');
+      }
+
+      // Check NestJS/Backend
+      try {
+        await fetch(`http://localhost:${APP_PORT}`, { mode: 'no-cors' });
         setAppStatus('running');
-        if (previewMode === 'app') setStatus('connected');
       } catch {
         setAppStatus('checking');
       }
     };
-    checkApp();
-    const interval = setInterval(checkApp, 5000);
+    checkServers();
+    const interval = setInterval(checkServers, 5000);
     return () => clearInterval(interval);
   }, [previewMode]);
 
@@ -183,7 +197,7 @@ export function VncPreview({
     <div className="flex flex-col h-full border-l border-border/30">
       {/* Header with mode tabs */}
       <div className="flex items-center gap-1 px-2 py-1.5 border-b border-border/30">
-        {(['app', 'files', 'vnc'] as const).map((mode) => (
+        {(['expo', 'app', 'files', 'vnc'] as const).map((mode) => (
           <button
             key={mode}
             onClick={() => setPreviewMode(mode)}
@@ -191,9 +205,11 @@ export function VncPreview({
               previewMode === mode
                 ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
                 : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
-            }`}
+            } ${mode === 'expo' && expoStatus !== 'running' ? 'opacity-40' : ''}`}
           >
-            {mode === 'app' ? '🚀 App' : mode === 'files' ? '📁 Files' : '🖥 VNC'}
+            {mode === 'expo' ? '📱 Mobile' : mode === 'app' ? '🔌 API' : mode === 'files' ? '📁 Files' : '🖥 VNC'}
+            {mode === 'expo' && expoStatus === 'running' && <span className="ml-1 w-1.5 h-1.5 bg-green-400 rounded-full inline-block" />}
+            {mode === 'app' && appStatus === 'running' && <span className="ml-1 w-1.5 h-1.5 bg-green-400 rounded-full inline-block" />}
           </button>
         ))}
         <span
@@ -219,13 +235,35 @@ export function VncPreview({
 
       {/* Main content area */}
       <div className="relative flex-1 bg-black m-1.5 rounded-md overflow-hidden">
-        {/* App Preview iframe */}
+        {/* Expo Web Preview (React Native) */}
+        {previewMode === 'expo' && (
+          expoStatus === 'running' ? (
+            <iframe
+              key={`expo-${key}`}
+              src={expoPreviewUrl}
+              className="w-full h-full border-0"
+              title={`Mobile Preview: ${projectName}`}
+              sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
+              onLoad={() => setStatus('connected')}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">📱 Waiting for Expo Web server...</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Port {EXPO_PORT} · Starts after frontend setup</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">VNC tab shows Android Emulator if KVM available</p>
+              </div>
+            </div>
+          )
+        )}
+
+        {/* API Preview iframe */}
         {previewMode === 'app' && (
           <iframe
             key={`app-${key}`}
             src={appPreviewUrl}
             className="w-full h-full border-0"
-            title={`App Preview: ${projectName}`}
+            title={`API Preview: ${projectName}`}
             sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
             onLoad={() => setStatus('connected')}
           />

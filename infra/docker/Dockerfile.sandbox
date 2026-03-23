@@ -88,26 +88,61 @@ RUN pip3 install --no-cache-dir --break-system-packages \
     gunicorn \
     flask
 
-# Install Node.js global packages
+# Install Node.js global packages + Expo CLI
 RUN npm install -g \
     typescript \
     prettier \
     eslint \
     serve \
-    @types/node
+    @types/node \
+    expo-cli \
+    @expo/ngrok
 
-# Set display for Xvfb (Electron headless)
+# Install Java 17 + Android SDK (for React Native emulator preview)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jdk-headless \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${PATH}"
+
+# Download Android SDK command-line tools
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip && \
+    unzip -q /tmp/cmdtools.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest && \
+    rm /tmp/cmdtools.zip
+
+# Accept licenses + install minimal SDK (emulator + API 34 x86_64)
+RUN yes | sdkmanager --licenses > /dev/null 2>&1 && \
+    sdkmanager "platform-tools" "emulator" \
+    "platforms;android-34" \
+    "system-images;android-34;google_apis;x86_64"
+
+# Create AVD (Android Virtual Device) — Pixel 6 skin
+RUN echo "no" | avdmanager create avd \
+    -n sandbox -k "system-images;android-34;google_apis;x86_64" \
+    --device "pixel_6" --force
+
+# Download Expo Go APK (for loading RN projects in emulator)
+RUN wget -q "https://d1ahtucjixef4r.cloudfront.net/Exponent-2.32.13.apk" \
+    -O /opt/expo-go.apk 2>/dev/null || echo "Expo Go APK download skipped"
+
+# Set display for Xvfb (Electron headless + Android Emulator)
 ENV DISPLAY=:99
 
 # VNC streaming configuration
 ENV ENABLE_VNC=false
 ENV VNC_PORT=5900
 ENV NOVNC_PORT=6090
+# Preview mode: auto (detect from tech_stack.json), expo, web, static
+ENV PREVIEW_MODE=auto
 # Chromium configuration for VNC browser display
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage"
 
-# Expose ports: VNC raw, noVNC web client, app dev server
-EXPOSE 5900 6090 3100
+# Expose ports: VNC raw, noVNC web client, app dev server, Expo, ADB
+EXPOSE 5900 6090 3100 19000 19006 5037
 
 WORKDIR /workspace
 

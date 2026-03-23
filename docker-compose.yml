@@ -98,10 +98,13 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.sandbox
     container_name: coding-engine-sandbox
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
     ports:
-      - "6090:6090"   # noVNC web client
-      - "3100:3100"   # Static file browser
-      - "3200:3000"   # NestJS dev server (auto-started after setup)
+      - "6090:6090"   # noVNC web client (VNC + Android Emulator)
+      - "3100:3100"   # App preview (Expo Web / static files)
+      - "3200:3000"   # Backend dev server (NestJS/FastAPI)
     volumes:
       - ./Data:/workspace/data
       - C:/Users/User/Desktop/Coding_engine/Data/generated:/workspace/app
@@ -109,11 +112,11 @@ services:
       - DISPLAY=:99
       - ENABLE_VNC=true
       - NOVNC_PORT=6090
+      - PREVIEW_MODE=auto
       - ENGINE_API_URL=http://api:8000
-      - PROJECT_TYPE=nestjs
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/coding_engine
       - REDIS_URL=redis://redis:6379/0
-      - START_CMD=cd /workspace && npx serve -s /workspace/app -l 3100 -C
+      - ANDROID_HOME=/opt/android-sdk
     depends_on:
       - api
 
