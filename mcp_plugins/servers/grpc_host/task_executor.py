@@ -144,14 +144,14 @@ TASK_SKILL_MAPPING: Dict[str, Tuple[str, Optional[str], Optional[str], int]] = {
     "docker_stop": ("DockerAgent", None, "deployment-agent", 5),
 
     # =========================================================================
-    # Setup Tasks → Bash or Claude (no agent)
+    # Setup Tasks → LLM-generated (needs full tech stack context)
     # =========================================================================
-    "setup_project": ("BashExecutor", None, None, 3),           # npm init
-    "setup_env": ("BashExecutor", None, None, 3),               # Verify/create .env
-    "setup_secrets": ("CheckpointHandler", None, None, 3),      # User Input
-    "setup_database": ("BashExecutor", None, None, 3),          # prisma init
-    "setup_docker": ("BashExecutor", None, None, 3),            # Verify docker-compose
-    "setup_deps": ("BashExecutor", None, None, 3),              # npm install
+    "setup_project": ("GeneratorAgent", "environment-config", "coder", 10),  # package.json + tsconfig.json + folder structure
+    "setup_env": ("GeneratorAgent", "environment-config", "coder", 8),       # .env with all required vars
+    "setup_secrets": ("GeneratorAgent", "environment-config", "coder", 5),   # Secrets configuration
+    "setup_database": ("GeneratorAgent", "database-schema-generation", "coder", 10),  # prisma init + schema
+    "setup_docker": ("GeneratorAgent", "environment-config", "coder", 8),    # docker-compose.yml
+    "setup_deps": ("BashExecutor", None, None, 3),              # npm install (after package.json exists)
 
     # =========================================================================
     # Checkpoint Tasks → User Approval (no agent)
@@ -189,11 +189,9 @@ VERIFICATION_COMMANDS: Dict[str, str] = {
     "verify_e2e": "npx playwright test",
     # Migration: Start DB container first, then run migration
     "schema_migration": "docker-compose up -d db && sleep 5 && npx prisma migrate dev --name auto",
-    "setup_deps": "npm install",
-    "setup_database": "docker-compose up -d db && sleep 5 && npx prisma generate",
-    "setup_project": "npm init -y",
-    "setup_env": "test -f .env && echo '.env exists' || (test -f .env.example && cp .env.example .env && echo 'Created .env from .env.example' || echo 'No .env file found')",
-    "setup_docker": "test -f docker-compose.yml && echo 'docker-compose.yml exists' || echo 'No docker-compose.yml found'",
+    "setup_deps": "npm install --legacy-peer-deps",
+    # setup_project, setup_env, setup_database, setup_docker now handled by GeneratorAgent (LLM)
+    # Only setup_deps remains as BashExecutor since it needs npm install after package.json exists
 }
 
 
