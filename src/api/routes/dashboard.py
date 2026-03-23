@@ -2980,10 +2980,26 @@ async def start_epic_generation(request: StartEpicGenerationRequest):
             "db_job_id": db_job_id,
         }
 
-        # Run all epics in background
-        asyncio.create_task(
-            _run_all_epics_background(request.project_path, orchestrator, project_id)
+        # Run all epics in a SEPARATE THREAD with its own event loop
+        # This prevents generation from blocking the API's event loop
+        import threading
+
+        def _run_in_thread():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(
+                    _run_all_epics_background(request.project_path, orchestrator, project_id)
+                )
+            finally:
+                loop.close()
+
+        gen_thread = threading.Thread(
+            target=_run_in_thread,
+            name=f"generation-{project_id}",
+            daemon=True,
         )
+        gen_thread.start()
 
         logger.info(
             "epic_generation_started",
