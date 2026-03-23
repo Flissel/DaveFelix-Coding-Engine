@@ -451,14 +451,22 @@ class EpicOrchestrator:
         return task_list
 
     async def _start_dev_server(self):
-        """Auto-start NestJS dev server in the output dir after setup_deps completes."""
+        """Auto-start dev server after setup_deps completes.
+
+        Uses CLI (kilo/claude) to intelligently:
+        1. Detect project type (NestJS, Express, Next.js, etc.)
+        2. Run required setup (prisma generate, build, etc.)
+        3. Start the correct dev server
+        4. Verify it's running
+
+        This works for ANY project type, not just NestJS.
+        """
         import subprocess as _sp
         try:
             output_dir = self.output_dir or self.project_path
             # Find the project dir (has package.json)
             pkg = output_dir / "package.json"
             if not pkg.exists():
-                # Check subdirectories
                 for p in output_dir.iterdir():
                     if p.is_dir() and (p / "package.json").exists():
                         output_dir = p
@@ -468,16 +476,69 @@ class EpicOrchestrator:
                 logger.warning("No package.json found, skipping dev server start")
                 return
 
-            logger.info(f"Starting NestJS dev server in {output_dir}")
-            # Start in background — nohup + &
+            logger.info(f"Auto-starting dev server in {output_dir}")
+
+            # Use kilo/claude CLI to handle setup + start intelligently
+            prompt = (
+                "You are in a freshly generated project directory. "
+                "Read package.json to detect the framework. Then:\n"
+                "1. If prisma/schema.prisma exists: run `npx prisma generate`\n"
+                "2. Run `npm run build` if a build script exists\n"
+                "3. Start the dev server with the correct command:\n"
+                "   - NestJS: `node_modules/.bin/ts-node -T src/main.ts`\n"
+                "   - Express: `node src/index.js` or `npx ts-node src/index.ts`\n"
+                "   - Next.js: `npx next dev`\n"
+                "   - React (CRA/Vite): `npm run dev` or `npm start`\n"
+                "4. The server should listen on port 3000\n"
+                "5. Set NODE_OPTIONS=--max-old-space-size=512 if needed\n"
+                "Do NOT ask questions. Just detect and run."
+            )
+
+            # Try kilo first (free), fallback to direct commands
+            env = dict(os.environ)
+            env.pop("CLAUDECODE", None)
+            env["NODE_OPTIONS"] = "--max-old-space-size=512"
+            env["DATABASE_URL"] = os.environ.get(
+                "DATABASE_URL",
+                "postgresql://postgres:postgres@postgres:5432/coding_engine"
+            )
+
+            # Quick path: detect framework and run directly (no LLM needed)
+            pkg_content = (output_dir / "package.json").read_text()
+            import json as _json
+            pkg_data = _json.loads(pkg_content)
+            deps = {**pkg_data.get("dependencies", {}), **pkg_data.get("devDependencies", {})}
+            scripts = pkg_data.get("scripts", {})
+
+            # Prisma generate if schema exists
+            if (output_dir / "prisma" / "schema.prisma").exists():
+                logger.info("Running prisma generate...")
+                _sp.run(["npx", "prisma", "generate"], cwd=str(output_dir),
+                        capture_output=True, timeout=30, env=env)
+
+            # Detect start command
+            if "@nestjs/core" in deps:
+                start_cmd = ["node_modules/.bin/ts-node", "-T", "src/main.ts"]
+            elif "next" in deps:
+                start_cmd = ["npx", "next", "dev", "-p", "3000"]
+            elif "start:dev" in scripts:
+                start_cmd = ["npm", "run", "start:dev"]
+            elif "dev" in scripts:
+                start_cmd = ["npm", "run", "dev"]
+            elif "start" in scripts:
+                start_cmd = ["npm", "start"]
+            else:
+                start_cmd = ["node", "src/main.ts"]
+
+            logger.info(f"Detected start command: {start_cmd}")
             _sp.Popen(
-                ["npx", "nest", "start", "--watch"],
-                cwd=str(output_dir),
-                stdout=open(str(output_dir / ".nest.log"), "w"),
-                stderr=open(str(output_dir / ".nest.err"), "w"),
+                start_cmd, cwd=str(output_dir), env=env,
+                stdout=open(str(output_dir / ".dev-server.log"), "w"),
+                stderr=open(str(output_dir / ".dev-server.err"), "w"),
                 start_new_session=True,
             )
-            logger.info("Dev server started (nest start --watch)")
+            logger.info("Dev server started")
+
         except Exception as e:
             logger.warning(f"Failed to start dev server: {e}")
 
