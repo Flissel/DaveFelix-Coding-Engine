@@ -1,0 +1,4366 @@
+{
+  "epic_id": "EPIC-005",
+  "epic_name": "Gruppen, Communities und Broadcasts",
+  "enrichment_timestamp": "2026-03-25T20:58:03.424208",
+  "enrichment_stats": {
+    "total_tasks": 55,
+    "tasks_with_requirements": 21,
+    "tasks_with_user_stories": 27,
+    "tasks_with_diagrams": 27,
+    "tasks_with_warnings": 8,
+    "tasks_with_dtos": 15,
+    "tasks_with_success_criteria": 29,
+    "tasks_with_test_scenarios": 0,
+    "tasks_with_component_specs": 0,
+    "tasks_with_screen_specs": 0,
+    "tasks_with_accessibility": 4,
+    "tasks_with_routes": 0,
+    "tasks_with_design_tokens": 4
+  },
+  "tasks": [
+    {
+      "id": "EPIC-005-SCHEMA-Channel-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: Channel",
+      "description": "Define Channel model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#Channel"
+      ],
+      "related_requirements": [
+        "WA-GRP-007"
+      ],
+      "related_user_stories": [
+        "US-032"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Kanaele\n    Person(customer, \"Customer\", \"A user who consumes the one-way broadcast channels.\")\n    System(kanaele, \"Kanaele\", \"A system that supports one-way broadcast channels.\")\n    System_Ext(broadcastService, \"Broadcast Service\", \"External service that provides broadcast capabilities.\")\n\n    Rel(customer, kanaele, \"Uses\", \"HTTP\")\n    Rel(kanaele, broadcastService, \"Integrates with\", \"API\")",
+            "file": "WA-GRP-007_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[System Initialization]\n    B --> C{One-Way-Broadcast-Kanaele?}\n    C -->|Ja| D[Unterstützung aktivieren]\n    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]\n    D --> F[System bereit für One-Way-Broadcast]\n    E --> G[Prozess beenden]\n    F --> H[Ende]\n    G --> H",
+            "file": "WA-GRP-007_flowchart.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Channel as One-Way-Broadcast-Kanaele\n\n    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen\n    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele\n    Channel-->>System: Bestätigung der Initialisierung\n    System-->>User: Bestätigung der Unterstützung erhalten",
+            "file": "WA-GRP-007_sequence.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "recipientIds",
+                "type": "array",
+                "description": "Initial recipient user IDs (max 256)"
+              },
+              {
+                "name": "encryptedChannelKey",
+                "type": "string",
+                "description": "Encrypted channel key for E2E (Signal Protocol)"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "ownerId",
+                "type": "string",
+                "description": "Owner user ID"
+              },
+              {
+                "name": "recipientCount",
+                "type": "integer",
+                "description": "Number of recipients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "Creation timestamp (ISO 8601)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "Broadcast channels"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of channels"
+              }
+            ]
+          },
+          {
+            "name": "UpdateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteBroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Deletion status"
+              },
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-032",
+            "title": "Kanaele",
+            "priority": "should",
+            "description": "",
+            "as_a": "Business-Kunde",
+            "i_want": "einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+            "so_that": "um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Channel-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: Channel",
+      "description": "Set up Prisma relations for Channel with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Channel-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#Channel_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-007"
+      ],
+      "related_user_stories": [
+        "US-032"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Kanaele\n    Person(customer, \"Customer\", \"A user who consumes the one-way broadcast channels.\")\n    System(kanaele, \"Kanaele\", \"A system that supports one-way broadcast channels.\")\n    System_Ext(broadcastService, \"Broadcast Service\", \"External service that provides broadcast capabilities.\")\n\n    Rel(customer, kanaele, \"Uses\", \"HTTP\")\n    Rel(kanaele, broadcastService, \"Integrates with\", \"API\")",
+            "file": "WA-GRP-007_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[System Initialization]\n    B --> C{One-Way-Broadcast-Kanaele?}\n    C -->|Ja| D[Unterstützung aktivieren]\n    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]\n    D --> F[System bereit für One-Way-Broadcast]\n    E --> G[Prozess beenden]\n    F --> H[Ende]\n    G --> H",
+            "file": "WA-GRP-007_flowchart.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Channel as One-Way-Broadcast-Kanaele\n\n    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen\n    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele\n    Channel-->>System: Bestätigung der Initialisierung\n    System-->>User: Bestätigung der Unterstützung erhalten",
+            "file": "WA-GRP-007_sequence.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "recipientIds",
+                "type": "array",
+                "description": "Initial recipient user IDs (max 256)"
+              },
+              {
+                "name": "encryptedChannelKey",
+                "type": "string",
+                "description": "Encrypted channel key for E2E (Signal Protocol)"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "ownerId",
+                "type": "string",
+                "description": "Owner user ID"
+              },
+              {
+                "name": "recipientCount",
+                "type": "integer",
+                "description": "Number of recipients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "Creation timestamp (ISO 8601)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "Broadcast channels"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of channels"
+              }
+            ]
+          },
+          {
+            "name": "UpdateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteBroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Deletion status"
+              },
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-032",
+            "title": "Kanaele",
+            "priority": "should",
+            "description": "",
+            "as_a": "Business-Kunde",
+            "i_want": "einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+            "so_that": "um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Channel-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: Channel",
+      "description": "Execute prisma migrate dev for Channel changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Channel-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_channel/"
+      ],
+      "related_requirements": [
+        "WA-GRP-007"
+      ],
+      "related_user_stories": [
+        "US-032"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Kanaele\n    Person(customer, \"Customer\", \"A user who consumes the one-way broadcast channels.\")\n    System(kanaele, \"Kanaele\", \"A system that supports one-way broadcast channels.\")\n    System_Ext(broadcastService, \"Broadcast Service\", \"External service that provides broadcast capabilities.\")\n\n    Rel(customer, kanaele, \"Uses\", \"HTTP\")\n    Rel(kanaele, broadcastService, \"Integrates with\", \"API\")",
+            "file": "WA-GRP-007_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[System Initialization]\n    B --> C{One-Way-Broadcast-Kanaele?}\n    C -->|Ja| D[Unterstützung aktivieren]\n    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]\n    D --> F[System bereit für One-Way-Broadcast]\n    E --> G[Prozess beenden]\n    F --> H[Ende]\n    G --> H",
+            "file": "WA-GRP-007_flowchart.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Channel as One-Way-Broadcast-Kanaele\n\n    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen\n    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele\n    Channel-->>System: Bestätigung der Initialisierung\n    System-->>User: Bestätigung der Unterstützung erhalten",
+            "file": "WA-GRP-007_sequence.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "recipientIds",
+                "type": "array",
+                "description": "Initial recipient user IDs (max 256)"
+              },
+              {
+                "name": "encryptedChannelKey",
+                "type": "string",
+                "description": "Encrypted channel key for E2E (Signal Protocol)"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "ownerId",
+                "type": "string",
+                "description": "Owner user ID"
+              },
+              {
+                "name": "recipientCount",
+                "type": "integer",
+                "description": "Number of recipients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "Creation timestamp (ISO 8601)"
+              }
+            ]
+          },
+          {
+            "name": "BroadcastChannelListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "Broadcast channels"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of channels"
+              }
+            ]
+          },
+          {
+            "name": "UpdateBroadcastChannelRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Channel display name"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional metadata (e.g., avatar, description)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteBroadcastChannelResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Deletion status"
+              },
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Broadcast channel ID"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-032",
+            "title": "Kanaele",
+            "priority": "should",
+            "description": "",
+            "as_a": "Business-Kunde",
+            "i_want": "einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+            "so_that": "um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Community-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: Community",
+      "description": "Define Community model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#Community"
+      ],
+      "related_requirements": [
+        "WA-GRP-006"
+      ],
+      "related_user_stories": [
+        "US-031"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: eine Community mit mehreren Gruppen erstellen und verwalten",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional community metadata (non-sensitive, client-encrypted if needed)"
+              }
+            ]
+          },
+          {
+            "name": "CommunityResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Community ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              },
+              {
+                "name": "updatedAt",
+                "type": "string",
+                "description": "ISO-8601 update timestamp"
+              }
+            ]
+          },
+          {
+            "name": "CommunityListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of communities"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page number"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "totalCount",
+                "type": "integer",
+                "description": "Total number of communities"
+              }
+            ]
+          },
+          {
+            "name": "UpdateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              }
+            ]
+          },
+          {
+            "name": "DeleteCommunityResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Indicates whether the community was deleted"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Community-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: Community",
+      "description": "Set up Prisma relations for Community with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Community-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#Community_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-006"
+      ],
+      "related_user_stories": [
+        "US-031"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: eine Community mit mehreren Gruppen erstellen und verwalten",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional community metadata (non-sensitive, client-encrypted if needed)"
+              }
+            ]
+          },
+          {
+            "name": "CommunityResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Community ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              },
+              {
+                "name": "updatedAt",
+                "type": "string",
+                "description": "ISO-8601 update timestamp"
+              }
+            ]
+          },
+          {
+            "name": "CommunityListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of communities"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page number"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "totalCount",
+                "type": "integer",
+                "description": "Total number of communities"
+              }
+            ]
+          },
+          {
+            "name": "UpdateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              }
+            ]
+          },
+          {
+            "name": "DeleteCommunityResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Indicates whether the community was deleted"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Community-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: Community",
+      "description": "Execute prisma migrate dev for Community changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Community-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_community/"
+      ],
+      "related_requirements": [
+        "WA-GRP-006"
+      ],
+      "related_user_stories": [
+        "US-031"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: eine Community mit mehreren Gruppen erstellen und verwalten",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Optional community metadata (non-sensitive, client-encrypted if needed)"
+              }
+            ]
+          },
+          {
+            "name": "CommunityResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Community ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              },
+              {
+                "name": "updatedAt",
+                "type": "string",
+                "description": "ISO-8601 update timestamp"
+              }
+            ]
+          },
+          {
+            "name": "CommunityListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of communities"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page number"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Page size"
+              },
+              {
+                "name": "totalCount",
+                "type": "integer",
+                "description": "Total number of communities"
+              }
+            ]
+          },
+          {
+            "name": "UpdateCommunityRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Community display name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Community description"
+              },
+              {
+                "name": "metadata",
+                "type": "object",
+                "description": "Community metadata"
+              }
+            ]
+          },
+          {
+            "name": "DeleteCommunityResponse",
+            "properties": [
+              {
+                "name": "deleted",
+                "type": "boolean",
+                "description": "Indicates whether the community was deleted"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Group-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: Group",
+      "description": "Define Group model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#Group"
+      ],
+      "related_requirements": [
+        "WA-GRP-006",
+        "WA-GRP-009"
+      ],
+      "related_user_stories": [
+        "US-031",
+        "US-034"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: eine Community mit mehreren Gruppen erstellen und verwalten; User can: ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateGroupMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for offline queue and deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "End-to-end encrypted message payload (Signal Protocol)"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs in the message"
+              }
+            ]
+          },
+          {
+            "name": "GroupMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-assigned message ID"
+              },
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp of creation"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs acknowledged by server"
+              }
+            ]
+          },
+          {
+            "name": "CreateGroupRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "Initial member user IDs (max 1024)"
+              },
+              {
+                "name": "encryptionMetadata",
+                "type": "object",
+                "description": "Signal Protocol group encryption metadata (e.g., sender keys)"
+              }
+            ]
+          },
+          {
+            "name": "GroupResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "settings",
+                "type": "object",
+                "description": "Group settings"
+              }
+            ]
+          },
+          {
+            "name": "GroupListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of groups"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          },
+          {
+            "id": "US-034",
+            "title": "Events planen",
+            "priority": "should",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+            "so_that": "damit die Gruppe Termine koordiniert und die Teilnahme verlässlich organisiert werden kann"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Group-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: Group",
+      "description": "Set up Prisma relations for Group with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Group-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#Group_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-006",
+        "WA-GRP-009"
+      ],
+      "related_user_stories": [
+        "US-031",
+        "US-034"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: eine Community mit mehreren Gruppen erstellen und verwalten; User can: ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateGroupMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for offline queue and deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "End-to-end encrypted message payload (Signal Protocol)"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs in the message"
+              }
+            ]
+          },
+          {
+            "name": "GroupMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-assigned message ID"
+              },
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp of creation"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs acknowledged by server"
+              }
+            ]
+          },
+          {
+            "name": "CreateGroupRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "Initial member user IDs (max 1024)"
+              },
+              {
+                "name": "encryptionMetadata",
+                "type": "object",
+                "description": "Signal Protocol group encryption metadata (e.g., sender keys)"
+              }
+            ]
+          },
+          {
+            "name": "GroupResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "settings",
+                "type": "object",
+                "description": "Group settings"
+              }
+            ]
+          },
+          {
+            "name": "GroupListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of groups"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          },
+          {
+            "id": "US-034",
+            "title": "Events planen",
+            "priority": "should",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+            "so_that": "damit die Gruppe Termine koordiniert und die Teilnahme verlässlich organisiert werden kann"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Group-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: Group",
+      "description": "Execute prisma migrate dev for Group changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Group-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_group/"
+      ],
+      "related_requirements": [
+        "WA-GRP-006",
+        "WA-GRP-009"
+      ],
+      "related_user_stories": [
+        "US-031",
+        "US-034"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: eine Community mit mehreren Gruppen erstellen und verwalten; User can: ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreateGroupMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for offline queue and deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "End-to-end encrypted message payload (Signal Protocol)"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs in the message"
+              }
+            ]
+          },
+          {
+            "name": "GroupMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-assigned message ID"
+              },
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp of creation"
+              },
+              {
+                "name": "mentions",
+                "type": "array",
+                "description": "List of mentioned user IDs acknowledged by server"
+              }
+            ]
+          },
+          {
+            "name": "CreateGroupRequest",
+            "properties": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "Initial member user IDs (max 1024)"
+              },
+              {
+                "name": "encryptionMetadata",
+                "type": "object",
+                "description": "Signal Protocol group encryption metadata (e.g., sender keys)"
+              }
+            ]
+          },
+          {
+            "name": "GroupResponse",
+            "properties": [
+              {
+                "name": "id",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Group name"
+              },
+              {
+                "name": "description",
+                "type": "string",
+                "description": "Group description"
+              },
+              {
+                "name": "settings",
+                "type": "object",
+                "description": "Group settings"
+              }
+            ]
+          },
+          {
+            "name": "GroupListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of groups"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          },
+          {
+            "id": "US-034",
+            "title": "Events planen",
+            "priority": "should",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "ein Gruppen-Event mit Datum, Uhrzeit und Ort erstellen und an Gruppenmitglieder ankündigen",
+            "so_that": "damit die Gruppe Termine koordiniert und die Teilnahme verlässlich organisiert werden kann"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Poll-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: Poll",
+      "description": "Define Poll model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#Poll"
+      ],
+      "related_requirements": [
+        "WA-GRP-008"
+      ],
+      "related_user_stories": [
+        "US-033"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Umfrage {\n        +String titel\n        +String beschreibung\n        +Date zeitstempel\n        +List<Frage> fragen\n        +List<Teilnehmer> teilnehmer\n        +void erstellen()\n        +void bearbeiten()\n        +void loeschen()\n    }\n\n    class Frage {\n        +String text\n        +List<String> antworten\n        +String richtigeAntwort\n        +void hinzufuegenAntwort()\n        +void entfernenAntwort()\n    }\n\n    class Teilnehmer {\n        +String name\n        +String chatId\n        +void teilnehmen()\n        +void abstimmen()\n    }\n\n    class Gruppe {\n        +String ",
+            "file": "WA-GRP-008_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Umfragen System Context Diagram\", \"description\": \"Das System MUSS Umfragen in Gruppen und Einzelchats unterstuetzen\" } }%%\nC4Context\n    Person(user, \"Benutzer\", \"Nutzer, der Umfragen erstellt und beantwortet\")\n    System(umfragenSystem, \"Umfragen System\", \"System zur Erstellung und Verwaltung von Umfragen\")\n    System_Ext(gruppenChat, \"Gruppenchat\", \"Plattform für Gruppenchats\")\n    System_Ext(einzelChat, \"Einzelchat\", \"Plattform für Einzelchats\")\n\n    Rel(user, umfragenSystem, \"verwendet\")\n    Rel(umfragenSystem, gruppenChat, \"unters",
+            "file": "WA-GRP-008_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Umfrage erstellen?}\n    B -->|Ja| C[Umfrage in Gruppe erstellen]\n    B -->|Ja| D[Umfrage im Einzelchat erstellen]\n    B -->|Nein| E[Prozess beenden]\n    C --> F[Teilnehmer einladen]\n    D --> G[Teilnehmer einladen]\n    F --> H{Teilnehmer antworten?}\n    G --> H\n    H -->|Ja| I[Antworten sammeln]\n    H -->|Nein| J[Erinnerung senden]\n    J --> H\n    I --> K[Umfrage auswerten]\n    K --> L[Ergebnisse anzeigen]\n    L --> M[Prozess beenden]",
+            "file": "WA-GRP-008_flowchart.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreatePollRequest",
+            "properties": [
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question (Signal Protocol payload)"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options (Signal Protocol payloads)"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp; null for no expiration"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated id for offline queue de-duplication"
+              }
+            ]
+          },
+          {
+            "name": "PollResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              }
+            ]
+          },
+          {
+            "name": "PollListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of polls"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Current page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of polls"
+              }
+            ]
+          },
+          {
+            "name": "PollDetailResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              },
+              {
+                "name": "tallyCiphertext",
+                "type": "string",
+                "description": "Encrypted tally snapshot for clients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp"
+              }
+            ]
+          },
+          {
+            "name": "ClosePollRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for closing the poll"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-033",
+            "title": "Umfragen",
+            "priority": "should",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+            "so_that": "schnell Meinungen einholen zu koennen und Entscheidungen effizient zu treffen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Poll-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: Poll",
+      "description": "Set up Prisma relations for Poll with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Poll-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#Poll_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-008"
+      ],
+      "related_user_stories": [
+        "US-033"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Umfrage {\n        +String titel\n        +String beschreibung\n        +Date zeitstempel\n        +List<Frage> fragen\n        +List<Teilnehmer> teilnehmer\n        +void erstellen()\n        +void bearbeiten()\n        +void loeschen()\n    }\n\n    class Frage {\n        +String text\n        +List<String> antworten\n        +String richtigeAntwort\n        +void hinzufuegenAntwort()\n        +void entfernenAntwort()\n    }\n\n    class Teilnehmer {\n        +String name\n        +String chatId\n        +void teilnehmen()\n        +void abstimmen()\n    }\n\n    class Gruppe {\n        +String ",
+            "file": "WA-GRP-008_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Umfragen System Context Diagram\", \"description\": \"Das System MUSS Umfragen in Gruppen und Einzelchats unterstuetzen\" } }%%\nC4Context\n    Person(user, \"Benutzer\", \"Nutzer, der Umfragen erstellt und beantwortet\")\n    System(umfragenSystem, \"Umfragen System\", \"System zur Erstellung und Verwaltung von Umfragen\")\n    System_Ext(gruppenChat, \"Gruppenchat\", \"Plattform für Gruppenchats\")\n    System_Ext(einzelChat, \"Einzelchat\", \"Plattform für Einzelchats\")\n\n    Rel(user, umfragenSystem, \"verwendet\")\n    Rel(umfragenSystem, gruppenChat, \"unters",
+            "file": "WA-GRP-008_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Umfrage erstellen?}\n    B -->|Ja| C[Umfrage in Gruppe erstellen]\n    B -->|Ja| D[Umfrage im Einzelchat erstellen]\n    B -->|Nein| E[Prozess beenden]\n    C --> F[Teilnehmer einladen]\n    D --> G[Teilnehmer einladen]\n    F --> H{Teilnehmer antworten?}\n    G --> H\n    H -->|Ja| I[Antworten sammeln]\n    H -->|Nein| J[Erinnerung senden]\n    J --> H\n    I --> K[Umfrage auswerten]\n    K --> L[Ergebnisse anzeigen]\n    L --> M[Prozess beenden]",
+            "file": "WA-GRP-008_flowchart.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreatePollRequest",
+            "properties": [
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question (Signal Protocol payload)"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options (Signal Protocol payloads)"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp; null for no expiration"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated id for offline queue de-duplication"
+              }
+            ]
+          },
+          {
+            "name": "PollResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              }
+            ]
+          },
+          {
+            "name": "PollListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of polls"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Current page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of polls"
+              }
+            ]
+          },
+          {
+            "name": "PollDetailResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              },
+              {
+                "name": "tallyCiphertext",
+                "type": "string",
+                "description": "Encrypted tally snapshot for clients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp"
+              }
+            ]
+          },
+          {
+            "name": "ClosePollRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for closing the poll"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-033",
+            "title": "Umfragen",
+            "priority": "should",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+            "so_that": "schnell Meinungen einholen zu koennen und Entscheidungen effizient zu treffen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-Poll-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: Poll",
+      "description": "Execute prisma migrate dev for Poll changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-Poll-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_poll/"
+      ],
+      "related_requirements": [
+        "WA-GRP-008"
+      ],
+      "related_user_stories": [
+        "US-033"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Umfragen System Context Diagram\", \"description\": \"Das System MUSS Umfragen in Gruppen und Einzelchats unterstuetzen\" } }%%\nC4Context\n    Person(user, \"Benutzer\", \"Nutzer, der Umfragen erstellt und beantwortet\")\n    System(umfragenSystem, \"Umfragen System\", \"System zur Erstellung und Verwaltung von Umfragen\")\n    System_Ext(gruppenChat, \"Gruppenchat\", \"Plattform für Gruppenchats\")\n    System_Ext(einzelChat, \"Einzelchat\", \"Plattform für Einzelchats\")\n\n    Rel(user, umfragenSystem, \"verwendet\")\n    Rel(umfragenSystem, gruppenChat, \"unters",
+            "file": "WA-GRP-008_c4.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Umfrage {\n        +String titel\n        +String beschreibung\n        +Date zeitstempel\n        +List<Frage> fragen\n        +List<Teilnehmer> teilnehmer\n        +void erstellen()\n        +void bearbeiten()\n        +void loeschen()\n    }\n\n    class Frage {\n        +String text\n        +List<String> antworten\n        +String richtigeAntwort\n        +void hinzufuegenAntwort()\n        +void entfernenAntwort()\n    }\n\n    class Teilnehmer {\n        +String name\n        +String chatId\n        +void teilnehmen()\n        +void abstimmen()\n    }\n\n    class Gruppe {\n        +String ",
+            "file": "WA-GRP-008_class.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Umfrage erstellen?}\n    B -->|Ja| C[Umfrage in Gruppe erstellen]\n    B -->|Ja| D[Umfrage im Einzelchat erstellen]\n    B -->|Nein| E[Prozess beenden]\n    C --> F[Teilnehmer einladen]\n    D --> G[Teilnehmer einladen]\n    F --> H{Teilnehmer antworten?}\n    G --> H\n    H -->|Ja| I[Antworten sammeln]\n    H -->|Nein| J[Erinnerung senden]\n    J --> H\n    I --> K[Umfrage auswerten]\n    K --> L[Ergebnisse anzeigen]\n    L --> M[Prozess beenden]",
+            "file": "WA-GRP-008_flowchart.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "CreatePollRequest",
+            "properties": [
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question (Signal Protocol payload)"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options (Signal Protocol payloads)"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp; null for no expiration"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated id for offline queue de-duplication"
+              }
+            ]
+          },
+          {
+            "name": "PollResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              }
+            ]
+          },
+          {
+            "name": "PollListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of polls"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Current page size"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total number of polls"
+              }
+            ]
+          },
+          {
+            "name": "PollDetailResponse",
+            "properties": [
+              {
+                "name": "pollId",
+                "type": "string",
+                "description": "Poll ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "questionCiphertext",
+                "type": "string",
+                "description": "Encrypted poll question"
+              },
+              {
+                "name": "optionsCiphertexts",
+                "type": "array",
+                "description": "Encrypted poll options"
+              },
+              {
+                "name": "allowsMultipleChoices",
+                "type": "boolean",
+                "description": "Whether multiple options can be selected"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Poll status (active|closed)"
+              },
+              {
+                "name": "tallyCiphertext",
+                "type": "string",
+                "description": "Encrypted tally snapshot for clients"
+              },
+              {
+                "name": "createdAt",
+                "type": "string",
+                "description": "ISO-8601 creation timestamp"
+              },
+              {
+                "name": "expiresAt",
+                "type": "string",
+                "description": "ISO-8601 expiration timestamp"
+              }
+            ]
+          },
+          {
+            "name": "ClosePollRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for closing the poll"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-033",
+            "title": "Umfragen",
+            "priority": "should",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+            "so_that": "schnell Meinungen einholen zu koennen und Entscheidungen effizient zu treffen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-UserPrivacySetting-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: UserPrivacySetting",
+      "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#UserPrivacySetting"
+      ],
+      "related_requirements": [
+        "WA-SET-002",
+        "WA-SET-003",
+        "WA-SET-004",
+        "WA-SET-005"
+      ],
+      "related_user_stories": [
+        "US-081",
+        "US-082",
+        "US-083",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class User {\n        +String username\n        +String profilePicture\n        +Visibility visibilitySetting\n    }\n\n    class Visibility {\n        +String name\n        +String description\n    }\n\n    class PublicVisibility {\n        +String name = \"Public\"\n        +String description = \"Visible to everyone\"\n    }\n\n    class PrivateVisibility {\n        +String name = \"Private\"\n        +String description = \"Visible only to the user\"\n    }\n\n    class FriendsVisibility {\n        +String name = \"Friends\"\n        +String description = \"Visible only to friends\"\n    }\n\n    User --> Visi",
+            "file": "WA-SET-003_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Einladung> einladungen\n        +List<Benutzer> benutzer\n        +void hinzufuegenBenutzer(Benutzer benutzer)\n        +void entfernenBenutzer(Benutzer benutzer)\n    }\n\n    class Einladung {\n        +Benutzer einladender\n        +Benutzer eingeladen\n        +Date datum\n        +void akzeptieren()\n        +void ablehnen()\n    }\n\n    class Benutzer {\n        +String name\n        +String email\n        +List<Gruppe> gruppen\n        +void erstellenGruppe(Gruppe gruppe)\n        +void beitretenGruppe(Gruppe gruppe)\n    }\n\n    Gruppe \"1\"",
+            "file": "WA-SET-005_class.mmd"
+          },
+          {
+            "type": "state",
+            "content": "stateDiagram-v2\n    [*] --> Hidden\n    Hidden --> Visible : Configure to show\n    Visible --> Hidden : Configure to hide\n    Visible --> [*]\n    Hidden --> [*]",
+            "file": "WA-SET-004_state.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-081",
+            "title": "Lesebestaetigung",
+            "priority": "must",
+            "description": "",
+            "as_a": "Business-Nutzer",
+            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
+            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
+          },
+          {
+            "id": "US-082",
+            "title": "Profilbild-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
+            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
+          },
+          {
+            "id": "US-083",
+            "title": "Info-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-UserPrivacySetting-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: UserPrivacySetting",
+      "description": "Set up Prisma relations for UserPrivacySetting with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-UserPrivacySetting-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#UserPrivacySetting_relations"
+      ],
+      "related_requirements": [
+        "WA-SET-002",
+        "WA-SET-003",
+        "WA-SET-004",
+        "WA-SET-005"
+      ],
+      "related_user_stories": [
+        "US-081",
+        "US-082",
+        "US-083",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class User {\n        +String username\n        +String profilePicture\n        +Visibility visibilitySetting\n    }\n\n    class Visibility {\n        +String name\n        +String description\n    }\n\n    class PublicVisibility {\n        +String name = \"Public\"\n        +String description = \"Visible to everyone\"\n    }\n\n    class PrivateVisibility {\n        +String name = \"Private\"\n        +String description = \"Visible only to the user\"\n    }\n\n    class FriendsVisibility {\n        +String name = \"Friends\"\n        +String description = \"Visible only to friends\"\n    }\n\n    User --> Visi",
+            "file": "WA-SET-003_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Einladung> einladungen\n        +List<Benutzer> benutzer\n        +void hinzufuegenBenutzer(Benutzer benutzer)\n        +void entfernenBenutzer(Benutzer benutzer)\n    }\n\n    class Einladung {\n        +Benutzer einladender\n        +Benutzer eingeladen\n        +Date datum\n        +void akzeptieren()\n        +void ablehnen()\n    }\n\n    class Benutzer {\n        +String name\n        +String email\n        +List<Gruppe> gruppen\n        +void erstellenGruppe(Gruppe gruppe)\n        +void beitretenGruppe(Gruppe gruppe)\n    }\n\n    Gruppe \"1\"",
+            "file": "WA-SET-005_class.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Lesebestaetigung System Context Diagram\n\n    Person(user, \"User\", \"A person who interacts with the system to confirm reading.\")\n    System(lesebestaetigungSystem, \"Lesebestaetigung System\", \"A system that provides configurable reading confirmations.\")\n\n    System_Ext(externalSystem, \"External System\", \"An external system that may interact with the Lesebestaetigung system.\")\n\n    Rel(user, lesebestaetigungSystem, \"Uses\")\n    Rel(lesebestaetigungSystem, externalSystem, \"Interacts with\")",
+            "file": "WA-SET-002_c4.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-081",
+            "title": "Lesebestaetigung",
+            "priority": "must",
+            "description": "",
+            "as_a": "Business-Nutzer",
+            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
+            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
+          },
+          {
+            "id": "US-082",
+            "title": "Profilbild-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
+            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
+          },
+          {
+            "id": "US-083",
+            "title": "Info-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-UserPrivacySetting-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: UserPrivacySetting",
+      "description": "Execute prisma migrate dev for UserPrivacySetting changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-UserPrivacySetting-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_userprivacysetting/"
+      ],
+      "related_requirements": [
+        "WA-SET-002",
+        "WA-SET-003",
+        "WA-SET-004",
+        "WA-SET-005"
+      ],
+      "related_user_stories": [
+        "US-081",
+        "US-082",
+        "US-083",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Lesebestaetigung System Context Diagram\n\n    Person(user, \"User\", \"A person who interacts with the system to confirm reading.\")\n    System(lesebestaetigungSystem, \"Lesebestaetigung System\", \"A system that provides configurable reading confirmations.\")\n\n    System_Ext(externalSystem, \"External System\", \"An external system that may interact with the Lesebestaetigung system.\")\n\n    Rel(user, lesebestaetigungSystem, \"Uses\")\n    Rel(lesebestaetigungSystem, externalSystem, \"Interacts with\")",
+            "file": "WA-SET-002_c4.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Ist Lesebestaetigung konfigurierbar?}\n    B -- Ja --> C[Lesebestaetigung aktivieren]\n    B -- Nein --> D[System anpassen]\n    D --> E[Lesebestaetigung implementieren]\n    E --> C\n    C --> F[Lesebestaetigung bereitstellen]\n    F --> G[Ende]",
+            "file": "WA-SET-002_flowchart.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Config as Konfiguration\n\n    User->>System: Anfrage zur Lesebestätigung\n    System->>Config: Konfiguration abrufen\n    Config-->>System: Lesebestätigungseinstellungen\n    System-->>User: Lesebestätigung anzeigen\n    User->>System: Lesebestätigung bestätigen\n    System-->>User: Bestätigung gespeichert",
+            "file": "WA-SET-002_sequence.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-081",
+            "title": "Lesebestaetigung",
+            "priority": "must",
+            "description": "",
+            "as_a": "Business-Nutzer",
+            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
+            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
+          },
+          {
+            "id": "US-082",
+            "title": "Profilbild-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
+            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
+          },
+          {
+            "id": "US-083",
+            "title": "Info-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_chat-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: group_chat",
+      "description": "Define group_chat model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#group_chat"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-003",
+        "WA-GRP-004"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-028",
+        "US-029"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen neuen Gruppenchat erstellen; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: einen Einladungslink für eine Gruppe erstellen und teilen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    GROUP_SETTING {\n        string id PK \"Primary Key\"\n        string name \"Name of the group setting\"\n        string description \"Description of the group setting\"\n        boolean is_active \"Indicates if the setting is active\"\n    }\n\n    USER {\n        string id PK \"Primary Key\"\n        string username \"Username of the user\"\n        string email \"Email of the user\"\n    }\n\n    GROUP {\n        string id PK \"Primary Key\"\n        string name \"Name of the group\"\n        string description \"Description of the group\"\n    }\n\n    USER ||--o{ GROUP : belongs_to\n    GROUP ||--o{ GROUP_SETTING ",
+            "file": "WA-GRP-003_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppeneinstellungen {\n        +String gruppenName\n        +String beschreibung\n        +List<Mitglied> mitglieder\n        +List<Einstellung> einstellungen\n        +void addMitglied(Mitglied mitglied)\n        +void removeMitglied(Mitglied mitglied)\n        +void updateEinstellung(Einstellung einstellung)\n    }\n\n    class Mitglied {\n        +String name\n        +String email\n        +String rolle\n    }\n\n    class Einstellung {\n        +String einstellungsName\n        +String wert\n    }\n\n    Gruppeneinstellungen \"1\" --> \"*\" Mitglied : enthält\n    Gruppeneinstellungen \"1\" -",
+            "file": "WA-GRP-003_class.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-013",
+            "severity": "medium",
+            "title": "Gruppeneinladungslink ohne Sicherheitsaspekte",
+            "suggestion": "Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-028",
+            "title": "Gruppeneinstellungen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "konfigurierbare Gruppeneinstellungen anlegen und anpassen",
+            "so_that": "damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird"
+          },
+          {
+            "id": "US-029",
+            "title": "Einladungslink",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
+            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_chat-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: group_chat",
+      "description": "Set up Prisma relations for group_chat with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-group_chat-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#group_chat_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-003",
+        "WA-GRP-004"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-028",
+        "US-029"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen neuen Gruppenchat erstellen; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: einen Einladungslink für eine Gruppe erstellen und teilen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    GROUP_SETTING {\n        string id PK \"Primary Key\"\n        string name \"Name of the group setting\"\n        string description \"Description of the group setting\"\n        boolean is_active \"Indicates if the setting is active\"\n    }\n\n    USER {\n        string id PK \"Primary Key\"\n        string username \"Username of the user\"\n        string email \"Email of the user\"\n    }\n\n    GROUP {\n        string id PK \"Primary Key\"\n        string name \"Name of the group\"\n        string description \"Description of the group\"\n    }\n\n    USER ||--o{ GROUP : belongs_to\n    GROUP ||--o{ GROUP_SETTING ",
+            "file": "WA-GRP-003_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppeneinstellungen {\n        +String gruppenName\n        +String beschreibung\n        +List<Mitglied> mitglieder\n        +List<Einstellung> einstellungen\n        +void addMitglied(Mitglied mitglied)\n        +void removeMitglied(Mitglied mitglied)\n        +void updateEinstellung(Einstellung einstellung)\n    }\n\n    class Mitglied {\n        +String name\n        +String email\n        +String rolle\n    }\n\n    class Einstellung {\n        +String einstellungsName\n        +String wert\n    }\n\n    Gruppeneinstellungen \"1\" --> \"*\" Mitglied : enthält\n    Gruppeneinstellungen \"1\" -",
+            "file": "WA-GRP-003_class.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-013",
+            "severity": "medium",
+            "title": "Gruppeneinladungslink ohne Sicherheitsaspekte",
+            "suggestion": "Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-028",
+            "title": "Gruppeneinstellungen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "konfigurierbare Gruppeneinstellungen anlegen und anpassen",
+            "so_that": "damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird"
+          },
+          {
+            "id": "US-029",
+            "title": "Einladungslink",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
+            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_chat-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: group_chat",
+      "description": "Execute prisma migrate dev for group_chat changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-group_chat-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_group_chat/"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-003",
+        "WA-GRP-004"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-028",
+        "US-029"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: einen neuen Gruppenchat erstellen; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: einen Einladungslink für eine Gruppe erstellen und teilen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "er",
+            "content": "erDiagram\n    GROUP_SETTING {\n        string id PK \"Primary Key\"\n        string name \"Name of the group setting\"\n        string description \"Description of the group setting\"\n        boolean is_active \"Indicates if the setting is active\"\n    }\n\n    USER {\n        string id PK \"Primary Key\"\n        string username \"Username of the user\"\n        string email \"Email of the user\"\n    }\n\n    GROUP {\n        string id PK \"Primary Key\"\n        string name \"Name of the group\"\n        string description \"Description of the group\"\n    }\n\n    USER ||--o{ GROUP : belongs_to\n    GROUP ||--o{ GROUP_SETTING ",
+            "file": "WA-GRP-003_er.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt 'Gruppe erstellen']\n    B --> C[Benutzer gibt Gruppennamen ein]\n    C --> D[Benutzer fügt Mitglieder hinzu]\n    D --> E[Überprüfung der Mitglieder]\n    E -->|Mitglieder gültig| F[Gruppe wird erstellt]\n    E -->|Mitglieder ungültig| G[Fehlermeldung anzeigen]\n    F --> H[Gruppe erfolgreich erstellt]\n    G --> B\n    H --> I[Ende]",
+            "file": "WA-GRP-001_flowchart.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-013",
+            "severity": "medium",
+            "title": "Gruppeneinladungslink ohne Sicherheitsaspekte",
+            "suggestion": "Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-028",
+            "title": "Gruppeneinstellungen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "konfigurierbare Gruppeneinstellungen anlegen und anpassen",
+            "so_that": "damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird"
+          },
+          {
+            "id": "US-029",
+            "title": "Einladungslink",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
+            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_member-model",
+      "epic_id": "EPIC-005",
+      "type": "schema_model",
+      "title": "Create Prisma model: group_member",
+      "description": "Define group_member model in prisma/schema.prisma with all required attributes and types.",
+      "status": "failed",
+      "dependencies": [],
+      "estimated_minutes": 5,
+      "output_files": [
+        "prisma/schema.prisma#group_member"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-002",
+        "WA-GRP-005"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-030"
+      ],
+      "phase": "code",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen neuen Gruppenchat erstellen; User can: Gruppen verwalten und Mitgliederrechte zentral konfigurieren; User can: eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppenadministration {\n        +createGroup()\n        +deleteGroup()\n        +addMember()\n        +removeMember()\n        +assignRole()\n        +revokeRole()\n        +listGroups()\n        +getGroupDetails()\n    }\n\n    class Gruppe {\n        +groupName: String\n        +groupID: String\n        +members: List<Member>\n        +roles: List<Role>\n    }\n\n    class Member {\n        +memberID: String\n        +memberName: String\n        +email: String\n    }\n\n    class Role {\n        +roleName: String\n        +permissions: List<Permission>\n    }\n\n    class Permission {\n        +pe",
+            "file": "WA-GRP-002_class.mmd"
+          },
+          {
+            "type": "state",
+            "content": "stateDiagram-v2\n    [*] --> InGroup\n    InGroup --> LeavingGroup : Request to leave\n    LeavingGroup --> [*] : Leave group without notification",
+            "file": "WA-GRP-005_state.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-012",
+            "severity": "high",
+            "title": "Gruppenadministration zu vage",
+            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "GroupMemberListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of members"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersRequest",
+            "properties": [
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "User IDs to add"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "addedCount",
+                "type": "integer",
+                "description": "Number of members added"
+              }
+            ]
+          },
+          {
+            "name": "RemoveGroupMemberResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "memberId",
+                "type": "string",
+                "description": "Removed member ID"
+              },
+              {
+                "name": "removed",
+                "type": "boolean",
+                "description": "Removal status"
+              }
+            ]
+          },
+          {
+            "name": "PaginatedGroupMemberListResponse",
+            "properties": [
+              {
+                "name": "data",
+                "type": "array"
+              },
+              {
+                "name": "pagination",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-027",
+            "title": "Gruppenadministration",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "Gruppen verwalten und Mitgliederrechte zentral konfigurieren",
+            "so_that": "um sichere und regelkonforme Kommunikation zu gewährleisten und Missbrauch effizient zu verhindern"
+          },
+          {
+            "id": "US-030",
+            "title": "Gruppe verlassen",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen",
+            "so_that": "um die Privatsphäre zu wahren und die Bedienung schnell und unkompliziert zu halten"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_member-relations",
+      "epic_id": "EPIC-005",
+      "type": "schema_relations",
+      "title": "Define relations for: group_member",
+      "description": "Set up Prisma relations for group_member with other entities.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-group_member-model"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [
+        "prisma/schema.prisma#group_member_relations"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-002",
+        "WA-GRP-005"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-030"
+      ],
+      "phase": "code",
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen neuen Gruppenchat erstellen; User can: Gruppen verwalten und Mitgliederrechte zentral konfigurieren; User can: eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppenadministration {\n        +createGroup()\n        +deleteGroup()\n        +addMember()\n        +removeMember()\n        +assignRole()\n        +revokeRole()\n        +listGroups()\n        +getGroupDetails()\n    }\n\n    class Gruppe {\n        +groupName: String\n        +groupID: String\n        +members: List<Member>\n        +roles: List<Role>\n    }\n\n    class Member {\n        +memberID: String\n        +memberName: String\n        +email: String\n    }\n\n    class Role {\n        +roleName: String\n        +permissions: List<Permission>\n    }\n\n    class Permission {\n        +pe",
+            "file": "WA-GRP-002_class.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt 'Gruppe erstellen']\n    B --> C[Benutzer gibt Gruppennamen ein]\n    C --> D[Benutzer fügt Mitglieder hinzu]\n    D --> E[Überprüfung der Mitglieder]\n    E -->|Mitglieder gültig| F[Gruppe wird erstellt]\n    E -->|Mitglieder ungültig| G[Fehlermeldung anzeigen]\n    F --> H[Gruppe erfolgreich erstellt]\n    G --> B\n    H --> I[Ende]",
+            "file": "WA-GRP-001_flowchart.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-012",
+            "severity": "high",
+            "title": "Gruppenadministration zu vage",
+            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "GroupMemberListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of members"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersRequest",
+            "properties": [
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "User IDs to add"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "addedCount",
+                "type": "integer",
+                "description": "Number of members added"
+              }
+            ]
+          },
+          {
+            "name": "RemoveGroupMemberResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "memberId",
+                "type": "string",
+                "description": "Removed member ID"
+              },
+              {
+                "name": "removed",
+                "type": "boolean",
+                "description": "Removal status"
+              }
+            ]
+          },
+          {
+            "name": "PaginatedGroupMemberListResponse",
+            "properties": [
+              {
+                "name": "data",
+                "type": "array"
+              },
+              {
+                "name": "pagination",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-027",
+            "title": "Gruppenadministration",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "Gruppen verwalten und Mitgliederrechte zentral konfigurieren",
+            "so_that": "um sichere und regelkonforme Kommunikation zu gewährleisten und Missbrauch effizient zu verhindern"
+          },
+          {
+            "id": "US-030",
+            "title": "Gruppe verlassen",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen",
+            "so_that": "um die Privatsphäre zu wahren und die Bedienung schnell und unkompliziert zu halten"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-SCHEMA-group_member-migration",
+      "epic_id": "EPIC-005",
+      "type": "schema_migration",
+      "title": "Run migration for: group_member",
+      "description": "Execute prisma migrate dev for group_member changes.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-SCHEMA-group_member-relations"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [
+        "prisma/migrations/*_group_member/"
+      ],
+      "related_requirements": [
+        "WA-GRP-001",
+        "WA-GRP-002",
+        "WA-GRP-005"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-030"
+      ],
+      "phase": "code",
+      "success_criteria": "Migration generated and validated with prisma validate; User can: einen neuen Gruppenchat erstellen; User can: Gruppen verwalten und Mitgliederrechte zentral konfigurieren; User can: eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.; Address: Create user stories that explicitly link to each of these requirements.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Benutzer> benutzerListe\n        +void gruppeErstellen(String name)\n        +void benutzerHinzufuegen(Benutzer benutzer)\n        +void benutzerEntfernen(Benutzer benutzer)\n    }\n\n    class Benutzer {\n        +String benutzername\n        +String email\n        +void nachrichtSenden(String nachricht)\n        +void nachrichtEmpfangen(String nachricht)\n    }\n\n    Gruppe \"1\" -- \"0..*\" Benutzer : enthält",
+            "file": "WA-GRP-001_class.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt 'Gruppe erstellen']\n    B --> C[Benutzer gibt Gruppennamen ein]\n    C --> D[Benutzer fügt Mitglieder hinzu]\n    D --> E[Überprüfung der Mitglieder]\n    E -->|Mitglieder gültig| F[Gruppe wird erstellt]\n    E -->|Mitglieder ungültig| G[Fehlermeldung anzeigen]\n    F --> H[Gruppe erfolgreich erstellt]\n    G --> B\n    H --> I[Ende]",
+            "file": "WA-GRP-001_flowchart.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Gruppenerstellungsanfrage\n    System-->>User: Bestätigung der Anfrage\n    System->>System: Gruppe erstellen\n    System-->>User: Gruppenchats erstellt",
+            "file": "WA-GRP-001_sequence.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-012",
+            "severity": "high",
+            "title": "Gruppenadministration zu vage",
+            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "GroupMemberListResponse",
+            "properties": [
+              {
+                "name": "items",
+                "type": "array",
+                "description": "List of members"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "Current page"
+              },
+              {
+                "name": "pageSize",
+                "type": "integer",
+                "description": "Items per page"
+              },
+              {
+                "name": "total",
+                "type": "integer",
+                "description": "Total items"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersRequest",
+            "properties": [
+              {
+                "name": "memberIds",
+                "type": "array",
+                "description": "User IDs to add"
+              }
+            ]
+          },
+          {
+            "name": "AddGroupMembersResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "addedCount",
+                "type": "integer",
+                "description": "Number of members added"
+              }
+            ]
+          },
+          {
+            "name": "RemoveGroupMemberResponse",
+            "properties": [
+              {
+                "name": "groupId",
+                "type": "string",
+                "description": "Group ID"
+              },
+              {
+                "name": "memberId",
+                "type": "string",
+                "description": "Removed member ID"
+              },
+              {
+                "name": "removed",
+                "type": "boolean",
+                "description": "Removal status"
+              }
+            ]
+          },
+          {
+            "name": "PaginatedGroupMemberListResponse",
+            "properties": [
+              {
+                "name": "data",
+                "type": "array"
+              },
+              {
+                "name": "pagination",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-026",
+            "title": "Gruppe erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-027",
+            "title": "Gruppenadministration",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "Gruppen verwalten und Mitgliederrechte zentral konfigurieren",
+            "so_that": "um sichere und regelkonforme Kommunikation zu gewährleisten und Missbrauch effizient zu verhindern"
+          },
+          {
+            "id": "US-030",
+            "title": "Gruppe verlassen",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Gruppe verlassen, ohne eine Benachrichtigung an andere Mitglieder auszulösen",
+            "so_that": "um die Privatsphäre zu wahren und die Bedienung schnell und unkompliziert zu halten"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-VERIFY-schema",
+      "epic_id": "EPIC-005",
+      "type": "verify_schema",
+      "title": "Validate Prisma schema",
+      "description": "Run prisma validate to check schema integrity.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-SCHEMA-group_member-model",
+        "EPIC-005-SCHEMA-group_member-relations",
+        "EPIC-005-SCHEMA-group_member-migration"
+      ],
+      "estimated_minutes": 1,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "schema",
+      "success_criteria": "prisma validate exits with code 0"
+    },
+    {
+      "id": "EPIC-005-CHECKPOINT-schema",
+      "epic_id": "EPIC-005",
+      "type": "checkpoint_schema",
+      "title": "Checkpoint: Review Schema",
+      "description": "User approval required before continuing. Review the schema phase results.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-schema"
+      ],
+      "estimated_minutes": 5,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "schema",
+      "success_criteria": "User approved checkpoint"
+    },
+    {
+      "id": "EPIC-005-API-groups-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: groups (24 endpoints: DELETE, GET, POST, PUT)",
+      "description": "Generate the COMPLETE NestJS module for 'groups' with ALL layers:\n- Controller (all 24 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/groups — Create group chat\n  GET /api/v1/groups/{groupId}/members — List group members\n  POST /api/v1/groups/{groupId}/members — Add members to group\n  DELETE /api/v1/groups/{groupId}/members/{memberId} — Remove member from group\n  PUT /api/v1/groups/{groupId}/roles — Update member roles\n  GET /api/v1/groups — List groups\n  GET /api/v1/groups/{groupId} — Get group details\n  PUT /api/v1/groups/{groupId} — Update group metadata\n  DELETE /api/v1/groups/{groupId} — Delete a group\n  PUT /api/v1/groups/{groupId}/owner — Transfer group ownership\n  POST /api/v1/groups/{groupId}/avatar — Upload group avatar\n  GET /api/v1/groups/{groupId}/settings — Get group settings\n  PUT /api/v1/groups/{groupId}/settings — Update group settings\n  POST /api/v1/groups/{groupId}/invite-links — Create a group invite link\n  DELETE /api/v1/groups/{groupId}/invite-links/{inviteId} — Revoke a group invite link\n  DELETE /api/v1/groups/{groupId}/members/me — Leave group silently\n  POST /api/v1/groups/{groupId}/events — Create a group event\n  GET /api/v1/groups/{groupId}/events — List group events\n  GET /api/v1/groups/{groupId}/events/{eventId} — Get group event details\n  PUT /api/v1/groups/{groupId}/events/{eventId} — Update a group event\n  DELETE /api/v1/groups/{groupId}/events/{eventId} — Delete a group event\n  POST /api/v1/groups/{groupId}/events/{eventId}/rsvps — RSVP to a group event\n  GET /api/v1/groups/{groupId}/settings/invite-policy — Get group invite policy\n  PUT /api/v1/groups/{groupId}/settings/invite-policy — Update group invite policy",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 72,
+      "output_files": [
+        "src/modules/groups/groups.controller.ts",
+        "src/modules/groups/groups.service.ts",
+        "src/modules/groups/groups.module.ts",
+        "src/modules/groups/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-004",
+        "WA-GRP-003",
+        "WA-SET-005",
+        "WA-GRP-002",
+        "WA-GRP-001"
+      ],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-028",
+        "US-029",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Einladungslink für eine Gruppe erstellen und teilen; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: festlegen, wer Mitglieder zu einer Gruppe hinzufügen darf; Address: Create user stories that explicitly link to each of these requirements.; Address: Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.).",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Group as Gruppe\n\n    User->>System: Anfrage für Gruppeneinladung\n    System->>Group: Generiere Einladungslink\n    Group-->>System: Einladungslink erstellt\n    System-->>User: Sende Einladungslink\n    User->>System: Klicke auf Einladungslink\n    System->>Group: Benutzer beitreten\n    Group-->>System: Benutzer erfolgreich hinzugefügt\n    System-->>User: Bestätigung des Beitritts",
+            "file": "WA-GRP-004_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Gruppenerstellungsanfrage\n    System-->>User: Bestätigung der Anfrage\n    System->>System: Gruppe erstellen\n    System-->>User: Gruppenchats erstellt",
+            "file": "WA-GRP-001_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Gruppeneinladung?}\n    B -- Ja --> C[Link generieren]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Link an Benutzer senden]\n    E --> F[Benutzer klickt auf Link]\n    F --> G{Zugriff gewähren?}\n    G -- Ja --> H[Benutzer zur Gruppe hinzufügen]\n    G -- Nein --> I[Zugriff verweigern]\n    H --> J[Prozess beenden]\n    I --> J\n    D --> J",
+            "file": "WA-GRP-004_flowchart.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-012",
+            "severity": "high",
+            "title": "Gruppenadministration zu vage",
+            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
+          },
+          {
+            "id": "CI-016",
+            "severity": "high",
+            "title": "Nicht-funktionale Anforderungen fehlen",
+            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-013",
+            "severity": "medium",
+            "title": "Gruppeneinladungslink ohne Sicherheitsaspekte",
+            "suggestion": "Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-029",
+            "title": "Einladungslink",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
+            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
+          },
+          {
+            "id": "US-028",
+            "title": "Gruppeneinstellungen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "konfigurierbare Gruppeneinstellungen anlegen und anpassen",
+            "so_that": "damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird"
+          },
+          {
+            "id": "US-084",
+            "title": "Gruppen-Einladungen",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppen-Admin",
+            "i_want": "festlegen, wer Mitglieder zu einer Gruppe hinzufügen darf",
+            "so_that": "Datenschutz und Sicherheit zu gewährleisten und Missbrauch zu verhindern"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-API-invite-links-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: invite-links (2 endpoints: GET, POST)",
+      "description": "Generate the COMPLETE NestJS module for 'invite-links' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/invite-links/{inviteToken} — Get invite link details\n  POST /api/v1/invite-links/{inviteToken}/accept — Accept a group invite link",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [
+        "src/modules/invite-links/invite-links.controller.ts",
+        "src/modules/invite-links/invite-links.service.ts",
+        "src/modules/invite-links/invite-links.module.ts",
+        "src/modules/invite-links/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-004"
+      ],
+      "related_user_stories": [
+        "US-029"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Einladungslink für eine Gruppe erstellen und teilen; Address: Create user stories that explicitly link to each of these requirements.; Address: Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Group as Gruppe\n\n    User->>System: Anfrage für Gruppeneinladung\n    System->>Group: Generiere Einladungslink\n    Group-->>System: Einladungslink erstellt\n    System-->>User: Sende Einladungslink\n    User->>System: Klicke auf Einladungslink\n    System->>Group: Benutzer beitreten\n    Group-->>System: Benutzer erfolgreich hinzugefügt\n    System-->>User: Bestätigung des Beitritts",
+            "file": "WA-GRP-004_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Gruppeneinladung?}\n    B -- Ja --> C[Link generieren]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Link an Benutzer senden]\n    E --> F[Benutzer klickt auf Link]\n    F --> G{Zugriff gewähren?}\n    G -- Ja --> H[Benutzer zur Gruppe hinzufügen]\n    G -- Nein --> I[Zugriff verweigern]\n    H --> J[Prozess beenden]\n    I --> J\n    D --> J",
+            "file": "WA-GRP-004_flowchart.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[User] -->|Uses| B[Einladungslink System]\n    B -->|Generates| C[Group Invitation Link]\n    B -->|Sends| D[Notification Service]\n    D -->|Notifies| E[Group Members]\n    B -->|Stores| F[Database]\n    F -->|Contains| G[Invitation Data]\n\n    classDef user fill:#f9f,stroke:#333,stroke-width:2px;\n    class A user;",
+            "file": "WA-GRP-004_c4.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
+            "id": "CI-013",
+            "severity": "medium",
+            "title": "Gruppeneinladungslink ohne Sicherheitsaspekte",
+            "suggestion": "Definieren Sie Ablauf/Revocation/Join-Approval/Rate-Limits."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-029",
+            "title": "Einladungslink",
+            "priority": "must",
+            "description": "",
+            "as_a": "Gruppenadministrator",
+            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
+            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-API-communities-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: communities (8 endpoints: DELETE, GET, POST, PUT)",
+      "description": "Generate the COMPLETE NestJS module for 'communities' with ALL layers:\n- Controller (all 8 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/communities — Create community\n  GET /api/v1/communities — List communities\n  GET /api/v1/communities/{communityId} — Get community\n  PUT /api/v1/communities/{communityId} — Update community\n  DELETE /api/v1/communities/{communityId} — Delete community\n  POST /api/v1/communities/{communityId}/groups — Add group to community\n  GET /api/v1/communities/{communityId}/groups — List community groups\n  DELETE /api/v1/communities/{communityId}/groups/{groupId} — Remove group from community",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 24,
+      "output_files": [
+        "src/modules/communities/communities.controller.ts",
+        "src/modules/communities/communities.service.ts",
+        "src/modules/communities/communities.module.ts",
+        "src/modules/communities/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-006"
+      ],
+      "related_user_stories": [
+        "US-031"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine Community mit mehreren Gruppen erstellen und verwalten",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Community System\n\n    Person(user, \"User\", \"A user of the community system\")\n    System(communitySystem, \"Community System\", \"Supports communities with multiple groups\")\n\n    System_Ext(externalSystem, \"External System\", \"An external service that interacts with the community system\")\n\n    Rel(user, communitySystem, \"Uses\")\n    Rel(communitySystem, externalSystem, \"Interacts with\")",
+            "file": "WA-GRP-006_c4.mmd"
+          },
+          {
+            "type": "class",
+            "content": "classDiagram\n    class Community {\n        +String name\n        +String description\n        +List<Group> groups\n        +addGroup(Group group)\n        +removeGroup(Group group)\n    }\n\n    class Group {\n        +String name\n        +String description\n        +List<Member> members\n        +addMember(Member member)\n        +removeMember(Member member)\n    }\n\n    class Member {\n        +String username\n        +String email\n        +String role\n    }\n\n    Community \"1\" -- \"0..*\" Group : contains\n    Group \"1\" -- \"0..*\" Member : includes",
+            "file": "WA-GRP-006_class.mmd"
+          },
+          {
+            "type": "er",
+            "content": "erDiagram\n    COMMUNITY {\n        string id PK \"Primary Key\"\n        string name\n        string description\n    }\n    \n    GROUP {\n        string id PK \"Primary Key\"\n        string name\n        string community_id FK \"Foreign Key\"\n    }\n    \n    COMMUNITY ||--o{ GROUP : has",
+            "file": "WA-GRP-006_er.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-031",
+            "title": "Community",
+            "priority": "must",
+            "description": "",
+            "as_a": "Community-Administrator",
+            "i_want": "eine Community mit mehreren Gruppen erstellen und verwalten",
+            "so_that": "um die Kommunikation thematisch zu strukturieren und eine uebersichtliche Verwaltung zu ermoeglichen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-API-broadcast-channels-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: broadcast-channels (9 endpoints: DELETE, GET, POST, PUT)",
+      "description": "Generate the COMPLETE NestJS module for 'broadcast-channels' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-channels — Create a one-way broadcast channel\n  GET /api/v1/broadcast-channels — List broadcast channels\n  GET /api/v1/broadcast-channels/{channelId} — Get a broadcast channel\n  PUT /api/v1/broadcast-channels/{channelId} — Update a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId} — Delete a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/recipients — Add recipients to a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId}/recipients — Remove recipients from a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/messages — Send a broadcast message\n  GET /api/v1/broadcast-channels/{channelId}/messages — List broadcast messages",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 27,
+      "output_files": [
+        "src/modules/broadcast-channels/broadcast-channels.controller.ts",
+        "src/modules/broadcast-channels/broadcast-channels.service.ts",
+        "src/modules/broadcast-channels/broadcast-channels.module.ts",
+        "src/modules/broadcast-channels/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-007"
+      ],
+      "related_user_stories": [
+        "US-032"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Channel as One-Way-Broadcast-Kanaele\n\n    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen\n    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele\n    Channel-->>System: Bestätigung der Initialisierung\n    System-->>User: Bestätigung der Unterstützung erhalten",
+            "file": "WA-GRP-007_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[System Initialization]\n    B --> C{One-Way-Broadcast-Kanaele?}\n    C -->|Ja| D[Unterstützung aktivieren]\n    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]\n    D --> F[System bereit für One-Way-Broadcast]\n    E --> G[Prozess beenden]\n    F --> H[Ende]\n    G --> H",
+            "file": "WA-GRP-007_flowchart.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Kanaele\n    Person(customer, \"Customer\", \"A user who consumes the one-way broadcast channels.\")\n    System(kanaele, \"Kanaele\", \"A system that supports one-way broadcast channels.\")\n    System_Ext(broadcastService, \"Broadcast Service\", \"External service that provides broadcast capabilities.\")\n\n    Rel(customer, kanaele, \"Uses\", \"HTTP\")\n    Rel(kanaele, broadcastService, \"Integrates with\", \"API\")",
+            "file": "WA-GRP-007_c4.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-032",
+            "title": "Kanaele",
+            "priority": "should",
+            "description": "",
+            "as_a": "Business-Kunde",
+            "i_want": "einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+            "so_that": "um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-API-media-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: media (1 endpoints: POST)",
+      "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media — Upload media for broadcast messages",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [
+        "src/modules/media/media.controller.ts",
+        "src/modules/media/media.service.ts",
+        "src/modules/media/media.module.ts",
+        "src/modules/media/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-007"
+      ],
+      "related_user_stories": [
+        "US-032"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Channel as One-Way-Broadcast-Kanaele\n\n    User->>System: Anfrage zur Unterstützung von One-Way-Broadcast-Kanaelen\n    System->>Channel: Initialisiere One-Way-Broadcast-Kanaele\n    Channel-->>System: Bestätigung der Initialisierung\n    System-->>User: Bestätigung der Unterstützung erhalten",
+            "file": "WA-GRP-007_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B[System Initialization]\n    B --> C{One-Way-Broadcast-Kanaele?}\n    C -->|Ja| D[Unterstützung aktivieren]\n    C -->|Nein| E[Fehler: Unterstützung nicht vorhanden]\n    D --> F[System bereit für One-Way-Broadcast]\n    E --> G[Prozess beenden]\n    F --> H[Ende]\n    G --> H",
+            "file": "WA-GRP-007_flowchart.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Kanaele\n    Person(customer, \"Customer\", \"A user who consumes the one-way broadcast channels.\")\n    System(kanaele, \"Kanaele\", \"A system that supports one-way broadcast channels.\")\n    System_Ext(broadcastService, \"Broadcast Service\", \"External service that provides broadcast capabilities.\")\n\n    Rel(customer, kanaele, \"Uses\", \"HTTP\")\n    Rel(kanaele, broadcastService, \"Integrates with\", \"API\")",
+            "file": "WA-GRP-007_c4.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-032",
+            "title": "Kanaele",
+            "priority": "should",
+            "description": "",
+            "as_a": "Business-Kunde",
+            "i_want": "einen One-Way-Broadcast-Kanal erstellen und Nachrichten an Abonnenten senden",
+            "so_that": "um Informationen effizient, datenschutzkonform und ohne Antwortflut zuverlässig zu verteilen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-API-chats-feature",
+      "epic_id": "EPIC-005",
+      "type": "api_controller",
+      "title": "Feature: chats (5 endpoints: GET, POST)",
+      "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/polls — Create a poll in a chat\n  GET /api/v1/chats/{chatId}/polls — List polls in a chat\n  GET /api/v1/chats/{chatId}/polls/{pollId} — Get poll details\n  POST /api/v1/chats/{chatId}/polls/{pollId}/votes — Cast or update a vote\n  POST /api/v1/chats/{chatId}/polls/{pollId}/close — Close a poll",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [
+        "src/modules/chats/chats.controller.ts",
+        "src/modules/chats/chats.service.ts",
+        "src/modules/chats/chats.module.ts",
+        "src/modules/chats/dto/"
+      ],
+      "related_requirements": [
+        "WA-GRP-008"
+      ],
+      "related_user_stories": [
+        "US-033"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant GroupChat as Gruppenchat\n    participant SingleChat as Einzelchat\n    participant System as System\n\n    User->>System: Umfrage erstellen\n    System->>GroupChat: Umfrage in Gruppenchat senden\n    GroupChat-->>User: Umfrage angezeigt\n    User->>GroupChat: Antwort auf Umfrage\n    GroupChat->>System: Antwort speichern\n\n    User->>System: Umfrage erstellen\n    System->>SingleChat: Umfrage in Einzelchat senden\n    SingleChat-->>User: Umfrage angezeigt\n    User->>SingleChat: Antwort auf Umfrage\n    SingleChat->>System: Antwort speichern",
+            "file": "WA-GRP-008_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Umfrage erstellen?}\n    B -->|Ja| C[Umfrage in Gruppe erstellen]\n    B -->|Ja| D[Umfrage im Einzelchat erstellen]\n    B -->|Nein| E[Prozess beenden]\n    C --> F[Teilnehmer einladen]\n    D --> G[Teilnehmer einladen]\n    F --> H{Teilnehmer antworten?}\n    G --> H\n    H -->|Ja| I[Antworten sammeln]\n    H -->|Nein| J[Erinnerung senden]\n    J --> H\n    I --> K[Umfrage auswerten]\n    K --> L[Ergebnisse anzeigen]\n    L --> M[Prozess beenden]",
+            "file": "WA-GRP-008_flowchart.mmd"
+          },
+          {
+            "type": "c4",
+            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Umfragen System Context Diagram\", \"description\": \"Das System MUSS Umfragen in Gruppen und Einzelchats unterstuetzen\" } }%%\nC4Context\n    Person(user, \"Benutzer\", \"Nutzer, der Umfragen erstellt und beantwortet\")\n    System(umfragenSystem, \"Umfragen System\", \"System zur Erstellung und Verwaltung von Umfragen\")\n    System_Ext(gruppenChat, \"Gruppenchat\", \"Plattform für Gruppenchats\")\n    System_Ext(einzelChat, \"Einzelchat\", \"Plattform für Einzelchats\")\n\n    Rel(user, umfragenSystem, \"verwendet\")\n    Rel(umfragenSystem, gruppenChat, \"unters",
+            "file": "WA-GRP-008_c4.mmd"
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-033",
+            "title": "Umfragen",
+            "priority": "should",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine Umfrage in einem Gruppen- oder Einzelchat erstellen und teilen",
+            "so_that": "schnell Meinungen einholen zu koennen und Entscheidungen effizient zu treffen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-005-VERIFY-build-api",
+      "epic_id": "EPIC-005",
+      "type": "verify_build",
+      "title": "Build backend",
+      "description": "Run npm run build for NestJS backend.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-API-invite-links-feature",
+        "EPIC-005-API-communities-feature",
+        "EPIC-005-API-broadcast-channels-feature",
+        "EPIC-005-API-media-feature",
+        "EPIC-005-API-chats-feature"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "Build completes without errors"
+    },
+    {
+      "id": "EPIC-005-VERIFY-typecheck-api",
+      "epic_id": "EPIC-005",
+      "type": "verify_typecheck",
+      "title": "TypeScript type check (API)",
+      "description": "Run tsc --noEmit to verify TypeScript types.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-build-api"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "No TypeScript errors"
+    },
+    {
+      "id": "EPIC-005-VERIFY-integration",
+      "epic_id": "EPIC-005",
+      "type": "verify_integration",
+      "title": "Run API integration tests",
+      "description": "Execute integration tests against API endpoints.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-typecheck-api"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "All integration tests pass"
+    },
+    {
+      "id": "EPIC-005-DOCKER-build-api",
+      "epic_id": "EPIC-005",
+      "type": "docker_build",
+      "title": "Build API Docker image",
+      "description": "Build Docker image for NestJS backend.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-typecheck-api",
+        "EPIC-005-VERIFY-integration"
+      ],
+      "estimated_minutes": 5,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "Docker image built successfully"
+    },
+    {
+      "id": "EPIC-005-DOCKER-start-api",
+      "epic_id": "EPIC-005",
+      "type": "docker_start",
+      "title": "Start API container",
+      "description": "Start backend container with docker-compose.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-build-api"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "API container running"
+    },
+    {
+      "id": "EPIC-005-DOCKER-health-api",
+      "epic_id": "EPIC-005",
+      "type": "docker_health",
+      "title": "API health check",
+      "description": "Verify API container is healthy via /health endpoint.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-start-api"
+      ],
+      "estimated_minutes": 1,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "Health endpoint returns 200 OK"
+    },
+    {
+      "id": "EPIC-005-CHECKPOINT-api",
+      "epic_id": "EPIC-005",
+      "type": "checkpoint_api",
+      "title": "Checkpoint: Review Api",
+      "description": "User approval required before continuing. Review the api phase results.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-build-api",
+        "EPIC-005-DOCKER-start-api",
+        "EPIC-005-DOCKER-health-api"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "api",
+      "success_criteria": "User approved checkpoint"
+    },
+    {
+      "id": "EPIC-005-FE-EPIC005Page-page",
+      "epic_id": "EPIC-005",
+      "type": "fe_page",
+      "title": "Page: EPIC005Page",
+      "description": "Create EPIC005Page page component implementing 10 user stories.",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-api"
+      ],
+      "estimated_minutes": 20,
+      "output_files": [
+        "src/pages/EPIC005Page/EPIC005Page.tsx"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-028",
+        "US-029",
+        "US-030",
+        "US-031",
+        "US-032",
+        "US-033",
+        "US-034",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": "React page component with routing, state management, and error boundaries",
+      "enrichment_context": {
+        "accessibility_rules": [
+          "WCAG 2.1 Level AA Compliance",
+          "Keyboard Navigation fuer alle Funktionen",
+          "Screen Reader Support",
+          "Kontrastverhältnis mindestens 4.5:1",
+          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
+          "All images have alt text",
+          "Videos have captions",
+          "Color is not the only way to convey information"
+        ],
+        "design_tokens": {
+          "colors": {
+            "primary": "#25D366",
+            "primary-dark": "#128C7E",
+            "primary-light": "#DCF8C6",
+            "secondary": "#34B7F1",
+            "background": "#F5F5F5",
+            "surface": "#FFFFFF",
+            "text-primary": "#1C1C1C",
+            "text-secondary": "#6B6B6B",
+            "error": "#E53935",
+            "warning": "#FB8C00",
+            "success": "#43A047",
+            "info": "#1E88E5"
+          },
+          "font_family": "Inter, Arial, sans-serif",
+          "typography": {
+            "h1": "2.5rem/700",
+            "h2": "2rem/600",
+            "h3": "1.5rem/600",
+            "h4": "1.25rem/600",
+            "body": "1rem/400",
+            "body-small": "0.875rem/400",
+            "caption": "0.75rem/400"
+          },
+          "spacing": {
+            "xs": "0.25rem",
+            "sm": "0.5rem",
+            "md": "1rem",
+            "lg": "1.5rem",
+            "xl": "2rem",
+            "2xl": "3rem",
+            "3xl": "4rem"
+          },
+          "breakpoints": {
+            "mobile": 320,
+            "mobile-lg": 480,
+            "tablet": 768,
+            "desktop": 1024,
+            "desktop-lg": 1280,
+            "desktop-xl": 1536
+          },
+          "border_radius": {
+            "none": "0",
+            "sm": "0.125rem",
+            "md": "0.375rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          }
+        }
+      }
+    },
+    {
+      "id": "EPIC-005-FE-EPIC005Page-components",
+      "epic_id": "EPIC-005",
+      "type": "fe_component",
+      "title": "Components: EPIC005Page",
+      "description": "Create reusable components for EPIC005Page",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-FE-EPIC005Page-page"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [
+        "src/components/EPIC005Page/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": "Reusable React component with typed props interface",
+      "enrichment_context": {
+        "accessibility_rules": [
+          "WCAG 2.1 Level AA Compliance",
+          "Keyboard Navigation fuer alle Funktionen",
+          "Screen Reader Support",
+          "Kontrastverhältnis mindestens 4.5:1",
+          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
+          "All images have alt text",
+          "Videos have captions",
+          "Color is not the only way to convey information"
+        ],
+        "design_tokens": {
+          "colors": {
+            "primary": "#25D366",
+            "primary-dark": "#128C7E",
+            "primary-light": "#DCF8C6",
+            "secondary": "#34B7F1",
+            "background": "#F5F5F5",
+            "surface": "#FFFFFF",
+            "text-primary": "#1C1C1C",
+            "text-secondary": "#6B6B6B",
+            "error": "#E53935",
+            "warning": "#FB8C00",
+            "success": "#43A047",
+            "info": "#1E88E5"
+          },
+          "font_family": "Inter, Arial, sans-serif",
+          "typography": {
+            "h1": "2.5rem/700",
+            "h2": "2rem/600",
+            "h3": "1.5rem/600",
+            "h4": "1.25rem/600",
+            "body": "1rem/400",
+            "body-small": "0.875rem/400",
+            "caption": "0.75rem/400"
+          },
+          "spacing": {
+            "xs": "0.25rem",
+            "sm": "0.5rem",
+            "md": "1rem",
+            "lg": "1.5rem",
+            "xl": "2rem",
+            "2xl": "3rem",
+            "3xl": "4rem"
+          },
+          "breakpoints": {
+            "mobile": 320,
+            "mobile-lg": 480,
+            "tablet": 768,
+            "desktop": 1024,
+            "desktop-lg": 1280,
+            "desktop-xl": 1536
+          },
+          "border_radius": {
+            "none": "0",
+            "sm": "0.125rem",
+            "md": "0.375rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          }
+        }
+      }
+    },
+    {
+      "id": "EPIC-005-FE-EPIC005Page-hook",
+      "epic_id": "EPIC-005",
+      "type": "fe_hook",
+      "title": "Hook: useEPIC005Page",
+      "description": "Create custom hook for EPIC005Page state and logic",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-FE-EPIC005Page-page"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [
+        "src/hooks/useEPIC005Page.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": null,
+      "enrichment_context": {
+        "accessibility_rules": [
+          "WCAG 2.1 Level AA Compliance",
+          "Keyboard Navigation fuer alle Funktionen",
+          "Screen Reader Support",
+          "Kontrastverhältnis mindestens 4.5:1",
+          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
+          "All images have alt text",
+          "Videos have captions",
+          "Color is not the only way to convey information"
+        ],
+        "design_tokens": {
+          "colors": {
+            "primary": "#25D366",
+            "primary-dark": "#128C7E",
+            "primary-light": "#DCF8C6",
+            "secondary": "#34B7F1",
+            "background": "#F5F5F5",
+            "surface": "#FFFFFF",
+            "text-primary": "#1C1C1C",
+            "text-secondary": "#6B6B6B",
+            "error": "#E53935",
+            "warning": "#FB8C00",
+            "success": "#43A047",
+            "info": "#1E88E5"
+          },
+          "font_family": "Inter, Arial, sans-serif",
+          "typography": {
+            "h1": "2.5rem/700",
+            "h2": "2rem/600",
+            "h3": "1.5rem/600",
+            "h4": "1.25rem/600",
+            "body": "1rem/400",
+            "body-small": "0.875rem/400",
+            "caption": "0.75rem/400"
+          },
+          "spacing": {
+            "xs": "0.25rem",
+            "sm": "0.5rem",
+            "md": "1rem",
+            "lg": "1.5rem",
+            "xl": "2rem",
+            "2xl": "3rem",
+            "3xl": "4rem"
+          },
+          "breakpoints": {
+            "mobile": 320,
+            "mobile-lg": 480,
+            "tablet": 768,
+            "desktop": 1024,
+            "desktop-lg": 1280,
+            "desktop-xl": 1536
+          },
+          "border_radius": {
+            "none": "0",
+            "sm": "0.125rem",
+            "md": "0.375rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          }
+        }
+      }
+    },
+    {
+      "id": "EPIC-005-FE-EPIC005Page-api",
+      "epic_id": "EPIC-005",
+      "type": "fe_api_client",
+      "title": "API Client: EPIC005Page",
+      "description": "Create API client functions for EPIC005Page",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-FE-EPIC005Page-hook"
+      ],
+      "estimated_minutes": 5,
+      "output_files": [
+        "src/api/epic005pageAPI.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": null,
+      "enrichment_context": {
+        "accessibility_rules": [
+          "WCAG 2.1 Level AA Compliance",
+          "Keyboard Navigation fuer alle Funktionen",
+          "Screen Reader Support",
+          "Kontrastverhältnis mindestens 4.5:1",
+          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
+          "All images have alt text",
+          "Videos have captions",
+          "Color is not the only way to convey information"
+        ],
+        "design_tokens": {
+          "colors": {
+            "primary": "#25D366",
+            "primary-dark": "#128C7E",
+            "primary-light": "#DCF8C6",
+            "secondary": "#34B7F1",
+            "background": "#F5F5F5",
+            "surface": "#FFFFFF",
+            "text-primary": "#1C1C1C",
+            "text-secondary": "#6B6B6B",
+            "error": "#E53935",
+            "warning": "#FB8C00",
+            "success": "#43A047",
+            "info": "#1E88E5"
+          },
+          "font_family": "Inter, Arial, sans-serif",
+          "typography": {
+            "h1": "2.5rem/700",
+            "h2": "2rem/600",
+            "h3": "1.5rem/600",
+            "h4": "1.25rem/600",
+            "body": "1rem/400",
+            "body-small": "0.875rem/400",
+            "caption": "0.75rem/400"
+          },
+          "spacing": {
+            "xs": "0.25rem",
+            "sm": "0.5rem",
+            "md": "1rem",
+            "lg": "1.5rem",
+            "xl": "2rem",
+            "2xl": "3rem",
+            "3xl": "4rem"
+          },
+          "breakpoints": {
+            "mobile": 320,
+            "mobile-lg": 480,
+            "tablet": 768,
+            "desktop": 1024,
+            "desktop-lg": 1280,
+            "desktop-xl": 1536
+          },
+          "border_radius": {
+            "none": "0",
+            "sm": "0.125rem",
+            "md": "0.375rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          }
+        }
+      }
+    },
+    {
+      "id": "EPIC-005-VERIFY-build-fe",
+      "epic_id": "EPIC-005",
+      "type": "verify_build",
+      "title": "Build frontend",
+      "description": "Run npm run build for React frontend.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-FE-EPIC005Page-page",
+        "EPIC-005-FE-EPIC005Page-components",
+        "EPIC-005-FE-EPIC005Page-hook",
+        "EPIC-005-FE-EPIC005Page-api"
+      ],
+      "estimated_minutes": 3,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "frontend",
+      "success_criteria": "Frontend build completes without errors"
+    },
+    {
+      "id": "EPIC-005-VERIFY-lint",
+      "epic_id": "EPIC-005",
+      "type": "verify_lint",
+      "title": "Run ESLint",
+      "description": "Check code quality with ESLint.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-build-fe"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "frontend",
+      "success_criteria": "No linting errors"
+    },
+    {
+      "id": "EPIC-005-VERIFY-typecheck-fe",
+      "epic_id": "EPIC-005",
+      "type": "verify_typecheck",
+      "title": "TypeScript type check (Frontend)",
+      "description": "Run tsc --noEmit for frontend.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-lint"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "frontend",
+      "success_criteria": "No TypeScript errors"
+    },
+    {
+      "id": "EPIC-005-VERIFY-unit",
+      "epic_id": "EPIC-005",
+      "type": "verify_unit",
+      "title": "Run unit tests",
+      "description": "Execute vitest unit tests.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-typecheck-fe"
+      ],
+      "estimated_minutes": 5,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "frontend",
+      "success_criteria": "All unit tests pass"
+    },
+    {
+      "id": "EPIC-005-CHECKPOINT-frontend",
+      "epic_id": "EPIC-005",
+      "type": "checkpoint_fe",
+      "title": "Checkpoint: Review Frontend",
+      "description": "User approval required before continuing. Review the frontend phase results.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-lint",
+        "EPIC-005-VERIFY-typecheck-fe",
+        "EPIC-005-VERIFY-unit"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "frontend",
+      "success_criteria": "User approved checkpoint"
+    },
+    {
+      "id": "EPIC-005-TEST-unit",
+      "epic_id": "EPIC-005",
+      "type": "test",
+      "title": "Generate unit tests for EPIC-005",
+      "description": "Create Vitest unit tests for all EPIC-005 services and utilities. NO MOCKS - use real implementations.",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-frontend"
+      ],
+      "estimated_minutes": 10,
+      "output_files": [
+        "__tests__/unit/epic_005/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": null
+    },
+    {
+      "id": "EPIC-005-TEST-integration",
+      "epic_id": "EPIC-005",
+      "type": "test",
+      "title": "Generate integration tests for EPIC-005",
+      "description": "Create Vitest integration tests for EPIC-005 API endpoints with real database.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-TEST-unit"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [
+        "__tests__/integration/epic_005/"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": null
+    },
+    {
+      "id": "EPIC-005-TEST-e2e",
+      "epic_id": "EPIC-005",
+      "type": "test",
+      "title": "Generate E2E tests for EPIC-005",
+      "description": "Create Playwright E2E tests for 10 user stories in EPIC-005.",
+      "status": "pending",
+      "dependencies": [
+        "EPIC-005-TEST-integration"
+      ],
+      "estimated_minutes": 20,
+      "output_files": [
+        "e2e/epic_005.spec.ts"
+      ],
+      "related_requirements": [],
+      "related_user_stories": [
+        "US-026",
+        "US-027",
+        "US-028",
+        "US-029",
+        "US-030",
+        "US-031",
+        "US-032",
+        "US-033",
+        "US-034",
+        "US-084"
+      ],
+      "phase": "code",
+      "success_criteria": null
+    },
+    {
+      "id": "EPIC-005-VERIFY-e2e",
+      "epic_id": "EPIC-005",
+      "type": "verify_e2e",
+      "title": "Run E2E tests",
+      "description": "Execute Playwright E2E test suite.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-TEST-unit",
+        "EPIC-005-TEST-integration",
+        "EPIC-005-TEST-e2e"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "test",
+      "success_criteria": "All E2E tests pass"
+    },
+    {
+      "id": "EPIC-005-DOCKER-build-prod",
+      "epic_id": "EPIC-005",
+      "type": "docker_build",
+      "title": "Build production image",
+      "description": "Build optimized production Docker image.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-VERIFY-e2e"
+      ],
+      "estimated_minutes": 5,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "deploy",
+      "success_criteria": "Production image built"
+    },
+    {
+      "id": "EPIC-005-DOCKER-start-prod",
+      "epic_id": "EPIC-005",
+      "type": "docker_start",
+      "title": "Start production container",
+      "description": "Start full stack in production mode.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-build-prod"
+      ],
+      "estimated_minutes": 2,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "deploy",
+      "success_criteria": "All containers running"
+    },
+    {
+      "id": "EPIC-005-DOCKER-health-prod",
+      "epic_id": "EPIC-005",
+      "type": "docker_health",
+      "title": "Production health check",
+      "description": "Verify all services are healthy.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-start-prod"
+      ],
+      "estimated_minutes": 1,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "deploy",
+      "success_criteria": "All containers healthy"
+    },
+    {
+      "id": "EPIC-005-DOCKER-logs-prod",
+      "epic_id": "EPIC-005",
+      "type": "docker_logs",
+      "title": "Collect production logs",
+      "description": "Collect logs from all production containers.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-health-prod"
+      ],
+      "estimated_minutes": 1,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "deploy",
+      "success_criteria": "Logs collected, no critical errors"
+    },
+    {
+      "id": "EPIC-005-CHECKPOINT-deploy",
+      "epic_id": "EPIC-005",
+      "type": "checkpoint_deploy",
+      "title": "Checkpoint: Review Deploy",
+      "description": "User approval required before continuing. Review the deploy phase results.",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-005-DOCKER-start-prod",
+        "EPIC-005-DOCKER-health-prod",
+        "EPIC-005-DOCKER-logs-prod"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "deploy",
+      "success_criteria": "User approved checkpoint"
+    },
+    {
+      "id": "EPIC-005-INTEGRATION",
+      "epic_id": "EPIC-005",
+      "type": "integration",
+      "title": "Validate and integrate EPIC-005",
+      "description": "Run all EPIC-005 tests, validate build, and verify all 10 user stories are implemented.",
+      "status": "failed",
+      "dependencies": [
+        "EPIC-005-CHECKPOINT-deploy"
+      ],
+      "estimated_minutes": 15,
+      "output_files": [],
+      "related_requirements": [],
+      "related_user_stories": [],
+      "phase": "code",
+      "success_criteria": null
+    }
+  ]
+}

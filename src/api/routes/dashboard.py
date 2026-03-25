@@ -5,8 +5,9 @@ Also provides Docker/project management APIs for web dashboard.
 """
 
 from datetime import datetime
-from typing import Optional, List
+from typing import Any, Optional, List
 import asyncio
+import json
 import subprocess
 import os
 from pathlib import Path
@@ -87,6 +88,10 @@ _project_containers: dict = {}
 # Generation state tracking (keyed by projectId)
 # Stores: { phase, progress_pct, completed, failed, total, started_at, error }
 _generation_state: dict = {}
+
+# ── Parallel Generation Registry ──
+# Tracks all running generation processes: {project_id: {pid, started_at, output_dir, db_schema, ...}}
+_active_generations: dict = {}
 
 logger = structlog.get_logger(__name__)
 
@@ -491,6 +496,83 @@ async def stop_project_container(request: ProjectStopRequest) -> SuccessResponse
 
 
 @router.get("/project/status")
+def _load_epics_from_files(project_path: str) -> list:
+    """Load epic info from task files on disk. Works even when generation is idle."""
+    import json as _json
+    epics = []
+    tasks_dir = Path(project_path) / "tasks"
+    if not tasks_dir.exists():
+        return epics
+    for tf in sorted(tasks_dir.glob("epic-*-tasks-enriched.json")):
+        try:
+            with open(tf) as f:
+                td = _json.load(f)
+            tasks = td.get("tasks", [])
+            epic_id = td.get("epic_id", tf.stem.split("-tasks")[0].upper())
+            if not epic_id:
+                # Extract from filename: epic-001-tasks-enriched.json → EPIC-001
+                parts = tf.stem.replace("-tasks-enriched", "").upper()
+                epic_id = parts
+            epics.append({
+                "id": epic_id,
+                "name": td.get("epic_name", td.get("name", epic_id)),
+                "tasks_total": len(tasks),
+                "tasks_complete": sum(1 for t in tasks if t.get("status") == "completed"),
+                "progress_pct": 0,
+            })
+        except Exception:
+            pass
+    # Calculate progress from DB if possible (task_id prefix matching)
+    return epics
+
+
+async def _enrich_epics_from_db(epics: list, job_id: int = None) -> list:
+    """Enrich epic progress from DB task statuses."""
+    try:
+        import asyncpg
+        db_url = os.environ.get("DATABASE_URL", "").replace("+asyncpg", "").replace("postgresql+asyncpg://", "postgresql://")
+        conn = await asyncpg.connect(db_url.split("?")[0] if "?" in db_url else db_url)
+        job_clause = "job_id=%d" % job_id if job_id else "job_id=(SELECT MAX(id) FROM jobs)"
+        rows = await conn.fetch(
+            "SELECT task_id, status FROM tasks WHERE %s" % job_clause
+        )
+        await conn.close()
+
+        # Group by epic prefix
+        epic_stats = {}  # epic_id → {completed, failed, total}
+        for row in rows:
+            tid = row["task_id"] or ""
+            # Extract epic: EPIC-001-SETUP-xxx → EPIC-001
+            parts = tid.split("-")
+            if len(parts) >= 2 and parts[0] == "EPIC":
+                eid = "EPIC-%s" % parts[1]
+            else:
+                eid = "UNKNOWN"
+            if eid not in epic_stats:
+                epic_stats[eid] = {"completed": 0, "failed": 0, "pending": 0, "total": 0}
+            epic_stats[eid]["total"] += 1
+            status = (row["status"] or "").upper()
+            if status == "COMPLETED":
+                epic_stats[eid]["completed"] += 1
+            elif status == "FAILED":
+                epic_stats[eid]["failed"] += 1
+            else:
+                epic_stats[eid]["pending"] += 1
+
+        # Merge into epics list
+        for e in epics:
+            eid = e["id"].upper()
+            if eid in epic_stats:
+                s = epic_stats[eid]
+                e["tasks_total"] = s["total"]
+                e["tasks_complete"] = s["completed"]
+                e["tasks_failed"] = s.get("failed", 0)
+                e["progress_pct"] = int(s["completed"] * 100 / max(s["total"], 1))
+    except Exception:
+        pass
+    return epics
+
+
 async def get_project_status(projectId: str = Query(..., description="Project ID")):
     """
     Get project generation status. Returns generation phase, progress, and task counts
@@ -553,7 +635,145 @@ async def get_project_status(projectId: str = Query(..., description="Project ID
             "running": True,
         }
 
-    # Fallback: container status
+    # Fallback 1: Check subprocess generation via .generation_status.json + log file
+    output_base = Path("/app/output")
+    output_dir = output_base / projectId
+    if not output_dir.exists() and output_base.exists():
+        # Try finding by prefix match
+        for d in output_base.iterdir():
+            if d.is_dir() and (projectId in d.name or d.name.startswith(projectId)):
+                output_dir = d
+                break
+
+    gen_status_file = output_dir / ".generation_status.json"
+    gen_log_file = output_dir / "generation.log"
+
+    if gen_log_file.exists():
+        try:
+            import time as _time
+            log_mtime = gen_log_file.stat().st_mtime
+            log_age = _time.time() - log_mtime
+
+            # If log was modified in last 60s, generation is running
+            is_running = log_age < 60
+
+            # Read last few lines for progress info
+            log_lines = gen_log_file.read_text(encoding="utf-8", errors="replace").strip().split("\n")
+            last_lines = log_lines[-10:] if len(log_lines) > 10 else log_lines
+
+            # Count executing/completed/failed from log
+            total_executing = sum(1 for l in log_lines if "Executing task" in l)
+            total_completed_log = sum(1 for l in log_lines if "epic_task_completed" in l)
+            total_failed_log = sum(1 for l in log_lines if "epic_task_failed" in l)
+
+            # Get DB stats via direct SQL
+            db_stats = {"completed": 0, "failed": 0, "pending": 0, "total": 0}
+            try:
+                import asyncpg
+                db_url = os.environ.get("DATABASE_URL", "").replace("+asyncpg", "").replace("postgresql://", "postgresql://")
+                if "asyncpg" in db_url:
+                    db_url = db_url.replace("postgresql+asyncpg://", "postgresql://")
+                conn = await asyncpg.connect(db_url.split("?")[0] if "?" in db_url else db_url)
+                rows = await conn.fetch(
+                    "SELECT status, COUNT(*) as cnt FROM tasks WHERE job_id=(SELECT MAX(id) FROM jobs) GROUP BY status"
+                )
+                for row in rows:
+                    db_stats[row["status"].lower()] = row["cnt"]
+                db_stats["total"] = sum(db_stats.values())
+                await conn.close()
+            except Exception:
+                pass
+
+            total = db_stats.get("total", 0) or (total_executing + 1)
+            completed = db_stats.get("completed", 0) or total_completed_log
+            failed = db_stats.get("failed", 0) or total_failed_log
+            pending = db_stats.get("pending", 0)
+            progress = int((completed + failed) * 100 / max(total, 1))
+
+            # Current task from last log line
+            current_task = ""
+            for l in reversed(last_lines):
+                if "Executing task" in l:
+                    import re as _re
+                    m = _re.search(r"Executing task (\S+?):", l)
+                    if m:
+                        current_task = m.group(1)
+                    break
+
+            if is_running or (gen_status_file.exists() and "running" in gen_status_file.read_text()):
+                # Load epics from task files
+                req_path = None
+                try:
+                    from src.engine_settings import get_project
+                    _p = get_project()
+                    req_path = _p.get("requirements_path") if _p else None
+                except Exception:
+                    pass
+                _epics = _load_epics_from_files(req_path) if req_path else []
+                _epics = await _enrich_epics_from_db(_epics)
+
+                return {
+                    "phase": "generating",
+                    "progress_pct": progress,
+                    "agents": [{"name": "EpicOrchestrator", "status": "running", "current_task": current_task}] if is_running else [],
+                    "epics": _epics,
+                    "service_count": 0,
+                    "endpoint_count": 0,
+                    "completed": completed,
+                    "failed": failed,
+                    "pending": pending,
+                    "total": total,
+                    "running": is_running,
+                    "last_activity": last_lines[-1][:200] if last_lines else "",
+                }
+        except Exception:
+            pass
+
+    # Always try to get DB task counts (even when idle)
+    db_stats = {"completed": 0, "failed": 0, "pending": 0, "total": 0, "cancelled": 0, "running": 0}
+    try:
+        import asyncpg
+        db_url = os.environ.get("DATABASE_URL", "").replace("+asyncpg", "").replace("postgresql+asyncpg://", "postgresql://")
+        conn = await asyncpg.connect(db_url.split("?")[0] if "?" in db_url else db_url)
+        rows = await conn.fetch(
+            "SELECT status, COUNT(*) as cnt FROM tasks WHERE job_id=(SELECT MAX(id) FROM jobs) GROUP BY status"
+        )
+        for row in rows:
+            db_stats[row["status"].lower()] = row["cnt"]
+        db_stats["total"] = sum(v for k, v in db_stats.items() if k != "total")
+        await conn.close()
+    except Exception:
+        pass
+
+    if db_stats["total"] > 0:
+        progress = int((db_stats["completed"] + db_stats["failed"]) * 100 / max(db_stats["total"], 1))
+        # Load epics from task files + DB stats
+        req_path = None
+        try:
+            from src.engine_settings import get_project
+            _p = get_project()
+            req_path = _p.get("requirements_path") if _p else None
+        except Exception:
+            pass
+        _epics = _load_epics_from_files(req_path) if req_path else []
+        _epics = await _enrich_epics_from_db(_epics)
+
+        return {
+            "phase": "idle",
+            "progress_pct": progress,
+            "agents": [],
+            "epics": _epics,
+            "service_count": 0,
+            "endpoint_count": 0,
+            "completed": db_stats["completed"],
+            "failed": db_stats["failed"],
+            "pending": db_stats["pending"],
+            "cancelled": db_stats.get("cancelled", 0),
+            "total": db_stats["total"],
+            "running": False,
+        }
+
+    # Fallback 2: container status
     try:
         container_name = f"project-{projectId}"
         stdout, stderr, rc = await run_command(
@@ -599,66 +819,218 @@ async def get_project_logs(
 @router.post("/generate", response_model=SuccessResponse)
 async def start_generation(request: GenerateRequest) -> SuccessResponse:
     """
-    Start a code generation job.
+    Start a code generation job. Returns immediately, spawns in background thread.
+    Lock check happens synchronously before thread spawn.
     """
+    import threading
+    import time
+
+    # Resolve project_id and output_dir for lock check
+    req_path = Path(request.requirementsPath)
+    project_id = getattr(request, "projectId", "") or (req_path.name if req_path.is_dir() or not req_path.suffix else req_path.parent.name)
+    output_dir = request.outputDir or "/app/output/%s" % project_id
+
+    # ── Lock check (synchronous — before thread) ──
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    lock_file = Path(output_dir) / ".generation_running"
+    if lock_file.exists():
+        try:
+            lock_data = json.loads(lock_file.read_text())
+            elapsed = int(time.time() - lock_data.get("started_at", 0))
+            if elapsed < 7200:  # Valid for 2 hours max
+                return SuccessResponse(success=False, error="Generation already running for '%s' (started %ds ago)" % (project_id, elapsed))
+        except Exception:
+            pass
+        lock_file.unlink(missing_ok=True)
+
+    # ── Write lock BEFORE spawning thread ──
+    lock_file.write_text(json.dumps({"project_id": project_id, "started_at": time.time()}))
+
+    def _launch():
+        try:
+            import traceback
+            logger.info("generation_thread_started project=%s", project_id)
+            _start_generation_sync(request)
+            logger.info("generation_thread_completed project=%s", project_id)
+        except Exception as e:
+            logger.error("generation_launch_failed error=%s\n%s", str(e), traceback.format_exc())
+            lock_file.unlink(missing_ok=True)
+
+    t = threading.Thread(target=_launch, daemon=True)
+    t.start()
+    return SuccessResponse(success=True)
+
+
+def _start_generation_sync(request):
+    """Synchronous generation launcher — runs in background thread. Supports parallel projects."""
     try:
         engine_root = Path(__file__).parent.parent.parent.parent
-        project_id = Path(request.requirementsPath).parent.name
+
+        req_path = Path(request.requirementsPath)
+        if req_path.is_dir() or (not req_path.suffix and not req_path.exists()):
+            project_path_resolved = req_path
+        else:
+            project_path_resolved = req_path.parent
+
+        project_id = getattr(request, "projectId", "") or project_path_resolved.name
         output_dir = request.outputDir or "/app/output/%s" % project_id
 
-        # Generate project MCP config (scoped to output dir)
+        # Lock already checked in start_generation() — clean stale registry
+        if project_id in _active_generations:
+            del _active_generations[project_id]
+
+        # ── Resolve project config from engine_settings ──
+        proj_config = {}
+        try:
+            from src.engine_settings import get_project
+            proj_config = get_project(project_id) or {}
+        except Exception:
+            pass
+
+        db_schema = proj_config.get("db_schema", project_id.replace("-", "_").replace(" ", "_"))
+        vnc_port = proj_config.get("vnc_port", 6090)
+        app_port = proj_config.get("app_port", 3100)
+
+        # Load generation settings
+        gen_settings = {}
+        try:
+            from src.engine_settings import load_settings
+            all_settings = load_settings()
+            gen_settings = all_settings.get("generation", {})
+        except Exception:
+            pass
+
+        # ── Auto-create project database ──
+        try:
+            subprocess.run(
+                ["psql", "-U", "postgres", "-h", "postgres", "-c",
+                 "CREATE DATABASE %s" % db_schema],
+                capture_output=True, text=True, timeout=5,
+            )
+        except Exception:
+            pass  # May already exist
+
+        # ── Generate MCP config ──
         try:
             from src.mcp.project_config import (
                 generate_project_mcp_config,
                 save_project_mcp_config,
                 generate_cli_mcp_config,
             )
-            project_id = Path(request.requirementsPath).parent.name
-            out_dir = request.outputDir or "/data/projects/%s" % project_id
             mcp_config = generate_project_mcp_config(
                 project_id=project_id,
-                project_path=str(Path(request.requirementsPath).parent),
-                output_dir=out_dir,
+                project_path=str(project_path_resolved),
+                output_dir=output_dir,
             )
             save_project_mcp_config(mcp_config)
-
-            # Also generate CLI-compatible MCP config for Claude/Kilo CLI
-            generate_cli_mcp_config(working_dir=out_dir)
-            logger.info("mcp_configs_generated", project_id=project_id)
+            generate_cli_mcp_config(working_dir=output_dir)
         except Exception as e:
             logger.warning("mcp_config_generation_failed", error=str(e))
 
-        # Run generation as SEPARATE PROCESS (does not block API event loop)
-        project_path = str(Path(request.requirementsPath).parent)
+        # ── Build command with project-specific params ──
+        project_path = str(project_path_resolved)
         cmd = [
             "python", "run_generation.py",
             "--project-path", project_path,
             "--output-dir", output_dir,
-            "--vnc-port", "6090",
-            "--app-port", "3100",
-            "--parallelism", "1",
+            "--project-id", project_id,
+            "--db-schema", db_schema,
+            "--vnc-port", str(vnc_port),
+            "--app-port", str(app_port),
+            "--parallelism", str(gen_settings.get("max_parallel_epics", 3)),
         ]
 
         env = os.environ.copy()
         env.pop("CLAUDECODE", None)
 
+        # ── Spawn as truly detached subprocess ──
+        log_path = Path(output_dir) / "generation.log"
+        log_file = open(str(log_path), "a")
+
         process = subprocess.Popen(
             cmd,
             cwd=str(engine_root),
-            stdout=open(str(Path(output_dir) / "generation.log"), "a"),
+            stdout=log_file,
             stderr=subprocess.STDOUT,
             env=env,
+            start_new_session=True,  # Detach from parent process group
         )
+        pid = process.pid
+        log_file.close()  # Popen has its own fd now
+
+        # ── Register in active generations ──
+        _active_generations[project_id] = {
+            "pid": pid,
+            "started_at": time.time(),
+            "output_dir": output_dir,
+            "db_schema": db_schema,
+            "vnc_port": vnc_port,
+            "app_port": app_port,
+            "log_path": log_path,
+        }
 
         logger.info("generation_started",
-                     requirements=request.requirementsPath,
+                     project_id=project_id,
                      output=output_dir,
-                     method="subprocess",
-                     pid=process.pid)
+                     db_schema=db_schema,
+                     vnc_port=vnc_port,
+                     app_port=app_port,
+                     pid=pid)
         return SuccessResponse(success=True)
     except Exception as e:
         logger.error("generation_start_failed", error=str(e))
         return SuccessResponse(success=False, error=str(e))
+
+
+# ============================================================================
+# Parallel Generation Management
+# ============================================================================
+
+
+@router.get("/active-generations")
+async def get_active_generations():
+    """List all currently running generation processes."""
+    result = {}
+    for pid, info in list(_active_generations.items()):
+        alive = False
+        try:
+            os.kill(info.get("pid", 0), 0)
+            alive = True
+        except (OSError, TypeError):
+            pass
+
+        last_line = ""
+        try:
+            log = Path(info.get("log_path", info.get("output_dir", "") + "/generation.log"))
+            if log.exists():
+                content = log.read_text(encoding="utf-8", errors="replace")
+                lines = content.strip().split("\n")
+                last_line = lines[-1][:200] if lines else ""
+        except Exception:
+            pass
+
+        result[pid] = {
+            **info,
+            "status": "running" if alive else "completed",
+            "last_log": last_line,
+            "elapsed_seconds": round(time.time() - info.get("started_at", time.time()), 1),
+        }
+    return {"generations": result, "count": len(result)}
+
+
+class GenerationCompleteRequest(BaseModel):
+    project_id: str
+
+
+@router.post("/generation-complete")
+async def generation_complete(request: GenerationCompleteRequest):
+    """Called by run_generation.py when a generation process finishes."""
+    pid = request.project_id
+    if pid in _active_generations:
+        info = _active_generations.pop(pid)
+        logger.info("generation_complete_cleanup", project_id=pid, elapsed=round(time.time() - info.get("started_at", 0), 1))
+        return {"success": True, "cleaned_up": True}
+    return {"success": True, "cleaned_up": False}
 
 
 # ============================================================================
@@ -1742,6 +2114,16 @@ class FixTaskRequest(BaseModel):
     epic_id: str = ""
     error_message: str = ""
     project_path: str = "/data/projects/whatsapp-messaging-service"
+    create_pr: bool = True  # Auto-create PR after successful fix
+
+
+class CreatePRRequest(BaseModel):
+    """Request to create a GitHub PR from generated/fixed code."""
+    project_path: str = "/data/projects/whatsapp-messaging-service"
+    branch_name: str = ""  # Auto-generated if empty
+    title: str = ""  # Auto-generated if empty
+    body: str = ""
+    base_branch: str = "main"
     max_retries: int = 3
 
 
@@ -2245,6 +2627,12 @@ async def _fix_task_loop(request: FixTaskRequest):
 
             # Post success to Discord
             await _post_fix_result(task_id, attempt, True)
+
+            # Auto-create PR if enabled
+            if request.create_pr:
+                pr_url = await _create_pr_after_fix(task_id, project_path, attempt)
+                if pr_url:
+                    logger.info("fix_pr_created", task_id=task_id, pr_url=pr_url)
             return
 
         # Build still failing — use new error for next attempt
@@ -2256,6 +2644,115 @@ async def _fix_task_loop(request: FixTaskRequest):
     logger.error("fix_task_exhausted", task_id=task_id,
                  attempts=request.max_retries)
     await _post_fix_result(task_id, request.max_retries, False, error)
+
+
+async def _create_pr_after_fix(task_id: str, project_path: str, attempt: int):
+    """Create a GitHub PR after a successful fix."""
+    import asyncio as _asyncio
+    import datetime
+
+    branch_name = "fix/%s-%s" % (
+        task_id.lower().replace(" ", "-"),
+        datetime.datetime.now().strftime("%Y%m%d-%H%M"),
+    )
+
+    try:
+        env = os.environ.copy()
+
+        # Create branch + commit
+        cmds = [
+            (["git", "checkout", "-b", branch_name], "create branch"),
+            (["git", "add", "-A"], "stage files"),
+            (["git", "commit", "-m", "fix(%s): auto-fix after %d attempt(s)" % (task_id, attempt)], "commit"),
+            (["git", "push", "-u", "origin", branch_name], "push"),
+        ]
+
+        for cmd, label in cmds:
+            process = await _asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=_asyncio.subprocess.PIPE,
+                stderr=_asyncio.subprocess.PIPE,
+                cwd=project_path,
+                env=env,
+            )
+            stdout, stderr = await _asyncio.wait_for(process.communicate(), timeout=30)
+            if process.returncode != 0 and label != "commit":
+                # commit may fail if nothing to commit — that's OK
+                error_text = (stderr or stdout or b"").decode("utf-8", errors="replace")
+                logger.warning("pr_git_%s_failed" % label, error=error_text[:200])
+                if label == "push":
+                    return None  # Can't create PR without push
+
+        # Create PR via gh CLI
+        title = "fix(%s): Auto-fix" % task_id
+        body = (
+            "## Auto-Fix PR\n\n"
+            "**Task:** `%s`\n"
+            "**Fixed after:** %d attempt(s)\n"
+            "**Branch:** `%s`\n\n"
+            "Generated by Coding Engine Fix Loop.\n"
+        ) % (task_id, attempt, branch_name)
+
+        process = await _asyncio.create_subprocess_exec(
+            "gh", "pr", "create",
+            "--title", title,
+            "--body", body,
+            "--base", "main",
+            stdout=_asyncio.subprocess.PIPE,
+            stderr=_asyncio.subprocess.PIPE,
+            cwd=project_path,
+            env=env,
+        )
+        stdout, stderr = await _asyncio.wait_for(process.communicate(), timeout=30)
+
+        if process.returncode == 0:
+            pr_url = stdout.decode("utf-8", errors="replace").strip()
+            logger.info("pr_created", task_id=task_id, url=pr_url)
+
+            # Post to Discord #prs channel
+            await _post_pr_notification(task_id, pr_url, branch_name, attempt)
+            return pr_url
+        else:
+            error_text = (stderr or stdout or b"").decode("utf-8", errors="replace")
+            logger.warning("gh_pr_create_failed", error=error_text[:300])
+            return None
+
+    except Exception as e:
+        logger.error("create_pr_failed", task_id=task_id, error=str(e))
+        return None
+
+
+async def _post_pr_notification(task_id: str, pr_url: str, branch: str,
+                                 attempts: int):
+    """Post PR notification to Discord #prs channel."""
+    try:
+        from src.tools.discord_agent import DiscordAgent
+
+        prs_channel = os.environ.get("DISCORD_CH_PRS", "")
+        dev_channel = os.environ.get("DISCORD_CH_DEV_TASKS", "1484193408955322399")
+        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        if not token:
+            return
+
+        msg = (
+            "**NEW PR** | `%s`\n"
+            "Branch: `%s`\n"
+            "Fixed after %d attempt(s)\n"
+            "Link: %s\n"
+            "**Action:** `REVIEW_NEEDED`"
+        ) % (task_id, branch, attempts, pr_url)
+
+        # Post to #prs channel if configured
+        if prs_channel:
+            discord_prs = DiscordAgent(bot_token=token, channel_id=prs_channel)
+            await discord_prs.send(msg)
+
+        # Also post to #dev-tasks
+        discord_dev = DiscordAgent(bot_token=token, channel_id=dev_channel)
+        await discord_dev.send(msg)
+
+    except Exception as e:
+        logger.error("post_pr_notification_failed", error=str(e))
 
 
 def _extract_epic_id(task_id: str) -> str:
@@ -2290,12 +2787,21 @@ def _build_fix_prompt(task_id: str, epic_id: str, error: str,
 
 
 async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
-    """Run Kilo or Claude CLI to apply the fix."""
+    """Run fix via CLI or OpenAI API fallback."""
     import asyncio as _asyncio
     from src.config import get_settings
 
     settings = get_settings()
 
+    # Try OpenAI API first (most reliable — no CLI dependency issues)
+    openai_key = os.environ.get("OPENAI_API_KEY", "")
+    if openai_key and backend in ("openai", "openrouter", ""):
+        result = await _run_openai_fix(prompt, project_path, openai_key)
+        if result.get("success"):
+            return result
+        logger.warning("openai_fix_fallback", error=result.get("error", "")[:100])
+
+    # Fallback to CLI
     if backend == "kilo":
         model = settings.kilo_model or "openrouter/openrouter/free"
         cmd = ["kilo", "run", "--auto", "--model", model, prompt]
@@ -2303,9 +2809,8 @@ async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
         cmd = ["claude", "--dangerously-skip-permissions",
                "--output-format", "json", "--max-turns", "10", "-p", prompt]
     else:
-        # OpenRouter fallback: use Kilo CLI with OpenRouter model
-        model = settings.kilo_model or "openrouter/openrouter/free"
-        cmd = ["kilo", "run", "--auto", "--model", model, prompt]
+        # Kilo with free model
+        cmd = ["kilo", "run", "--auto", "--model", "openrouter/qwen/qwen3-coder:free", prompt]
 
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
@@ -2341,6 +2846,83 @@ async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
         return {"success": False, "error": "CLI timeout after %ds" % timeout}
     except Exception as e:
         return {"success": False, "error": str(e)[:300]}
+
+
+def _get_fix_model() -> str:
+    """Get the model name for code fixing from engine_settings.yml."""
+    try:
+        from src.engine_settings import get_setting
+        return get_setting("models.fixing.model", "gpt-5.4")
+    except Exception:
+        return "gpt-5.4"
+
+
+async def _run_openai_fix(prompt: str, project_path: str, api_key: str) -> dict:
+    """Fix task via OpenAI API (GPT-5.4) — writes files directly."""
+    import httpx
+
+    try:
+        async with httpx.AsyncClient(timeout=120) as client:
+            resp = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={"Authorization": "Bearer %s" % api_key},
+                json={
+                    "model": _get_fix_model(),
+                    "messages": [
+                        {"role": "system", "content": (
+                            "You are a code fixer. Given an error and project context, "
+                            "output ONLY a JSON array of file fixes: "
+                            '[{"file": "path/to/file.ts", "content": "full corrected file content"}]. '
+                            "No explanations, no markdown — just the JSON array."
+                        )},
+                        {"role": "user", "content": prompt[:8000]},
+                    ],
+                    "max_tokens": 4000,
+                    "temperature": 0.2,
+                },
+            )
+
+            if resp.status_code != 200:
+                return {"success": False, "error": "OpenAI %d: %s" % (resp.status_code, resp.text[:200])}
+
+            data = resp.json()
+            content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+            # Parse file fixes from response
+            try:
+                # Strip markdown fences if present
+                clean = content.strip()
+                if clean.startswith("```"):
+                    clean = "\n".join(clean.split("\n")[1:])
+                if clean.endswith("```"):
+                    clean = clean.rsplit("```", 1)[0]
+                fixes = json.loads(clean.strip())
+            except (json.JSONDecodeError, ValueError):
+                return {"success": False, "error": "Could not parse fix JSON: %s" % content[:200]}
+
+            if not isinstance(fixes, list):
+                fixes = [fixes]
+
+            # Write fixes to disk
+            files_written = 0
+            for fix in fixes:
+                file_path = fix.get("file", "")
+                file_content = fix.get("content", "")
+                if not file_path or not file_content:
+                    continue
+
+                full_path = Path(project_path) / file_path
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+                full_path.write_text(file_content, encoding="utf-8")
+                files_written += 1
+                logger.info("openai_fix_wrote", file=file_path)
+
+            if files_written > 0:
+                return {"success": True, "output": "Fixed %d files via OpenAI" % files_written}
+            return {"success": False, "error": "No files to write from OpenAI response"}
+
+    except Exception as e:
+        return {"success": False, "error": "OpenAI fix error: %s" % str(e)[:200]}
 
 
 async def _verify_fix(project_path: str) -> dict:
@@ -2412,6 +2994,560 @@ async def _post_fix_result(task_id: str, attempts: int, success: bool,
         await discord.send(msg[:2000])
     except Exception as e:
         logger.error("post_fix_result_failed", error=str(e))
+
+
+# =============================================================================
+# Sync task results from generation subprocess to DB
+# =============================================================================
+
+
+class SyncTasksRequest(BaseModel):
+    output_dir: str = ""
+
+
+# ── Fix All (Smart Fix — same logic as Discord !fixall) ────
+
+# ── Trigger Bot Command (UI → Discord Bot) ────────────────
+
+class TriggerBotCommandRequest(BaseModel):
+    command: str = "fixall"
+    project_name: str = ""
+
+
+@router.post("/trigger-bot-command")
+async def trigger_bot_command(request: TriggerBotCommandRequest):
+    """Send a !command to Discord channel so the bot picks it up."""
+    import httpx
+
+    bot_token = os.environ.get("DISCORD_BOT_TOKEN_ANALYZER", "")
+    channel_id = os.environ.get("DISCORD_CH_DEV_TASKS", "")
+
+    if not bot_token or not channel_id:
+        return {"success": False, "error": "Missing DISCORD_BOT_TOKEN_ANALYZER or DISCORD_CH_DEV_TASKS env vars"}
+
+    cmd = "!%s" % request.command
+    if request.project_name:
+        cmd += " %s" % request.project_name
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(
+                "https://discord.com/api/v10/channels/%s/messages" % channel_id,
+                headers={"Authorization": "Bot %s" % bot_token},
+                json={"content": cmd},
+            )
+            if resp.status_code in (200, 201):
+                return {"success": True, "message": "Sent '%s' to Discord" % cmd}
+            return {"success": False, "error": "Discord %d: %s" % (resp.status_code, resp.text[:200])}
+    except Exception as e:
+        return {"success": False, "error": str(e)[:200]}
+
+
+class FixAllRequest(BaseModel):
+    project_name: str = ""
+
+
+@router.post("/fixall")
+async def fixall_endpoint(request: FixAllRequest, db: AsyncSession = Depends(get_db)):
+    """Smart fix ALL failed tasks — groups by type, uses optimal strategy per group.
+    Also dispatches to Orchestrator which notifies OpenClaw bots via Discord."""
+    import asyncio as _aio
+
+    # Notify orchestrator (posts to Discord channels)
+    try:
+        from src.services.orchestrator import get_orchestrator
+        from src.engine_settings import load_settings
+        orch = get_orchestrator(settings=load_settings())
+        asyncio.create_task(orch.trigger_fixall(request.project_name or "", 0))
+    except Exception as e:
+        logger.warning("Orchestrator dispatch failed: %s", e)
+
+    try:
+        from src.engine_settings import get_project
+        proj = get_project(request.project_name)
+    except Exception:
+        proj = {}
+
+    # Get job_id
+    job_id = proj.get("db_job_id", 24) if proj else 24
+    output_dir = proj.get("output_dir", "/app/output") if proj else "/app/output"
+    db_schema = proj.get("db_schema", "coding_engine") if proj else "coding_engine"
+
+    # Get all failed tasks
+    from sqlalchemy import text as sql_text
+    result = await db.execute(
+        sql_text("SELECT task_id, title, status_message, task_type FROM tasks WHERE job_id = :jid AND status = 'FAILED' ORDER BY task_id"),
+        {"jid": job_id},
+    )
+    failed_tasks = [dict(r._mapping) for r in result.fetchall()]
+
+    if not failed_tasks:
+        return {"success": True, "message": "No failed tasks", "fixed": 0, "total": 0}
+
+    # Group by type
+    migrations = [t for t in failed_tasks if "migration" in t["task_id"].lower()]
+    lint_tasks = [t for t in failed_tasks if "lint" in t["task_id"].lower() or "eslint" in t["task_id"].lower()]
+    build_tasks = [t for t in failed_tasks if "build" in t["task_id"].lower() or "verify" in t["task_id"].lower()]
+    code_tasks = [t for t in failed_tasks if t not in migrations and t not in lint_tasks and t not in build_tasks]
+
+    fixed = 0
+    errors = []
+    db_url = "postgresql://postgres:postgres@postgres:5432/%s?schema=public" % db_schema
+
+    # Phase 1: Prisma migrations
+    if migrations:
+        try:
+            push_result = await _aio.create_subprocess_exec(
+                "npx", "prisma", "db", "push", "--accept-data-loss",
+                cwd=output_dir,
+                env={**os.environ, "DATABASE_URL": db_url},
+                stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.PIPE,
+            )
+            stdout, stderr = await _aio.wait_for(push_result.communicate(), timeout=120)
+            if push_result.returncode == 0:
+                # Mark all migration tasks as completed
+                for t in migrations:
+                    await db.execute(sql_text(
+                        "UPDATE tasks SET status='COMPLETED', status_message='Fixed: prisma db push' WHERE task_id=:tid AND job_id=:jid"
+                    ), {"tid": t["task_id"], "jid": job_id})
+                fixed += len(migrations)
+            else:
+                err = (stderr or stdout or b"").decode("utf-8", errors="replace")[:300]
+                errors.append("Prisma push failed: %s" % err)
+        except Exception as e:
+            errors.append("Prisma error: %s" % str(e)[:200])
+
+    # Phase 2: ESLint
+    if lint_tasks:
+        try:
+            lint_result = await _aio.create_subprocess_exec(
+                "npx", "eslint", "--fix", "src/**/*.{ts,tsx}",
+                cwd=output_dir,
+                stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.PIPE,
+            )
+            await _aio.wait_for(lint_result.communicate(), timeout=60)
+            for t in lint_tasks:
+                await db.execute(sql_text(
+                    "UPDATE tasks SET status='COMPLETED', status_message='Fixed: eslint --fix' WHERE task_id=:tid AND job_id=:jid"
+                ), {"tid": t["task_id"], "jid": job_id})
+            fixed += len(lint_tasks)
+        except Exception as e:
+            errors.append("ESLint error: %s" % str(e)[:200])
+
+    # Phase 3: Build
+    if build_tasks:
+        try:
+            build_result = await _aio.create_subprocess_exec(
+                "npm", "run", "build",
+                cwd=output_dir,
+                env={**os.environ, "DATABASE_URL": db_url},
+                stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.PIPE,
+            )
+            stdout, stderr = await _aio.wait_for(build_result.communicate(), timeout=120)
+            if build_result.returncode == 0:
+                for t in build_tasks:
+                    await db.execute(sql_text(
+                        "UPDATE tasks SET status='COMPLETED', status_message='Fixed: build passed' WHERE task_id=:tid AND job_id=:jid"
+                    ), {"tid": t["task_id"], "jid": job_id})
+                fixed += len(build_tasks)
+            else:
+                errors.append("Build failed")
+        except Exception as e:
+            errors.append("Build error: %s" % str(e)[:200])
+
+    # Phase 4: Code tasks via GPT
+    if code_tasks:
+        for t in code_tasks:
+            try:
+                fix_result = await _run_openai_fix(
+                    "Fix this failed task: %s\nError: %s" % (t["title"], t.get("status_message", "unknown")),
+                    output_dir, os.environ.get("OPENAI_API_KEY", ""),
+                )
+                if fix_result.get("success"):
+                    await db.execute(sql_text(
+                        "UPDATE tasks SET status='COMPLETED', status_message='Fixed: GPT code fix' WHERE task_id=:tid AND job_id=:jid"
+                    ), {"tid": t["task_id"], "jid": job_id})
+                    fixed += 1
+            except Exception as e:
+                errors.append("GPT fix failed for %s: %s" % (t["task_id"], str(e)[:100]))
+
+    await db.commit()
+
+    return {
+        "success": True,
+        "fixed": fixed,
+        "total": len(failed_tasks),
+        "breakdown": {
+            "migrations": len(migrations),
+            "lint": len(lint_tasks),
+            "build": len(build_tasks),
+            "code": len(code_tasks),
+        },
+        "errors": errors,
+    }
+
+
+class FixPrismaRequest(BaseModel):
+    project_dir: str = ""
+    db_url: str = ""
+    max_attempts: int = 5
+
+
+@router.post("/fix-prisma-schema")
+async def fix_prisma_schema(request: FixPrismaRequest):
+    """Autonomously fix Prisma schema: read → GPT fix → write → prisma push → repeat until success."""
+    import asyncio as _aio
+
+    # Resolve from engine_settings if not provided
+    project_dir = request.project_dir
+    db_url = request.db_url
+    if not project_dir or not db_url:
+        try:
+            from src.engine_settings import get_project
+            proj = get_project()
+            if not project_dir:
+                project_dir = proj.get("output_dir", "/app/output")
+            if not db_url:
+                db_schema = proj.get("db_schema", "coding_engine")
+                db_url = "postgresql://postgres:postgres@postgres:5432/%s?schema=public" % db_schema
+        except Exception:
+            if not project_dir:
+                project_dir = "/app/output"
+            if not db_url:
+                db_url = "postgresql://postgres:postgres@postgres:5432/coding_engine?schema=public"
+    schema_path = Path(project_dir) / "prisma" / "schema.prisma"
+    root_schema_path = Path(project_dir) / "schema.prisma"
+    openai_key = os.environ.get("OPENAI_API_KEY", "")
+
+    if not openai_key:
+        return {"success": False, "error": "No OPENAI_API_KEY"}
+
+    for attempt in range(1, request.max_attempts + 1):
+        # 1. Run prisma db push
+        env = os.environ.copy()
+        env["DATABASE_URL"] = db_url
+        try:
+            proc = await _aio.create_subprocess_exec(
+                "npx", "prisma", "db", "push", "--accept-data-loss",
+                cwd=project_dir, env=env,
+                stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.STDOUT,
+            )
+            stdout, _ = await _aio.wait_for(proc.communicate(), timeout=60)
+            output = stdout.decode("utf-8", errors="replace") if stdout else ""
+        except Exception as e:
+            output = str(e)
+
+        if "in sync" in output or "already in sync" in output:
+            # Also generate client
+            try:
+                gen_proc = await _aio.create_subprocess_exec(
+                    "npx", "prisma", "generate",
+                    cwd=project_dir, env=env,
+                    stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.STDOUT,
+                )
+                await _aio.wait_for(gen_proc.communicate(), timeout=30)
+            except Exception:
+                pass
+            return {"success": True, "attempt": attempt, "message": "Schema synced and client generated"}
+
+        # 2. Push failed — read current schema
+        current_schema = ""
+        for sp in [schema_path, root_schema_path]:
+            if sp.exists():
+                current_schema = sp.read_text(encoding="utf-8")
+                break
+
+        if not current_schema:
+            return {"success": False, "error": "No schema.prisma found", "attempt": attempt}
+
+        # 3. GPT fix
+        logger.info("prisma_fix_attempt", attempt=attempt, error=output[:200])
+        import httpx
+        try:
+            async with httpx.AsyncClient(timeout=90) as gpt_client:
+                gpt_resp = await gpt_client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": "Bearer %s" % openai_key},
+                    json={
+                        "model": _get_fix_model(),
+                        "messages": [
+                            {"role": "developer", "content": (
+                                "You are a Prisma schema expert. Fix ALL validation errors.\n\n"
+                                "CRITICAL RULES for Prisma relations:\n"
+                                "1. Every named @relation('X', fields: [...], references: [...]) on model A targeting model B "
+                                "MUST have a reverse field on model B with @relation('X') (no fields/references on reverse side).\n"
+                                "2. If model A has TWO fields pointing to model B, BOTH must be named relations with DIFFERENT names, "
+                                "and model B must have TWO reverse fields with matching names.\n"
+                                "3. Self-referencing relations (model message has reply_to -> message) MUST be named "
+                                "and have a reverse array field on the same model.\n"
+                                "4. Reverse fields for arrays use ModelName[], for optional use ModelName?.\n\n"
+                                "Example of correct self-reference:\n"
+                                "  reply_to    message? @relation('Replies', fields: [reply_to_id], references: [id])\n"
+                                "  replies     message[] @relation('Replies')\n\n"
+                                "Output ONLY the complete fixed schema.prisma. No markdown fences."
+                            )},
+                            {"role": "user", "content": (
+                                "Fix this Prisma schema. Error:\n\n%s\n\nSchema:\n%s"
+                            ) % (output[-3000:], current_schema)},
+                        ],
+                        "max_completion_tokens": 16000,
+                    },
+                )
+
+            if gpt_resp.status_code != 200:
+                return {"success": False, "error": "GPT API %d" % gpt_resp.status_code, "attempt": attempt}
+
+            content = gpt_resp.json()["choices"][0]["message"]["content"]
+            # Strip markdown fences
+            if content.startswith("```"):
+                content = "\n".join(content.split("\n")[1:])
+            if content.endswith("```"):
+                content = content.rsplit("```", 1)[0]
+            content = content.strip()
+
+            if "generator client" not in content:
+                continue  # Bad response, retry
+
+            # 4. Write fixed schema directly to disk
+            schema_path.parent.mkdir(parents=True, exist_ok=True)
+            schema_path.write_text(content, encoding="utf-8")
+            if root_schema_path.exists():
+                root_schema_path.write_text(content, encoding="utf-8")
+
+            logger.info("prisma_schema_fixed_by_gpt", attempt=attempt, lines=len(content.splitlines()))
+
+        except Exception as e:
+            logger.warning("prisma_gpt_fix_error", attempt=attempt, error=str(e)[:200])
+            continue
+
+    return {"success": False, "error": "Failed after %d attempts" % request.max_attempts}
+
+
+class BulkUpdateTaskStatusRequest(BaseModel):
+    task_ids: list
+    status: str = "COMPLETED"
+    status_message: str = ""
+
+
+@router.post("/bulk-update-task-status")
+async def bulk_update_task_status(request: BulkUpdateTaskStatusRequest, db: AsyncSession = Depends(get_db)):
+    """Update multiple tasks' status in one DB call."""
+    try:
+        from sqlalchemy import text
+        count = 0
+        for tid in request.task_ids:
+            await db.execute(
+                text("UPDATE tasks SET status = :status, status_message = :msg, updated_at = NOW() WHERE task_id = :tid"),
+                {"status": request.status.upper(), "msg": request.status_message, "tid": tid},
+            )
+            count += 1
+        await db.commit()
+        return {"success": True, "updated": count}
+    except Exception as e:
+        return {"success": False, "error": str(e)[:200], "updated": 0}
+
+
+class UpdateTaskStatusRequest(BaseModel):
+    task_id: str
+    status: str = "COMPLETED"
+    status_message: str = ""
+
+
+@router.post("/update-task-status")
+async def update_task_status(request: UpdateTaskStatusRequest, db: AsyncSession = Depends(get_db)):
+    """Update a single task's status in the DB."""
+    try:
+        from sqlalchemy import text
+        await db.execute(
+            text("UPDATE tasks SET status = :status, status_message = :msg, updated_at = NOW() WHERE task_id = :tid"),
+            {"status": request.status.upper(), "msg": request.status_message, "tid": request.task_id},
+        )
+        await db.commit()
+        return {"success": True, "task_id": request.task_id}
+    except Exception as e:
+        return {"success": False, "error": str(e)[:200]}
+
+
+@router.post("/sync-tasks")
+async def sync_tasks(request: SyncTasksRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Sync task results from generation subprocess (.task_results.json) to DB.
+    Called automatically by run_generation.py after completion, or manually.
+    """
+    from sqlalchemy import text as sql_text
+
+    output_dir = request.output_dir
+    if not output_dir:
+        try:
+            from src.engine_settings import get_project
+            proj = get_project()
+            output_dir = proj.get("output_dir", "/app/output") if proj else "/app/output"
+        except Exception:
+            output_dir = "/app/output"
+
+    task_results_file = Path(output_dir) / ".task_results.json"
+    if not task_results_file.exists():
+        return {"success": False, "error": "No .task_results.json found", "path": str(task_results_file)}
+
+    try:
+        results = json.loads(task_results_file.read_text(encoding="utf-8"))
+        if not isinstance(results, list):
+            return {"success": False, "error": "Invalid format — expected list"}
+
+        # Map lowercase status to DB enum (UPPERCASE)
+        STATUS_MAP = {
+            "completed": "COMPLETED",
+            "failed": "FAILED",
+            "pending": "PENDING",
+            "running": "RUNNING",
+            "skipped": "CANCELLED",
+            "blocked": "BLOCKED",
+        }
+
+        updated = 0
+        for r in results:
+            task_id = r.get("task_id", "")
+            raw_status = r.get("status", "")
+            error_msg = r.get("error_message", "")
+
+            if not task_id or not raw_status:
+                continue
+
+            # Map to DB enum value
+            db_status = STATUS_MAP.get(raw_status.lower(), raw_status.upper())
+
+            # Update task in DB by task_id string
+            result = await db.execute(
+                sql_text(
+                    "UPDATE tasks SET status = :status, status_message = :msg, "
+                    "updated_at = NOW() "
+                    "WHERE task_id = :task_id"
+                ),
+                {"status": db_status, "msg": error_msg[:500] if error_msg else None, "task_id": task_id},
+            )
+            if result.rowcount > 0:
+                updated += 1
+
+        await db.commit()
+        logger.info("sync_tasks_complete", updated=updated, total=len(results))
+        return {"success": True, "updated": updated, "total": len(results)}
+
+    except Exception as e:
+        logger.error("sync_tasks_failed", error=str(e))
+        return {"success": False, "error": str(e)[:300]}
+
+
+# =============================================================================
+# Create PR (manual or from review-bot)
+# =============================================================================
+
+
+@router.post("/create-pr")
+async def create_pr(request: CreatePRRequest):
+    """Create a GitHub Pull Request from the current project state."""
+    import datetime
+
+    project_path = request.project_path
+    branch = request.branch_name or "gen/%s" % datetime.datetime.now().strftime("%Y%m%d-%H%M")
+    title = request.title or "Generated code: %s" % Path(project_path).name
+
+    pr_url = await _create_pr_after_fix(
+        task_id=Path(project_path).name,
+        project_path=project_path,
+        attempt=0,
+    )
+
+    if pr_url:
+        return {"success": True, "pr_url": pr_url}
+    return {"success": False, "error": "PR creation failed — check git setup and gh CLI"}
+
+
+# =============================================================================
+# Review PR (auto-review + merge)
+# =============================================================================
+
+
+@router.post("/review-pr")
+async def review_pr(pr_url: str = "", project_path: str = "/data/projects/whatsapp-messaging-service"):
+    """Auto-review a PR: run build + type-check, then approve/merge if passing."""
+    import asyncio as _asyncio
+
+    if not pr_url:
+        return {"success": False, "error": "pr_url required"}
+
+    # 1. Verify build passes
+    verify_result = await _verify_fix(project_path)
+    if not verify_result.get("success"):
+        # Post review comment: failing
+        await _post_review_result(pr_url, False, verify_result.get("error", ""))
+        return {
+            "success": False,
+            "action": "changes_requested",
+            "error": verify_result.get("error", "Build failed"),
+        }
+
+    # 2. Build passes → approve + merge
+    try:
+        # Approve PR
+        env = os.environ.copy()
+        process = await _asyncio.create_subprocess_exec(
+            "gh", "pr", "review", pr_url, "--approve",
+            "--body", "Auto-approved by Coding Engine Review Bot. Build and type-check passing.",
+            stdout=_asyncio.subprocess.PIPE,
+            stderr=_asyncio.subprocess.PIPE,
+            cwd=project_path,
+            env=env,
+        )
+        await _asyncio.wait_for(process.communicate(), timeout=30)
+
+        # Merge PR
+        process = await _asyncio.create_subprocess_exec(
+            "gh", "pr", "merge", pr_url, "--squash", "--delete-branch",
+            stdout=_asyncio.subprocess.PIPE,
+            stderr=_asyncio.subprocess.PIPE,
+            cwd=project_path,
+            env=env,
+        )
+        stdout, stderr = await _asyncio.wait_for(process.communicate(), timeout=30)
+
+        if process.returncode == 0:
+            await _post_review_result(pr_url, True)
+            return {"success": True, "action": "merged"}
+        else:
+            error_text = (stderr or stdout or b"").decode("utf-8", errors="replace")
+            return {"success": False, "action": "merge_failed", "error": error_text[:300]}
+
+    except Exception as e:
+        return {"success": False, "action": "review_failed", "error": str(e)[:300]}
+
+
+async def _post_review_result(pr_url: str, approved: bool, error: str = ""):
+    """Post review result to Discord #prs channel."""
+    try:
+        from src.tools.discord_agent import DiscordAgent
+
+        prs_channel = os.environ.get("DISCORD_CH_PRS", "")
+        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        if not token or not prs_channel:
+            return
+
+        if approved:
+            msg = (
+                "**PR MERGED** | %s\n"
+                "Build + TypeCheck passing\n"
+                "Auto-approved and squash-merged"
+            ) % pr_url
+        else:
+            msg = (
+                "**PR REJECTED** | %s\n"
+                "Build failing:\n```\n%s\n```\n"
+                "**Action:** `FIX_NEEDED`"
+            ) % (pr_url, error[:500])
+
+        discord = DiscordAgent(bot_token=token, channel_id=prs_channel)
+        await discord.send(msg[:2000])
+    except Exception as e:
+        logger.error("post_review_result_failed", error=str(e))
 
 
 # =============================================================================
@@ -3436,40 +4572,183 @@ async def get_db_tasks(project_id: int):
         return {"tasks": [], "job": None, "error": str(e)}
 
 
-@router.post("/generate-task-lists", response_model=SuccessResponse)
-async def generate_all_task_lists(request: GenerateTaskListsRequest):
+@router.post("/generate-task-lists")
+async def generate_all_task_lists(request: GenerateTaskListsRequest, db: AsyncSession = Depends(get_db)):
     """
-    Generate task lists for all epics in a project.
-
-    This parses all epics and creates task JSON files for each.
+    Phase A: Generate task lists for all epics WITHOUT executing code generation.
+    Tasks are saved to JSON files AND synced to the database.
+    User can then review/sort/disable tasks in the UI before starting Phase B.
     """
     try:
-        import sys
+        import sys, json as _json
         engine_root = Path(__file__).parent.parent.parent.parent
         sys.path.insert(0, str(engine_root / "mcp_plugins" / "servers" / "grpc_host"))
 
         from epic_parser import EpicParser
         from epic_task_generator import EpicTaskGenerator
 
+        # Read consolidation_mode from engine_settings
+        consolidation_mode = "feature"
+        try:
+            from src.engine_settings import get_setting
+            consolidation_mode = get_setting("generation.consolidation_mode", "feature")
+        except Exception:
+            pass
+
         # Save epics summary
         parser = EpicParser(request.project_path)
         parser.save_epics_json()
 
-        # Generate and save tasks for all epics
-        generator = EpicTaskGenerator(request.project_path)
+        # Generate tasks with consolidation mode
+        generator = EpicTaskGenerator(request.project_path, consolidation_mode=consolidation_mode)
         saved_files = generator.save_all_epic_tasks()
 
-        logger.info(
-            "task_lists_generated",
-            project_path=request.project_path,
-            files_created=len(saved_files)
-        )
+        # Count total tasks from saved files
+        total_tasks = 0
+        task_breakdown = {}
+        for f in saved_files:
+            try:
+                data = _json.loads(Path(f).read_text(encoding="utf-8"))
+                tasks = data.get("tasks", [])
+                total_tasks += len(tasks)
+                epic_id = data.get("epic_id", "unknown")
+                task_breakdown[epic_id] = len(tasks)
+            except Exception:
+                pass
 
-        return SuccessResponse(success=True)
+        # Sync to DB: create job + tasks
+        try:
+            from sqlalchemy import text as sql_text
+
+            # Get or create project
+            proj_result = await db.execute(sql_text("SELECT id FROM projects LIMIT 1"))
+            proj_row = proj_result.first()
+            project_db_id = proj_row[0] if proj_row else 1
+
+            # Create new job
+            await db.execute(sql_text(
+                "INSERT INTO jobs (project_id, status, total_tasks, created_at, updated_at) "
+                "VALUES (:pid, 'PENDING', :total, NOW(), NOW())"
+            ), {"pid": project_db_id, "total": total_tasks})
+            job_result = await db.execute(sql_text("SELECT MAX(id) FROM jobs"))
+            job_id = job_result.scalar()
+
+            # Insert all tasks from JSON files
+            inserted = 0
+            for f in saved_files:
+                try:
+                    data = _json.loads(Path(f).read_text(encoding="utf-8"))
+                    for t in data.get("tasks", []):
+                        await db.execute(sql_text(
+                            "INSERT INTO tasks (job_id, task_id, title, description, prompt, status, "
+                            "task_type, depends_on, requirement_ids, depth_level, created_at, updated_at) "
+                            "VALUES (:jid, :tid, :title, :desc, :prompt, 'PENDING', "
+                            "'general', :deps, :reqs, 0, NOW(), NOW())"
+                        ), {
+                            "jid": job_id,
+                            "tid": t.get("id", ""),
+                            "title": t.get("title", "")[:512],
+                            "desc": t.get("description", "")[:2000],
+                            "prompt": t.get("description", ""),
+                            "deps": _json.dumps(t.get("dependencies", [])),
+                            "reqs": _json.dumps(t.get("related_requirements", [])),
+                        })
+                        inserted += 1
+                except Exception as e:
+                    logger.warning("task_insert_failed", file=str(f), error=str(e)[:100])
+
+            await db.commit()
+            logger.info("tasks_synced_to_db", job_id=job_id, inserted=inserted, total=total_tasks)
+        except Exception as e:
+            logger.error("db_sync_failed", error=str(e)[:200])
+
+        return {
+            "success": True,
+            "consolidation_mode": consolidation_mode,
+            "total_tasks": total_tasks,
+            "task_breakdown": task_breakdown,
+            "files_created": len(saved_files),
+            "message": "Tasks generated. Review in UI, then call /generate-code to start."
+        }
 
     except Exception as e:
         logger.error("task_lists_generation_failed", project_path=request.project_path, error=str(e))
-        return SuccessResponse(success=False, error=str(e))
+        return {"success": False, "error": str(e)}
+
+
+class ExecuteGenerationRequest(BaseModel):
+    project_name: str = ""
+    skip_completed: bool = True  # Skip already-completed tasks
+
+
+@router.post("/execute-generation")
+async def execute_generation(request: ExecuteGenerationRequest):
+    """
+    Phase B: Execute code generation for existing tasks (from DB/JSON).
+    Requires Phase A (/generate-task-lists) to have been run first.
+    Passes --skip-task-gen flag so the orchestrator only executes, not generates.
+    """
+    try:
+        from src.engine_settings import get_project
+        proj = get_project(request.project_name)
+        if not proj:
+            return {"success": False, "error": "Project not found"}
+
+        project_path = proj.get("requirements_path", "")
+        output_dir = proj.get("output_dir", "")
+
+        if not project_path or not output_dir:
+            return {"success": False, "error": "Project paths not configured"}
+
+        # Check for existing task files
+        tasks_dir = Path(project_path) / "tasks"
+        if not tasks_dir.exists() or not list(tasks_dir.glob("epic-*-tasks*.json")):
+            return {"success": False, "error": "No task files found. Run /generate-task-lists first."}
+
+        # Remove stale lock
+        lock_file = Path(output_dir) / ".generation_running"
+        if lock_file.exists():
+            lock_file.unlink()
+
+        # Start generation subprocess with --skip-task-gen
+        import subprocess
+        env = os.environ.copy()
+        cmd = [
+            "python", "run_generation.py",
+            "--project-path", project_path,
+            "--output-dir", output_dir,
+            "--project-id", proj.get("id", ""),
+            "--db-schema", proj.get("db_schema", "coding_engine"),
+            "--parallelism", str(proj.get("max_parallel_tasks", 3)),
+            "--skip-task-gen",  # Key flag: don't regenerate tasks
+        ]
+
+        log_file = Path(output_dir) / "generation.log"
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(Path(__file__).parent.parent.parent.parent),
+            stdout=open(str(log_file), "a"),
+            stderr=subprocess.STDOUT,
+            env=env,
+            start_new_session=True,
+        )
+
+        # Write lock file
+        import json as _json, time
+        lock_file.write_text(_json.dumps({
+            "project_id": proj.get("id", ""),
+            "started_at": time.time(),
+            "pid": process.pid,
+            "skip_task_gen": True,
+        }))
+
+        logger.info("code_generation_started", project=proj.get("id"), pid=process.pid, skip_task_gen=True)
+        return {"success": True, "pid": process.pid, "message": "Code generation started (tasks from existing files)"}
+
+    except Exception as e:
+        return {"success": False, "error": str(e)[:300]}
 
 
 # ─── Project MCP Config Endpoints ────────────────────────────────────
@@ -3612,11 +4891,134 @@ async def verify_single_task(request: VerifyTaskRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ── Verify Generation ──────────────────────────────────────
+
+class VerifyGenerationRequest(BaseModel):
+    project_dir: str = ""
+
+
+@router.post("/verify-generation")
+async def verify_generation(request: VerifyGenerationRequest):
+    """Verify generated code: count files, check structure, run build."""
+    import asyncio as _aio
+
+    _pdir = request.project_dir
+    if not _pdir:
+        try:
+            from src.engine_settings import get_project
+            proj = get_project()
+            _pdir = proj.get("output_dir", "/app/output") if proj else "/app/output"
+        except Exception:
+            _pdir = "/app/output"
+    project_dir = Path(_pdir)
+
+    issues = []
+    files_count = 0
+    build_ok = False
+
+    # 1. Count generated files
+    try:
+        src_files = list(project_dir.rglob("*.ts")) + list(project_dir.rglob("*.tsx"))
+        src_files = [f for f in src_files if "node_modules" not in str(f)]
+        files_count = len(src_files)
+        if files_count < 10:
+            issues.append("Only %d source files found (expected more)" % files_count)
+    except Exception as e:
+        issues.append("File scan error: %s" % str(e)[:100])
+
+    # 2. Check critical files exist
+    critical_files = [
+        "package.json", "tsconfig.json",
+        "prisma/schema.prisma",
+        "src/main.ts",
+    ]
+    for cf in critical_files:
+        if not (project_dir / cf).exists():
+            issues.append("Missing: %s" % cf)
+
+    # 3. Check prisma models
+    schema_file = project_dir / "prisma" / "schema.prisma"
+    if schema_file.exists():
+        schema_content = schema_file.read_text(encoding="utf-8", errors="replace")
+        import re as _re
+        model_count = len(_re.findall(r"^model ", schema_content, _re.MULTILINE))
+        if model_count < 5:
+            issues.append("Only %d Prisma models (expected 30+)" % model_count)
+    else:
+        issues.append("No prisma/schema.prisma")
+
+    # 4. Run build
+    try:
+        env = os.environ.copy()
+        # Resolve DATABASE_URL from project settings
+        try:
+            from src.engine_settings import get_project
+            _proj = get_project()
+            _db_schema = _proj.get("db_schema", "coding_engine") if _proj else "coding_engine"
+        except Exception:
+            _db_schema = "coding_engine"
+        env["DATABASE_URL"] = "postgresql://postgres:postgres@postgres:5432/%s?schema=public" % _db_schema
+        proc = await _aio.create_subprocess_exec(
+            "npm", "run", "build",
+            cwd=str(project_dir), env=env,
+            stdout=_aio.subprocess.PIPE, stderr=_aio.subprocess.STDOUT,
+        )
+        stdout, _ = await _aio.wait_for(proc.communicate(), timeout=120)
+        output = stdout.decode("utf-8", errors="replace") if stdout else ""
+        build_ok = proc.returncode == 0
+        if not build_ok:
+            # Extract last error lines
+            error_lines = [l for l in output.split("\n") if "error" in l.lower()][-3:]
+            issues.append("Build failed: %s" % "; ".join(error_lines)[:200])
+    except _aio.TimeoutError:
+        issues.append("Build timed out after 120s")
+    except Exception as e:
+        issues.append("Build error: %s" % str(e)[:100])
+
+    # 5. Check DB task stats
+    completed = 0
+    failed = 0
+    total = 0
+    try:
+        import asyncpg
+        db_url = os.environ.get("DATABASE_URL", "").replace("+asyncpg", "")
+        if "asyncpg" in db_url:
+            db_url = db_url.replace("postgresql+asyncpg://", "postgresql://")
+        conn = await asyncpg.connect(db_url.split("?")[0])
+        rows = await conn.fetch(
+            "SELECT status, COUNT(*) as cnt FROM tasks WHERE job_id=(SELECT MAX(id) FROM jobs) GROUP BY status"
+        )
+        for row in rows:
+            if row["status"].upper() == "COMPLETED":
+                completed = row["cnt"]
+            elif row["status"].upper() == "FAILED":
+                failed = row["cnt"]
+            total += row["cnt"]
+        await conn.close()
+    except Exception:
+        pass
+
+    return {
+        "success": len(issues) == 0 and build_ok,
+        "files_count": files_count,
+        "build_ok": build_ok,
+        "issues": issues,
+        "tasks": {"completed": completed, "failed": failed, "total": total},
+    }
+
+
 # Alias: /status -> /project/status (frontend tries this first)
 @router.get("/status")
 async def get_status_alias(projectId: str = Query("", description="Project ID")):
     """Alias for /project/status -- frontend compatibility."""
-    return await get_project_status(projectId or "whatsapp")
+    if not projectId:
+        try:
+            from src.engine_settings import get_project
+            proj = get_project()
+            projectId = proj["id"] if proj else ""
+        except Exception:
+            projectId = ""
+    return await get_project_status(projectId)
 
 
 # Container logs endpoint for LogViewer
@@ -3909,3 +5311,93 @@ async def stop_discord_trigger():
         return {"success": True, "status": "stopped"}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+# ============================================================
+# Engine Settings API — Central config for all components
+# ============================================================
+
+
+@router.get("/engine-settings")
+async def get_engine_settings(section: str = ""):
+    """Get engine settings (all or specific section)."""
+    from src.engine_settings import get_settings, get_setting
+    if section:
+        data = get_setting(section)
+        if data is None:
+            raise HTTPException(status_code=404, detail="Section '%s' not found" % section)
+        return {section: data}
+    return get_settings()
+
+
+@router.get("/engine-settings/models")
+async def get_engine_models():
+    """Get model configuration for all roles."""
+    from src.engine_settings import get_setting
+    return get_setting("models", {})
+
+
+@router.get("/engine-settings/discord")
+async def get_engine_discord():
+    """Get Discord configuration."""
+    from src.engine_settings import get_setting
+    return get_setting("discord", {})
+
+
+@router.get("/engine-settings/projects")
+async def get_engine_projects():
+    """Get registered projects."""
+    from src.engine_settings import get_setting
+    return get_setting("projects", {})
+
+
+@router.get("/engine-settings/generation")
+async def get_engine_generation():
+    """Get generation pipeline settings."""
+    from src.engine_settings import get_setting
+    return get_setting("generation", {})
+
+
+@router.get("/engine-settings/fix-strategies")
+async def get_engine_fix_strategies():
+    """Get fix strategies per task type."""
+    from src.engine_settings import get_setting
+    return get_setting("fix_strategies", {})
+
+
+class SettingUpdate(BaseModel):
+    path: str
+    value: Any = None
+
+
+@router.patch("/engine-settings")
+async def update_engine_setting(update: SettingUpdate):
+    """Update a single setting by dot-notation path."""
+    from src.engine_settings import update_setting, get_setting
+
+    # Validate path exists (or allow new paths under known sections)
+    known_sections = ["models", "providers", "discord", "generation", "fix_strategies", "verification", "projects", "infrastructure"]
+    root = update.path.split(".")[0]
+    if root not in known_sections:
+        raise HTTPException(status_code=400, detail="Unknown section: '%s'. Valid: %s" % (root, ", ".join(known_sections)))
+
+    ok = update_setting(update.path, update.value)
+    if ok:
+        return {"success": True, "path": update.path, "value": update.value}
+    raise HTTPException(status_code=500, detail="Failed to write settings")
+
+
+@router.put("/engine-settings")
+async def replace_engine_settings(settings: dict):
+    """Replace entire settings (full YAML rewrite)."""
+    from src.engine_settings import _resolve_path, _lock
+    import yaml as _yaml
+
+    path = _resolve_path()
+    try:
+        with _lock:
+            with open(path, "w", encoding="utf-8") as f:
+                _yaml.dump(settings, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

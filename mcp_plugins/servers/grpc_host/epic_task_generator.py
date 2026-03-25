@@ -309,15 +309,20 @@ class EpicTaskGenerator:
         TaskType.INTEGRATION: 15,
     }
 
-    def __init__(self, project_path: str, granular: bool = True):
+    def __init__(self, project_path: str, granular: bool = True, consolidation_mode: str = "feature"):
         """
         Args:
             project_path: Pfad zum Input-Projekt
             granular: If True, use granular task generation (Phase 3.5)
+            consolidation_mode: How to group API tasks:
+                "granular" = 5 tasks per endpoint (controller/service/dto/guard/validation) — original
+                "endpoint" = 1 task per endpoint (all layers in one task)
+                "feature" = 1 task per feature group (all auth endpoints in one task) — RECOMMENDED
         """
         self.project_path = Path(project_path)
         self.parser = EpicParser(str(project_path))
         self.granular = granular
+        self.consolidation_mode = consolidation_mode
 
         # Initialize enhanced parsers for granular mode
         self.api_parser: Optional[APIDocumentationParser] = None
@@ -605,7 +610,122 @@ class EpicTaskGenerator:
         return tasks
 
     def _generate_granular_api_tasks(self, epic: Epic, schema_dependencies: List[str]) -> List[Task]:
-        """Generiert granulare Tasks pro API Endpoint aus api_documentation.md"""
+        """Generiert API Tasks — consolidation_mode bestimmt Granularität."""
+
+        # ── Feature-Consolidation: 1 Task pro Feature-Gruppe ──
+        if self.consolidation_mode == "feature":
+            return self._generate_feature_consolidated_api_tasks(epic, schema_dependencies)
+
+        # ── Endpoint-Consolidation: 1 Task pro Endpoint ──
+        if self.consolidation_mode == "endpoint":
+            return self._generate_endpoint_consolidated_api_tasks(epic, schema_dependencies)
+
+        # ── Granular (original): 5 Tasks pro Endpoint ──
+        return self._generate_granular_api_tasks_original(epic, schema_dependencies)
+
+    def _generate_feature_consolidated_api_tasks(self, epic: Epic, schema_dependencies: List[str]) -> List[Task]:
+        """1 Task pro Feature-Gruppe (z.B. alle /auth/* Endpoints in einem Task)."""
+        tasks = []
+        if not self.api_parser:
+            return self._generate_api_tasks(epic, schema_dependencies)
+
+        # Collect all endpoints for this epic
+        all_endpoints = []
+        for req in epic.requirements:
+            endpoints = self.api_parser.get_endpoints_by_requirement(req)
+            all_endpoints.extend(endpoints)
+
+        # Group by resource (URL path segment 3: /api/v1/{resource}/...)
+        from collections import defaultdict
+        groups = defaultdict(list)
+        seen = set()
+        for ep in all_endpoints:
+            key = f"{ep.method}_{ep.path}"
+            if key in seen:
+                continue
+            seen.add(key)
+            groups[ep.resource].append(ep)
+
+        # 1 task per feature group
+        for resource, endpoints in groups.items():
+            methods = ", ".join(sorted(set(f"{e.method}" for e in endpoints)))
+            all_paths = "\n".join(f"  {e.method} {e.path} — {e.summary}" for e in endpoints)
+            all_reqs = list(set(e.requirement for e in endpoints if e.requirement))
+
+            tasks.append(Task(
+                id=f"{epic.id}-API-{resource}-feature",
+                epic_id=epic.id,
+                type=TaskType.API_CONTROLLER.value,
+                title=f"Feature: {resource} ({len(endpoints)} endpoints: {methods})",
+                description=(
+                    f"Generate the COMPLETE NestJS module for '{resource}' with ALL layers:\n"
+                    f"- Controller (all {len(endpoints)} endpoints)\n"
+                    f"- Service (business logic)\n"
+                    f"- DTOs (request/response types)\n"
+                    f"- Guards (JWT auth where needed)\n"
+                    f"- Validators (input validation)\n"
+                    f"- Module registration\n\n"
+                    f"Endpoints:\n{all_paths}"
+                ),
+                status=TaskStatus.PENDING.value,
+                dependencies=schema_dependencies[:3] if schema_dependencies else [],
+                estimated_minutes=max(10, len(endpoints) * 3),
+                related_requirements=all_reqs[:5],
+                output_files=[
+                    f"src/modules/{resource}/{resource}.controller.ts",
+                    f"src/modules/{resource}/{resource}.service.ts",
+                    f"src/modules/{resource}/{resource}.module.ts",
+                    f"src/modules/{resource}/dto/",
+                ]
+            ))
+
+        logger.info(f"Feature consolidation: {len(all_endpoints)} endpoints → {len(tasks)} feature tasks")
+        return tasks
+
+    def _generate_endpoint_consolidated_api_tasks(self, epic: Epic, schema_dependencies: List[str]) -> List[Task]:
+        """1 Task pro Endpoint (controller+service+dto+guard in einem Task)."""
+        tasks = []
+        if not self.api_parser:
+            return self._generate_api_tasks(epic, schema_dependencies)
+
+        processed = set()
+        for req in epic.requirements:
+            endpoints = self.api_parser.get_endpoints_by_requirement(req)
+            for endpoint in endpoints:
+                key = f"{endpoint.method}_{endpoint.path}"
+                if key in processed:
+                    continue
+                processed.add(key)
+
+                tasks.append(Task(
+                    id=f"{epic.id}-API-{endpoint.method}-{endpoint.safe_id}",
+                    epic_id=epic.id,
+                    type=TaskType.API_CONTROLLER.value,
+                    title=f"Endpoint: {endpoint.method} {endpoint.path}",
+                    description=(
+                        f"{endpoint.summary}\n\n"
+                        f"Generate ALL layers for this endpoint:\n"
+                        f"- Controller method\n"
+                        f"- Service method with business logic\n"
+                        f"- Request/Response DTOs\n"
+                        f"- Auth guard (if 401 response)\n"
+                        f"- Input validation\n"
+                    ),
+                    status=TaskStatus.PENDING.value,
+                    dependencies=schema_dependencies[:3] if schema_dependencies else [],
+                    estimated_minutes=8,
+                    related_requirements=[endpoint.requirement],
+                    output_files=[
+                        f"src/modules/{endpoint.resource}/{endpoint.resource}.controller.ts",
+                        f"src/modules/{endpoint.resource}/{endpoint.resource}.service.ts",
+                    ]
+                ))
+
+        logger.info(f"Endpoint consolidation: {len(processed)} endpoints → {len(tasks)} tasks")
+        return tasks
+
+    def _generate_granular_api_tasks_original(self, epic: Epic, schema_dependencies: List[str]) -> List[Task]:
+        """Original granulare Tasks — 5 Tasks pro API Endpoint."""
         tasks = []
         processed_endpoints: Set[str] = set()
 

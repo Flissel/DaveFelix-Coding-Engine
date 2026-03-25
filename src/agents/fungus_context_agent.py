@@ -491,23 +491,7 @@ class FungusContextAgent(AutonomousAgent):
         if self._embedder is not None:
             return
 
-        # Try OpenRouter embeddings first (uses OPENROUTER_API_KEY)
-        openrouter_key = os.environ.get('OPENROUTER_API_KEY', '')
-        if openrouter_key:
-            try:
-                self._embedder = OpenAIEmbeddingClient(
-                    api_key=openrouter_key,
-                    model="openai/text-embedding-3-small",
-                    base_url="https://openrouter.ai/api"
-                )
-                self._embedding_dim = 1536
-                self.embedding_model = "openrouter:text-embedding-3-small"
-                self.logger.info("embedder_initialized", model="openrouter:text-embedding-3-small", dim=1536)
-                return
-            except Exception as e:
-                self.logger.debug(f"openrouter_embedder_failed: {e}")
-
-        # Try OpenAI embeddings (uses OPENAI_API_KEY)
+        # Try OpenAI embeddings first (uses OPENAI_API_KEY — preferred)
         openai_key = os.environ.get('OPENAI_API_KEY', '')
         if openai_key:
             try:
@@ -522,6 +506,22 @@ class FungusContextAgent(AutonomousAgent):
                 return
             except Exception as e:
                 self.logger.debug(f"openai_embedder_failed: {e}")
+
+        # Fallback to OpenRouter embeddings (uses OPENROUTER_API_KEY)
+        openrouter_key = os.environ.get('OPENROUTER_API_KEY', '')
+        if openrouter_key:
+            try:
+                self._embedder = OpenAIEmbeddingClient(
+                    api_key=openrouter_key,
+                    model="openai/text-embedding-3-small",
+                    base_url="https://openrouter.ai/api"
+                )
+                self._embedding_dim = 1536
+                self.embedding_model = "openrouter:text-embedding-3-small"
+                self.logger.info("embedder_initialized", model="openrouter:text-embedding-3-small", dim=1536)
+                return
+            except Exception as e:
+                self.logger.debug(f"openrouter_embedder_failed: {e}")
 
         # Try sentence-transformers as fallback
         try:

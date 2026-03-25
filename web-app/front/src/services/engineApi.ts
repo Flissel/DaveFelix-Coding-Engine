@@ -192,15 +192,13 @@ export const engineApi = {
     // Try the primary endpoint, fall back to dashboard path
     let genRes: Response;
     try {
-      genRes = await fetch(`${API_URL}/dashboard/start-epic-generation`, {
+      genRes = await fetch(`${API_URL}/dashboard/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          project_path: projectPath,
-          output_dir: outputDir,
-          vnc_port: 6090,
-          app_port: 3100,
-          max_parallel_tasks: opts.parallelism || 1,
+          projectId: name,
+          requirementsPath: projectPath,
+          outputDir: outputDir,
         }),
       });
     } catch (fetchErr) {

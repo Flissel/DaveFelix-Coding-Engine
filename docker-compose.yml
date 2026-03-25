@@ -70,11 +70,14 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - LLM_BACKEND=openrouter
+      - LLM_BACKEND=openai
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - DISCORD_BOT_TOKEN_ANALYZER=${DISCORD_BOT_TOKEN_ANALYZER}
       - DISCORD_CHANNEL_ID=1484160715580510242
       - DISCORD_CH_DEV_TASKS=1484193408955322399
+      - DISCORD_CH_PRS=${DISCORD_CH_PRS:-1485666130474303562}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GH_TOKEN=${GITHUB_TOKEN}
     volumes:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
@@ -82,15 +85,20 @@ services:
       - ./run_generation.py:/app/run_generation.py
       - ./.env:/app/.env
       - artifact_data:/data/artifacts
-      - C:/Users/User/Desktop/Coding_engine/Data:/app/Data
-      - C:/Users/User/Desktop/Coding_engine/Data/generated:/app/output
+      - ./Data:/app/Data
+      - ./Data/generated:/app/output
       - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 1
 
   # Sandbox - Live preview with VNC access
   sandbox:
@@ -107,7 +115,7 @@ services:
       - "3200:3000"   # Backend dev server (NestJS/FastAPI)
     volumes:
       - ./Data:/workspace/data
-      - C:/Users/User/Desktop/Coding_engine/Data/generated:/workspace/app
+      - ./Data/generated:/workspace/app
     environment:
       - DISPLAY=:99
       - ENABLE_VNC=true
@@ -158,9 +166,14 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - LOG_LEVEL=INFO
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN_ANALYZER}
       - DISCORD_CH_FIXES=1484193412679733302
       - DISCORD_CH_DEV_TASKS=1484193408955322399
+      - DISCORD_CH_PRS=1485666130474303562
+      - DISCORD_CH_ORCHESTRATOR=1484193339405369344
+      - DISCORD_CH_TESTING=1484193415364214958
+      - DISCORD_CH_DONE=1484193417381679225
       # LLM models — all OpenRouter free
       - LLM_MODEL=qwen/qwen3-coder:free
       - VISION_MODEL=nvidia/nemotron-nano-12b-v2-vl:free
@@ -173,6 +186,13 @@ services:
     volumes:
       - ./Data:/workspace/data:ro
       - automation_ui_data:/app/data
+      - ./external/Automation_ui/backend/app/services/discord_listener.py:/app/app/services/discord_listener.py
+      - ./external/Automation_ui/backend/app/config.py:/app/app/config.py
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     depends_on:
       - sandbox
     extra_hosts:
@@ -222,12 +242,31 @@ services:
       api:
         condition: service_healthy
 
+  # VSCode Server - Live code inspection
+  vscode:
+    image: codercom/code-server:latest
+    container_name: coding-engine-vscode
+    ports:
+      - "8444:8443"
+    volumes:
+      - ./Data/generated:/home/coder/project
+      - vscode_extensions:/home/coder/.local/share/code-server/extensions
+    environment:
+      - PASSWORD=dev123
+    command: --auth password --bind-addr 0.0.0.0:8443
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
 volumes:
   postgres_data:
   redis_data:
   gitea_data:
   artifact_data:
   automation_ui_data:
+  vscode_extensions:
 
 # Secrets from .env file (docker-compose v3.1+)
 # In Swarm mode, use external secrets instead

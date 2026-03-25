@@ -132,6 +132,7 @@ class EpicOrchestrator:
         two_stage: bool = True,
         enable_som: bool = False,
         som_config: Optional[Any] = None,
+        skip_task_gen: bool = False,
     ):
         """
         Args:
@@ -152,6 +153,7 @@ class EpicOrchestrator:
         self.output_dir = Path(output_dir) if output_dir else self.project_path / "output"
         self.event_bus = event_bus
         self.headless_mode = headless_mode
+        self.skip_task_gen = skip_task_gen
 
         # Society of Mind integration
         self.enable_som = enable_som
@@ -166,7 +168,20 @@ class EpicOrchestrator:
         self._semaphore: Optional[asyncio.Semaphore] = None
 
         # Initialize components
-        self.task_generator = EpicTaskGenerator(str(project_path))
+        # Read consolidation_mode from engine_settings
+        _consolidation = "feature"
+        try:
+            import yaml
+            _settings_path = Path(project_path).parent.parent / "config" / "engine_settings.yml"
+            if not _settings_path.exists():
+                _settings_path = Path("/app/config/engine_settings.yml")
+            if _settings_path.exists():
+                with open(_settings_path) as f:
+                    _cfg = yaml.safe_load(f) or {}
+                _consolidation = _cfg.get("generation", {}).get("consolidation_mode", "feature")
+        except Exception:
+            pass
+        self.task_generator = EpicTaskGenerator(str(project_path), consolidation_mode=_consolidation)
         self.task_executor = TaskExecutor(
             str(project_path),
             output_dir=str(self.output_dir),
@@ -184,6 +199,15 @@ class EpicOrchestrator:
                 'enable_mcp_orchestrator', False
             )
 
+        # ── Live DB Sync ──
+        self.db_sync = None
+        try:
+            from db_task_sync import DBTaskSync
+            self.db_sync = DBTaskSync()
+            logger.info("Live DB sync enabled")
+        except Exception as e:
+            logger.info("DB sync not available (using JSON only): %s", e)
+
         # Execution state
         self._running = False
         self._paused = False
@@ -193,13 +217,22 @@ class EpicOrchestrator:
         self._convergence_ran_diff = False  # Phase 28: Tracks if convergence loop ran diff analysis
 
         logger.info(
-            f"EpicOrchestrator initialized for: {project_path} -> {self.output_dir}",
+            f"EpicOrchestrator initialized for: {self.project_path} -> {self.output_dir}",
             extra={
                 "max_parallel": self.max_parallel_tasks,
-                "headless_mode": headless_mode,
-                "enable_som": enable_som,
             }
         )
+
+    def _set_task_status(self, task, status: str, error_message: str = "", execution_time_ms: int = 0):
+        """Set task status in-memory AND sync to DB."""
+        task.status = status
+        if error_message:
+            task.error_message = error_message
+        if self.db_sync:
+            try:
+                self.db_sync.update_task(task.id, status, error_message, execution_time_ms)
+            except Exception as e:
+                logger.debug("DB sync failed for %s: %s", task.id, e)
 
     # =========================================================================
     # Main Execution Entry Points
@@ -277,6 +310,8 @@ class EpicOrchestrator:
 
             # 1. Load or generate tasks
             task_list = self._load_or_generate_tasks(epic_id)
+            # Cache for external access (e.g., run_generation.py DB sync)
+            self._last_task_list = task_list
 
             if not task_list or not task_list.tasks:
                 return EpicExecutionResult(
@@ -439,6 +474,11 @@ class EpicOrchestrator:
                 )
             except Exception as e:
                 logger.warning(f"Failed to load tasks, regenerating: {e}")
+
+        # If skip_task_gen: don't generate, only use existing files
+        if self.skip_task_gen:
+            logger.warning(f"skip_task_gen=True but no task file for {epic_id} — skipping epic")
+            return None
 
         # Generate new tasks
         logger.info(f"Generating tasks for epic {epic_id}")
@@ -719,7 +759,7 @@ class EpicOrchestrator:
                 for tid in list(pending_ids):
                     task = task_map[tid]
                     if self._has_failed_ancestor(task, task_map, failed_ids):
-                        task.status = "skipped"
+                        self._set_task_status(task, "skipped", "Dependencies not met")
                         failed_deps = [d for d in task.dependencies if d in failed_ids or (d in task_map and task_map[d].status == "failed")]
                         task.error_message = f"Dependency failed: {failed_deps}"
                         logger.warning(f"Skipping {task.id}: dependency failed ({failed_deps})")
@@ -743,7 +783,7 @@ class EpicOrchestrator:
                 for task in remaining:
                     if not self._dependencies_met(task, task_map):
                         logger.warning(f"Skipping {task.id}: dependencies not met")
-                        task.status = "skipped"
+                        self._set_task_status(task, "skipped", "Dependencies not met")
                         skipped += 1
                         pending_ids.discard(task.id)
                 if not pending_ids:
@@ -761,7 +801,7 @@ class EpicOrchestrator:
                     if result.success:
                         completed_ids.add(task.id)
                         completed += 1
-                        task.status = "completed"
+                        self._set_task_status(task, "completed", "", getattr(result, 'execution_time_ms', 0))
                         # Auto-start dev servers after setup completes
                         if task.type == "setup_deps" or "SETUP-frontend" in task.id:
                             await self._start_dev_server()
@@ -774,8 +814,7 @@ class EpicOrchestrator:
                     else:
                         failed += 1
                         failed_ids.add(task.id)
-                        task.status = "failed"
-                        task.error_message = result.error or "Task execution failed (no details)"
+                        self._set_task_status(task, "failed", result.error or "Task execution failed (no details)")
                         logger.warning(
                             f"Task {task.id} failed: {task.error_message[:100]}"
                         )
@@ -795,7 +834,7 @@ class EpicOrchestrator:
                     if result.success:
                         completed_ids.add(task.id)
                         completed += 1
-                        task.status = "completed"
+                        self._set_task_status(task, "completed", "", getattr(result, 'execution_time_ms', 0))
                         # Auto-start dev servers after setup completes
                         if task.type == "setup_deps" or "SETUP-frontend" in task.id:
                             await self._start_dev_server()
@@ -808,8 +847,7 @@ class EpicOrchestrator:
                     else:
                         failed += 1
                         failed_ids.add(task.id)
-                        task.status = "failed"
-                        task.error_message = result.error or "Task execution failed (no details)"
+                        self._set_task_status(task, "failed", result.error or "Task execution failed (no details)")
                         logger.warning(
                             f"Task {task.id} failed: {task.error_message[:100]}"
                         )
@@ -1172,7 +1210,7 @@ class EpicOrchestrator:
             if not task:
                 continue
             if self._has_failed_ancestor(task, task_map, failed_ids):
-                task.status = "skipped"
+                self._set_task_status(task, "skipped", "Failed ancestor dependency")
                 failed_deps = [
                     d for d in task.dependencies
                     if d in failed_ids or (d in task_map and task_map[d].status == "failed")
@@ -1308,7 +1346,7 @@ class EpicOrchestrator:
                         if result.success:
                             completed_ids.add(task_id)
                             completed_count += 1
-                            task.status = "completed"
+                            self._set_task_status(task, "completed", "", getattr(result, 'execution_time_ms', 0))
                             # Auto-start dev servers after setup completes
                             if task.type == "setup_deps" or "SETUP-frontend" in task.id:
                                 await self._start_dev_server()
@@ -1329,8 +1367,7 @@ class EpicOrchestrator:
                         else:
                             failed_ids.add(task_id)
                             failed_count += 1
-                            task.status = "failed"
-                            task.error_message = result.error or "Task execution failed (no details)"
+                            self._set_task_status(task, "failed", result.error or "Task execution failed (no details)")
                             logger.warning(
                                 f"[Pipeline] Failed {task_id}: {task.error_message[:200]}"
                             )
@@ -1341,8 +1378,7 @@ class EpicOrchestrator:
                     except Exception as e:
                         failed_ids.add(task_id)
                         failed_count += 1
-                        task.status = "failed"
-                        task.error_message = str(e)
+                        self._set_task_status(task, "failed", str(e))
                         logger.error(
                             f"[Pipeline] Exception in {task_id}: {e}"
                         )

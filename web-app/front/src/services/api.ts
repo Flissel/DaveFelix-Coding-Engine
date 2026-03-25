@@ -180,7 +180,10 @@ export const projectApi = {
 
   // List all projects
   list: async (): Promise<Project[]> => {
-    return fetchApi<Project[]>('/projects');
+    const data = await fetchApi<{ projects: Project[] } | Project[]>('/projects');
+    // API may return {projects: [...]} or [...] depending on backend
+    if (Array.isArray(data)) return data;
+    return (data as { projects: Project[] }).projects || [];
   },
 
   // Get a specific project with files

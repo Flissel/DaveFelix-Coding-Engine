@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     # Options: "openrouter" (default) | "kilo" | "claude"
     # "openrouter" uses API (free models), "kilo" uses Kilo CLI, "claude" uses Claude SDK/CLI
     # NOTE: kilo/claude require interactive login inside the container (kilo auth login / claude login)
-    llm_backend: str = "openrouter"
+    llm_backend: str = "kilo"
 
     # CLI Model Configuration
     # Model for Claude Code CLI (passed via --model flag)
@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     # This fallback is only used if llm_config import fails
     cli_model: str = "claude-sonnet-4-20250514"
     # Model for Kilo Code CLI (passed via --model flag)
-    kilo_model: str = "openrouter/openrouter/free"
+    kilo_model: str = "openai/gpt-5.4"
 
     # OpenRouter (for free models)
     openrouter_api_key: Optional[str] = None

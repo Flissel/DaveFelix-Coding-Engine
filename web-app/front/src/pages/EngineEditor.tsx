@@ -1,12 +1,13 @@
 // front/src/pages/EngineEditor.tsx
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEngineProject, useGenerationStatus, useStartGeneration, useStopGeneration } from '@/hooks/useEngine';
 import { useEngineStore } from '@/stores/engineStore';
 import { WorkTabs } from '@/components/engine/WorkTabs';
 import { VncPreview } from '@/components/engine/VncPreview';
 import { GenerationMonitor } from '@/components/engine/GenerationMonitor';
-import { Play, Square, ArrowLeft } from 'lucide-react';
+import { useEngineSettings } from '@/services/engineSettingsApi';
+import { Play, Square, ArrowLeft, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const EngineEditor = () => {

@@ -94,26 +94,33 @@ class LLMSearchService:
         self.logger = logger.bind(service="llm_search")
 
     async def _init_llm(self) -> None:
-        """Initialize OpenRouter LLM client."""
+        """Initialize LLM client — respects LLM_BACKEND env var."""
         if self._llm_client is not None:
             return
 
         import httpx
-        api_key = os.environ.get('OPENROUTER_API_KEY', '')
+        backend = os.environ.get('LLM_BACKEND', 'openai')
+
+        if backend == 'openai':
+            api_key = os.environ.get('OPENAI_API_KEY', '')
+            base_url = "https://api.openai.com/v1"
+        else:
+            api_key = os.environ.get('OPENROUTER_API_KEY', '')
+            base_url = "https://openrouter.ai/api/v1"
+
         if not api_key:
-            self.logger.warning("no_openrouter_key", msg="OPENROUTER_API_KEY not set, LLM features disabled")
+            self.logger.warning("no_llm_key", msg="%s API key not set, LLM features disabled" % backend)
             return
 
         self._llm_client = httpx.AsyncClient(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=base_url,
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "https://coding-engine.local",
             },
             timeout=60.0,
         )
-        self.logger.info("llm_client_initialized")
+        self.logger.info("llm_client_initialized", backend=backend)
 
     async def _init_qdrant(self) -> None:
         """Initialize Qdrant client."""
@@ -128,21 +135,38 @@ class LLMSearchService:
             self.logger.warning("qdrant_init_failed", error=str(e))
 
     async def _init_embedder(self) -> None:
-        """Initialize embedding client."""
+        """Initialize embedding client — respects LLM_BACKEND env var."""
         if self._embedder is not None:
             return
 
-        # Try OpenRouter embeddings
-        api_key = os.environ.get('OPENROUTER_API_KEY', '')
-        if api_key:
+        backend = os.environ.get('LLM_BACKEND', 'openai')
+
+        # Try OpenAI embeddings first (if backend=openai or key available)
+        openai_key = os.environ.get('OPENAI_API_KEY', '')
+        if openai_key:
             try:
                 from src.agents.fungus_context_agent import OpenAIEmbeddingClient
                 self._embedder = OpenAIEmbeddingClient(
-                    api_key=api_key,
+                    api_key=openai_key,
+                    model="text-embedding-3-small",
+                    base_url="https://api.openai.com/api"
+                )
+                self.logger.info("embedder_initialized", model="openai/text-embedding-3-small")
+                return
+            except Exception as e:
+                self.logger.debug(f"openai_embedder_failed: {e}")
+
+        # Fallback to OpenRouter
+        or_key = os.environ.get('OPENROUTER_API_KEY', '')
+        if or_key:
+            try:
+                from src.agents.fungus_context_agent import OpenAIEmbeddingClient
+                self._embedder = OpenAIEmbeddingClient(
+                    api_key=or_key,
                     model="openai/text-embedding-3-small",
                     base_url="https://openrouter.ai/api"
                 )
-                self.logger.info("embedder_initialized", model="openrouter")
+                self.logger.info("embedder_initialized", model="openrouter/text-embedding-3-small")
                 return
             except Exception as e:
                 self.logger.debug(f"openrouter_embedder_failed: {e}")

@@ -20,6 +20,11 @@ class TaskStatus(str, enum.Enum):
     FAILED = "failed"
     BLOCKED = "blocked"  # Waiting on dependencies
     CANCELLED = "cancelled"
+    # New statuses for event-based orchestration
+    TO_VERIFY = "to_verify"      # Completed, waiting for verification
+    VERIFIED = "verified"        # Verification passed
+    FIXING = "fixing"            # Auto-fix in progress
+    PERMANENT_FAIL = "permanent_fail"  # Max retries reached, needs manual intervention
 
 
 class TaskType(str, enum.Enum):

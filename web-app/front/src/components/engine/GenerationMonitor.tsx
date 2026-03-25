@@ -1,13 +1,16 @@
 // front/src/components/engine/GenerationMonitor.tsx
-import { useState, useRef, useEffect } from 'react';
-import { useGenerationStatus } from '@/hooks/useEngine';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { useGenerationStatus, useEpics } from '@/hooks/useEngine';
 import { ProgressHeader } from './ProgressHeader';
 import { AgentList } from './AgentList';
 import { EpicSidebar } from './EpicSidebar';
+import { EpicCard } from './EpicCard';
+import { QualityScore } from './QualityScore';
 import { TaskBoard } from './TaskBoard';
 import { ReviewChat } from './ReviewChat';
 import { ClarificationPanel } from './ClarificationPanel';
 import { SettingsPanel } from './SettingsPanel';
+import { EngineSettingsTabs } from './EngineSettingsTabs';
 import { useEngineStore } from '@/stores/engineStore';
 import { API_URL } from '@/services/api';
 import type { EpicInfo } from '@/services/engineApi';
@@ -18,6 +21,8 @@ function LogViewer({ projectName }: { projectName: string }) {
   const [containerLogs, setContainerLogs] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
+  const [logFilter, setLogFilter] = useState<'all' | 'error' | 'warn'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Poll backend status + container logs
   useEffect(() => {
@@ -32,11 +37,7 @@ function LogViewer({ projectName }: { projectName: string }) {
           if (data.phase) lines.push(`[Phase] ${data.phase}`);
           if (data.completed !== undefined) lines.push(`[Progress] ${data.completed}/${data.total} tasks completed (${data.progress_pct || 0}%)`);
           if (data.failed > 0) lines.push(`[Warning] ${data.failed} tasks failed`);
-          if (data.epics?.length > 0) {
-            data.epics.forEach((e: EpicInfo) => {
-              lines.push(`[Epic] ${e.id}: ${e.name} -- ${e.tasks_complete}/${e.tasks_total} tasks (${e.progress_pct}%)`);
-            });
-          }
+          if (data.last_activity) lines.push(`[Activity] ${data.last_activity}`);
           if (active) setPolledLogs(lines);
         }
       } catch { /* ignore */ }
@@ -79,17 +80,40 @@ function LogViewer({ projectName }: { projectName: string }) {
     setAutoScroll(scrollHeight - scrollTop - clientHeight < 50);
   };
 
+  // Filter logs
+  const filteredLogs = useMemo(() => {
+    let logs = displayLogs;
+    if (logFilter === 'error') logs = logs.filter(l => /error|fail|exception/i.test(l));
+    else if (logFilter === 'warn') logs = logs.filter(l => /error|fail|exception|warn/i.test(l));
+    if (searchTerm) logs = logs.filter(l => l.toLowerCase().includes(searchTerm.toLowerCase()));
+    return logs;
+  }, [displayLogs, logFilter, searchTerm]);
+
   return (
     <div className="flex flex-col h-full flex-1">
       <div className="flex items-center gap-2 px-3 py-1.5 border-b border-white/5 shrink-0">
-        <span className="text-[10px] text-white/40">
-          {displayLogs.length} log lines
+        {/* Filter buttons */}
+        <div className="flex gap-1">
+          {(['all', 'warn', 'error'] as const).map(f => (
+            <button key={f} onClick={() => setLogFilter(f)}
+              className={`text-[9px] px-2 py-0.5 rounded transition-colors ${logFilter === f ? 'bg-primary/30 text-primary' : 'text-white/40 hover:text-white/60'}`}>
+              {f.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        {/* Search */}
+        <input
+          type="text" placeholder="Search logs..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+          className="text-[10px] px-2 py-0.5 bg-white/5 border border-white/10 rounded w-32 text-white/70 placeholder-white/30 focus:outline-none focus:border-primary/50"
+        />
+        <span className="text-[10px] text-white/40 ml-auto">
+          {filteredLogs.length}/{displayLogs.length} lines
           {wsLogs.length > 0 ? ' (live)' : containerLogs.length > 0 ? ' (container)' : ' (status)'}
         </span>
         {!autoScroll && (
           <button
             onClick={() => { setAutoScroll(true); }}
-            className="text-[10px] px-2 py-0.5 bg-primary/20 text-primary rounded hover:bg-primary/30 ml-auto"
+            className="text-[10px] px-2 py-0.5 bg-primary/20 text-primary rounded hover:bg-primary/30"
           >
             Resume auto-scroll
           </button>
@@ -100,10 +124,10 @@ function LogViewer({ projectName }: { projectName: string }) {
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto font-mono text-xs p-4 bg-black/30 rounded-lg"
       >
-        {displayLogs.length === 0 ? (
+        {filteredLogs.length === 0 ? (
           <div className="text-white/30">No logs yet. Start generation to see output.</div>
         ) : (
-          displayLogs.map((log, i) => {
+          filteredLogs.map((log, i) => {
             // Color-code log lines
             const isError = /error|fail|exception/i.test(log);
             const isWarning = /warn|warning/i.test(log);
@@ -163,10 +187,17 @@ const SUB_TABS = ['Agents', 'Epics', 'Tasks', 'Logs', 'Validation', 'Settings'] 
 
 export function GenerationMonitor({ projectName, parallelism, onParallelismChange }: GenerationMonitorProps) {
   const { data: status } = useGenerationStatus(projectName);
-  const [activeTab, setActiveTab] = useState<string>('Agents');
+  const [activeTab, setActiveTab] = useState<string>('Epics');
+  const [selectedEpic, setSelectedEpic] = useState<string>('');
   const reviewPaused = useEngineStore(state => state.reviewPaused);
+  const taskProgress = useEngineStore(state => state.taskProgress);
 
-  // Sync epics from status endpoint into zustand store (for TaskBoard)
+  // DB-backed epics (persistent, not just WebSocket)
+  const dbProjectId = 2; // TODO: resolve from projectName
+  const { data: dbEpics } = useEpics(dbProjectId);
+  const epicsList = dbEpics?.epics || [];
+
+  // Sync epics from status endpoint into zustand store
   useEffect(() => {
     if (status?.epics && status.epics.length > 0) {
       useEngineStore.setState({ epics: status.epics });
@@ -175,16 +206,33 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
 
   if (!status) return null;
 
+  // Quality stats — use status data with fallback to taskProgress
+  const completed = status.completed || taskProgress.completed || 0;
+  const failed = status.failed || taskProgress.failed || 0;
+  const total = status.total || taskProgress.total || 0;
+  const pending = total - completed - failed;
+
   return (
     <div className="flex flex-col h-full">
-      <ProgressHeader
-        projectName={projectName}
-        phase={status.phase}
-        progressPct={status.progress_pct}
-        serviceCount={status.service_count}
-        endpointCount={status.endpoint_count}
-      />
+      {/* Header: Progress + Quality Score side by side */}
+      <div className="flex items-center gap-4 px-4 py-2 border-b border-border/30">
+        <div className="flex-1">
+          <ProgressHeader
+            projectName={projectName}
+            phase={status.phase}
+            progressPct={status.progress_pct}
+            serviceCount={status.service_count}
+            endpointCount={status.endpoint_count}
+          />
+        </div>
+        {total > 0 && (
+          <QualityScore completed={completed} failed={failed} pending={pending} total={total} size="sm" />
+        )}
+      </div>
+
       {reviewPaused && <ReviewChat projectId={projectName} />}
+
+      {/* Tab Bar */}
       <div className="flex border-b border-border/30 px-2">
         {SUB_TABS.map((tab) => (
           <button
@@ -202,30 +250,61 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
                 {status.agents.length}
               </span>
             )}
-            {tab === 'Epics' && status.epics.length > 0 && (
+            {tab === 'Epics' && epicsList.length > 0 && (
               <span className="ml-1 text-[9px] bg-indigo-500/10 text-indigo-400 px-1.5 rounded">
-                {status.epics.length}
+                {epicsList.length}
+              </span>
+            )}
+            {tab === 'Tasks' && failed > 0 && (
+              <span className="ml-1 text-[9px] bg-red-500/10 text-red-400 px-1.5 rounded">
+                {failed} failed
               </span>
             )}
           </button>
         ))}
       </div>
+
+      {/* Tab Content */}
       <div className="flex flex-1 overflow-hidden">
         {activeTab === 'Agents' && <AgentList agents={status.agents} />}
-        {activeTab === 'Epics' && <EpicList epics={status.epics} />}
+        {activeTab === 'Epics' && (
+          <div className="flex flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto p-3">
+              {epicsList.length === 0 ? (
+                <div className="text-white/30 text-sm p-4">No epics loaded. Run import or start generation.</div>
+              ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {epicsList.map((epic: any) => (
+                    <EpicCard
+                      key={epic.epic_id}
+                      epic={epic}
+                      selected={selectedEpic === epic.epic_id}
+                      onClick={() => setSelectedEpic(selectedEpic === epic.epic_id ? '' : epic.epic_id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {selectedEpic && <EpicSidebar epics={status.epics} />}
+          </div>
+        )}
         {activeTab === 'Tasks' && <TaskBoard projectPath={projectName} />}
         {activeTab === 'Validation' && <ClarificationPanel />}
         {activeTab === 'Logs' && <LogViewer projectName={projectName} />}
         {activeTab === 'Settings' && (
-          <div className="flex-1 overflow-hidden">
-            <SettingsPanel
-              projectName={projectName}
-              parallelism={parallelism}
-              onParallelismChange={onParallelismChange}
-            />
+          <div className="flex-1 overflow-hidden flex">
+            <div className="w-1/2 border-r border-border/20">
+              <SettingsPanel
+                projectName={projectName}
+                parallelism={parallelism}
+                onParallelismChange={onParallelismChange}
+              />
+            </div>
+            <div className="w-1/2">
+              <EngineSettingsTabs />
+            </div>
           </div>
         )}
-        <EpicSidebar epics={status.epics} />
       </div>
     </div>
   );

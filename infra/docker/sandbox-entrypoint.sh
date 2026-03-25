@@ -565,8 +565,9 @@ build_project() {
 }
 
 # Start mobile preview (Expo Web + Android Emulator)
+# Smart detection: checks actual project structure, not just tech_stack.json
 start_mobile_preview() {
-    echo "=== Starting Mobile Preview (Expo Web + Android Emulator) ==="
+    echo "=== Starting Mobile Preview ==="
 
     # Find the generated project directory
     PROJECT_DIR=$(find /workspace/app -maxdepth 2 -name "package.json" -not -path "*/node_modules/*" -exec dirname {} \; 2>/dev/null | head -1)
@@ -580,39 +581,82 @@ start_mobile_preview() {
     # Start VNC for emulator display
     start_vnc
 
-    # Start static file server for code browsing
-    npx serve -s /workspace/app -l 3100 -C &
+    # ─── Detect actual frontend type ─────────────────────────────
+    HAS_EXPO=false
+    HAS_VITE_FRONTEND=false
+    HAS_NESTJS=false
+    FRONTEND_PORT=3100
+    FRONTEND_URL=""
 
-    # Check if this is an Expo project or needs conversion
-    if [ ! -f "app.json" ] && [ ! -f "app.config.js" ]; then
-        echo "Not an Expo project — starting Expo Web wrapper..."
-        # Create minimal Expo config for web preview
-        cat > app.json << 'APPJSON'
-{
-  "expo": {
-    "name": "preview",
-    "slug": "preview",
-    "web": { "bundler": "metro" },
-    "platforms": ["web", "android"]
-  }
-}
-APPJSON
+    # Check for Expo
+    if [ -f "app.json" ] || [ -f "app.config.js" ]; then
+        HAS_EXPO=true
+    fi
+    if grep -q '"expo"' package.json 2>/dev/null; then
+        HAS_EXPO=true
     fi
 
-    # Install deps + Expo Web requirements
-    echo "Installing dependencies..."
-    npm install --legacy-peer-deps 2>&1 | tail -5
-    npm install expo react-dom react-native-web @expo/metro-runtime 2>&1 | tail -3
+    # Check for Vite frontend in /frontend subdirectory
+    if [ -f "frontend/package.json" ] && [ -f "frontend/vite.config.ts" -o -f "frontend/vite.config.js" ]; then
+        HAS_VITE_FRONTEND=true
+    fi
 
-    # Start Expo Web on port 19006
-    echo "Starting Expo Web..."
-    npx expo start --web --port 19006 --non-interactive 2>&1 | tee /tmp/expo.log &
-    EXPO_PID=$!
+    # Check for NestJS backend
+    if grep -q '"@nestjs/core"' package.json 2>/dev/null; then
+        HAS_NESTJS=true
+    fi
 
-    # Start Android Emulator if KVM available
+    echo "Detected: expo=$HAS_EXPO vite_frontend=$HAS_VITE_FRONTEND nestjs=$HAS_NESTJS"
+
+    # ─── Start NestJS Backend (port 3000 → mapped to 3200) ──────
+    if [ "$HAS_NESTJS" = true ]; then
+        echo "Installing NestJS backend dependencies..."
+        npm install --legacy-peer-deps 2>&1 | tail -5
+        echo "Starting NestJS backend on port 3000..."
+        npm run start:dev 2>&1 | tee /tmp/nestjs.log &
+        NEST_PID=$!
+        echo "NestJS started (PID: $NEST_PID)"
+    fi
+
+    # ─── Start Frontend ──────────────────────────────────────────
+    if [ "$HAS_VITE_FRONTEND" = true ]; then
+        echo "=== Starting Vite Frontend ==="
+        cd frontend
+        echo "Installing frontend dependencies..."
+        npm install --legacy-peer-deps 2>&1 | tail -5
+
+        # Start Vite dev server on port 3100 (mapped to host)
+        echo "Starting Vite dev server on port $FRONTEND_PORT..."
+        npx vite --host 0.0.0.0 --port $FRONTEND_PORT 2>&1 | tee /tmp/frontend.log &
+        FE_PID=$!
+        FRONTEND_URL="http://localhost:$FRONTEND_PORT"
+        echo "Vite frontend started (PID: $FE_PID)"
+        cd "$PROJECT_DIR"
+
+    elif [ "$HAS_EXPO" = true ]; then
+        echo "=== Starting Expo Web ==="
+        # Install deps + Expo Web requirements
+        echo "Installing Expo dependencies..."
+        npm install --legacy-peer-deps 2>&1 | tail -5
+        npm install expo react-dom react-native-web @expo/metro-runtime 2>&1 | tail -3
+
+        # Start Expo Web on port 3100
+        echo "Starting Expo Web on port $FRONTEND_PORT..."
+        npx expo start --web --port $FRONTEND_PORT --non-interactive 2>&1 | tee /tmp/expo.log &
+        FE_PID=$!
+        FRONTEND_URL="http://localhost:$FRONTEND_PORT"
+        echo "Expo Web started (PID: $FE_PID)"
+
+    else
+        echo "No frontend detected — serving static files"
+        npx serve -s /workspace/app -l $FRONTEND_PORT -C &
+        FE_PID=$!
+        FRONTEND_URL="http://localhost:$FRONTEND_PORT"
+    fi
+
+    # ─── Start Android Emulator (VNC) ───────────────────────────
     if [ -e /dev/kvm ] && [ -d "${ANDROID_HOME}/emulator" ]; then
         echo "Starting Android Emulator (KVM available)..."
-        # Clean stale AVD locks
         rm -rf /root/.android/avd/sandbox.avd/*.lock 2>/dev/null
         ${ANDROID_HOME}/emulator/emulator -avd sandbox \
             -no-audio -no-boot-anim -gpu swiftshader_indirect \
@@ -627,40 +671,51 @@ APPJSON
         # Unlock screen
         ${ANDROID_HOME}/platform-tools/adb shell input keyevent 82 2>/dev/null
 
-        # Install Expo Go if APK exists
-        if [ -f /opt/expo-go.apk ]; then
+        # Install Expo Go if APK exists and project is Expo
+        if [ "$HAS_EXPO" = true ] && [ -f /opt/expo-go.apk ]; then
             echo "Installing Expo Go..."
             ${ANDROID_HOME}/platform-tools/adb install /opt/expo-go.apk 2>/dev/null || true
+            ${ANDROID_HOME}/platform-tools/adb shell am start -a android.intent.action.VIEW \
+                -d "exp://localhost:19000" 2>/dev/null || true
         fi
 
-        # Open Expo project in Expo Go
-        ${ANDROID_HOME}/platform-tools/adb shell am start -a android.intent.action.VIEW \
-            -d "exp://localhost:19000" 2>/dev/null || true
+        # Open Chromium with the frontend URL in the emulator
+        if [ -n "$FRONTEND_URL" ] && [ "$HAS_EXPO" = false ]; then
+            echo "Opening Chromium in VNC with $FRONTEND_URL"
+            # Point the kiosk browser at the app
+            pkill -f "chromium.*kiosk" 2>/dev/null || true
+            sleep 2
+            chromium $CHROMIUM_FLAGS --kiosk --app="$FRONTEND_URL" --display=:99 &
+        fi
 
         echo "Android Emulator started (PID: $EMU_PID)"
     else
-        echo "KVM not available — Android Emulator skipped, using Expo Web only"
+        echo "KVM not available — Emulator skipped"
+        # Point Chromium at the frontend
+        if [ -n "$FRONTEND_URL" ]; then
+            echo "Opening Chromium in VNC with $FRONTEND_URL"
+            pkill -f "chromium.*kiosk" 2>/dev/null || true
+            sleep 2
+            chromium $CHROMIUM_FLAGS --kiosk --app="$FRONTEND_URL" --display=:99 &
+        fi
     fi
 
-    # Also start the NestJS backend if it exists
-    if grep -q '"@nestjs/core"' package.json 2>/dev/null; then
-        echo "Starting NestJS backend..."
-        npm run start:dev 2>&1 | tee /tmp/nestjs.log &
+    echo ""
+    echo "=== Preview Ready ==="
+    echo "  Frontend:  $FRONTEND_URL"
+    if [ "$HAS_NESTJS" = true ]; then
+        echo "  Backend:   http://localhost:3000 (API)"
     fi
-
-    echo "Mobile preview ready:"
-    echo "  Expo Web:  http://localhost:19006"
-    echo "  Files:     http://localhost:3100"
     echo "  VNC:       http://localhost:${NOVNC_PORT}/vnc.html"
+    echo ""
 
-    # Keep container alive — wait on file server (most stable process)
-    # Don't wait on Expo (may crash) or emulator (may take long to boot)
+    # Keep container alive with status logging
     while true; do
         sleep 30
-        # Log status
         EMU_BOOT=$(${ANDROID_HOME}/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null || echo "0")
-        EXPO_UP=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:19006 2>/dev/null || echo "000")
-        echo "[status] emulator_booted=${EMU_BOOT} expo_web=${EXPO_UP}"
+        FE_UP=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL" 2>/dev/null || echo "000")
+        NEST_UP=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
+        echo "[status] emulator_booted=${EMU_BOOT} frontend=${FE_UP} nestjs=${NEST_UP}"
     done
 }
 

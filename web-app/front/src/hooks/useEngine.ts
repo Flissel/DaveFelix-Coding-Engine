@@ -86,3 +86,86 @@ export function useStopGeneration() {
     },
   });
 }
+
+// ── Project Data Hooks (DB-backed) ──────────────────────
+
+const API = '/api/v1/dashboard';
+
+export function useEpics(dbProjectId: number) {
+  return useQuery({
+    queryKey: ['epics', dbProjectId],
+    queryFn: async () => {
+      const res = await fetch(`${API}/epics/${dbProjectId}`);
+      if (!res.ok) return { epics: [] };
+      return res.json();
+    },
+    staleTime: 10000,
+    refetchInterval: 15000,
+    enabled: dbProjectId > 0,
+  });
+}
+
+export function useEpicTasks(dbProjectId: number, epicId: string) {
+  return useQuery({
+    queryKey: ['epic-tasks', dbProjectId, epicId],
+    queryFn: async () => {
+      const res = await fetch(`${API}/epics/${dbProjectId}/${epicId}/tasks`);
+      if (!res.ok) return { tasks: [] };
+      return res.json();
+    },
+    staleTime: 5000,
+    enabled: dbProjectId > 0 && !!epicId,
+  });
+}
+
+export function useFixTask() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { taskId: string; epicId?: string; errorMessage?: string }) => {
+      const res = await fetch(`${API}/fix-task`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task_id: params.taskId,
+          epic_id: params.epicId || '',
+          error_message: params.errorMessage || 'Fix requested from UI',
+          max_retries: 3,
+        }),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['epics'] });
+      queryClient.invalidateQueries({ queryKey: engineKeys.dbProjects() });
+    },
+  });
+}
+
+export function useFixAll() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (dbJobId: number) => {
+      const res = await fetch(`${API}/fixall`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job_id: dbJobId }),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['epics'] });
+      queryClient.invalidateQueries({ queryKey: engineKeys.dbProjects() });
+    },
+  });
+}
+
+export function useImportProjectData() {
+  return useMutation({
+    mutationFn: async (projectName: string) => {
+      const res = await fetch(`${API}/import-project-data?project_name=${encodeURIComponent(projectName)}`, {
+        method: 'POST',
+      });
+      return res.json();
+    },
+  });
+}

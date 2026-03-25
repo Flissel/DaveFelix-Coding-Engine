@@ -54,6 +54,14 @@ def init_dashboard(
     app.include_router(dashboard.router)
     logger.info("dashboard_rest_routes_registered", prefix="/api/v1/dashboard")
 
+    # Include project data routes (epics, requirements, API endpoints, diagrams, tests)
+    try:
+        from src.api.routes import project_data
+        app.include_router(project_data.router)
+        logger.info("project_data_routes_registered")
+    except Exception as e:
+        logger.warning("project_data_routes_failed", error=str(e))
+
     # Initialize SharedState and set dependencies for review gate and sandbox error reporting
     shared_state = SharedState()
     set_review_gate_dependencies(shared_state, event_bus)

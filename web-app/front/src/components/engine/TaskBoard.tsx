@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { getDbProjects, getDbTasks } from '@/services/engineApi';
 import { useEngineStore } from '@/stores/engineStore';
+import { useFixTask } from '@/hooks/useEngine';
 
 interface DbTask {
   id: number;
@@ -209,6 +210,45 @@ export function TaskBoard({ projectPath }: { projectPath: string }) {
         ))}
       </div>
 
+      {/* Failed Tasks Banner */}
+      {counts.failed > 0 && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-red-400 text-sm font-medium">❌ {counts.failed} failed tasks</span>
+              {counts.failed > 0 && filter !== 'failed' && (
+                <button onClick={() => setFilter('failed')}
+                  className="text-[10px] px-2 py-0.5 bg-red-500/20 text-red-300 rounded hover:bg-red-500/30">
+                  Show failed
+                </button>
+              )}
+            </div>
+            <button
+              onClick={async () => {
+                try {
+                  // Trigger bot to run !fixall via API → Discord bot
+                  const res = await fetch('/api/v1/dashboard/trigger-bot-command', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: 'fixall' }),
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    alert('Fix All triggered! Check Discord #fixes for progress.');
+                  } else {
+                    alert('Trigger failed: ' + (data.error || 'Unknown'));
+                  }
+                } catch (e) {
+                  alert('Could not trigger bot: ' + String(e));
+                }
+              }}
+              className="text-xs px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium"
+            >
+              🔧 Fix All ({counts.failed})
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Task list */}
       <div className="flex-1 overflow-y-auto space-y-1.5">
         {filteredTasks.length === 0 ? (
@@ -233,7 +273,34 @@ export function TaskBoard({ projectPath }: { projectPath: string }) {
                 <p className="text-[11px] text-white/40 mt-0.5 ml-6 truncate">{task.description}</p>
               )}
               {task.status_message && (
-                <p className="text-[11px] text-red-400/80 mt-0.5 ml-6 truncate">{task.status_message}</p>
+                <div className="flex items-center gap-2 mt-0.5 ml-6">
+                  <p className="text-[11px] text-red-400/80 truncate flex-1">{task.status_message}</p>
+                  {task.status === 'failed' && (
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const res = await fetch('/api/v1/dashboard/fix-task', {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              task_id: task.task_id,
+                              epic_id: task.task_id.split('-').slice(0, 2).join('-'),
+                              error_message: task.status_message || 'Failed',
+                              max_retries: 3,
+                            }),
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            if (selectedProjectId) loadDbTasks(selectedProjectId);
+                          }
+                        } catch {}
+                      }}
+                      className="text-[9px] px-2 py-0.5 bg-orange-500/20 text-orange-300 rounded hover:bg-orange-500/30 shrink-0"
+                    >
+                      Fix
+                    </button>
+                  )}
+                </div>
               )}
               {task.depends_on.length > 0 && (
                 <div className="ml-6 mt-0.5 flex gap-1 flex-wrap">
