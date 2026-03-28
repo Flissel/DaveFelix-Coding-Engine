@@ -1566,6 +1566,9 @@ class EpicOrchestrator:
                 except Exception as e:
                     logger.warning(f"SoM event publish failed in convergence: {e}")
 
+            # Trigger autonomous E2E tests via Automation UI (Phase 35)
+            asyncio.create_task(self._trigger_e2e_tests(epic_id))
+
             # Check if we made progress
             if tasks_fixed == 0 and newly_completed == 0:
                 logger.warning("No progress in convergence round, stopping")
@@ -2014,6 +2017,60 @@ async def test_epic_orchestrator():
     print(f"   Status: {status}")
 
     print("\n=== Test Complete ===")
+
+
+# =========================================================================
+# Phase 35: Autonomous E2E Test Trigger
+# =========================================================================
+
+async def _trigger_e2e_tests_impl(project_path: str, output_dir: str, epic_id: str):
+    """Fire-and-forget: call Automation UI E2E test runner after epic completion."""
+    import aiohttp
+
+    automation_url = os.environ.get("AUTOMATION_UI_URL", "http://coding-engine-automation-ui:8007")
+    app_url = os.environ.get("SANDBOX_APP_URL", "http://coding-engine-sandbox:3100")
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Check if automation-ui is available
+            try:
+                async with session.get(f"{automation_url}/api/health/health", timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                    if resp.status != 200:
+                        logger.debug(f"E2E trigger: Automation UI not available ({resp.status})")
+                        return
+            except Exception:
+                logger.debug("E2E trigger: Automation UI not reachable, skipping")
+                return
+
+            # Trigger E2E tests
+            async with session.post(
+                f"{automation_url}/api/v1/e2e/run",
+                json={
+                    "project_path": project_path,
+                    "app_url": app_url,
+                    "max_tests": 10,
+                },
+                timeout=aiohttp.ClientTimeout(total=10),
+            ) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    logger.info(f"E2E trigger: tests started for {epic_id} — {data}")
+                else:
+                    logger.debug(f"E2E trigger: failed to start ({resp.status})")
+    except Exception as e:
+        logger.debug(f"E2E trigger failed: {e}")
+
+
+# Monkey-patch onto EpicOrchestrator so the convergence loop can call it
+async def _epic_trigger_e2e(self, epic_id: str):
+    """Trigger E2E tests after epic completion. Non-blocking."""
+    await _trigger_e2e_tests_impl(
+        project_path=str(self.project_path) if hasattr(self, 'project_path') else "",
+        output_dir=str(self.output_dir),
+        epic_id=epic_id,
+    )
+
+EpicOrchestrator._trigger_e2e_tests = _epic_trigger_e2e
 
 
 if __name__ == "__main__":
