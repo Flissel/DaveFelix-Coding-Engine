@@ -206,9 +206,10 @@ services:
       start_period: 15s
 
   # OpenClaw Gateway - Master Orchestrator (GPT-5.4)
-  # Receives WhatsApp/Discord commands, orchestrates code generation,
-  # manages Git branches/PRs, and runs fix loops via CLI
+  # Requires separate openclaw repo at ../../openclaw
+  # Start with: docker compose --profile openclaw up -d openclaw
   openclaw:
+    profiles: ["openclaw"]
     build:
       context: ../../openclaw
       dockerfile: Dockerfile

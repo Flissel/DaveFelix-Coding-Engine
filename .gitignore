@@ -75,7 +75,7 @@ electron-minimal-test/out/
 screenshots/*.png
 screenshots/*.jpg
 
-# Temporary root-level debug/poll scripts
+# Temporary root-level debug/poll/fix scripts
 _*.py
 check_task_data.py
 dry_run_enrichment.py
@@ -87,6 +87,10 @@ test_api.py
 test_prompt_enrichment.py
 test_single_task.py
 test_workflow_integration.py
+fix_*.py
+generate_modules.py
+test_fungus.py
+MANUAL_FIXES_LOG.md
 
 # Temporary plan/debug docs
 DEBUG_CONTAINER_PLAN.md
