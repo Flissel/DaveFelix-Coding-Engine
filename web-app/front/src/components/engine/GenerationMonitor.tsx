@@ -328,7 +328,12 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
           </div>
         )}
         {activeTab === 'Tasks' && <TaskBoard projectPath={projectName} />}
-        {activeTab === 'Validation' && <ClarificationPanel />}
+        {activeTab === 'Validation' && (
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <E2ETestPanel projectPath={projectPath} appUrl="http://localhost:3100" />
+            <ClarificationPanel />
+          </div>
+        )}
         {activeTab === 'Logs' && <LogViewer projectName={projectName} />}
         {activeTab === 'Settings' && (
           <div className="flex-1 overflow-hidden flex">
@@ -345,6 +350,83 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+
+// ── E2E Test Panel ──────────────────────────────────────────────
+
+function E2ETestPanel({ projectPath, appUrl }: { projectPath: string | null; appUrl: string }) {
+  const [status, setStatus] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const runTests = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8007/api/v1/e2e/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_path: projectPath || '/app/Data/all_services/whatsapp-messaging-service_20260211_025459',
+          app_url: appUrl,
+          max_tests: 15,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) pollStatus();
+    } catch (e) {
+      console.error('E2E run failed:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pollStatus = () => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('http://localhost:8007/api/v1/e2e/status');
+        const data = await res.json();
+        setStatus(data);
+        if (!data.running) clearInterval(interval);
+      } catch { clearInterval(interval); }
+    }, 3000);
+  };
+
+  return (
+    <div className="bg-white/5 rounded-lg border border-white/10 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-semibold text-white">E2E Tests (Autonomous)</h3>
+        <button
+          onClick={runTests}
+          disabled={loading || status?.running}
+          className="px-3 py-1 text-xs rounded bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white transition-colors"
+        >
+          {status?.running ? `Running ${status.completed}/${status.total_tests}...` : loading ? 'Starting...' : 'Run E2E Tests'}
+        </button>
+      </div>
+      {status && (
+        <div className="space-y-2 text-xs">
+          <div className="flex gap-4 text-muted-foreground">
+            <span className="text-green-400">{status.passed} passed</span>
+            <span className="text-red-400">{status.failed} failed</span>
+            <span>{status.total_tests} total</span>
+          </div>
+          {status.current_test && (
+            <div className="text-muted-foreground truncate">Current: {status.current_test}</div>
+          )}
+          {status.report?.results && (
+            <div className="mt-2 space-y-1 max-h-40 overflow-y-auto">
+              {status.report.results.map((r: any, i: number) => (
+                <div key={i} className={`flex gap-2 ${r.passed ? 'text-green-400' : 'text-red-400'}`}>
+                  <span>{r.passed ? '+' : '-'}</span>
+                  <span className="truncate">{r.test_case?.story_id}: {r.test_case?.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
