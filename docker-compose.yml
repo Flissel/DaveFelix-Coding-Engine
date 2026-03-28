@@ -244,6 +244,31 @@ services:
       api:
         condition: service_healthy
 
+  # Frontend - DaveLovable Web UI
+  frontend:
+    build:
+      context: ./web-app/front
+    container_name: coding-engine-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      # VITE_API_URL is NOT set here — browser uses relative /api/v1 path
+      # Vite proxy (server-side) routes /api/v1 to http://api:8000
+      - VITE_PROXY_TARGET=http://api:8000
+    depends_on:
+      - api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5173"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
   # VSCode Server - Live code inspection
   vscode:
     image: codercom/code-server:latest

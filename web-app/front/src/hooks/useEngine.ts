@@ -91,17 +91,17 @@ export function useStopGeneration() {
 
 const API = '/api/v1/dashboard';
 
-export function useEpics(dbProjectId: number) {
+export function useEpics(projectPath: string | null) {
   return useQuery({
-    queryKey: ['epics', dbProjectId],
+    queryKey: ['epics', projectPath],
     queryFn: async () => {
-      const res = await fetch(`${API}/epics/${dbProjectId}`);
+      const res = await fetch(`${API}/epics?project_path=${encodeURIComponent(projectPath!)}`);
       if (!res.ok) return { epics: [] };
       return res.json();
     },
     staleTime: 10000,
     refetchInterval: 15000,
-    enabled: dbProjectId > 0,
+    enabled: !!projectPath,
   });
 }
 

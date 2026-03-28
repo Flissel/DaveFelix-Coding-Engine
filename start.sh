@@ -113,18 +113,15 @@ if [ "$ALL" = true ]; then
     echo ""
     info "Starting all additional services..."
 
+    $COMPOSE up -d frontend 2>/dev/null && ok "Frontend (DaveLovable UI)" || warn "Frontend failed to start"
     $COMPOSE up -d gitea 2>/dev/null && ok "Gitea (Git server)" || warn "Gitea failed to start"
     $COMPOSE up -d sandbox 2>/dev/null && ok "Sandbox (VNC preview)" || warn "Sandbox failed to start (may need /dev/kvm)"
     $COMPOSE up -d worker 2>/dev/null && ok "Worker" || warn "Worker failed to start"
     $COMPOSE up -d vscode 2>/dev/null && ok "VSCode Server" || warn "VSCode failed to start"
     $COMPOSE up -d automation-ui-backend 2>/dev/null && ok "Automation UI" || warn "Automation UI failed to start"
 
-    # OpenClaw requires external repo — skip if build context missing
-    if [ -d "../../openclaw" ]; then
-        $COMPOSE up -d openclaw 2>/dev/null && ok "OpenClaw Gateway" || warn "OpenClaw failed to start"
-    else
-        warn "OpenClaw skipped (../../openclaw not found)"
-    fi
+    # OpenClaw requires external repo — start only with: docker compose --profile openclaw up -d openclaw
+    warn "OpenClaw skipped (use: docker compose --profile openclaw up -d openclaw)"
 fi
 
 # ------------------------------------------------------------------
@@ -155,13 +152,13 @@ print_service "PostgreSQL"     "localhost:5432"                 "coding-engine-p
 print_service "Redis"          "localhost:6382"                 "coding-engine-redis"
 
 if [ "$ALL" = true ]; then
+    print_service "Frontend"       "http://localhost:5173"      "coding-engine-frontend"
     print_service "Gitea"          "http://localhost:3000"      "coding-engine-gitea"
     print_service "Sandbox VNC"    "http://localhost:6090"      "coding-engine-sandbox"
     print_service "App Preview"    "http://localhost:3100"      "coding-engine-sandbox"
     print_service "VSCode"         "http://localhost:8444"      "coding-engine-vscode"
     print_service "Worker"         "(background)"               "coding-engine-worker"
     print_service "Automation UI"  "http://localhost:8007"      "coding-engine-automation-ui"
-    print_service "OpenClaw"       "http://localhost:18789"     "coding-engine-openclaw"
 fi
 
 echo ""

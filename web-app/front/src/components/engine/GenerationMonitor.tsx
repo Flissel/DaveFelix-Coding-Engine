@@ -192,9 +192,30 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
   const reviewPaused = useEngineStore(state => state.reviewPaused);
   const taskProgress = useEngineStore(state => state.taskProgress);
 
-  // DB-backed epics (persistent, not just WebSocket)
-  const dbProjectId = 2; // TODO: resolve from projectName
-  const { data: dbEpics } = useEpics(dbProjectId);
+  // Resolve project path for epics API via local-projects endpoint
+  const [projectPath, setProjectPath] = useState<string | null>(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/dashboard/local-projects');
+        if (res.ok) {
+          const data = await res.json();
+          const match = (data.projects || []).find((p: any) =>
+            p.project_id?.includes(projectName) || p.project_name?.toLowerCase().includes(projectName.toLowerCase())
+          );
+          if (match?.project_path) {
+            setProjectPath(match.project_path);
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+      // Fallback: scan for matching dir name
+      setProjectPath(`/app/Data/all_services/${projectName}`);
+    })();
+  }, [projectName]);
+
+  // Epics from JSON files (via project_path query param)
+  const { data: dbEpics } = useEpics(projectPath);
   const epicsList = dbEpics?.epics || [];
 
   // Sync epics from status endpoint into zustand store

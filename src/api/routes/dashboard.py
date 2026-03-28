@@ -4548,14 +4548,20 @@ async def get_db_tasks(project_id: int):
                 select(Task).where(Task.job_id == job.id).order_by(Task.id)
             )
             tasks = result.scalars().all()
+            # Use actual task count from DB (not stale job.total_tasks)
+            actual_total = len(tasks)
+            actual_completed = sum(1 for t in tasks if t.status and t.status.value == "completed")
+            actual_failed = sum(1 for t in tasks if t.status and t.status.value == "failed")
+            actual_pct = (actual_completed / actual_total * 100) if actual_total > 0 else 0
+
             return {
                 "job": {
                     "id": job.id,
                     "status": job.status.value if job.status else "unknown",
-                    "tasks_completed": job.tasks_completed,
-                    "tasks_failed": job.tasks_failed,
-                    "total_tasks": job.total_tasks,
-                    "progress_pct": job.progress_percent,
+                    "tasks_completed": actual_completed,
+                    "tasks_failed": actual_failed,
+                    "total_tasks": actual_total,
+                    "progress_pct": round(actual_pct, 1),
                 },
                 "tasks": [
                     {
