@@ -139,12 +139,13 @@ class TaskStatus(Enum):
 
 class TaskPhase(Enum):
     """Task-Phasen für Gruppierung"""
-    SETUP = "setup"         # Phase 0: Project Setup
-    SCHEMA = "schema"       # Phase 1: Database Schema
-    API = "api"             # Phase 2: Backend APIs
-    FRONTEND = "frontend"   # Phase 3: Frontend Components
-    TEST = "test"           # Phase 4: Testing
-    DEPLOY = "deploy"       # Phase 5: Deployment
+    SETUP = "setup"                 # Phase 0: Project Setup
+    SCHEMA = "schema"               # Phase 1: Database Schema
+    API = "api"                     # Phase 2: Backend APIs
+    FRONTEND = "frontend"           # Phase 3: Frontend Components
+    TEST = "test"                   # Phase 4: Testing
+    VERIFICATION = "verification"   # Phase 5: Build + TypeCheck
+    DEPLOY = "deploy"               # Phase 6: Deployment
 
 
 @dataclass

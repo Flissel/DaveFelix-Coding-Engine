@@ -2659,6 +2659,15 @@ async def _create_pr_after_fix(task_id: str, project_path: str, attempt: int):
 
     try:
         env = os.environ.copy()
+        # Inject secrets from Docker /run/secrets/ if not in env
+        for secret_name, env_key in [
+            ("github_token", "GITHUB_TOKEN"),
+            ("openai_api_key", "OPENAI_API_KEY"),
+        ]:
+            if not env.get(env_key):
+                secret_path = f"/run/secrets/{secret_name}"
+                if os.path.exists(secret_path):
+                    env[env_key] = open(secret_path).read().strip()
 
         # Create branch + commit
         cmds = [
