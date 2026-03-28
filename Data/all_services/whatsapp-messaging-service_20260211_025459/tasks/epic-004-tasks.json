@@ -3,20 +3,26 @@
   "epic_name": "Medien- und Statusinhalte",
   "tasks": [
     {
-      "id": "EPIC-004-SCHEMA-contact-model",
+      "id": "EPIC-004-SCHEMA-all",
       "epic_id": "EPIC-004",
       "type": "schema_model",
-      "title": "Create Prisma model: contact",
-      "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
+      "title": "Prisma schema: contact, media_attachment, media_item, status_reply, status_update",
+      "description": "Create ALL Prisma models for EPIC-004 in prisma/schema.prisma.\n\nModels to create:\n- contact: Define model with all attributes, types, and relations to other entities\n- media_attachment: Define model with all attributes, types, and relations to other entities\n- media_item: Define model with all attributes, types, and relations to other entities\n- status_reply: Define model with all attributes, types, and relations to other entities\n- status_update: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "running",
       "dependencies": [],
-      "estimated_minutes": 5,
+      "estimated_minutes": 10,
       "actual_minutes": null,
       "error_message": null,
       "output_files": [
-        "prisma/schema.prisma#contact"
+        "prisma/schema.prisma"
       ],
-      "related_requirements": [],
+      "related_requirements": [
+        "WA-STS-001",
+        "WA-STS-002",
+        "WA-STS-003",
+        "WA-STS-004",
+        "WA-STS-005"
+      ],
       "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
@@ -29,524 +35,6 @@
       "phase": "code",
       "command": null,
       "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-contact-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: contact",
-      "description": "Set up Prisma relations for contact with other entities.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-contact-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#contact_relations"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-contact-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: contact",
-      "description": "Execute prisma migrate dev for contact changes.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-contact-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_contact/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: media_attachment",
-      "description": "Define media_attachment model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#media_attachment"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: media_attachment",
-      "description": "Set up Prisma relations for media_attachment with other entities.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_attachment-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#media_attachment_relations"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: media_attachment",
-      "description": "Execute prisma migrate dev for media_attachment changes.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_attachment-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_media_attachment/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: media_item",
-      "description": "Define media_item model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#media_item"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: media_item",
-      "description": "Set up Prisma relations for media_item with other entities.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_item-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#media_item_relations"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: media_item",
-      "description": "Execute prisma migrate dev for media_item changes.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_item-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_media_item/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: status_reply",
-      "description": "Define status_reply model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#status_reply"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: status_reply",
-      "description": "Set up Prisma relations for status_reply with other entities.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_reply-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#status_reply_relations"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: status_reply",
-      "description": "Execute prisma migrate dev for status_reply changes.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_reply-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_status_reply/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: status_update",
-      "description": "Define status_update model in prisma/schema.prisma with all required attributes and types.",
-      "status": "pending",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#status_update"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: status_update",
-      "description": "Set up Prisma relations for status_update with other entities.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#status_update_relations"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: status_update",
-      "description": "Execute prisma migrate dev for status_update changes.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_status_update/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-schema",
-      "epic_id": "EPIC-004",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-model",
-        "EPIC-004-SCHEMA-status_update-relations",
-        "EPIC-004-SCHEMA-status_update-migration"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "schema",
-      "command": "npx prisma validate",
-      "success_criteria": "prisma validate exits with code 0",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-schema",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated Prisma schema.\n\nPlease verify:\n- All entities are correctly defined\n- Relations between entities are correct\n- Field types and constraints are appropriate\n- Indexes are defined where needed\n\nApprove to continue with API generation.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "schema",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
       "tested": false,
       "user_fix_instructions": null,
       "enrichment_context": null
@@ -559,7 +47,7 @@
       "description": "Generate the COMPLETE NestJS module for 'statuses' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/statuses \u2014 Create a 24-hour status update\n  POST /api/v1/statuses/{statusId}/replies \u2014 Create a reply to a status\n  GET /api/v1/statuses/{statusId}/replies \u2014 List replies to a status\n  DELETE /api/v1/statuses/{statusId}/replies/{replyId} \u2014 Delete a reply to a status",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "actual_minutes": null,
@@ -571,8 +59,8 @@
         "src/modules/statuses/dto/"
       ],
       "related_requirements": [
-        "WA-STS-001",
-        "WA-STS-003"
+        "WA-STS-003",
+        "WA-STS-001"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -588,8 +76,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-contacts-feature",
@@ -599,7 +86,7 @@
       "description": "Generate the COMPLETE NestJS module for 'contacts' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/contacts/{contactId}/status \u2014 Get contact status\n  GET /api/v1/contacts/statuses \u2014 List contact statuses",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -627,8 +114,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-users-feature",
@@ -636,9 +122,9 @@
       "type": "api_controller",
       "title": "Feature: users (2 endpoints: GET, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/users/{userId}/status-visibility-settings \u2014 Get status visibility settings\n  PUT /api/v1/users/{userId}/status-visibility-settings \u2014 Update status visibility settings",
-      "status": "running",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -666,8 +152,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-status-mutes-feature",
@@ -675,9 +160,9 @@
       "type": "api_controller",
       "title": "Feature: status-mutes (3 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'status-mutes' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/status-mutes \u2014 Mute a contact's status\n  GET /api/v1/status-mutes \u2014 List muted status contacts\n  DELETE /api/v1/status-mutes/{contactId} \u2014 Unmute a contact's status",
-      "status": "running",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -705,8 +190,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-media-feature",
@@ -716,7 +200,7 @@
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media/images \u2014 Upload an image\n  POST /api/v1/media/videos \u2014 Upload video media\n  GET /api/v1/media/library \u2014 List user gallery items\n  POST /api/v1/media/uploads \u2014 Upload media from device gallery\n  PUT /api/v1/media/uploads/{uploadId}/parts/{partNumber} \u2014 Upload a media chunk\n  POST /api/v1/media/uploads/{uploadId}/complete \u2014 Complete an HD media upload\n  GET /api/v1/media/{mediaId} \u2014 Retrieve encrypted media metadata and download URL",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 21,
       "actual_minutes": null,
@@ -728,10 +212,10 @@
         "src/modules/media/dto/"
       ],
       "related_requirements": [
-        "WA-MED-002",
+        "WA-MED-010",
         "WA-MED-009",
         "WA-MED-001",
-        "WA-MED-010"
+        "WA-MED-002"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -747,8 +231,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-conversations-feature",
@@ -758,7 +241,7 @@
       "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages \u2014 Send an image message",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -786,8 +269,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-messages-feature",
@@ -795,9 +277,9 @@
       "type": "api_controller",
       "title": "Feature: messages (4 endpoints: POST)",
       "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages \u2014 Send a video message\n  POST /api/v1/messages/documents \u2014 Send a document message\n  POST /api/v1/messages/gifs \u2014 Send GIF message\n  POST /api/v1/messages/media \u2014 Send an HD media message",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "actual_minutes": null,
@@ -809,10 +291,10 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MED-002",
         "WA-MED-010",
+        "WA-MED-003",
         "WA-MED-006",
-        "WA-MED-003"
+        "WA-MED-002"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -838,7 +320,7 @@
       "description": "Generate the COMPLETE NestJS module for 'media-drafts' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media-drafts \u2014 Create an image draft for editing\n  PUT /api/v1/media-drafts/{draftId}/edits \u2014 Apply edits to an image draft\n  POST /api/v1/media-drafts/{draftId}/finalize \u2014 Finalize an edited image draft",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -866,8 +348,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-004-API-chats-feature",
@@ -875,9 +356,9 @@
       "type": "api_controller",
       "title": "Feature: chats (3 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/messages \u2014 Send sticker message\n  POST /api/v1/chats/{chatId}/media \u2014 Upload camera-captured media to a chat\n  GET /api/v1/chats/{chatId}/media/{mediaId} \u2014 Get downloadable media details",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -914,9 +395,9 @@
       "type": "api_controller",
       "title": "Feature: sticker-packs (2 endpoints: GET)",
       "description": "Generate the COMPLETE NestJS module for 'sticker-packs' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/sticker-packs \u2014 List sticker packs\n  GET /api/v1/sticker-packs/{packId}/stickers \u2014 List stickers in a pack",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -952,9 +433,9 @@
       "type": "api_controller",
       "title": "Feature: gifs (1 endpoints: GET)",
       "description": "Generate the COMPLETE NestJS module for 'gifs' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/gifs/search \u2014 Search GIFs",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -990,9 +471,9 @@
       "type": "api_controller",
       "title": "Feature: audio-messages (2 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'audio-messages' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/audio-messages \u2014 Send an encrypted audio message\n  GET /api/v1/audio-messages/{audioMessageId}/download \u2014 Download an audio message file",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -1023,244 +504,23 @@
       "enrichment_context": null
     },
     {
-      "id": "EPIC-004-VERIFY-build-api",
-      "epic_id": "EPIC-004",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-API-media-drafts-feature",
-        "EPIC-004-API-chats-feature",
-        "EPIC-004-API-sticker-packs-feature",
-        "EPIC-004-API-gifs-feature",
-        "EPIC-004-API-audio-messages-feature"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npm run build",
-      "success_criteria": "Build completes without errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-typecheck-api",
-      "epic_id": "EPIC-004",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npx tsc --noEmit",
-      "success_criteria": "No TypeScript errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-integration",
-      "epic_id": "EPIC-004",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npm run test:integration",
-      "success_criteria": "All integration tests pass",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-build-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-api",
-        "EPIC-004-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "docker-compose build api",
-      "success_criteria": "Docker image built successfully",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-start-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "docker-compose up -d api",
-      "success_criteria": "API container running",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-health-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "curl -f http://localhost:3000/health",
-      "success_criteria": "Health endpoint returns 200 OK",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-api",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-api",
-        "EPIC-004-DOCKER-start-api",
-        "EPIC-004-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated APIs.\n\nPlease verify:\n- All endpoints are implemented\n- Authentication and authorization work\n- Input validation is correct\n- Error handling is appropriate\n\nApprove to continue with Frontend generation.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-page",
+      "id": "EPIC-004-FE-StatusView-feature",
       "epic_id": "EPIC-004",
       "type": "fe_page",
-      "title": "Page: StatusView",
-      "description": "Create StatusView page component implementing 7 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: StatusView (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'StatusView':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useStatusView)\n- API client functions\n\nUser Stories: US-042, US-043, US-044, US-045, US-046",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-api"
+        "EPIC-004-API-audio-messages-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 35,
       "actual_minutes": null,
       "error_message": null,
       "output_files": [
-        "src/pages/StatusView/StatusView.tsx"
+        "src/pages/StatusView/StatusView.tsx",
+        "src/components/StatusView/",
+        "src/hooks/useStatusView.ts",
+        "src/api/statusviewAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -1288,121 +548,23 @@
       "enrichment_context": null
     },
     {
-      "id": "EPIC-004-FE-StatusView-components",
-      "epic_id": "EPIC-004",
-      "type": "fe_component",
-      "title": "Components: StatusView",
-      "description": "Create reusable components for StatusView",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-page"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/components/StatusView/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-hook",
-      "epic_id": "EPIC-004",
-      "type": "fe_hook",
-      "title": "Hook: useStatusView",
-      "description": "Create custom hook for StatusView state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-page"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/hooks/useStatusView.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-api",
-      "epic_id": "EPIC-004",
-      "type": "fe_api_client",
-      "title": "API Client: StatusView",
-      "description": "Create API client functions for StatusView",
-      "status": "running",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-hook"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/api/statusviewAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-page",
+      "id": "EPIC-004-FE-StatusCreator-feature",
       "epic_id": "EPIC-004",
       "type": "fe_page",
-      "title": "Page: StatusCreator",
-      "description": "Create StatusCreator page component implementing 7 user stories.",
-      "status": "pending",
+      "title": "Frontend Feature: StatusCreator (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'StatusCreator':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useStatusCreator)\n- API client functions\n\nUser Stories: US-049, US-050, US-051, US-052, US-053",
+      "status": "running",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-api"
+        "EPIC-004-API-audio-messages-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 35,
       "actual_minutes": null,
       "error_message": null,
       "output_files": [
-        "src/pages/StatusCreator/StatusCreator.tsx"
+        "src/pages/StatusCreator/StatusCreator.tsx",
+        "src/components/StatusCreator/",
+        "src/hooks/useStatusCreator.ts",
+        "src/api/statuscreatorAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -1430,268 +592,6 @@
       "enrichment_context": null
     },
     {
-      "id": "EPIC-004-FE-StatusCreator-components",
-      "epic_id": "EPIC-004",
-      "type": "fe_component",
-      "title": "Components: StatusCreator",
-      "description": "Create reusable components for StatusCreator",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-page"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/components/StatusCreator/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-hook",
-      "epic_id": "EPIC-004",
-      "type": "fe_hook",
-      "title": "Hook: useStatusCreator",
-      "description": "Create custom hook for StatusCreator state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-page"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/hooks/useStatusCreator.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-api",
-      "epic_id": "EPIC-004",
-      "type": "fe_api_client",
-      "title": "API Client: StatusCreator",
-      "description": "Create API client functions for StatusCreator",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-hook"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/api/statuscreatorAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-build-fe",
-      "epic_id": "EPIC-004",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-api",
-        "EPIC-004-FE-StatusCreator-page",
-        "EPIC-004-FE-StatusCreator-components",
-        "EPIC-004-FE-StatusCreator-hook",
-        "EPIC-004-FE-StatusCreator-api"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run build",
-      "success_criteria": "Frontend build completes without errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-lint",
-      "epic_id": "EPIC-004",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run lint",
-      "success_criteria": "No linting errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-004",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npx tsc --noEmit",
-      "success_criteria": "No TypeScript errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-VERIFY-unit",
-      "epic_id": "EPIC-004",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run test:unit",
-      "success_criteria": "All unit tests pass",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-frontend",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-lint",
-        "EPIC-004-VERIFY-typecheck-fe",
-        "EPIC-004-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated UI.\n\nPlease verify:\n- All pages and components are created\n- UI matches design requirements\n- Navigation works correctly\n- Forms have proper validation\n\nApprove to continue with Testing.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
       "id": "EPIC-004-TEST-unit",
       "epic_id": "EPIC-004",
       "type": "test",
@@ -1699,7 +599,7 @@
       "description": "Create Vitest unit tests for all EPIC-004 services and utilities. NO MOCKS - use real implementations.",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-frontend"
+        "EPIC-004-FE-StatusCreator-feature"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -1730,7 +630,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-004",
       "description": "Create Vitest integration tests for EPIC-004 API endpoints with real database.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-TEST-unit"
       ],
@@ -1763,7 +663,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-004",
       "description": "Create Playwright E2E tests for 15 user stories in EPIC-004.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-004-TEST-integration"
       ],
@@ -1804,51 +704,19 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
-      "id": "EPIC-004-VERIFY-e2e",
+      "id": "EPIC-004-VERIFY-all",
       "epic_id": "EPIC-004",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
+      "type": "verify_build",
+      "title": "Verify EPIC-004: build + typecheck",
+      "description": "Run all verification steps for EPIC-004:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
       "status": "pending",
       "dependencies": [
         "EPIC-004-TEST-unit",
         "EPIC-004-TEST-integration",
         "EPIC-004-TEST-e2e"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "test",
-      "command": "npm run test:e2e",
-      "success_criteria": "All E2E tests pass",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-build-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-VERIFY-e2e"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -1864,135 +732,9 @@
       "max_retries": 3,
       "retry_count": 0,
       "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml build",
-      "success_criteria": "Production image built",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-start-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml up -d",
-      "success_criteria": "All containers running",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-health-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml ps",
-      "success_criteria": "All containers healthy",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-DOCKER-logs-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml logs --tail=100",
-      "success_criteria": "Logs collected, no critical errors",
-      "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-deploy",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-prod",
-        "EPIC-004-DOCKER-health-prod",
-        "EPIC-004-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the complete application.\n\nFinal verification:\n- All features are implemented\n- All tests are passing\n- Docker containers are healthy\n- Ready for production deployment\n\nApprove to complete this Epic.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
+      "phase": "verification",
+      "command": "npx tsc --noEmit && npm run build",
+      "success_criteria": "Zero TypeScript errors, build succeeds",
       "tested": false,
       "user_fix_instructions": null,
       "enrichment_context": null
@@ -2005,7 +747,7 @@
       "description": "Run all EPIC-004 tests, validate build, and verify all 15 user stories are implemented.",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-deploy"
+        "EPIC-004-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
@@ -2029,12 +771,12 @@
       "enrichment_context": null
     }
   ],
-  "total_tasks": 59,
-  "completed_tasks": 9,
+  "total_tasks": 20,
+  "completed_tasks": 0,
   "failed_tasks": 0,
-  "progress_percent": 15.254237288135593,
+  "progress_percent": 0.0,
   "run_count": 0,
-  "last_run_at": "2026-03-27T17:02:40.406169",
-  "created_at": "2026-03-26T15:04:41.869007",
-  "estimated_total_minutes": 445
+  "last_run_at": "2026-03-28T15:55:12.790519",
+  "created_at": "2026-03-28T13:35:12.236695",
+  "estimated_total_minutes": 280
 }

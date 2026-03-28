@@ -1,263 +1,34 @@
 {
   "epic_id": "EPIC-002",
   "epic_name": "Profil- und Identitätsverwaltung",
-  "enrichment_timestamp": "2026-03-27T17:02:31.305934",
+  "enrichment_timestamp": "2026-03-28T15:55:03.644926",
   "enrichment_stats": {
-    "total_tasks": 38,
-    "tasks_with_requirements": 9,
-    "tasks_with_user_stories": 10,
-    "tasks_with_diagrams": 10,
-    "tasks_with_warnings": 4,
-    "tasks_with_dtos": 3,
-    "tasks_with_success_criteria": 12,
+    "total_tasks": 8,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 2,
+    "tasks_with_diagrams": 2,
+    "tasks_with_warnings": 2,
+    "tasks_with_dtos": 0,
+    "tasks_with_success_criteria": 3,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 0,
-    "tasks_with_accessibility": 4,
+    "tasks_with_accessibility": 1,
     "tasks_with_routes": 0,
-    "tasks_with_design_tokens": 4
+    "tasks_with_design_tokens": 1
   },
   "tasks": [
     {
-      "id": "EPIC-002-SCHEMA-UserPrivacySetting-model",
+      "id": "EPIC-002-SCHEMA-all",
       "epic_id": "EPIC-002",
       "type": "schema_model",
-      "title": "Create Prisma model: UserPrivacySetting",
-      "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "title": "Prisma schema: UserPrivacySetting, user_profile, whatsapp_user",
+      "description": "Create ALL Prisma models for EPIC-002 in prisma/schema.prisma.\n\nModels to create:\n- UserPrivacySetting: Define model with all attributes, types, and relations to other entities\n- user_profile: Define model with all attributes, types, and relations to other entities\n- whatsapp_user: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "running",
       "dependencies": [],
-      "estimated_minutes": 5,
+      "estimated_minutes": 6,
       "output_files": [
-        "prisma/schema.prisma#UserPrivacySetting"
-      ],
-      "related_requirements": [
-        "WA-SET-002",
-        "WA-SET-003",
-        "WA-SET-004",
-        "WA-SET-005"
-      ],
-      "related_user_stories": [
-        "US-081",
-        "US-082",
-        "US-083",
-        "US-084"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String profilePicture\n        +Visibility visibilitySetting\n    }\n\n    class Visibility {\n        +String name\n        +String description\n    }\n\n    class PublicVisibility {\n        +String name = \"Public\"\n        +String description = \"Visible to everyone\"\n    }\n\n    class PrivateVisibility {\n        +String name = \"Private\"\n        +String description = \"Visible only to the user\"\n    }\n\n    class FriendsVisibility {\n        +String name = \"Friends\"\n        +String description = \"Visible only to friends\"\n    }\n\n    User --> Visi",
-            "file": "WA-SET-003_class.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Einladung> einladungen\n        +List<Benutzer> benutzer\n        +void hinzufuegenBenutzer(Benutzer benutzer)\n        +void entfernenBenutzer(Benutzer benutzer)\n    }\n\n    class Einladung {\n        +Benutzer einladender\n        +Benutzer eingeladen\n        +Date datum\n        +void akzeptieren()\n        +void ablehnen()\n    }\n\n    class Benutzer {\n        +String name\n        +String email\n        +List<Gruppe> gruppen\n        +void erstellenGruppe(Gruppe gruppe)\n        +void beitretenGruppe(Gruppe gruppe)\n    }\n\n    Gruppe \"1\"",
-            "file": "WA-SET-005_class.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Hidden\n    Hidden --> Visible : Configure to show\n    Visible --> Hidden : Configure to hide\n    Visible --> [*]\n    Hidden --> [*]",
-            "file": "WA-SET-004_state.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-081",
-            "title": "Lesebestaetigung",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
-            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
-          },
-          {
-            "id": "US-082",
-            "title": "Profilbild-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
-            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
-          },
-          {
-            "id": "US-083",
-            "title": "Info-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "Support-Administrator",
-            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-UserPrivacySetting-relations",
-      "epic_id": "EPIC-002",
-      "type": "schema_relations",
-      "title": "Define relations for: UserPrivacySetting",
-      "description": "Set up Prisma relations for UserPrivacySetting with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-UserPrivacySetting-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#UserPrivacySetting_relations"
-      ],
-      "related_requirements": [
-        "WA-SET-002",
-        "WA-SET-003",
-        "WA-SET-004",
-        "WA-SET-005"
-      ],
-      "related_user_stories": [
-        "US-081",
-        "US-082",
-        "US-083",
-        "US-084"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String profilePicture\n        +Visibility visibilitySetting\n    }\n\n    class Visibility {\n        +String name\n        +String description\n    }\n\n    class PublicVisibility {\n        +String name = \"Public\"\n        +String description = \"Visible to everyone\"\n    }\n\n    class PrivateVisibility {\n        +String name = \"Private\"\n        +String description = \"Visible only to the user\"\n    }\n\n    class FriendsVisibility {\n        +String name = \"Friends\"\n        +String description = \"Visible only to friends\"\n    }\n\n    User --> Visi",
-            "file": "WA-SET-003_class.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Gruppe {\n        +String name\n        +List<Einladung> einladungen\n        +List<Benutzer> benutzer\n        +void hinzufuegenBenutzer(Benutzer benutzer)\n        +void entfernenBenutzer(Benutzer benutzer)\n    }\n\n    class Einladung {\n        +Benutzer einladender\n        +Benutzer eingeladen\n        +Date datum\n        +void akzeptieren()\n        +void ablehnen()\n    }\n\n    class Benutzer {\n        +String name\n        +String email\n        +List<Gruppe> gruppen\n        +void erstellenGruppe(Gruppe gruppe)\n        +void beitretenGruppe(Gruppe gruppe)\n    }\n\n    Gruppe \"1\"",
-            "file": "WA-SET-005_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Lesebestaetigung System Context Diagram\n\n    Person(user, \"User\", \"A person who interacts with the system to confirm reading.\")\n    System(lesebestaetigungSystem, \"Lesebestaetigung System\", \"A system that provides configurable reading confirmations.\")\n\n    System_Ext(externalSystem, \"External System\", \"An external system that may interact with the Lesebestaetigung system.\")\n\n    Rel(user, lesebestaetigungSystem, \"Uses\")\n    Rel(lesebestaetigungSystem, externalSystem, \"Interacts with\")",
-            "file": "WA-SET-002_c4.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-081",
-            "title": "Lesebestaetigung",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
-            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
-          },
-          {
-            "id": "US-082",
-            "title": "Profilbild-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
-            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
-          },
-          {
-            "id": "US-083",
-            "title": "Info-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "Support-Administrator",
-            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-UserPrivacySetting-migration",
-      "epic_id": "EPIC-002",
-      "type": "schema_migration",
-      "title": "Run migration for: UserPrivacySetting",
-      "description": "Execute prisma migrate dev for UserPrivacySetting changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-UserPrivacySetting-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_userprivacysetting/"
-      ],
-      "related_requirements": [
-        "WA-SET-002",
-        "WA-SET-003",
-        "WA-SET-004",
-        "WA-SET-005"
-      ],
-      "related_user_stories": [
-        "US-081",
-        "US-082",
-        "US-083",
-        "US-084"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: die Sichtbarkeit meines Profilbildes konfigurieren; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Lesebestaetigung System Context Diagram\n\n    Person(user, \"User\", \"A person who interacts with the system to confirm reading.\")\n    System(lesebestaetigungSystem, \"Lesebestaetigung System\", \"A system that provides configurable reading confirmations.\")\n\n    System_Ext(externalSystem, \"External System\", \"An external system that may interact with the Lesebestaetigung system.\")\n\n    Rel(user, lesebestaetigungSystem, \"Uses\")\n    Rel(lesebestaetigungSystem, externalSystem, \"Interacts with\")",
-            "file": "WA-SET-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Ist Lesebestaetigung konfigurierbar?}\n    B -- Ja --> C[Lesebestaetigung aktivieren]\n    B -- Nein --> D[System anpassen]\n    D --> E[Lesebestaetigung implementieren]\n    E --> C\n    C --> F[Lesebestaetigung bereitstellen]\n    F --> G[Ende]",
-            "file": "WA-SET-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Config as Konfiguration\n\n    User->>System: Anfrage zur Lesebestätigung\n    System->>Config: Konfiguration abrufen\n    Config-->>System: Lesebestätigungseinstellungen\n    System-->>User: Lesebestätigung anzeigen\n    User->>System: Lesebestätigung bestätigen\n    System-->>User: Bestätigung gespeichert",
-            "file": "WA-SET-002_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-081",
-            "title": "Lesebestaetigung",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
-            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
-          },
-          {
-            "id": "US-082",
-            "title": "Profilbild-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die Sichtbarkeit meines Profilbildes konfigurieren",
-            "so_that": "damit ich meine Privatsphaere schuetze und meine Kommunikation dennoch persoenlich gestalten kann"
-          },
-          {
-            "id": "US-083",
-            "title": "Info-Sichtbarkeit",
-            "priority": "must",
-            "description": "",
-            "as_a": "Support-Administrator",
-            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-user_profile-model",
-      "epic_id": "EPIC-002",
-      "type": "schema_model",
-      "title": "Create Prisma model: user_profile",
-      "description": "Define user_profile model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#user_profile"
+        "prisma/schema.prisma"
       ],
       "related_requirements": [
         "WA-PROF-001",
@@ -313,68 +84,6 @@
             "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
           }
         ],
-        "related_dtos": [
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-006",
@@ -405,554 +114,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-user_profile-relations",
-      "epic_id": "EPIC-002",
-      "type": "schema_relations",
-      "title": "Define relations for: user_profile",
-      "description": "Set up Prisma relations for user_profile with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-user_profile-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#user_profile_relations"
-      ],
-      "related_requirements": [
-        "WA-PROF-001",
-        "WA-PROF-002",
-        "WA-PROF-003",
-        "WA-PROF-004",
-        "WA-PROF-005"
-      ],
-      "related_user_stories": [
-        "US-006",
-        "US-007",
-        "US-008",
-        "US-009",
-        "US-010"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: ein Profilbild hochladen und verwalten; User can: einen konfigurierbaren Anzeigenamen für das Profil festlegen und ändern; User can: einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen; Address: Definieren Sie Sichtbarkeitsstufen und Default-Privacy.; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "er",
-            "content": "erDiagram\n    USER {\n        string id PK\n        string name\n        string phone_number\n    }\n\n    PROFILE {\n        string id PK\n        string user_id FK\n        string display_name\n    }\n\n    USER ||--o{ PROFILE : has",
-            "file": "WA-PROF-004_er.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String email\n        +String profilePicture\n        +uploadProfilePicture()\n        +deleteProfilePicture()\n        +updateProfilePicture()\n    }\n\n    class ProfilePicture {\n        +String imagePath\n        +String uploadDate\n        +String format\n        +getImageDetails()\n    }\n\n    User \"1\" -- \"0..1\" ProfilePicture : has",
-            "file": "WA-PROF-001_class.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Anzeigename {\n        +String name\n        +String configuration\n        +void setName(String name)\n        +String getName()\n        +void configure(String config)\n    }",
-            "file": "WA-PROF-002_class.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-007",
-            "severity": "high",
-            "title": "Unklare Sichtbarkeit der Telefonnummer",
-            "suggestion": "Definieren Sie Sichtbarkeitsstufen und Default-Privacy."
-          },
-          {
-            "id": "CI-006",
-            "severity": "medium",
-            "title": "Profilbild/Status ohne Moderation/Größenlimits",
-            "suggestion": "Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien."
-          },
-          {
-            "id": "CI-014",
-            "severity": "medium",
-            "title": "Unvollständige User Journey: Onboarding und Kontakte",
-            "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-006",
-            "title": "Profilbild",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Benutzer",
-            "i_want": "ein Profilbild hochladen und verwalten",
-            "so_that": "damit mein Profil professionell wirkt und ich leichter erkannt werde"
-          },
-          {
-            "id": "US-007",
-            "title": "Anzeigename",
-            "priority": "must",
-            "description": "",
-            "as_a": "Profiladministrator",
-            "i_want": "einen konfigurierbaren Anzeigenamen für das Profil festlegen und ändern",
-            "so_that": "damit Kunden eine professionelle und vertrauenswürdige Identität sehen und die Kommunikation klar zuordnen können"
-          },
-          {
-            "id": "US-008",
-            "title": "Info/Status Text",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Profil-Inhaber",
-            "i_want": "einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen",
-            "so_that": "damit Kunden schnell relevante Informationen erhalten und die Kommunikation professioneller wirkt"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-user_profile-migration",
-      "epic_id": "EPIC-002",
-      "type": "schema_migration",
-      "title": "Run migration for: user_profile",
-      "description": "Execute prisma migrate dev for user_profile changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-user_profile-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_user_profile/"
-      ],
-      "related_requirements": [
-        "WA-PROF-001",
-        "WA-PROF-002",
-        "WA-PROF-003",
-        "WA-PROF-004",
-        "WA-PROF-005"
-      ],
-      "related_user_stories": [
-        "US-006",
-        "US-007",
-        "US-008",
-        "US-009",
-        "US-010"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: ein Profilbild hochladen und verwalten; User can: einen konfigurierbaren Anzeigenamen für das Profil festlegen und ändern; User can: einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen; Address: Definieren Sie Sichtbarkeitsstufen und Default-Privacy.; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "er",
-            "content": "erDiagram\n    USER {\n        string id PK\n        string name\n        string phone_number\n    }\n\n    PROFILE {\n        string id PK\n        string user_id FK\n        string display_name\n    }\n\n    USER ||--o{ PROFILE : has",
-            "file": "WA-PROF-004_er.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String email\n        +String profilePicture\n        +uploadProfilePicture()\n        +deleteProfilePicture()\n        +updateProfilePicture()\n    }\n\n    class ProfilePicture {\n        +String imagePath\n        +String uploadDate\n        +String format\n        +getImageDetails()\n    }\n\n    User \"1\" -- \"0..1\" ProfilePicture : has",
-            "file": "WA-PROF-001_class.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Benutzer] -->|Wählt Profilbild aus| B[Upload Profilbild]\n    B --> C{Profilbild validieren}\n    C -->|Gültig| D[Speichern im System]\n    C -->|Ungültig| E[Fehlermeldung anzeigen]\n    D --> F[Profilbild anzeigen]\n    F --> G{Profilbild verwalten}\n    G -->|Ändern| B\n    G -->|Löschen| H[Profilbild entfernen]\n    H --> F",
-            "file": "WA-PROF-001_flowchart.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-007",
-            "severity": "high",
-            "title": "Unklare Sichtbarkeit der Telefonnummer",
-            "suggestion": "Definieren Sie Sichtbarkeitsstufen und Default-Privacy."
-          },
-          {
-            "id": "CI-006",
-            "severity": "medium",
-            "title": "Profilbild/Status ohne Moderation/Größenlimits",
-            "suggestion": "Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien."
-          },
-          {
-            "id": "CI-014",
-            "severity": "medium",
-            "title": "Unvollständige User Journey: Onboarding und Kontakte",
-            "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-006",
-            "title": "Profilbild",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Benutzer",
-            "i_want": "ein Profilbild hochladen und verwalten",
-            "so_that": "damit mein Profil professionell wirkt und ich leichter erkannt werde"
-          },
-          {
-            "id": "US-007",
-            "title": "Anzeigename",
-            "priority": "must",
-            "description": "",
-            "as_a": "Profiladministrator",
-            "i_want": "einen konfigurierbaren Anzeigenamen für das Profil festlegen und ändern",
-            "so_that": "damit Kunden eine professionelle und vertrauenswürdige Identität sehen und die Kommunikation klar zuordnen können"
-          },
-          {
-            "id": "US-008",
-            "title": "Info/Status Text",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Profil-Inhaber",
-            "i_want": "einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen",
-            "so_that": "damit Kunden schnell relevante Informationen erhalten und die Kommunikation professioneller wirkt"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-whatsapp_user-model",
-      "epic_id": "EPIC-002",
-      "type": "schema_model",
-      "title": "Create Prisma model: whatsapp_user",
-      "description": "Define whatsapp_user model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#whatsapp_user"
-      ],
-      "related_requirements": [
-        "WA-CON-001",
-        "WA-SET-001"
-      ],
-      "related_user_stories": [
-        "US-071",
-        "US-080"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren; User can: meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String onlineStatus\n        +DateTime lastOnline\n        +void updateStatus(String status)\n        +void configureVisibility(boolean isVisible)\n    }\n\n    class OnlineStatus {\n        +String status\n        +DateTime timestamp\n    }\n\n    class VisibilitySettings {\n        +boolean isVisible\n        +void setVisibility(boolean visibility)\n        +boolean getVisibility()\n    }\n\n    User --> OnlineStatus : \"has\"\n    User --> VisibilitySettings : \"uses\"",
-            "file": "WA-SET-001_class.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Offline\n    Offline --> Online\n    Online --> Invisible\n    Online --> Offline\n    Invisible --> Online\n    Invisible --> Offline\n\n    state Offline {\n        [*] --> NotVisible\n        NotVisible --> Visible\n        Visible --> NotVisible\n    }\n\n    state Online {\n        [*] --> Visible\n        Visible --> Invisible\n        Invisible --> Visible\n    }",
-            "file": "WA-SET-001_state.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\ngraph TD\n    A[User Device] -->|Synchronizes Contacts| B[Contact Synchronization System]\n    B -->|Matches Contacts| C[WhatsApp Users]\n    A -->|Requests Sync| B\n    C -->|Provides User Data| B",
-            "file": "WA-CON-001_c4.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-071",
-            "title": "Kontakte synchronisieren",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren",
-            "so_that": "damit ich schnell erkenne, welche Kontakte WhatsApp nutzen und Nachrichten verlaesslich versenden kann"
-          },
-          {
-            "id": "US-080",
-            "title": "Zuletzt online",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-            "so_that": "damit ich meine Privatsphäre schütze und dennoch transparent kommunizieren kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-whatsapp_user-relations",
-      "epic_id": "EPIC-002",
-      "type": "schema_relations",
-      "title": "Define relations for: whatsapp_user",
-      "description": "Set up Prisma relations for whatsapp_user with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-whatsapp_user-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#whatsapp_user_relations"
-      ],
-      "related_requirements": [
-        "WA-CON-001",
-        "WA-SET-001"
-      ],
-      "related_user_stories": [
-        "US-071",
-        "US-080"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren; User can: meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class User {\n        +String username\n        +String onlineStatus\n        +DateTime lastOnline\n        +void updateStatus(String status)\n        +void configureVisibility(boolean isVisible)\n    }\n\n    class OnlineStatus {\n        +String status\n        +DateTime timestamp\n    }\n\n    class VisibilitySettings {\n        +boolean isVisible\n        +void setVisibility(boolean visibility)\n        +boolean getVisibility()\n    }\n\n    User --> OnlineStatus : \"has\"\n    User --> VisibilitySettings : \"uses\"",
-            "file": "WA-SET-001_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\ngraph TD\n    A[User Device] -->|Synchronizes Contacts| B[Contact Synchronization System]\n    B -->|Matches Contacts| C[WhatsApp Users]\n    A -->|Requests Sync| B\n    C -->|Provides User Data| B",
-            "file": "WA-CON-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start: Kontakte synchronisieren] --> B{Geraete-Kontakte vorhanden?}\n    B -- Ja --> C[Kontakte abrufen]\n    B -- Nein --> D[Fehler: Keine Kontakte]\n    C --> E{WhatsApp-Nutzer vorhanden?}\n    E -- Ja --> F[Kontakte abgleichen]\n    E -- Nein --> G[Fehler: Keine WhatsApp-Nutzer]\n    F --> H[Synchronisation abgeschlossen]\n    D --> I[Prozess beenden]\n    G --> I\n    H --> I\n    I[Ende]",
-            "file": "WA-CON-001_flowchart.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-071",
-            "title": "Kontakte synchronisieren",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren",
-            "so_that": "damit ich schnell erkenne, welche Kontakte WhatsApp nutzen und Nachrichten verlaesslich versenden kann"
-          },
-          {
-            "id": "US-080",
-            "title": "Zuletzt online",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-            "so_that": "damit ich meine Privatsphäre schütze und dennoch transparent kommunizieren kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-SCHEMA-whatsapp_user-migration",
-      "epic_id": "EPIC-002",
-      "type": "schema_migration",
-      "title": "Run migration for: whatsapp_user",
-      "description": "Execute prisma migrate dev for whatsapp_user changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-whatsapp_user-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_whatsapp_user/"
-      ],
-      "related_requirements": [
-        "WA-CON-001",
-        "WA-SET-001"
-      ],
-      "related_user_stories": [
-        "US-071",
-        "US-080"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren; User can: meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\ngraph TD\n    A[User Device] -->|Synchronizes Contacts| B[Contact Synchronization System]\n    B -->|Matches Contacts| C[WhatsApp Users]\n    A -->|Requests Sync| B\n    C -->|Provides User Data| B",
-            "file": "WA-CON-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start: Kontakte synchronisieren] --> B{Geraete-Kontakte vorhanden?}\n    B -- Ja --> C[Kontakte abrufen]\n    B -- Nein --> D[Fehler: Keine Kontakte]\n    C --> E{WhatsApp-Nutzer vorhanden?}\n    E -- Ja --> F[Kontakte abgleichen]\n    E -- Nein --> G[Fehler: Keine WhatsApp-Nutzer]\n    F --> H[Synchronisation abgeschlossen]\n    D --> I[Prozess beenden]\n    G --> I\n    H --> I\n    I[Ende]",
-            "file": "WA-CON-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n    participant WhatsApp as WhatsApp-Nutzer\n\n    User->>System: Kontakte synchronisieren anfordern\n    System->>WhatsApp: Kontakte abgleichen\n    WhatsApp-->>System: Kontakte zurückgeben\n    System-->>User: Synchronisation abgeschlossen",
-            "file": "WA-CON-001_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-071",
-            "title": "Kontakte synchronisieren",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Geraete-Kontakte mit WhatsApp-Nutzern synchronisieren",
-            "so_that": "damit ich schnell erkenne, welche Kontakte WhatsApp nutzen und Nachrichten verlaesslich versenden kann"
-          },
-          {
-            "id": "US-080",
-            "title": "Zuletzt online",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "meine Sichtbarkeit des Zuletzt-online-Status in den Einstellungen konfigurieren",
-            "so_that": "damit ich meine Privatsphäre schütze und dennoch transparent kommunizieren kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-002-VERIFY-schema",
-      "epic_id": "EPIC-002",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-SCHEMA-whatsapp_user-model",
-        "EPIC-002-SCHEMA-whatsapp_user-relations",
-        "EPIC-002-SCHEMA-whatsapp_user-migration"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "prisma validate exits with code 0"
-    },
-    {
-      "id": "EPIC-002-CHECKPOINT-schema",
-      "epic_id": "EPIC-002",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "User approved checkpoint"
     },
     {
       "id": "EPIC-002-API-users-feature",
@@ -962,7 +123,7 @@
       "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 20 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/profile-images — Upload profile image\n  GET /api/v1/users/{userId}/profile-images/current — Get current profile image\n  PUT /api/v1/users/{userId}/profile-images/current — Replace current profile image\n  DELETE /api/v1/users/{userId}/profile-images/current — Delete current profile image\n  GET /api/v1/users/{userId}/profile — Get user profile\n  PUT /api/v1/users/{userId}/profile/display-name — Update display name\n  GET /api/v1/users/{userId}/profile/info-text — Get profile info text\n  PUT /api/v1/users/{userId}/profile/info-text — Update profile info text\n  POST /api/v1/users/{userId}/qr-codes — Generate a new profile QR code\n  GET /api/v1/users/{userId}/qr-codes/{qrCodeId} — Retrieve a profile QR code\n  GET /api/v1/users/{userId}/presence-visibility — Get online status visibility setting\n  PUT /api/v1/users/{userId}/presence-visibility — Update online status visibility setting\n  GET /api/v1/users/{userId}/presence-visibility/allowed-users — List users allowed to see online status\n  GET /api/v1/users/{userId}/presence-visibility/denied-users — List users denied to see online status\n  GET /api/v1/users/{userId}/settings/read-receipts — Get read receipt settings\n  PUT /api/v1/users/{userId}/settings/read-receipts — Update read receipt settings\n  GET /api/v1/users/{userId}/settings/profile-picture-visibility — Get profile picture visibility setting\n  PUT /api/v1/users/{userId}/settings/profile-picture-visibility — Update profile picture visibility setting\n  GET /api/v1/users/{userId}/privacy/infoVisibility — Get info/status text visibility settings\n  PUT /api/v1/users/{userId}/privacy/infoVisibility — Update info/status text visibility settings",
       "status": "completed",
       "dependencies": [
-        "EPIC-002-CHECKPOINT-schema"
+        "EPIC-002-SCHEMA-all"
       ],
       "estimated_minutes": 60,
       "output_files": [
@@ -972,28 +133,23 @@
         "src/modules/users/dto/"
       ],
       "related_requirements": [
-        "WA-PROF-005",
-        "WA-PROF-001",
-        "WA-SET-002",
+        "WA-PROF-003",
         "WA-SET-004",
-        "WA-SET-003"
+        "WA-PROF-001",
+        "WA-SET-001",
+        "WA-PROF-002"
       ],
       "related_user_stories": [
         "US-006",
-        "US-010",
-        "US-081",
-        "US-082",
+        "US-007",
+        "US-008",
+        "US-080",
         "US-083"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen scanbaren QR-Code zu meinem Profil anzeigen und herunterladen; User can: ein Profilbild hochladen und verwalten; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; Address: Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen.; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren; User can: ein Profilbild hochladen und verwalten; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant QRCodeGenerator as QR-Code Generator\n\n    User->>System: Anfrage zum Hinzufügen\n    System->>QRCodeGenerator: Generiere QR-Code\n    QRCodeGenerator-->>System: QR-Code generiert\n    System-->>User: Zeige QR-Code an",
-            "file": "WA-PROF-005_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User\n    participant System\n\n    User->>System: Upload Profilbild\n    System-->>User: Bestätigung des Uploads\n    User->>System: Zeige Profilbild an\n    System-->>User: Profilbild anzeigen\n    User->>System: Ändere Profilbild\n    System-->>User: Bestätigung der Änderung\n    User->>System: Lösche Profilbild\n    System-->>User: Bestätigung des Löschens",
@@ -1001,17 +157,16 @@
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Config as Konfiguration\n\n    User->>System: Anfrage zur Lesebestätigung\n    System->>Config: Konfiguration abrufen\n    Config-->>System: Lesebestätigungseinstellungen\n    System-->>User: Lesebestätigung anzeigen\n    User->>System: Lesebestätigung bestätigen\n    System-->>User: Bestätigung gespeichert",
-            "file": "WA-SET-002_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Settings as Einstellungen\n\n    User->>Settings: Ändern der Sichtbarkeit des Online-Status\n    Settings->>System: Konfiguration speichern\n    System-->>User: Bestätigung der Änderungen\n    User->>System: Anmelden\n    System-->>User: Zeigt Online-Status\n    User->>System: Abmelden\n    System-->>User: Aktualisierung des Online-Status",
+            "file": "WA-SET-001_sequence.mmd"
+          },
+          {
+            "type": "flowchart",
+            "content": "flowchart TD\n    A[Start] --> B{Ist Info-Sichtbarkeit konfigurierbar?}\n    B -- Ja --> C[Konfiguration der Sichtbarkeit]\n    B -- Nein --> D[System anpassen]\n    C --> E{Info/Status-Text sichtbar?}\n    E -- Ja --> F[Info/Status-Text anzeigen]\n    E -- Nein --> G[Info/Status-Text ausblenden]\n    F --> H[Ende]\n    G --> H\n    D --> H",
+            "file": "WA-SET-004_flowchart.mmd"
           }
         ],
         "known_gaps": [
-          {
-            "id": "CI-014",
-            "severity": "medium",
-            "title": "Unvollständige User Journey: Onboarding und Kontakte",
-            "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          },
           {
             "id": "CI-006",
             "severity": "medium",
@@ -1021,13 +176,22 @@
         ],
         "user_story_details": [
           {
-            "id": "US-010",
-            "title": "QR-Code Profil",
-            "priority": "should",
+            "id": "US-008",
+            "title": "Info/Status Text",
+            "priority": "must",
             "description": "",
-            "as_a": "Business-Profilinhaber",
-            "i_want": "einen scanbaren QR-Code zu meinem Profil anzeigen und herunterladen",
-            "so_that": "damit Kunden mich schnell und plattformübergreifend hinzufügen können"
+            "as_a": "Business-Profil-Inhaber",
+            "i_want": "einen kurzen Info-/Status-Text im Profil hinterlegen und anzeigen lassen",
+            "so_that": "damit Kunden schnell relevante Informationen erhalten und die Kommunikation professioneller wirkt"
+          },
+          {
+            "id": "US-083",
+            "title": "Info-Sichtbarkeit",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
+            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
           },
           {
             "id": "US-006",
@@ -1037,154 +201,26 @@
             "as_a": "registrierter Benutzer",
             "i_want": "ein Profilbild hochladen und verwalten",
             "so_that": "damit mein Profil professionell wirkt und ich leichter erkannt werde"
-          },
-          {
-            "id": "US-081",
-            "title": "Lesebestaetigung",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
-            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
           }
         ]
       }
     },
     {
-      "id": "EPIC-002-VERIFY-build-api",
+      "id": "EPIC-002-FE-EPIC002Page-feature",
       "epic_id": "EPIC-002",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
+      "type": "fe_page",
+      "title": "Frontend Feature: EPIC002Page (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'EPIC002Page':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useEPIC002Page)\n- API client functions\n\nUser Stories: US-006, US-007, US-008, US-009, US-010",
+      "status": "running",
       "dependencies": [
         "EPIC-002-API-users-feature"
       ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Build completes without errors"
-    },
-    {
-      "id": "EPIC-002-VERIFY-typecheck-api",
-      "epic_id": "EPIC-002",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-002-VERIFY-integration",
-      "epic_id": "EPIC-002",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "All integration tests pass"
-    },
-    {
-      "id": "EPIC-002-DOCKER-build-api",
-      "epic_id": "EPIC-002",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-typecheck-api",
-        "EPIC-002-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Docker image built successfully"
-    },
-    {
-      "id": "EPIC-002-DOCKER-start-api",
-      "epic_id": "EPIC-002",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "API container running"
-    },
-    {
-      "id": "EPIC-002-DOCKER-health-api",
-      "epic_id": "EPIC-002",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Health endpoint returns 200 OK"
-    },
-    {
-      "id": "EPIC-002-CHECKPOINT-api",
-      "epic_id": "EPIC-002",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-build-api",
-        "EPIC-002-DOCKER-start-api",
-        "EPIC-002-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
-      "id": "EPIC-002-FE-EPIC002Page-page",
-      "epic_id": "EPIC-002",
-      "type": "fe_page",
-      "title": "Page: EPIC002Page",
-      "description": "Create EPIC002Page page component implementing 9 user stories.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-CHECKPOINT-api"
-      ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 45,
       "output_files": [
-        "src/pages/EPIC002Page/EPIC002Page.tsx"
+        "src/pages/EPIC002Page/EPIC002Page.tsx",
+        "src/components/EPIC002Page/",
+        "src/hooks/useEPIC002Page.ts",
+        "src/api/epic002pageAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -1265,342 +301,6 @@
       }
     },
     {
-      "id": "EPIC-002-FE-EPIC002Page-components",
-      "epic_id": "EPIC-002",
-      "type": "fe_component",
-      "title": "Components: EPIC002Page",
-      "description": "Create reusable components for EPIC002Page",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-FE-EPIC002Page-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/EPIC002Page/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-002-FE-EPIC002Page-hook",
-      "epic_id": "EPIC-002",
-      "type": "fe_hook",
-      "title": "Hook: useEPIC002Page",
-      "description": "Create custom hook for EPIC002Page state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-FE-EPIC002Page-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useEPIC002Page.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-002-FE-EPIC002Page-api",
-      "epic_id": "EPIC-002",
-      "type": "fe_api_client",
-      "title": "API Client: EPIC002Page",
-      "description": "Create API client functions for EPIC002Page",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-FE-EPIC002Page-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/epic002pageAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-002-VERIFY-build-fe",
-      "epic_id": "EPIC-002",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-FE-EPIC002Page-page",
-        "EPIC-002-FE-EPIC002Page-components",
-        "EPIC-002-FE-EPIC002Page-hook",
-        "EPIC-002-FE-EPIC002Page-api"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "Frontend build completes without errors"
-    },
-    {
-      "id": "EPIC-002-VERIFY-lint",
-      "epic_id": "EPIC-002",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No linting errors"
-    },
-    {
-      "id": "EPIC-002-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-002",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-002-VERIFY-unit",
-      "epic_id": "EPIC-002",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "All unit tests pass"
-    },
-    {
-      "id": "EPIC-002-CHECKPOINT-frontend",
-      "epic_id": "EPIC-002",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-lint",
-        "EPIC-002-VERIFY-typecheck-fe",
-        "EPIC-002-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
       "id": "EPIC-002-TEST-unit",
       "epic_id": "EPIC-002",
       "type": "test",
@@ -1608,7 +308,7 @@
       "description": "Create Vitest unit tests for all EPIC-002 services and utilities. NO MOCKS - use real implementations.",
       "status": "completed",
       "dependencies": [
-        "EPIC-002-CHECKPOINT-frontend"
+        "EPIC-002-FE-EPIC002Page-feature"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -1668,110 +368,23 @@
       "success_criteria": null
     },
     {
-      "id": "EPIC-002-VERIFY-e2e",
+      "id": "EPIC-002-VERIFY-all",
       "epic_id": "EPIC-002",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "type": "verify_build",
+      "title": "Verify EPIC-002: build + typecheck",
+      "description": "Run all verification steps for EPIC-002:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
+      "status": "failed",
       "dependencies": [
         "EPIC-002-TEST-unit",
         "EPIC-002-TEST-integration",
         "EPIC-002-TEST-e2e"
       ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "test",
-      "success_criteria": "All E2E tests pass"
-    },
-    {
-      "id": "EPIC-002-DOCKER-build-prod",
-      "epic_id": "EPIC-002",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-VERIFY-e2e"
-      ],
       "estimated_minutes": 5,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Production image built"
-    },
-    {
-      "id": "EPIC-002-DOCKER-start-prod",
-      "epic_id": "EPIC-002",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers running"
-    },
-    {
-      "id": "EPIC-002-DOCKER-health-prod",
-      "epic_id": "EPIC-002",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers healthy"
-    },
-    {
-      "id": "EPIC-002-DOCKER-logs-prod",
-      "epic_id": "EPIC-002",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Logs collected, no critical errors"
-    },
-    {
-      "id": "EPIC-002-CHECKPOINT-deploy",
-      "epic_id": "EPIC-002",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-002-DOCKER-start-prod",
-        "EPIC-002-DOCKER-health-prod",
-        "EPIC-002-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "User approved checkpoint"
+      "phase": "verification",
+      "success_criteria": "Zero TypeScript errors, build succeeds"
     },
     {
       "id": "EPIC-002-INTEGRATION",
@@ -1781,7 +394,7 @@
       "description": "Run all EPIC-002 tests, validate build, and verify all 9 user stories are implemented.",
       "status": "completed",
       "dependencies": [
-        "EPIC-002-CHECKPOINT-deploy"
+        "EPIC-002-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "output_files": [],

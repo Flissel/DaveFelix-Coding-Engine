@@ -3,374 +3,26 @@
   "epic_name": "Anrufe und Echtzeitkommunikation",
   "tasks": [
     {
-      "id": "EPIC-006-SCHEMA-Call-model",
+      "id": "EPIC-006-SCHEMA-all",
       "epic_id": "EPIC-006",
       "type": "schema_model",
-      "title": "Create Prisma model: Call",
-      "description": "Define Call model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "title": "Prisma schema: Call, call_log, contact",
+      "description": "Create ALL Prisma models for EPIC-006 in prisma/schema.prisma.\n\nModels to create:\n- Call: Define model with all attributes, types, and relations to other entities\n- call_log: Define model with all attributes, types, and relations to other entities\n- contact: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "pending",
       "dependencies": [],
-      "estimated_minutes": 5,
+      "estimated_minutes": 6,
       "actual_minutes": null,
       "error_message": null,
       "output_files": [
-        "prisma/schema.prisma#Call"
-      ],
-      "related_requirements": [
-        "WA-CALL-001",
-        "WA-CALL-002",
-        "WA-CALL-003"
-      ],
-      "related_user_stories": [
-        "US-035",
-        "US-036",
-        "US-037"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-Call-relations",
-      "epic_id": "EPIC-006",
-      "type": "schema_relations",
-      "title": "Define relations for: Call",
-      "description": "Set up Prisma relations for Call with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-Call-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#Call_relations"
+        "prisma/schema.prisma"
       ],
       "related_requirements": [
         "WA-CALL-001",
         "WA-CALL-002",
         "WA-CALL-003",
         "WA-CALL-004",
-        "WA-CALL-005",
-        "WA-CALL-006"
+        "WA-CALL-005"
       ],
-      "related_user_stories": [
-        "US-035",
-        "US-036",
-        "US-037",
-        "US-038",
-        "US-039"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-Call-migration",
-      "epic_id": "EPIC-006",
-      "type": "schema_migration",
-      "title": "Run migration for: Call",
-      "description": "Execute prisma migrate dev for Call changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-Call-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_call/"
-      ],
-      "related_requirements": [
-        "WA-CALL-001",
-        "WA-CALL-002",
-        "WA-CALL-003",
-        "WA-CALL-004",
-        "WA-CALL-005",
-        "WA-CALL-006"
-      ],
-      "related_user_stories": [
-        "US-035",
-        "US-036",
-        "US-037",
-        "US-038",
-        "US-039"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Migration generated and validated with prisma validate; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-call_log-model",
-      "epic_id": "EPIC-006",
-      "type": "schema_model",
-      "title": "Create Prisma model: call_log",
-      "description": "Define call_log model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#call_log"
-      ],
-      "related_requirements": [
-        "WA-CALL-007"
-      ],
-      "related_user_stories": [
-        "US-041"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Anrufverlauf einsehen und nach Datum filtern",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-call_log-relations",
-      "epic_id": "EPIC-006",
-      "type": "schema_relations",
-      "title": "Define relations for: call_log",
-      "description": "Set up Prisma relations for call_log with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-call_log-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#call_log_relations"
-      ],
-      "related_requirements": [
-        "WA-CALL-007"
-      ],
-      "related_user_stories": [
-        "US-041"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Anrufverlauf einsehen und nach Datum filtern",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-call_log-migration",
-      "epic_id": "EPIC-006",
-      "type": "schema_migration",
-      "title": "Run migration for: call_log",
-      "description": "Execute prisma migrate dev for call_log changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-call_log-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_call_log/"
-      ],
-      "related_requirements": [
-        "WA-CALL-007"
-      ],
-      "related_user_stories": [
-        "US-041"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Migration generated and validated with prisma validate; User can: den Anrufverlauf einsehen und nach Datum filtern",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-contact-model",
-      "epic_id": "EPIC-006",
-      "type": "schema_model",
-      "title": "Create Prisma model: contact",
-      "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#contact"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-contact-relations",
-      "epic_id": "EPIC-006",
-      "type": "schema_relations",
-      "title": "Define relations for: contact",
-      "description": "Set up Prisma relations for contact with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-contact-model"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/schema.prisma#contact_relations"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-SCHEMA-contact-migration",
-      "epic_id": "EPIC-006",
-      "type": "schema_migration",
-      "title": "Run migration for: contact",
-      "description": "Execute prisma migrate dev for contact changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-contact-relations"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "prisma/migrations/*_contact/"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Migration generated and validated with prisma validate; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-schema",
-      "epic_id": "EPIC-006",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-SCHEMA-contact-model",
-        "EPIC-006-SCHEMA-contact-relations",
-        "EPIC-006-SCHEMA-contact-migration"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
       "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
@@ -380,51 +32,22 @@
       "max_retries": 3,
       "retry_count": 0,
       "timeout_seconds": 300,
-      "phase": "schema",
-      "command": "npx prisma validate",
-      "success_criteria": "prisma validate exits with code 0",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-CHECKPOINT-schema",
-      "epic_id": "EPIC-006",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated Prisma schema.\n\nPlease verify:\n- All entities are correctly defined\n- Relations between entities are correct\n- Field types and constraints are appropriate\n- Indexes are defined where needed\n\nApprove to continue with API generation.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "schema",
+      "phase": "code",
       "command": null,
-      "success_criteria": "User approved checkpoint",
+      "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-API-calls-feature",
       "epic_id": "EPIC-006",
       "type": "api_controller",
       "title": "Feature: calls (15 endpoints: DELETE, GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'calls' with ALL layers:\n- Controller (all 15 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/calls \u2014 Create encrypted voice call session\n  GET /api/v1/calls \u2014 List calls\n  GET /api/v1/calls/{callId} \u2014 Get call details\n  POST /api/v1/calls/{callId}/participants \u2014 Add participant to call\n  DELETE /api/v1/calls/{callId}/participants/{participantId} \u2014 Remove participant from call\n  POST /api/v1/calls/{callId}/end \u2014 End call session\n  POST /api/v1/calls/{callId}/signaling/messages \u2014 Post WebRTC signaling message\n  GET /api/v1/calls/{callId}/signaling/messages \u2014 Fetch queued signaling messages\n  POST /api/v1/calls/{id}/join \u2014 Join a video call session\n  GET /api/v1/calls/{id} \u2014 Get video call session details\n  POST /api/v1/calls/{id}/end \u2014 End a video call session\n  POST /api/v1/calls/{callId}/screen-shares \u2014 Start screen sharing in a call\n  GET /api/v1/calls/{callId}/screen-shares \u2014 List screen sharing sessions in a call\n  DELETE /api/v1/calls/{callId}/screen-shares/{screenShareId} \u2014 Stop screen sharing in a call\n  POST /api/v1/calls/{callId}/reject \u2014 Reject an incoming call with a message",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'calls' with ALL layers:\n- Controller (all 15 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/calls — Create encrypted voice call session\n  GET /api/v1/calls — List calls\n  GET /api/v1/calls/{callId} — Get call details\n  POST /api/v1/calls/{callId}/participants — Add participant to call\n  DELETE /api/v1/calls/{callId}/participants/{participantId} — Remove participant from call\n  POST /api/v1/calls/{callId}/end — End call session\n  POST /api/v1/calls/{callId}/signaling/messages — Post WebRTC signaling message\n  GET /api/v1/calls/{callId}/signaling/messages — Fetch queued signaling messages\n  POST /api/v1/calls/{id}/join — Join a video call session\n  GET /api/v1/calls/{id} — Get video call session details\n  POST /api/v1/calls/{id}/end — End a video call session\n  POST /api/v1/calls/{callId}/screen-shares — Start screen sharing in a call\n  GET /api/v1/calls/{callId}/screen-shares — List screen sharing sessions in a call\n  DELETE /api/v1/calls/{callId}/screen-shares/{screenShareId} — Stop screen sharing in a call\n  POST /api/v1/calls/{callId}/reject — Reject an incoming call with a message",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-schema"
+        "EPIC-006-SCHEMA-all"
       ],
       "estimated_minutes": 45,
       "actual_minutes": null,
@@ -436,17 +59,12 @@
         "src/modules/calls/dto/"
       ],
       "related_requirements": [
-        "WA-CALL-002",
         "WA-CALL-001",
         "WA-CALL-006",
-        "WA-CALL-004"
+        "WA-CALL-004",
+        "WA-CALL-002"
       ],
-      "related_user_stories": [
-        "US-035",
-        "US-036",
-        "US-038",
-        "US-040"
-      ],
+      "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -457,19 +75,20 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden",
+      "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-API-group-calls-feature",
       "epic_id": "EPIC-006",
       "type": "api_controller",
       "title": "Feature: group-calls (7 endpoints: DELETE, GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'group-calls' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-calls \u2014 Create a group call\n  GET /api/v1/group-calls/{callId} \u2014 Get group call details\n  POST /api/v1/group-calls/{callId}/participants \u2014 Invite participants to a group call\n  GET /api/v1/group-calls/{callId}/participants \u2014 List group call participants\n  POST /api/v1/group-calls/{callId}/join \u2014 Join a group call\n  DELETE /api/v1/group-calls/{callId}/participants/{participantId} \u2014 Leave or remove a participant from a group call\n  DELETE /api/v1/group-calls/{callId} \u2014 End a group call",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'group-calls' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-calls — Create a group call\n  GET /api/v1/group-calls/{callId} — Get group call details\n  POST /api/v1/group-calls/{callId}/participants — Invite participants to a group call\n  GET /api/v1/group-calls/{callId}/participants — List group call participants\n  POST /api/v1/group-calls/{callId}/join — Join a group call\n  DELETE /api/v1/group-calls/{callId}/participants/{participantId} — Leave or remove a participant from a group call\n  DELETE /api/v1/group-calls/{callId} — End a group call",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-schema"
+        "EPIC-006-SCHEMA-all"
       ],
       "estimated_minutes": 21,
       "actual_minutes": null,
@@ -483,9 +102,7 @@
       "related_requirements": [
         "WA-CALL-003"
       ],
-      "related_user_stories": [
-        "US-037"
-      ],
+      "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -496,19 +113,20 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
+      "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-API-call-links-feature",
       "epic_id": "EPIC-006",
       "type": "api_controller",
       "title": "Feature: call-links (5 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'call-links' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-links \u2014 Create a scheduled call link\n  GET /api/v1/call-links \u2014 List scheduled call links\n  GET /api/v1/call-links/{callLinkId} \u2014 Get scheduled call link details\n  PUT /api/v1/call-links/{callLinkId} \u2014 Update a scheduled call link\n  DELETE /api/v1/call-links/{callLinkId} \u2014 Delete a scheduled call link",
+      "description": "Generate the COMPLETE NestJS module for 'call-links' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-links — Create a scheduled call link\n  GET /api/v1/call-links — List scheduled call links\n  GET /api/v1/call-links/{callLinkId} — Get scheduled call link details\n  PUT /api/v1/call-links/{callLinkId} — Update a scheduled call link\n  DELETE /api/v1/call-links/{callLinkId} — Delete a scheduled call link",
       "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-schema"
+        "EPIC-006-SCHEMA-all"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
@@ -522,9 +140,7 @@
       "related_requirements": [
         "WA-CALL-005"
       ],
-      "related_user_stories": [
-        "US-039"
-      ],
+      "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -535,20 +151,20 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Anruflink fuer einen geplanten Anruf erstellen und teilen",
+      "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-API-call-logs-feature",
       "epic_id": "EPIC-006",
       "type": "api_controller",
       "title": "Feature: call-logs (4 endpoints: DELETE, GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'call-logs' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/call-logs \u2014 List call history\n  GET /api/v1/call-logs/{callLogId} \u2014 Get call log detail\n  POST /api/v1/call-logs \u2014 Create call log entry\n  DELETE /api/v1/call-logs/{callLogId} \u2014 Delete call log entry",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'call-logs' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/call-logs — List call history\n  GET /api/v1/call-logs/{callLogId} — Get call log detail\n  POST /api/v1/call-logs — Create call log entry\n  DELETE /api/v1/call-logs/{callLogId} — Delete call log entry",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-schema"
+        "EPIC-006-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "actual_minutes": null,
@@ -562,9 +178,7 @@
       "related_requirements": [
         "WA-CALL-007"
       ],
-      "related_user_stories": [
-        "US-041"
-      ],
+      "related_user_stories": [],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -575,241 +189,29 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: den Anrufverlauf einsehen und nach Datum filtern",
+      "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
-      "id": "EPIC-006-VERIFY-build-api",
-      "epic_id": "EPIC-006",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-API-calls-feature",
-        "EPIC-006-API-group-calls-feature",
-        "EPIC-006-API-call-links-feature",
-        "EPIC-006-API-call-logs-feature"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npm run build",
-      "success_criteria": "Build completes without errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-typecheck-api",
-      "epic_id": "EPIC-006",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npx tsc --noEmit",
-      "success_criteria": "No TypeScript errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-integration",
-      "epic_id": "EPIC-006",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "npm run test:integration",
-      "success_criteria": "All integration tests pass",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-build-api",
-      "epic_id": "EPIC-006",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-typecheck-api",
-        "EPIC-006-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "docker-compose build api",
-      "success_criteria": "Docker image built successfully",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-start-api",
-      "epic_id": "EPIC-006",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "docker-compose up -d api",
-      "success_criteria": "API container running",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-health-api",
-      "epic_id": "EPIC-006",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": "curl -f http://localhost:3000/health",
-      "success_criteria": "Health endpoint returns 200 OK",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-CHECKPOINT-api",
-      "epic_id": "EPIC-006",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-build-api",
-        "EPIC-006-DOCKER-start-api",
-        "EPIC-006-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated APIs.\n\nPlease verify:\n- All endpoints are implemented\n- Authentication and authorization work\n- Input validation is correct\n- Error handling is appropriate\n\nApprove to continue with Frontend generation.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "api",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-FE-EPIC006Page-page",
+      "id": "EPIC-006-FE-EPIC006Page-feature",
       "epic_id": "EPIC-006",
       "type": "fe_page",
-      "title": "Page: EPIC006Page",
-      "description": "Create EPIC006Page page component implementing 7 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: EPIC006Page (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'EPIC006Page':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useEPIC006Page)\n- API client functions\n\nUser Stories: US-035, US-036, US-037, US-038, US-039",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-api"
+        "EPIC-006-API-call-logs-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 35,
       "actual_minutes": null,
       "error_message": null,
       "output_files": [
-        "src/pages/EPIC006Page/EPIC006Page.tsx"
+        "src/pages/EPIC006Page/EPIC006Page.tsx",
+        "src/components/EPIC006Page/",
+        "src/hooks/useEPIC006Page.ts",
+        "src/api/epic006pageAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -831,260 +233,10 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": "React page component with routing, state management, and error boundaries",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-FE-EPIC006Page-components",
-      "epic_id": "EPIC-006",
-      "type": "fe_component",
-      "title": "Components: EPIC006Page",
-      "description": "Create reusable components for EPIC006Page",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-FE-EPIC006Page-page"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/components/EPIC006Page/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": "Reusable React component with typed props interface",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-FE-EPIC006Page-hook",
-      "epic_id": "EPIC-006",
-      "type": "fe_hook",
-      "title": "Hook: useEPIC006Page",
-      "description": "Create custom hook for EPIC006Page state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-FE-EPIC006Page-page"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/hooks/useEPIC006Page.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-FE-EPIC006Page-api",
-      "epic_id": "EPIC-006",
-      "type": "fe_api_client",
-      "title": "API Client: EPIC006Page",
-      "description": "Create API client functions for EPIC006Page",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-FE-EPIC006Page-hook"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [
-        "src/api/epic006pageAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "code",
-      "command": null,
-      "success_criteria": null,
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-build-fe",
-      "epic_id": "EPIC-006",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-FE-EPIC006Page-page",
-        "EPIC-006-FE-EPIC006Page-components",
-        "EPIC-006-FE-EPIC006Page-hook",
-        "EPIC-006-FE-EPIC006Page-api"
-      ],
-      "estimated_minutes": 3,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run build",
-      "success_criteria": "Frontend build completes without errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-lint",
-      "epic_id": "EPIC-006",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run lint",
-      "success_criteria": "No linting errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-006",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npx tsc --noEmit",
-      "success_criteria": "No TypeScript errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-VERIFY-unit",
-      "epic_id": "EPIC-006",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": "npm run test:unit",
-      "success_criteria": "All unit tests pass",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-CHECKPOINT-frontend",
-      "epic_id": "EPIC-006",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-lint",
-        "EPIC-006-VERIFY-typecheck-fe",
-        "EPIC-006-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the generated UI.\n\nPlease verify:\n- All pages and components are created\n- UI matches design requirements\n- Navigation works correctly\n- Forms have proper validation\n\nApprove to continue with Testing.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "frontend",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
-      "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-TEST-unit",
@@ -1092,9 +244,9 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-006",
       "description": "Create Vitest unit tests for all EPIC-006 services and utilities. NO MOCKS - use real implementations.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-frontend"
+        "EPIC-006-FE-EPIC006Page-feature"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
@@ -1116,7 +268,8 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-TEST-integration",
@@ -1130,7 +283,7 @@
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": "Command timed out after 1800s",
+      "error_message": null,
       "output_files": [
         "__tests__/integration/epic_006/"
       ],
@@ -1149,7 +302,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "status_message": null
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-TEST-e2e",
@@ -1157,13 +310,13 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-006",
       "description": "Create Playwright E2E tests for 7 user stories in EPIC-006.",
-      "status": "skipped",
+      "status": "pending",
       "dependencies": [
         "EPIC-006-TEST-integration"
       ],
       "estimated_minutes": 20,
       "actual_minutes": null,
-      "error_message": "Dependency failed: ['EPIC-006-TEST-integration']",
+      "error_message": null,
       "output_files": [
         "e2e/epic_006.spec.ts"
       ],
@@ -1189,49 +342,20 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
-      "id": "EPIC-006-VERIFY-e2e",
+      "id": "EPIC-006-VERIFY-all",
       "epic_id": "EPIC-006",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "type": "verify_build",
+      "title": "Verify EPIC-006: build + typecheck",
+      "description": "Run all verification steps for EPIC-006:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
+      "status": "pending",
       "dependencies": [
         "EPIC-006-TEST-unit",
         "EPIC-006-TEST-integration",
         "EPIC-006-TEST-e2e"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "test",
-      "command": "npm run test:e2e",
-      "success_criteria": "All E2E tests pass",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-build-prod",
-      "epic_id": "EPIC-006",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-VERIFY-e2e"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -1247,133 +371,12 @@
       "max_retries": 3,
       "retry_count": 0,
       "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml build",
-      "success_criteria": "Production image built",
+      "phase": "verification",
+      "command": "npx tsc --noEmit && npm run build",
+      "success_criteria": "Zero TypeScript errors, build succeeds",
       "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-start-prod",
-      "epic_id": "EPIC-006",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml up -d",
-      "success_criteria": "All containers running",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-health-prod",
-      "epic_id": "EPIC-006",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml ps",
-      "success_criteria": "All containers healthy",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-DOCKER-logs-prod",
-      "epic_id": "EPIC-006",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": false,
-      "user_prompt": null,
-      "user_response": null,
-      "checkpoint": false,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": "docker-compose -f docker-compose.prod.yml logs --tail=100",
-      "success_criteria": "Logs collected, no critical errors",
-      "tested": false,
-      "user_fix_instructions": null
-    },
-    {
-      "id": "EPIC-006-CHECKPOINT-deploy",
-      "epic_id": "EPIC-006",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-006-DOCKER-start-prod",
-        "EPIC-006-DOCKER-health-prod",
-        "EPIC-006-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "actual_minutes": null,
-      "error_message": null,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "requires_user_input": true,
-      "user_prompt": "Review the complete application.\n\nFinal verification:\n- All features are implemented\n- All tests are passing\n- Docker containers are healthy\n- Ready for production deployment\n\nApprove to complete this Epic.",
-      "user_response": null,
-      "checkpoint": true,
-      "auto_retry": true,
-      "max_retries": 3,
-      "retry_count": 0,
-      "timeout_seconds": 300,
-      "phase": "deploy",
-      "command": null,
-      "success_criteria": "User approved checkpoint",
-      "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     },
     {
       "id": "EPIC-006-INTEGRATION",
@@ -1381,9 +384,9 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-006",
       "description": "Run all EPIC-006 tests, validate build, and verify all 7 user stories are implemented.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
-        "EPIC-006-CHECKPOINT-deploy"
+        "EPIC-006-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
@@ -1403,15 +406,16 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null
+      "user_fix_instructions": null,
+      "enrichment_context": null
     }
   ],
-  "total_tasks": 41,
-  "completed_tasks": 38,
-  "failed_tasks": 1,
-  "progress_percent": 92.6829268292683,
-  "run_count": 1,
-  "last_run_at": "2026-03-26T17:56:17.675253",
-  "created_at": "2026-03-26T15:04:41.935386",
-  "estimated_total_minutes": 0
+  "total_tasks": 11,
+  "completed_tasks": 0,
+  "failed_tasks": 0,
+  "progress_percent": 0.0,
+  "run_count": 0,
+  "last_run_at": null,
+  "created_at": "2026-03-28T13:35:12.297604",
+  "estimated_total_minutes": 199
 }

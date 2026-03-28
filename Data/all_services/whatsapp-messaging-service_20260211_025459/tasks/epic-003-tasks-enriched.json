@@ -1,596 +1,41 @@
 {
   "epic_id": "EPIC-003",
   "epic_name": "Messaging-Kernfunktionen",
-  "enrichment_timestamp": "2026-03-27T17:02:33.879691",
+  "enrichment_timestamp": "2026-03-28T15:55:06.232319",
   "enrichment_stats": {
-    "total_tasks": 57,
-    "tasks_with_requirements": 15,
-    "tasks_with_user_stories": 21,
-    "tasks_with_diagrams": 21,
-    "tasks_with_warnings": 15,
-    "tasks_with_dtos": 6,
-    "tasks_with_success_criteria": 27,
+    "total_tasks": 15,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 7,
+    "tasks_with_diagrams": 7,
+    "tasks_with_warnings": 7,
+    "tasks_with_dtos": 0,
+    "tasks_with_success_criteria": 10,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 2,
-    "tasks_with_accessibility": 12,
+    "tasks_with_accessibility": 3,
     "tasks_with_routes": 0,
-    "tasks_with_design_tokens": 12
+    "tasks_with_design_tokens": 3
   },
   "tasks": [
     {
-      "id": "EPIC-003-SCHEMA-chat-model",
+      "id": "EPIC-003-SCHEMA-all",
       "epic_id": "EPIC-003",
       "type": "schema_model",
-      "title": "Create Prisma model: chat",
-      "description": "Define chat model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "title": "Prisma schema: chat, message, message_media, message_mention, message_reaction",
+      "description": "Create ALL Prisma models for EPIC-003 in prisma/schema.prisma.\n\nModels to create:\n- chat: Define model with all attributes, types, and relations to other entities\n- message: Define model with all attributes, types, and relations to other entities\n- message_media: Define model with all attributes, types, and relations to other entities\n- message_mention: Define model with all attributes, types, and relations to other entities\n- message_reaction: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "running",
       "dependencies": [],
-      "estimated_minutes": 5,
+      "estimated_minutes": 10,
       "output_files": [
-        "prisma/schema.prisma#chat"
-      ],
-      "related_requirements": [
-        "WA-MSG-010"
-      ],
-      "related_user_stories": [
-        "US-020"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Chat_Offen\n    Chat_Offen --> Chat_Sperren : Anfrage zum Sperren\n    Chat_Sperren --> Authentifizierung : Zusätzliche Authentifizierung erforderlich\n    Authentifizierung --> Chat_Gesperrt : Authentifizierung erfolgreich\n    Authentifizierung --> Chat_Offen : Authentifizierung fehlgeschlagen\n    Chat_Gesperrt --> Chat_Offen : Chat entsperren",
-            "file": "WA-MSG-010_state.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Chat auswählen}\n    B -->|Chat gefunden| C[Zusätzliche Authentifizierung anfordern]\n    B -->|Chat nicht gefunden| D[Fehler anzeigen]\n    C --> E{Authentifizierung erfolgreich?}\n    E -->|Ja| F[Sperren des Chats]\n    E -->|Nein| G[Fehler anzeigen]\n    F --> H[Chat gesperrt]\n    G --> H\n    D --> H\n    H --> I[Ende]",
-            "file": "WA-MSG-010_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
-            "file": "WA-MSG-010_sequence.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "LockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatLockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "lockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was locked"
-              }
-            ]
-          },
-          {
-            "name": "UnlockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatUnlockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "unlockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was unlocked"
-              }
-            ]
-          },
-          {
-            "name": "UploadChatMediaRequest",
-            "properties": [
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Media file captured by camera"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Type of media (image|video|document)"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the media"
-              },
-              {
-                "name": "captureSource",
-                "type": "string",
-                "description": "Capture source, must be 'camera' for direct camera integration"
-              },
-              {
-                "name": "encryptedMediaKey",
-                "type": "string",
-                "description": "Encrypted media key for Signal Protocol E2E encryption"
-              },
-              {
-                "name": "encryptedThumbnail",
-                "type": "string",
-                "description": "Optional encrypted thumbnail data (base64)"
-              },
-              {
-                "name": "width",
-                "type": "integer",
-                "description": "Image/video width in pixels"
-              },
-              {
-                "name": "height",
-                "type": "integer",
-                "description": "Image/video height in pixels"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Video duration in milliseconds (if mediaType=video)"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-020",
-            "title": "Chat sperren",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-            "so_that": "um Datenschutz und Sicherheit der Gespraeche zu erhoehen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-chat-relations",
-      "epic_id": "EPIC-003",
-      "type": "schema_relations",
-      "title": "Define relations for: chat",
-      "description": "Set up Prisma relations for chat with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-chat-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#chat_relations"
-      ],
-      "related_requirements": [
-        "WA-MSG-010"
-      ],
-      "related_user_stories": [
-        "US-020"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Chat auswählen}\n    B -->|Chat gefunden| C[Zusätzliche Authentifizierung anfordern]\n    B -->|Chat nicht gefunden| D[Fehler anzeigen]\n    C --> E{Authentifizierung erfolgreich?}\n    E -->|Ja| F[Sperren des Chats]\n    E -->|Nein| G[Fehler anzeigen]\n    F --> H[Chat gesperrt]\n    G --> H\n    D --> H\n    H --> I[Ende]",
-            "file": "WA-MSG-010_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
-            "file": "WA-MSG-010_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Chat_Offen\n    Chat_Offen --> Chat_Sperren : Anfrage zum Sperren\n    Chat_Sperren --> Authentifizierung : Zusätzliche Authentifizierung erforderlich\n    Authentifizierung --> Chat_Gesperrt : Authentifizierung erfolgreich\n    Authentifizierung --> Chat_Offen : Authentifizierung fehlgeschlagen\n    Chat_Gesperrt --> Chat_Offen : Chat entsperren",
-            "file": "WA-MSG-010_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "LockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatLockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "lockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was locked"
-              }
-            ]
-          },
-          {
-            "name": "UnlockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatUnlockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "unlockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was unlocked"
-              }
-            ]
-          },
-          {
-            "name": "UploadChatMediaRequest",
-            "properties": [
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Media file captured by camera"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Type of media (image|video|document)"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the media"
-              },
-              {
-                "name": "captureSource",
-                "type": "string",
-                "description": "Capture source, must be 'camera' for direct camera integration"
-              },
-              {
-                "name": "encryptedMediaKey",
-                "type": "string",
-                "description": "Encrypted media key for Signal Protocol E2E encryption"
-              },
-              {
-                "name": "encryptedThumbnail",
-                "type": "string",
-                "description": "Optional encrypted thumbnail data (base64)"
-              },
-              {
-                "name": "width",
-                "type": "integer",
-                "description": "Image/video width in pixels"
-              },
-              {
-                "name": "height",
-                "type": "integer",
-                "description": "Image/video height in pixels"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Video duration in milliseconds (if mediaType=video)"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-020",
-            "title": "Chat sperren",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-            "so_that": "um Datenschutz und Sicherheit der Gespraeche zu erhoehen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-chat-migration",
-      "epic_id": "EPIC-003",
-      "type": "schema_migration",
-      "title": "Run migration for: chat",
-      "description": "Execute prisma migrate dev for chat changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-chat-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_chat/"
-      ],
-      "related_requirements": [
-        "WA-MSG-010"
-      ],
-      "related_user_stories": [
-        "US-020"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Chat auswählen}\n    B -->|Chat gefunden| C[Zusätzliche Authentifizierung anfordern]\n    B -->|Chat nicht gefunden| D[Fehler anzeigen]\n    C --> E{Authentifizierung erfolgreich?}\n    E -->|Ja| F[Sperren des Chats]\n    E -->|Nein| G[Fehler anzeigen]\n    F --> H[Chat gesperrt]\n    G --> H\n    D --> H\n    H --> I[Ende]",
-            "file": "WA-MSG-010_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
-            "file": "WA-MSG-010_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Chat_Offen\n    Chat_Offen --> Chat_Sperren : Anfrage zum Sperren\n    Chat_Sperren --> Authentifizierung : Zusätzliche Authentifizierung erforderlich\n    Authentifizierung --> Chat_Gesperrt : Authentifizierung erfolgreich\n    Authentifizierung --> Chat_Offen : Authentifizierung fehlgeschlagen\n    Chat_Gesperrt --> Chat_Offen : Chat entsperren",
-            "file": "WA-MSG-010_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "LockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatLockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "lockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was locked"
-              }
-            ]
-          },
-          {
-            "name": "UnlockChatRequest",
-            "properties": [
-              {
-                "name": "authMethod",
-                "type": "string",
-                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
-              },
-              {
-                "name": "authToken",
-                "type": "string",
-                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
-              },
-              {
-                "name": "deviceId",
-                "type": "string",
-                "description": "Identifier of the client device used for authentication"
-              }
-            ]
-          },
-          {
-            "name": "ChatUnlockResponse",
-            "properties": [
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "locked",
-                "type": "boolean",
-                "description": "Indicates whether the chat is locked"
-              },
-              {
-                "name": "unlockedAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the chat was unlocked"
-              }
-            ]
-          },
-          {
-            "name": "UploadChatMediaRequest",
-            "properties": [
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Media file captured by camera"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Type of media (image|video|document)"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the media"
-              },
-              {
-                "name": "captureSource",
-                "type": "string",
-                "description": "Capture source, must be 'camera' for direct camera integration"
-              },
-              {
-                "name": "encryptedMediaKey",
-                "type": "string",
-                "description": "Encrypted media key for Signal Protocol E2E encryption"
-              },
-              {
-                "name": "encryptedThumbnail",
-                "type": "string",
-                "description": "Optional encrypted thumbnail data (base64)"
-              },
-              {
-                "name": "width",
-                "type": "integer",
-                "description": "Image/video width in pixels"
-              },
-              {
-                "name": "height",
-                "type": "integer",
-                "description": "Image/video height in pixels"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Video duration in milliseconds (if mediaType=video)"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-020",
-            "title": "Chat sperren",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-            "so_that": "um Datenschutz und Sicherheit der Gespraeche zu erhoehen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message-model",
-      "epic_id": "EPIC-003",
-      "type": "schema_model",
-      "title": "Create Prisma model: message",
-      "description": "Define message model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#message"
+        "prisma/schema.prisma"
       ],
       "related_requirements": [
         "WA-MSG-001",
         "WA-MSG-002",
         "WA-MSG-003",
         "WA-MSG-004",
-        "WA-MSG-005",
-        "WA-MSG-006",
-        "WA-MSG-008"
+        "WA-MSG-005"
       ],
       "related_user_stories": [
         "US-011",
@@ -614,274 +59,9 @@
             "file": "WA-MSG-004_state.mmd"
           },
           {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> Sending : Send Nachricht\n    Sending --> Sent : Nachricht gesendet\n    Sent --> Waiting : Warten auf Empfangsbestätigung\n    Waiting --> Received : Nachricht empfangen\n    Received --> SelfDestructing : Selbstzerstörung einleiten\n    SelfDestructing --> Destroyed : Nachricht gelöscht\n    Destroyed --> Idle : Zurücksetzen",
-            "file": "WA-MSG-008_state.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-004",
-            "severity": "high",
-            "title": "Multi-Device-Synchronisation unvollständig",
-            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
-          },
-          {
-            "id": "CI-010",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
-          },
-          {
-            "id": "CI-016",
-            "severity": "high",
-            "title": "Nicht-funktionale Anforderungen fehlen",
-            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
-          },
-          {
-            "id": "CI-008",
-            "severity": "high",
-            "title": "Nachrichten löschen/bearbeiten ohne Scope/Logik",
-            "suggestion": "Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync."
-          },
-          {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "SendTextMessageRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for deduplication"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted message payload using Signal Protocol"
-              },
-              {
-                "name": "senderDeviceId",
-                "type": "string",
-                "description": "Sender device identifier"
-              },
-              {
-                "name": "sentAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the message was created on the client"
-              }
-            ]
-          },
-          {
-            "name": "MessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Message ID"
-              },
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Message type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (queued, sent, delivered)"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "Server timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "CreateVoiceMessageRequest",
-            "properties": [
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Duration of the voice message in milliseconds"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
-              },
-              {
-                "name": "waveform",
-                "type": "string",
-                "description": "Optional compact waveform representation for UI rendering"
-              },
-              {
-                "name": "encryptionHeader",
-                "type": "string",
-                "description": "Signal Protocol header or metadata required to decrypt the payload"
-              },
-              {
-                "name": "ciphertextHash",
-                "type": "string",
-                "description": "Hash of the encrypted payload for integrity verification"
-              },
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Encrypted voice message file"
-              }
-            ]
-          },
-          {
-            "name": "VoiceMessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Server-generated message ID"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the server accepted the message"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (e.g., queued, sent)"
-              }
-            ]
-          },
-          {
-            "name": "DeleteMessageRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for deletion"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-011",
-            "title": "Textnachricht senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Textnachricht in Echtzeit an einen Kontakt senden",
-            "so_that": "um schnell und zuverlässig zu kommunizieren und eine sofortige Antwort zu ermöglichen"
-          },
-          {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-013",
-            "title": "Nachricht loeschen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine gesendete oder empfangene Nachricht loeschen",
-            "so_that": "den Chat uebersichtlich halten und Datenschutzanforderungen erfuellen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message-relations",
-      "epic_id": "EPIC-003",
-      "type": "schema_relations",
-      "title": "Define relations for: message",
-      "description": "Set up Prisma relations for message with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#message_relations"
-      ],
-      "related_requirements": [
-        "WA-MSG-001",
-        "WA-MSG-002",
-        "WA-MSG-003",
-        "WA-MSG-004",
-        "WA-MSG-005",
-        "WA-MSG-006",
-        "WA-MSG-008"
-      ],
-      "related_user_stories": [
-        "US-011",
-        "US-012",
-        "US-013",
-        "US-014",
-        "US-015"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: eine Textnachricht in Echtzeit an einen Kontakt senden; User can: eine Sprachnachricht aufnehmen und senden; User can: eine gesendete oder empfangene Nachricht loeschen; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.",
-      "enrichment_context": {
-        "diagrams": [
-          {
             "type": "flowchart",
             "content": "flowchart TD\n    A[Start] --> B{Textnachricht eingeben}\n    B -->|Ja| C[Nachricht an Server senden]\n    B -->|Nein| D[Fehler: Nachricht erforderlich]\n    C --> E{Nachricht erfolgreich gesendet?}\n    E -->|Ja| F[Bestätigung anzeigen]\n    E -->|Nein| G[Fehler: Senden fehlgeschlagen]\n    F --> H[Ende]\n    G --> H\n    D --> H",
             "file": "WA-MSG-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Receiver as Empfänger\n\n    Benutzer->>System: Textnachricht senden\n    System->>System: Nachricht verarbeiten\n    System->>Empfänger: Textnachricht zustellen\n    Empfänger-->>System: Empfangsbestätigung\n    System-->>Benutzer: Nachricht gesendet",
-            "file": "WA-MSG-001_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> Sending : Start sending\n    Sending --> Sent : Message sent\n    Sent --> Idle : Acknowledge receipt\n    Sending --> Error : Sending failed\n    Error --> Idle : Retry or cancel",
-            "file": "WA-MSG-001_state.mmd"
           }
         ],
         "known_gaps": [
@@ -910,162 +90,10 @@
             "suggestion": "Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync."
           },
           {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "SendTextMessageRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for deduplication"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted message payload using Signal Protocol"
-              },
-              {
-                "name": "senderDeviceId",
-                "type": "string",
-                "description": "Sender device identifier"
-              },
-              {
-                "name": "sentAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the message was created on the client"
-              }
-            ]
-          },
-          {
-            "name": "MessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Message ID"
-              },
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Message type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (queued, sent, delivered)"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "Server timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "CreateVoiceMessageRequest",
-            "properties": [
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Duration of the voice message in milliseconds"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
-              },
-              {
-                "name": "waveform",
-                "type": "string",
-                "description": "Optional compact waveform representation for UI rendering"
-              },
-              {
-                "name": "encryptionHeader",
-                "type": "string",
-                "description": "Signal Protocol header or metadata required to decrypt the payload"
-              },
-              {
-                "name": "ciphertextHash",
-                "type": "string",
-                "description": "Hash of the encrypted payload for integrity verification"
-              },
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Encrypted voice message file"
-              }
-            ]
-          },
-          {
-            "name": "VoiceMessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Server-generated message ID"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the server accepted the message"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (e.g., queued, sent)"
-              }
-            ]
-          },
-          {
-            "name": "DeleteMessageRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for deletion"
-              }
-            ]
+            "id": "CI-015",
+            "severity": "medium",
+            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
+            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
           }
         ],
         "user_story_details": [
@@ -1098,895 +126,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message-migration",
-      "epic_id": "EPIC-003",
-      "type": "schema_migration",
-      "title": "Run migration for: message",
-      "description": "Execute prisma migrate dev for message changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_message/"
-      ],
-      "related_requirements": [
-        "WA-MSG-001",
-        "WA-MSG-002",
-        "WA-MSG-003",
-        "WA-MSG-004",
-        "WA-MSG-005",
-        "WA-MSG-006",
-        "WA-MSG-008"
-      ],
-      "related_user_stories": [
-        "US-011",
-        "US-012",
-        "US-013",
-        "US-014",
-        "US-015"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: eine Textnachricht in Echtzeit an einen Kontakt senden; User can: eine Sprachnachricht aufnehmen und senden; User can: eine gesendete oder empfangene Nachricht loeschen; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Textnachricht eingeben}\n    B -->|Ja| C[Nachricht an Server senden]\n    B -->|Nein| D[Fehler: Nachricht erforderlich]\n    C --> E{Nachricht erfolgreich gesendet?}\n    E -->|Ja| F[Bestätigung anzeigen]\n    E -->|Nein| G[Fehler: Senden fehlgeschlagen]\n    F --> H[Ende]\n    G --> H\n    D --> H",
-            "file": "WA-MSG-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Receiver as Empfänger\n\n    Benutzer->>System: Textnachricht senden\n    System->>System: Nachricht verarbeiten\n    System->>Empfänger: Textnachricht zustellen\n    Empfänger-->>System: Empfangsbestätigung\n    System-->>Benutzer: Nachricht gesendet",
-            "file": "WA-MSG-001_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> Sending : Start sending\n    Sending --> Sent : Message sent\n    Sent --> Idle : Acknowledge receipt\n    Sending --> Error : Sending failed\n    Error --> Idle : Retry or cancel",
-            "file": "WA-MSG-001_state.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-004",
-            "severity": "high",
-            "title": "Multi-Device-Synchronisation unvollständig",
-            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
-          },
-          {
-            "id": "CI-010",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
-          },
-          {
-            "id": "CI-016",
-            "severity": "high",
-            "title": "Nicht-funktionale Anforderungen fehlen",
-            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
-          },
-          {
-            "id": "CI-008",
-            "severity": "high",
-            "title": "Nachrichten löschen/bearbeiten ohne Scope/Logik",
-            "suggestion": "Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync."
-          },
-          {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "SendTextMessageRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for deduplication"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted message payload using Signal Protocol"
-              },
-              {
-                "name": "senderDeviceId",
-                "type": "string",
-                "description": "Sender device identifier"
-              },
-              {
-                "name": "sentAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the message was created on the client"
-              }
-            ]
-          },
-          {
-            "name": "MessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Message ID"
-              },
-              {
-                "name": "chatId",
-                "type": "string",
-                "description": "Chat ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Message type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (queued, sent, delivered)"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "Server timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "CreateVoiceMessageRequest",
-            "properties": [
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "durationMs",
-                "type": "integer",
-                "description": "Duration of the voice message in milliseconds"
-              },
-              {
-                "name": "mimeType",
-                "type": "string",
-                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
-              },
-              {
-                "name": "waveform",
-                "type": "string",
-                "description": "Optional compact waveform representation for UI rendering"
-              },
-              {
-                "name": "encryptionHeader",
-                "type": "string",
-                "description": "Signal Protocol header or metadata required to decrypt the payload"
-              },
-              {
-                "name": "ciphertextHash",
-                "type": "string",
-                "description": "Hash of the encrypted payload for integrity verification"
-              },
-              {
-                "name": "file",
-                "type": "string",
-                "description": "Encrypted voice message file"
-              }
-            ]
-          },
-          {
-            "name": "VoiceMessageResponse",
-            "properties": [
-              {
-                "name": "messageId",
-                "type": "string",
-                "description": "Server-generated message ID"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated unique identifier for idempotency"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: user, group, or broadcast"
-              },
-              {
-                "name": "recipientId",
-                "type": "string",
-                "description": "ID of the target user, group, or broadcast list"
-              },
-              {
-                "name": "serverTimestamp",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the server accepted the message"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Message status (e.g., queued, sent)"
-              }
-            ]
-          },
-          {
-            "name": "DeleteMessageRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for deletion"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-011",
-            "title": "Textnachricht senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Textnachricht in Echtzeit an einen Kontakt senden",
-            "so_that": "um schnell und zuverlässig zu kommunizieren und eine sofortige Antwort zu ermöglichen"
-          },
-          {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-013",
-            "title": "Nachricht loeschen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine gesendete oder empfangene Nachricht loeschen",
-            "so_that": "den Chat uebersichtlich halten und Datenschutzanforderungen erfuellen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_media-model",
-      "epic_id": "EPIC-003",
-      "type": "schema_model",
-      "title": "Create Prisma model: message_media",
-      "description": "Define message_media model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#message_media"
-      ],
-      "related_requirements": [
-        "WA-MSG-002",
-        "WA-MSG-009"
-      ],
-      "related_user_stories": [
-        "US-012",
-        "US-019"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: eine Sprachnachricht aufnehmen und senden; User can: View-Once-Medien in einem Chat einmalig ansehen; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Sprachnachricht System Context Diagram\n\n    Person(user, \"User\", \"A user who sends voice messages\")\n    System(sprachnachricht, \"Sprachnachricht\", \"A system that supports sending voice messages\")\n    System_Ext(messagingService, \"Messaging Service\", \"External service for message delivery\")\n    System_Ext(storageService, \"Storage Service\", \"External service for storing voice messages\")\n\n    Rel(user, sprachnachricht, \"Sends voice messages to\")\n    Rel(sprachnachricht, messagingService, \"Uses for message delivery\")\n    Rel(sprachnachrich",
-            "file": "WA-MSG-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Sprachnachricht senden?}\n    B -- Ja --> C[Sprachnachricht aufnehmen]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Sprachnachricht an Server senden]\n    E --> F{Serverantwort erhalten?}\n    F -- Ja --> G[Sprachnachricht erfolgreich gesendet]\n    F -- Nein --> H[Fehler beim Senden]\n    G --> I[Prozess beenden]\n    H --> I\n    D --> I",
-            "file": "WA-MSG-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    Nutzer->>System: Sprachnachricht senden\n    System-->>Nutzer: Bestätigung des Sendens\n    Nutzer->>System: Sprachnachricht empfangen\n    System-->>Nutzer: Sprachnachricht wiedergeben",
-            "file": "WA-MSG-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-010",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
-          },
-          {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          },
-          {
-            "id": "CI-015",
-            "severity": "medium",
-            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
-            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-019",
-            "title": "Einmal-Ansicht Medien",
-            "priority": "must",
-            "description": "",
-            "as_a": "privater Nutzer",
-            "i_want": "View-Once-Medien in einem Chat einmalig ansehen",
-            "so_that": "damit sensible Inhalte nur einmal sichtbar sind und der Datenschutz gewahrt bleibt"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_media-relations",
-      "epic_id": "EPIC-003",
-      "type": "schema_relations",
-      "title": "Define relations for: message_media",
-      "description": "Set up Prisma relations for message_media with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_media-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#message_media_relations"
-      ],
-      "related_requirements": [
-        "WA-MSG-002",
-        "WA-MSG-009"
-      ],
-      "related_user_stories": [
-        "US-012",
-        "US-019"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: eine Sprachnachricht aufnehmen und senden; User can: View-Once-Medien in einem Chat einmalig ansehen; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Sprachnachricht System Context Diagram\n\n    Person(user, \"User\", \"A user who sends voice messages\")\n    System(sprachnachricht, \"Sprachnachricht\", \"A system that supports sending voice messages\")\n    System_Ext(messagingService, \"Messaging Service\", \"External service for message delivery\")\n    System_Ext(storageService, \"Storage Service\", \"External service for storing voice messages\")\n\n    Rel(user, sprachnachricht, \"Sends voice messages to\")\n    Rel(sprachnachricht, messagingService, \"Uses for message delivery\")\n    Rel(sprachnachrich",
-            "file": "WA-MSG-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Sprachnachricht senden?}\n    B -- Ja --> C[Sprachnachricht aufnehmen]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Sprachnachricht an Server senden]\n    E --> F{Serverantwort erhalten?}\n    F -- Ja --> G[Sprachnachricht erfolgreich gesendet]\n    F -- Nein --> H[Fehler beim Senden]\n    G --> I[Prozess beenden]\n    H --> I\n    D --> I",
-            "file": "WA-MSG-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    Nutzer->>System: Sprachnachricht senden\n    System-->>Nutzer: Bestätigung des Sendens\n    Nutzer->>System: Sprachnachricht empfangen\n    System-->>Nutzer: Sprachnachricht wiedergeben",
-            "file": "WA-MSG-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-010",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
-          },
-          {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          },
-          {
-            "id": "CI-015",
-            "severity": "medium",
-            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
-            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-019",
-            "title": "Einmal-Ansicht Medien",
-            "priority": "must",
-            "description": "",
-            "as_a": "privater Nutzer",
-            "i_want": "View-Once-Medien in einem Chat einmalig ansehen",
-            "so_that": "damit sensible Inhalte nur einmal sichtbar sind und der Datenschutz gewahrt bleibt"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_media-migration",
-      "epic_id": "EPIC-003",
-      "type": "schema_migration",
-      "title": "Run migration for: message_media",
-      "description": "Execute prisma migrate dev for message_media changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_media-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_message_media/"
-      ],
-      "related_requirements": [
-        "WA-MSG-002",
-        "WA-MSG-009"
-      ],
-      "related_user_stories": [
-        "US-012",
-        "US-019"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: eine Sprachnachricht aufnehmen und senden; User can: View-Once-Medien in einem Chat einmalig ansehen; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Sprachnachricht System Context Diagram\n\n    Person(user, \"User\", \"A user who sends voice messages\")\n    System(sprachnachricht, \"Sprachnachricht\", \"A system that supports sending voice messages\")\n    System_Ext(messagingService, \"Messaging Service\", \"External service for message delivery\")\n    System_Ext(storageService, \"Storage Service\", \"External service for storing voice messages\")\n\n    Rel(user, sprachnachricht, \"Sends voice messages to\")\n    Rel(sprachnachricht, messagingService, \"Uses for message delivery\")\n    Rel(sprachnachrich",
-            "file": "WA-MSG-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Sprachnachricht senden?}\n    B -- Ja --> C[Sprachnachricht aufnehmen]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Sprachnachricht an Server senden]\n    E --> F{Serverantwort erhalten?}\n    F -- Ja --> G[Sprachnachricht erfolgreich gesendet]\n    F -- Nein --> H[Fehler beim Senden]\n    G --> I[Prozess beenden]\n    H --> I\n    D --> I",
-            "file": "WA-MSG-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    Nutzer->>System: Sprachnachricht senden\n    System-->>Nutzer: Bestätigung des Sendens\n    Nutzer->>System: Sprachnachricht empfangen\n    System-->>Nutzer: Sprachnachricht wiedergeben",
-            "file": "WA-MSG-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-010",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
-          },
-          {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          },
-          {
-            "id": "CI-015",
-            "severity": "medium",
-            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
-            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-019",
-            "title": "Einmal-Ansicht Medien",
-            "priority": "must",
-            "description": "",
-            "as_a": "privater Nutzer",
-            "i_want": "View-Once-Medien in einem Chat einmalig ansehen",
-            "so_that": "damit sensible Inhalte nur einmal sichtbar sind und der Datenschutz gewahrt bleibt"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_mention-model",
-      "epic_id": "EPIC-003",
-      "type": "schema_model",
-      "title": "Create Prisma model: message_mention",
-      "description": "Define message_mention model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#message_mention"
-      ],
-      "related_requirements": [
-        "WA-MSG-013"
-      ],
-      "related_user_stories": [
-        "US-023"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren; Address: Create user stories that explicitly link to each of these requirements.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Gruppenchats {\n        +String chatID\n        +String chatName\n        +List<Erwaehnung> erwaehnungen\n        +void addErwaehnung(Erwaehnung erwaehnung)\n    }\n\n    class Erwaehnung {\n        +String mentionID\n        +String username\n        +String timestamp\n        +void notifyUser()\n    }\n\n    Gruppenchats \"1\" -- \"*\" Erwaehnung : contains",
-            "file": "WA-MSG-013_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Erwaehnung (@mention)\n    \n    Person(user, \"User\", \"A user who participates in group chats and uses @mentions.\")\n    \n    System(system, \"Erwaehnung System\", \"A system that supports @mentions in group chats.\")\n    \n    System_Ext(groupChatApp, \"Group Chat Application\", \"An external application where users interact in group chats.\")\n    \n    Rel(user, groupChatApp, \"Uses\")\n    Rel(groupChatApp, system, \"Sends messages with @mentions to\")\n    Rel(system, groupChatApp, \"Processes @mentions and returns notifications t",
-            "file": "WA-MSG-013_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant System as System\n    participant GroupChat as Group Chat\n\n    User->>GroupChat: @mention User\n    GroupChat->>System: Notify @mention\n    System->>User: Acknowledge @mention\n    System->>GroupChat: Display @mention notification",
-            "file": "WA-MSG-013_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-027",
-            "severity": "high",
-            "title": "Orphan requirements",
-            "suggestion": "Create user stories that explicitly link to each of these requirements."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-023",
-            "title": "Erwaehnung (@mention)",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren",
-            "so_that": "um die Aufmerksamkeit gezielt zu steuern und eine schnelle, zuverlaessige Kommunikation im Chat zu erreichen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_mention-relations",
-      "epic_id": "EPIC-003",
-      "type": "schema_relations",
-      "title": "Define relations for: message_mention",
-      "description": "Set up Prisma relations for message_mention with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_mention-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#message_mention_relations"
-      ],
-      "related_requirements": [
-        "WA-MSG-013"
-      ],
-      "related_user_stories": [
-        "US-023"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren; Address: Create user stories that explicitly link to each of these requirements.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Gruppenchats {\n        +String chatID\n        +String chatName\n        +List<Erwaehnung> erwaehnungen\n        +void addErwaehnung(Erwaehnung erwaehnung)\n    }\n\n    class Erwaehnung {\n        +String mentionID\n        +String username\n        +String timestamp\n        +void notifyUser()\n    }\n\n    Gruppenchats \"1\" -- \"*\" Erwaehnung : contains",
-            "file": "WA-MSG-013_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Erwaehnung (@mention)\n    \n    Person(user, \"User\", \"A user who participates in group chats and uses @mentions.\")\n    \n    System(system, \"Erwaehnung System\", \"A system that supports @mentions in group chats.\")\n    \n    System_Ext(groupChatApp, \"Group Chat Application\", \"An external application where users interact in group chats.\")\n    \n    Rel(user, groupChatApp, \"Uses\")\n    Rel(groupChatApp, system, \"Sends messages with @mentions to\")\n    Rel(system, groupChatApp, \"Processes @mentions and returns notifications t",
-            "file": "WA-MSG-013_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant System as System\n    participant GroupChat as Group Chat\n\n    User->>GroupChat: @mention User\n    GroupChat->>System: Notify @mention\n    System->>User: Acknowledge @mention\n    System->>GroupChat: Display @mention notification",
-            "file": "WA-MSG-013_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-027",
-            "severity": "high",
-            "title": "Orphan requirements",
-            "suggestion": "Create user stories that explicitly link to each of these requirements."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-023",
-            "title": "Erwaehnung (@mention)",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren",
-            "so_that": "um die Aufmerksamkeit gezielt zu steuern und eine schnelle, zuverlaessige Kommunikation im Chat zu erreichen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_mention-migration",
-      "epic_id": "EPIC-003",
-      "type": "schema_migration",
-      "title": "Run migration for: message_mention",
-      "description": "Execute prisma migrate dev for message_mention changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_mention-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_message_mention/"
-      ],
-      "related_requirements": [
-        "WA-MSG-013"
-      ],
-      "related_user_stories": [
-        "US-023"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren; Address: Create user stories that explicitly link to each of these requirements.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title System Context Diagram for Erwaehnung (@mention)\n    \n    Person(user, \"User\", \"A user who participates in group chats and uses @mentions.\")\n    \n    System(system, \"Erwaehnung System\", \"A system that supports @mentions in group chats.\")\n    \n    System_Ext(groupChatApp, \"Group Chat Application\", \"An external application where users interact in group chats.\")\n    \n    Rel(user, groupChatApp, \"Uses\")\n    Rel(groupChatApp, system, \"Sends messages with @mentions to\")\n    Rel(system, groupChatApp, \"Processes @mentions and returns notifications t",
-            "file": "WA-MSG-013_c4.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Gruppenchats {\n        +String chatID\n        +String chatName\n        +List<Erwaehnung> erwaehnungen\n        +void addErwaehnung(Erwaehnung erwaehnung)\n    }\n\n    class Erwaehnung {\n        +String mentionID\n        +String username\n        +String timestamp\n        +void notifyUser()\n    }\n\n    Gruppenchats \"1\" -- \"*\" Erwaehnung : contains",
-            "file": "WA-MSG-013_class.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant System as System\n    participant GroupChat as Group Chat\n\n    User->>GroupChat: @mention User\n    GroupChat->>System: Notify @mention\n    System->>User: Acknowledge @mention\n    System->>GroupChat: Display @mention notification",
-            "file": "WA-MSG-013_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-027",
-            "severity": "high",
-            "title": "Orphan requirements",
-            "suggestion": "Create user stories that explicitly link to each of these requirements."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-023",
-            "title": "Erwaehnung (@mention)",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "andere Teilnehmer in einem Gruppenchats per @-Erwaehnung adressieren",
-            "so_that": "um die Aufmerksamkeit gezielt zu steuern und eine schnelle, zuverlaessige Kommunikation im Chat zu erreichen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_reaction-model",
-      "epic_id": "EPIC-003",
-      "type": "schema_model",
-      "title": "Create Prisma model: message_reaction",
-      "description": "Define message_reaction model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#message_reaction"
-      ],
-      "related_requirements": [
-        "WA-MSG-007"
-      ],
-      "related_user_stories": [
-        "US-017"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: auf eine Nachricht mit einem Emoji reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Nachricht {\n        +String inhalt\n        +Date zeitstempel\n        +void senden()\n    }\n\n    class Emoji {\n        +String name\n        +String unicode\n    }\n\n    class Reaktion {\n        +Emoji emoji\n        +Nachricht nachricht\n        +String benutzer\n        +Date zeit\n    }\n\n    Nachricht \"1\" -- \"*\" Reaktion : hat\n    Emoji \"1\" -- \"*\" Reaktion : wird verwendet für",
-            "file": "WA-MSG-007_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[User] -->|Sends Message| B[Messaging System]\n    A -->|Adds Emoji Reaction| B\n    B -->|Stores Message and Reactions| C[Database]\n    B -->|Notifies| D[Notification Service]\n    \n    subgraph \"External Systems\"\n        E[User Interface] -->|Displays Messages and Reactions| B\n        F[Third-party Emoji Service] -->|Provides Emoji| B\n    end\n\n    style A fill:#f9f,stroke:#333,stroke-width:2px;\n    style B fill:#bbf,stroke:#333,stroke-width:2px;\n    style C fill:#fff,stroke:#333,stroke-width:2px;\n    style D fill:#ffb,stroke:#333,stroke-width:2px;\n",
-            "file": "WA-MSG-007_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n    participant Message as Nachricht\n\n    Nutzer->>System: Sendet Nachricht\n    System->>Nachricht: Zeigt Nachricht an\n    Nutzer->>System: Wählt Emoji-Reaktion\n    System->>Nachricht: Aktualisiert Emoji-Reaktion\n    System->>Nutzer: Bestätigt Reaktion",
-            "file": "WA-MSG-007_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-017",
-            "title": "Reaktionen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "auf eine Nachricht mit einem Emoji reagieren",
-            "so_that": "um meine Antwort schnell und intuitiv auszudruecken und die Kommunikation zu vereinfachen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_reaction-relations",
-      "epic_id": "EPIC-003",
-      "type": "schema_relations",
-      "title": "Define relations for: message_reaction",
-      "description": "Set up Prisma relations for message_reaction with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_reaction-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#message_reaction_relations"
-      ],
-      "related_requirements": [
-        "WA-MSG-007"
-      ],
-      "related_user_stories": [
-        "US-017"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: auf eine Nachricht mit einem Emoji reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Nachricht {\n        +String inhalt\n        +Date zeitstempel\n        +void senden()\n    }\n\n    class Emoji {\n        +String name\n        +String unicode\n    }\n\n    class Reaktion {\n        +Emoji emoji\n        +Nachricht nachricht\n        +String benutzer\n        +Date zeit\n    }\n\n    Nachricht \"1\" -- \"*\" Reaktion : hat\n    Emoji \"1\" -- \"*\" Reaktion : wird verwendet für",
-            "file": "WA-MSG-007_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[User] -->|Sends Message| B[Messaging System]\n    A -->|Adds Emoji Reaction| B\n    B -->|Stores Message and Reactions| C[Database]\n    B -->|Notifies| D[Notification Service]\n    \n    subgraph \"External Systems\"\n        E[User Interface] -->|Displays Messages and Reactions| B\n        F[Third-party Emoji Service] -->|Provides Emoji| B\n    end\n\n    style A fill:#f9f,stroke:#333,stroke-width:2px;\n    style B fill:#bbf,stroke:#333,stroke-width:2px;\n    style C fill:#fff,stroke:#333,stroke-width:2px;\n    style D fill:#ffb,stroke:#333,stroke-width:2px;\n",
-            "file": "WA-MSG-007_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n    participant Message as Nachricht\n\n    Nutzer->>System: Sendet Nachricht\n    System->>Nachricht: Zeigt Nachricht an\n    Nutzer->>System: Wählt Emoji-Reaktion\n    System->>Nachricht: Aktualisiert Emoji-Reaktion\n    System->>Nutzer: Bestätigt Reaktion",
-            "file": "WA-MSG-007_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-017",
-            "title": "Reaktionen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "auf eine Nachricht mit einem Emoji reagieren",
-            "so_that": "um meine Antwort schnell und intuitiv auszudruecken und die Kommunikation zu vereinfachen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-SCHEMA-message_reaction-migration",
-      "epic_id": "EPIC-003",
-      "type": "schema_migration",
-      "title": "Run migration for: message_reaction",
-      "description": "Execute prisma migrate dev for message_reaction changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_reaction-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_message_reaction/"
-      ],
-      "related_requirements": [
-        "WA-MSG-007"
-      ],
-      "related_user_stories": [
-        "US-017"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: auf eine Nachricht mit einem Emoji reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[User] -->|Sends Message| B[Messaging System]\n    A -->|Adds Emoji Reaction| B\n    B -->|Stores Message and Reactions| C[Database]\n    B -->|Notifies| D[Notification Service]\n    \n    subgraph \"External Systems\"\n        E[User Interface] -->|Displays Messages and Reactions| B\n        F[Third-party Emoji Service] -->|Provides Emoji| B\n    end\n\n    style A fill:#f9f,stroke:#333,stroke-width:2px;\n    style B fill:#bbf,stroke:#333,stroke-width:2px;\n    style C fill:#fff,stroke:#333,stroke-width:2px;\n    style D fill:#ffb,stroke:#333,stroke-width:2px;\n",
-            "file": "WA-MSG-007_c4.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Nachricht {\n        +String inhalt\n        +Date zeitstempel\n        +void senden()\n    }\n\n    class Emoji {\n        +String name\n        +String unicode\n    }\n\n    class Reaktion {\n        +Emoji emoji\n        +Nachricht nachricht\n        +String benutzer\n        +Date zeit\n    }\n\n    Nachricht \"1\" -- \"*\" Reaktion : hat\n    Emoji \"1\" -- \"*\" Reaktion : wird verwendet für",
-            "file": "WA-MSG-007_class.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n    participant Message as Nachricht\n\n    Nutzer->>System: Sendet Nachricht\n    System->>Nachricht: Zeigt Nachricht an\n    Nutzer->>System: Wählt Emoji-Reaktion\n    System->>Nachricht: Aktualisiert Emoji-Reaktion\n    System->>Nutzer: Bestätigt Reaktion",
-            "file": "WA-MSG-007_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-017",
-            "title": "Reaktionen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "auf eine Nachricht mit einem Emoji reagieren",
-            "so_that": "um meine Antwort schnell und intuitiv auszudruecken und die Kommunikation zu vereinfachen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-003-VERIFY-schema",
-      "epic_id": "EPIC-003",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-SCHEMA-message_reaction-model",
-        "EPIC-003-SCHEMA-message_reaction-relations",
-        "EPIC-003-SCHEMA-message_reaction-migration"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "prisma validate exits with code 0"
-    },
-    {
-      "id": "EPIC-003-CHECKPOINT-schema",
-      "epic_id": "EPIC-003",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "User approved checkpoint"
     },
     {
       "id": "EPIC-003-API-conversations-feature",
@@ -1996,7 +135,7 @@
       "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages — Send a text message\n  GET /api/v1/conversations/{conversationId}/messages — List messages with formatted text metadata\n  POST /api/v1/conversations/{conversationId}/messages/location — Share location in a conversation",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2106,7 +245,7 @@
       "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages/voice — Send a voice message\n  DELETE /api/v1/messages/{messageId} — Nachricht loeschen\n  PUT /api/v1/messages/{messageId} — Edit a sent message\n  POST /api/v1/messages/{messageId}/forward — Forward a message\n  POST /api/v1/messages — Send a message with optional quote\n  POST /api/v1/messages/{messageId}/reactions — Add an emoji reaction to a message\n  GET /api/v1/messages/{messageId}/reactions — List emoji reactions for a message\n  DELETE /api/v1/messages/{messageId}/reactions/{reactionId} — Remove an emoji reaction from a message\n  PATCH /api/v1/messages/{messageId}/self-destruct — Update self-destruct policy for a message",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 27,
       "output_files": [
@@ -2116,32 +255,32 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MSG-003",
-        "WA-MSG-008",
-        "WA-MSG-004",
         "WA-MSG-005",
+        "WA-MSG-002",
+        "WA-MSG-004",
+        "WA-MSG-003",
         "WA-MSG-007"
       ],
       "related_user_stories": [
+        "US-012",
         "US-013",
         "US-014",
         "US-015",
-        "US-017",
-        "US-018"
+        "US-017"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine gesendete oder empfangene Nachricht loeschen; User can: selbstloeschende Nachrichten mit einer festgelegten Ablaufzeit senden; User can: eine bereits gesendete Nachricht bearbeiten; Address: Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine empfangene Nachricht an einen oder mehrere Kontakte weiterleiten; User can: eine Sprachnachricht aufnehmen und senden; User can: eine bereits gesendete Nachricht bearbeiten; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync.",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    Benutzer->>System: Nachricht auswählen\n    System-->>Benutzer: Bestätigung anzeigen\n    Benutzer->>System: Bestätigen (Nachricht löschen)\n    System-->>Benutzer: Nachricht gelöscht",
-            "file": "WA-MSG-003_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Receiver as Empfänger\n\n    User->>System: Nachricht senden\n    System->>Receiver: Nachricht weiterleiten\n    Receiver-->>System: Bestätigung erhalten\n    System-->>User: Bestätigung gesendet",
+            "file": "WA-MSG-005_sequence.mmd"
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant System as Self-Deleting Message System\n\n    User->>System: Send self-deleting message\n    System-->>User: Confirm message sent\n    System->>System: Set timer for message deletion\n    Note over System: Message is displayed to recipient\n    System->>User: Notify recipient of message\n    User->>System: Recipient reads message\n    System-->>User: Confirm message read\n    System->>System: Delete message after timer expires\n    Note over System: Message is deleted",
-            "file": "WA-MSG-008_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    Nutzer->>System: Sprachnachricht senden\n    System-->>Nutzer: Bestätigung des Sendens\n    Nutzer->>System: Sprachnachricht empfangen\n    System-->>Nutzer: Sprachnachricht wiedergeben",
+            "file": "WA-MSG-002_sequence.mmd"
           },
           {
             "type": "sequence",
@@ -2151,36 +290,42 @@
         ],
         "known_gaps": [
           {
+            "id": "CI-010",
+            "severity": "high",
+            "title": "Fehlende Fehlerbehandlung beim Senden",
+            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
+          },
+          {
             "id": "CI-008",
             "severity": "high",
             "title": "Nachrichten löschen/bearbeiten ohne Scope/Logik",
             "suggestion": "Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync."
           },
           {
-            "id": "CI-009",
-            "severity": "high",
-            "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
-            "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
+            "id": "CI-015",
+            "severity": "medium",
+            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
+            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
           }
         ],
         "user_story_details": [
           {
-            "id": "US-013",
-            "title": "Nachricht loeschen",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine gesendete oder empfangene Nachricht loeschen",
-            "so_that": "den Chat uebersichtlich halten und Datenschutzanforderungen erfuellen"
-          },
-          {
-            "id": "US-018",
-            "title": "Verschwindende Nachrichten",
+            "id": "US-015",
+            "title": "Nachricht weiterleiten",
             "priority": "must",
             "description": "",
             "as_a": "registrierter Nutzer",
-            "i_want": "selbstloeschende Nachrichten mit einer festgelegten Ablaufzeit senden",
-            "so_that": "private Kommunikation zu ermoeglichen und Datenschutz zu erhoehen"
+            "i_want": "eine empfangene Nachricht an einen oder mehrere Kontakte weiterleiten",
+            "so_that": "damit Informationen schnell und sicher geteilt werden koennen und die Kommunikation effizient bleibt"
+          },
+          {
+            "id": "US-012",
+            "title": "Sprachnachricht",
+            "priority": "must",
+            "description": "",
+            "as_a": "Endnutzer",
+            "i_want": "eine Sprachnachricht aufnehmen und senden",
+            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
           },
           {
             "id": "US-014",
@@ -2202,7 +347,7 @@
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media — Upload encrypted media for view-once use\n  GET /api/v1/media/{mediaId}/view-once — Retrieve and consume view-once media",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2266,7 +411,7 @@
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  PUT /api/v1/chats/{chatId}/lock — Lock a chat with additional authentication\n  PUT /api/v1/chats/{chatId}/unlock — Unlock a chat with additional authentication\n  POST /api/v1/chats/{chatId}/messages — Share a contact in a chat",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2276,31 +421,31 @@
         "src/modules/chats/dto/"
       ],
       "related_requirements": [
-        "WA-MSG-010",
-        "WA-MSG-015"
+        "WA-MSG-015",
+        "WA-MSG-010"
       ],
       "related_user_stories": [
         "US-020",
         "US-025"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren; User can: einen Kontakt aus meiner Kontaktliste in einem Chat teilen; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Create user stories that explicitly link to each of these requirements.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Kontakt aus meiner Kontaktliste in einem Chat teilen; User can: einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Create user stories that explicitly link to each of these requirements.",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
-            "file": "WA-MSG-010_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Contact as Kontakt\n\n    User->>System: Anfrage zum Teilen von Kontaktdaten\n    System->>Contact: Kontaktdaten abrufen\n    Contact-->>System: Kontaktdaten bereitstellen\n    System-->>User: Kontaktdaten erfolgreich geteilt",
             "file": "WA-MSG-015_sequence.mmd"
           },
           {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
+            "file": "WA-MSG-010_sequence.mmd"
+          },
+          {
             "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Chat auswählen}\n    B -->|Chat gefunden| C[Zusätzliche Authentifizierung anfordern]\n    B -->|Chat nicht gefunden| D[Fehler anzeigen]\n    C --> E{Authentifizierung erfolgreich?}\n    E -->|Ja| F[Sperren des Chats]\n    E -->|Nein| G[Fehler anzeigen]\n    F --> H[Chat gesperrt]\n    G --> H\n    D --> H\n    H --> I[Ende]",
-            "file": "WA-MSG-010_flowchart.mmd"
+            "content": "flowchart TD\n    A[Start] --> B{Benutzer wählt Kontakt aus}\n    B -->|Ja| C[Kontaktdaten anzeigen]\n    B -->|Nein| D[Prozess beenden]\n    C --> E{Teilen über}\n    E -->|E-Mail| F[Kontaktdaten per E-Mail senden]\n    E -->|Nachricht| G[Kontaktdaten per Nachricht senden]\n    E -->|Soziale Medien| H[Kontaktdaten über soziale Medien teilen]\n    F --> I[Teilen erfolgreich]\n    G --> I\n    H --> I\n    I --> J[Prozess beenden]",
+            "file": "WA-MSG-015_flowchart.mmd"
           }
         ],
         "known_gaps": [
@@ -2325,15 +470,6 @@
         ],
         "user_story_details": [
           {
-            "id": "US-020",
-            "title": "Chat sperren",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
-            "so_that": "um Datenschutz und Sicherheit der Gespraeche zu erhoehen"
-          },
-          {
             "id": "US-025",
             "title": "Kontakt teilen",
             "priority": "must",
@@ -2341,6 +477,15 @@
             "as_a": "Endnutzer",
             "i_want": "einen Kontakt aus meiner Kontaktliste in einem Chat teilen",
             "so_that": "damit der Empfaenger die Kontaktdaten schnell und sicher erhalten und weiterverwenden kann"
+          },
+          {
+            "id": "US-020",
+            "title": "Chat sperren",
+            "priority": "should",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "einen einzelnen Chat mit zusaetzlicher Authentifizierung sperren",
+            "so_that": "um Datenschutz und Sicherheit der Gespraeche zu erhoehen"
           }
         ]
       }
@@ -2353,7 +498,7 @@
       "description": "Generate the COMPLETE NestJS module for 'broadcast-lists' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-lists — Create a broadcast list\n  GET /api/v1/broadcast-lists — List broadcast lists\n  GET /api/v1/broadcast-lists/{broadcastListId} — Get broadcast list details\n  PUT /api/v1/broadcast-lists/{broadcastListId} — Update broadcast list\n  DELETE /api/v1/broadcast-lists/{broadcastListId} — Delete broadcast list\n  POST /api/v1/broadcast-lists/{broadcastListId}/messages — Send broadcast message",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 18,
       "output_files": [
@@ -2418,7 +563,7 @@
       "description": "Generate the COMPLETE NestJS module for 'group-chats' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-chats/{groupId}/messages — Send a group message with @mentions",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-schema"
+        "EPIC-003-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2475,144 +620,21 @@
       }
     },
     {
-      "id": "EPIC-003-VERIFY-build-api",
-      "epic_id": "EPIC-003",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-API-messages-feature",
-        "EPIC-003-API-media-feature",
-        "EPIC-003-API-chats-feature",
-        "EPIC-003-API-broadcast-lists-feature",
-        "EPIC-003-API-group-chats-feature"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Build completes without errors"
-    },
-    {
-      "id": "EPIC-003-VERIFY-typecheck-api",
-      "epic_id": "EPIC-003",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-003-VERIFY-integration",
-      "epic_id": "EPIC-003",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "All integration tests pass"
-    },
-    {
-      "id": "EPIC-003-DOCKER-build-api",
-      "epic_id": "EPIC-003",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-typecheck-api",
-        "EPIC-003-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Docker image built successfully"
-    },
-    {
-      "id": "EPIC-003-DOCKER-start-api",
-      "epic_id": "EPIC-003",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "API container running"
-    },
-    {
-      "id": "EPIC-003-DOCKER-health-api",
-      "epic_id": "EPIC-003",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Health endpoint returns 200 OK"
-    },
-    {
-      "id": "EPIC-003-CHECKPOINT-api",
-      "epic_id": "EPIC-003",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-build-api",
-        "EPIC-003-DOCKER-start-api",
-        "EPIC-003-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
-      "id": "EPIC-003-FE-ChatList-page",
+      "id": "EPIC-003-FE-ChatList-feature",
       "epic_id": "EPIC-003",
       "type": "fe_page",
-      "title": "Page: ChatList",
-      "description": "Create ChatList page component implementing 5 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: ChatList (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'ChatList':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useChatList)\n- API client functions\n\nUser Stories: US-011, US-012, US-013, US-014, US-015",
+      "status": "running",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-api"
+        "EPIC-003-API-group-chats-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 25,
       "output_files": [
-        "src/pages/ChatList/ChatList.tsx"
+        "src/pages/ChatList/ChatList.tsx",
+        "src/components/ChatList/",
+        "src/hooks/useChatList.ts",
+        "src/api/chatlistAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -2849,264 +871,21 @@
       }
     },
     {
-      "id": "EPIC-003-FE-ChatList-components",
-      "epic_id": "EPIC-003",
-      "type": "fe_component",
-      "title": "Components: ChatList",
-      "description": "Create reusable components for ChatList",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatList-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/ChatList/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-ChatList-hook",
-      "epic_id": "EPIC-003",
-      "type": "fe_hook",
-      "title": "Hook: useChatList",
-      "description": "Create custom hook for ChatList state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatList-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useChatList.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-ChatList-api",
-      "epic_id": "EPIC-003",
-      "type": "fe_api_client",
-      "title": "API Client: ChatList",
-      "description": "Create API client functions for ChatList",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatList-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/chatlistAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-ChatRoom-page",
+      "id": "EPIC-003-FE-ChatRoom-feature",
       "epic_id": "EPIC-003",
       "type": "fe_page",
-      "title": "Page: ChatRoom",
-      "description": "Create ChatRoom page component implementing 5 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: ChatRoom (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'ChatRoom':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useChatRoom)\n- API client functions\n\nUser Stories: US-016, US-017, US-018, US-019, US-020",
+      "status": "running",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-api"
+        "EPIC-003-API-group-chats-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 25,
       "output_files": [
-        "src/pages/ChatRoom/ChatRoom.tsx"
+        "src/pages/ChatRoom/ChatRoom.tsx",
+        "src/components/ChatRoom/",
+        "src/hooks/useChatRoom.ts",
+        "src/api/chatroomAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -3343,264 +1122,21 @@
       }
     },
     {
-      "id": "EPIC-003-FE-ChatRoom-components",
-      "epic_id": "EPIC-003",
-      "type": "fe_component",
-      "title": "Components: ChatRoom",
-      "description": "Create reusable components for ChatRoom",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatRoom-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/ChatRoom/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-ChatRoom-hook",
-      "epic_id": "EPIC-003",
-      "type": "fe_hook",
-      "title": "Hook: useChatRoom",
-      "description": "Create custom hook for ChatRoom state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatRoom-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useChatRoom.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-ChatRoom-api",
-      "epic_id": "EPIC-003",
-      "type": "fe_api_client",
-      "title": "API Client: ChatRoom",
-      "description": "Create API client functions for ChatRoom",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatRoom-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/chatroomAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-MessageInput-page",
+      "id": "EPIC-003-FE-MessageInput-feature",
       "epic_id": "EPIC-003",
       "type": "fe_page",
-      "title": "Page: MessageInput",
-      "description": "Create MessageInput page component implementing 5 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: MessageInput (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'MessageInput':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useMessageInput)\n- API client functions\n\nUser Stories: US-021, US-022, US-023, US-024, US-025",
+      "status": "pending",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-api"
+        "EPIC-003-API-group-chats-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 25,
       "output_files": [
-        "src/pages/MessageInput/MessageInput.tsx"
+        "src/pages/MessageInput/MessageInput.tsx",
+        "src/components/MessageInput/",
+        "src/hooks/useMessageInput.ts",
+        "src/api/messageinputAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -3677,343 +1213,6 @@
       }
     },
     {
-      "id": "EPIC-003-FE-MessageInput-components",
-      "epic_id": "EPIC-003",
-      "type": "fe_component",
-      "title": "Components: MessageInput",
-      "description": "Create reusable components for MessageInput",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-MessageInput-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/MessageInput/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-MessageInput-hook",
-      "epic_id": "EPIC-003",
-      "type": "fe_hook",
-      "title": "Hook: useMessageInput",
-      "description": "Create custom hook for MessageInput state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-MessageInput-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useMessageInput.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-FE-MessageInput-api",
-      "epic_id": "EPIC-003",
-      "type": "fe_api_client",
-      "title": "API Client: MessageInput",
-      "description": "Create API client functions for MessageInput",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-MessageInput-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/messageinputAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-003-VERIFY-build-fe",
-      "epic_id": "EPIC-003",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-FE-ChatRoom-api",
-        "EPIC-003-FE-MessageInput-page",
-        "EPIC-003-FE-MessageInput-components",
-        "EPIC-003-FE-MessageInput-hook",
-        "EPIC-003-FE-MessageInput-api"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "Frontend build completes without errors"
-    },
-    {
-      "id": "EPIC-003-VERIFY-lint",
-      "epic_id": "EPIC-003",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No linting errors"
-    },
-    {
-      "id": "EPIC-003-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-003",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-003-VERIFY-unit",
-      "epic_id": "EPIC-003",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "All unit tests pass"
-    },
-    {
-      "id": "EPIC-003-CHECKPOINT-frontend",
-      "epic_id": "EPIC-003",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-lint",
-        "EPIC-003-VERIFY-typecheck-fe",
-        "EPIC-003-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
       "id": "EPIC-003-TEST-unit",
       "epic_id": "EPIC-003",
       "type": "test",
@@ -4021,7 +1220,7 @@
       "description": "Create Vitest unit tests for all EPIC-003 services and utilities. NO MOCKS - use real implementations.",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-frontend"
+        "EPIC-003-FE-MessageInput-feature"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -4087,110 +1286,23 @@
       "success_criteria": null
     },
     {
-      "id": "EPIC-003-VERIFY-e2e",
+      "id": "EPIC-003-VERIFY-all",
       "epic_id": "EPIC-003",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "type": "verify_build",
+      "title": "Verify EPIC-003: build + typecheck",
+      "description": "Run all verification steps for EPIC-003:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-TEST-unit",
         "EPIC-003-TEST-integration",
         "EPIC-003-TEST-e2e"
       ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "test",
-      "success_criteria": "All E2E tests pass"
-    },
-    {
-      "id": "EPIC-003-DOCKER-build-prod",
-      "epic_id": "EPIC-003",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-VERIFY-e2e"
-      ],
       "estimated_minutes": 5,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Production image built"
-    },
-    {
-      "id": "EPIC-003-DOCKER-start-prod",
-      "epic_id": "EPIC-003",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers running"
-    },
-    {
-      "id": "EPIC-003-DOCKER-health-prod",
-      "epic_id": "EPIC-003",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers healthy"
-    },
-    {
-      "id": "EPIC-003-DOCKER-logs-prod",
-      "epic_id": "EPIC-003",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Logs collected, no critical errors"
-    },
-    {
-      "id": "EPIC-003-CHECKPOINT-deploy",
-      "epic_id": "EPIC-003",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-003-DOCKER-start-prod",
-        "EPIC-003-DOCKER-health-prod",
-        "EPIC-003-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "User approved checkpoint"
+      "phase": "verification",
+      "success_criteria": "Zero TypeScript errors, build succeeds"
     },
     {
       "id": "EPIC-003-INTEGRATION",
@@ -4200,7 +1312,7 @@
       "description": "Run all EPIC-003 tests, validate build, and verify all 15 user stories are implemented.",
       "status": "completed",
       "dependencies": [
-        "EPIC-003-CHECKPOINT-deploy"
+        "EPIC-003-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "output_files": [],

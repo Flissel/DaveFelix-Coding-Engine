@@ -1,21 +1,21 @@
 {
   "epic_id": "EPIC-001",
   "epic_name": "Authentifizierung und Kontosicherheit",
-  "enrichment_timestamp": "2026-03-27T17:02:28.716174",
+  "enrichment_timestamp": "2026-03-28T15:55:01.210564",
   "enrichment_stats": {
-    "total_tasks": 67,
-    "tasks_with_requirements": 12,
-    "tasks_with_user_stories": 23,
-    "tasks_with_diagrams": 23,
-    "tasks_with_warnings": 14,
-    "tasks_with_dtos": 3,
-    "tasks_with_success_criteria": 29,
+    "total_tasks": 26,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 12,
+    "tasks_with_diagrams": 12,
+    "tasks_with_warnings": 6,
+    "tasks_with_dtos": 0,
+    "tasks_with_success_criteria": 15,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 0,
-    "tasks_with_accessibility": 14,
+    "tasks_with_accessibility": 3,
     "tasks_with_routes": 0,
-    "tasks_with_design_tokens": 14
+    "tasks_with_design_tokens": 3
   },
   "tasks": [
     {
@@ -132,504 +132,35 @@
       "success_criteria": "node_modules created, no npm install errors"
     },
     {
-      "id": "EPIC-001-SCHEMA-auth_credential-model",
+      "id": "EPIC-001-SCHEMA-all",
       "epic_id": "EPIC-001",
       "type": "schema_model",
-      "title": "Create Prisma model: auth_credential",
-      "description": "Define auth_credential model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "title": "Prisma schema: auth_credential, encryption_session, user, user_device",
+      "description": "Create ALL Prisma models for EPIC-001 in prisma/schema.prisma.\n\nModels to create:\n- auth_credential: Define model with all attributes, types, and relations to other entities\n- encryption_session: Define model with all attributes, types, and relations to other entities\n- user: Define model with all attributes, types, and relations to other entities\n- user_device: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "running",
       "dependencies": [
         "EPIC-001-SETUP-deps"
       ],
-      "estimated_minutes": 5,
+      "estimated_minutes": 8,
       "output_files": [
-        "prisma/schema.prisma#auth_credential"
+        "prisma/schema.prisma"
       ],
       "related_requirements": [
+        "WA-AUTH-001",
         "WA-AUTH-002",
         "WA-AUTH-003",
+        "WA-AUTH-004",
         "WA-AUTH-005"
       ],
       "related_user_stories": [
+        "US-001",
         "US-002",
         "US-003",
+        "US-004",
         "US-005"
       ],
       "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: die App mit Fingerabdruck oder Face ID entsperren; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title Zwei-Faktor-Authentifizierung System Architecture\n\n    Person(user, \"User\", \"A user who wants to authenticate\")\n    System(system, \"Zwei-Faktor-Authentifizierung System\", \"Supports optional 2FA with a 6-digit PIN\")\n\n    System_Ext(emailService, \"Email Service\", \"Sends email for 2FA\")\n    System_Ext(smsService, \"SMS Service\", \"Sends SMS for 2FA\")\n\n    Rel(user, system, \"Uses\")\n    Rel(system, emailService, \"Requests 2FA code via email\")\n    Rel(system, smsService, \"Requests 2FA code via SMS\")",
-            "file": "WA-AUTH-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Benutzeranmeldung}\n    B -->|Erfolgreich| C{2FA aktiv?}\n    B -->|Fehlgeschlagen| D[Anmeldung fehlgeschlagen]\n    C -->|Ja| E[6-stellige PIN anfordern]\n    C -->|Nein| F[Anmeldung erfolgreich]\n    E --> G{PIN eingeben}\n    G -->|Richtig| F\n    G -->|Falsch| H[PIN ungültig]\n    H --> I{Erneut versuchen?}\n    I -->|Ja| E\n    I -->|Nein| D\n    D --> J[Ende]\n    F --> J",
-            "file": "WA-AUTH-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-002",
-            "severity": "high",
-            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
-            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
-          },
-          {
-            "id": "CI-003",
-            "severity": "medium",
-            "title": "Biometrische Authentifizierung ohne Fallback",
-            "suggestion": "Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung."
-          },
-          {
-            "id": "CI-005",
-            "severity": "medium",
-            "title": "Passkey-Unterstützung ohne Plattform-Integration",
-            "suggestion": "Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
-          {
-            "id": "US-003",
-            "title": "Biometrische Entsperrung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die App mit Fingerabdruck oder Face ID entsperren",
-            "so_that": "sich schnell und sicher anmelden zu koennen, ohne Passwoerter eingeben zu muessen"
-          },
-          {
-            "id": "US-005",
-            "title": "Passkey-Unterstuetzung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Registrierter Nutzer",
-            "i_want": "sich per Passkey ohne Passwort anmelden",
-            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-auth_credential-relations",
-      "epic_id": "EPIC-001",
-      "type": "schema_relations",
-      "title": "Define relations for: auth_credential",
-      "description": "Set up Prisma relations for auth_credential with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-auth_credential-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#auth_credential_relations"
-      ],
-      "related_requirements": [
-        "WA-AUTH-002",
-        "WA-AUTH-003",
-        "WA-AUTH-005"
-      ],
-      "related_user_stories": [
-        "US-002",
-        "US-003",
-        "US-005"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: die App mit Fingerabdruck oder Face ID entsperren; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title Zwei-Faktor-Authentifizierung System Architecture\n\n    Person(user, \"User\", \"A user who wants to authenticate\")\n    System(system, \"Zwei-Faktor-Authentifizierung System\", \"Supports optional 2FA with a 6-digit PIN\")\n\n    System_Ext(emailService, \"Email Service\", \"Sends email for 2FA\")\n    System_Ext(smsService, \"SMS Service\", \"Sends SMS for 2FA\")\n\n    Rel(user, system, \"Uses\")\n    Rel(system, emailService, \"Requests 2FA code via email\")\n    Rel(system, smsService, \"Requests 2FA code via SMS\")",
-            "file": "WA-AUTH-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Benutzeranmeldung}\n    B -->|Erfolgreich| C{2FA aktiv?}\n    B -->|Fehlgeschlagen| D[Anmeldung fehlgeschlagen]\n    C -->|Ja| E[6-stellige PIN anfordern]\n    C -->|Nein| F[Anmeldung erfolgreich]\n    E --> G{PIN eingeben}\n    G -->|Richtig| F\n    G -->|Falsch| H[PIN ungültig]\n    H --> I{Erneut versuchen?}\n    I -->|Ja| E\n    I -->|Nein| D\n    D --> J[Ende]\n    F --> J",
-            "file": "WA-AUTH-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-002",
-            "severity": "high",
-            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
-            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
-          },
-          {
-            "id": "CI-003",
-            "severity": "medium",
-            "title": "Biometrische Authentifizierung ohne Fallback",
-            "suggestion": "Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung."
-          },
-          {
-            "id": "CI-005",
-            "severity": "medium",
-            "title": "Passkey-Unterstützung ohne Plattform-Integration",
-            "suggestion": "Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
-          {
-            "id": "US-003",
-            "title": "Biometrische Entsperrung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die App mit Fingerabdruck oder Face ID entsperren",
-            "so_that": "sich schnell und sicher anmelden zu koennen, ohne Passwoerter eingeben zu muessen"
-          },
-          {
-            "id": "US-005",
-            "title": "Passkey-Unterstuetzung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Registrierter Nutzer",
-            "i_want": "sich per Passkey ohne Passwort anmelden",
-            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-auth_credential-migration",
-      "epic_id": "EPIC-001",
-      "type": "schema_migration",
-      "title": "Run migration for: auth_credential",
-      "description": "Execute prisma migrate dev for auth_credential changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-auth_credential-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_auth_credential/"
-      ],
-      "related_requirements": [
-        "WA-AUTH-002",
-        "WA-AUTH-003",
-        "WA-AUTH-005"
-      ],
-      "related_user_stories": [
-        "US-002",
-        "US-003",
-        "US-005"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: die App mit Fingerabdruck oder Face ID entsperren; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\nC4Context\n    title Zwei-Faktor-Authentifizierung System Architecture\n\n    Person(user, \"User\", \"A user who wants to authenticate\")\n    System(system, \"Zwei-Faktor-Authentifizierung System\", \"Supports optional 2FA with a 6-digit PIN\")\n\n    System_Ext(emailService, \"Email Service\", \"Sends email for 2FA\")\n    System_Ext(smsService, \"SMS Service\", \"Sends SMS for 2FA\")\n\n    Rel(user, system, \"Uses\")\n    Rel(system, emailService, \"Requests 2FA code via email\")\n    Rel(system, smsService, \"Requests 2FA code via SMS\")",
-            "file": "WA-AUTH-002_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Benutzeranmeldung}\n    B -->|Erfolgreich| C{2FA aktiv?}\n    B -->|Fehlgeschlagen| D[Anmeldung fehlgeschlagen]\n    C -->|Ja| E[6-stellige PIN anfordern]\n    C -->|Nein| F[Anmeldung erfolgreich]\n    E --> G{PIN eingeben}\n    G -->|Richtig| F\n    G -->|Falsch| H[PIN ungültig]\n    H --> I{Erneut versuchen?}\n    I -->|Ja| E\n    I -->|Nein| D\n    D --> J[Ende]\n    F --> J",
-            "file": "WA-AUTH-002_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-002",
-            "severity": "high",
-            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
-            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
-          },
-          {
-            "id": "CI-003",
-            "severity": "medium",
-            "title": "Biometrische Authentifizierung ohne Fallback",
-            "suggestion": "Ergänzen Sie Fallback via PIN/Passcode sowie Geräte-Kompatibilitätsprüfung."
-          },
-          {
-            "id": "CI-005",
-            "severity": "medium",
-            "title": "Passkey-Unterstützung ohne Plattform-Integration",
-            "suggestion": "Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
-          {
-            "id": "US-003",
-            "title": "Biometrische Entsperrung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die App mit Fingerabdruck oder Face ID entsperren",
-            "so_that": "sich schnell und sicher anmelden zu koennen, ohne Passwoerter eingeben zu muessen"
-          },
-          {
-            "id": "US-005",
-            "title": "Passkey-Unterstuetzung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Registrierter Nutzer",
-            "i_want": "sich per Passkey ohne Passwort anmelden",
-            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-encryption_session-model",
-      "epic_id": "EPIC-001",
-      "type": "schema_model",
-      "title": "Create Prisma model: encryption_session",
-      "description": "Define encryption_session model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SETUP-deps"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#encryption_session"
-      ],
-      "related_requirements": [
-        "WA-SEC-001",
-        "WA-SEC-002"
-      ],
-      "related_user_stories": [
-        "US-057",
-        "US-058"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: Nachrichten end-to-end verschluesselt senden und empfangen; User can: den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Initial\n    Initial --> CodeEntered : Code eingegeben\n    CodeEntered --> Verifying : Verifizierung gestartet\n    Verifying --> Success : Verifizierung erfolgreich\n    Verifying --> Failure : Verifizierung fehlgeschlagen\n    Failure --> CodeEntered : Erneute Eingabe erforderlich\n    Success --> [*]",
-            "file": "WA-SEC-002_state.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    %% C4 Context Diagram\n    C4Context\n        title End-to-End Verschlüsselung System Architecture\n\n        Person(End User, \"End User\", \"A user who sends and receives messages.\")\n        System(Encryption System, \"End-to-End Verschlüsselung System\", \"System that encrypts messages end-to-end.\")\n\n        Person --> System : Sends messages\n        System --> Person : Sends encrypted messages\n        System --> System : Encrypts messages\n        System --> System : Decrypts messages",
-            "file": "WA-SEC-001_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant Client as Client Application\n    participant Server as Server\n    participant Encryption as Encryption Service\n\n    User->>Client: Send message\n    Client->>Encryption: Encrypt message\n    Encryption-->>Client: Return encrypted message\n    Client->>Server: Send encrypted message\n    Server->>Encryption: Decrypt message\n    Encryption-->>Server: Return decrypted message\n    Server->>User: Deliver message",
-            "file": "WA-SEC-001_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-057",
-            "title": "End-to-End Verschluesselung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Nachrichten end-to-end verschluesselt senden und empfangen",
-            "so_that": "damit meine Kommunikation vertraulich bleibt und Datenschutz sowie Sicherheit gewaehrleistet sind"
-          },
-          {
-            "id": "US-058",
-            "title": "Sicherheitscode-Verifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-            "so_that": "um Datenschutz und sichere Kommunikation zu gewährleisten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-encryption_session-relations",
-      "epic_id": "EPIC-001",
-      "type": "schema_relations",
-      "title": "Define relations for: encryption_session",
-      "description": "Set up Prisma relations for encryption_session with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-encryption_session-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#encryption_session_relations"
-      ],
-      "related_requirements": [
-        "WA-SEC-001",
-        "WA-SEC-002"
-      ],
-      "related_user_stories": [
-        "US-057",
-        "US-058"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: Nachrichten end-to-end verschluesselt senden und empfangen; User can: den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    %% C4 Context Diagram\n    C4Context\n        title End-to-End Verschlüsselung System Architecture\n\n        Person(End User, \"End User\", \"A user who sends and receives messages.\")\n        System(Encryption System, \"End-to-End Verschlüsselung System\", \"System that encrypts messages end-to-end.\")\n\n        Person --> System : Sends messages\n        System --> Person : Sends encrypted messages\n        System --> System : Encrypts messages\n        System --> System : Decrypts messages",
-            "file": "WA-SEC-001_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant Client as Client Application\n    participant Server as Server\n    participant Encryption as Encryption Service\n\n    User->>Client: Send message\n    Client->>Encryption: Encrypt message\n    Encryption-->>Client: Return encrypted message\n    Client->>Server: Send encrypted message\n    Server->>Encryption: Decrypt message\n    Encryption-->>Server: Return decrypted message\n    Server->>User: Deliver message",
-            "file": "WA-SEC-001_sequence.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer gibt Sicherheitscode ein]\n    B --> C{Ist der Sicherheitscode korrekt?}\n    C -->|Ja| D[Zugriff gewährt]\n    C -->|Nein| E[Manuelle Verifizierung anfordern]\n    E --> F[Verifizierung durch Administrator]\n    F --> G{Wurde der Code verifiziert?}\n    G -->|Ja| D\n    G -->|Nein| H[Zugriff verweigert]\n    D --> I[Ende]\n    H --> I",
-            "file": "WA-SEC-002_flowchart.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-057",
-            "title": "End-to-End Verschluesselung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Nachrichten end-to-end verschluesselt senden und empfangen",
-            "so_that": "damit meine Kommunikation vertraulich bleibt und Datenschutz sowie Sicherheit gewaehrleistet sind"
-          },
-          {
-            "id": "US-058",
-            "title": "Sicherheitscode-Verifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-            "so_that": "um Datenschutz und sichere Kommunikation zu gewährleisten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-encryption_session-migration",
-      "epic_id": "EPIC-001",
-      "type": "schema_migration",
-      "title": "Run migration for: encryption_session",
-      "description": "Execute prisma migrate dev for encryption_session changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-encryption_session-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_encryption_session/"
-      ],
-      "related_requirements": [
-        "WA-SEC-001",
-        "WA-SEC-002"
-      ],
-      "related_user_stories": [
-        "US-057",
-        "US-058"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: Nachrichten end-to-end verschluesselt senden und empfangen; User can: den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    %% C4 Context Diagram\n    C4Context\n        title End-to-End Verschlüsselung System Architecture\n\n        Person(End User, \"End User\", \"A user who sends and receives messages.\")\n        System(Encryption System, \"End-to-End Verschlüsselung System\", \"System that encrypts messages end-to-end.\")\n\n        Person --> System : Sends messages\n        System --> Person : Sends encrypted messages\n        System --> System : Encrypts messages\n        System --> System : Decrypts messages",
-            "file": "WA-SEC-001_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant Client as Client Application\n    participant Server as Server\n    participant Encryption as Encryption Service\n\n    User->>Client: Send message\n    Client->>Encryption: Encrypt message\n    Encryption-->>Client: Return encrypted message\n    Client->>Server: Send encrypted message\n    Server->>Encryption: Decrypt message\n    Encryption-->>Server: Return decrypted message\n    Server->>User: Deliver message",
-            "file": "WA-SEC-001_sequence.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer gibt Sicherheitscode ein]\n    B --> C{Ist der Sicherheitscode korrekt?}\n    C -->|Ja| D[Zugriff gewährt]\n    C -->|Nein| E[Manuelle Verifizierung anfordern]\n    E --> F[Verifizierung durch Administrator]\n    F --> G{Wurde der Code verifiziert?}\n    G -->|Ja| D\n    G -->|Nein| H[Zugriff verweigert]\n    D --> I[Ende]\n    H --> I",
-            "file": "WA-SEC-002_flowchart.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-057",
-            "title": "End-to-End Verschluesselung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Nachrichten end-to-end verschluesselt senden und empfangen",
-            "so_that": "damit meine Kommunikation vertraulich bleibt und Datenschutz sowie Sicherheit gewaehrleistet sind"
-          },
-          {
-            "id": "US-058",
-            "title": "Sicherheitscode-Verifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Verschlüsselungs-Sicherheitscode manuell verifizieren",
-            "so_that": "um Datenschutz und sichere Kommunikation zu gewährleisten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user-model",
-      "epic_id": "EPIC-001",
-      "type": "schema_model",
-      "title": "Create Prisma model: user",
-      "description": "Define user model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SETUP-deps"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#user"
-      ],
-      "related_requirements": [
-        "WA-AUTH-001"
-      ],
-      "related_user_stories": [
-        "US-001"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: mich mit meiner Telefonnummer registrieren und verifizieren; Address: Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy.; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: mich mit meiner Telefonnummer registrieren und verifizieren; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: die App mit Fingerabdruck oder Face ID entsperren; Address: Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy.; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.",
       "enrichment_context": {
         "diagrams": [
           {
@@ -662,107 +193,22 @@
             "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
           },
           {
+            "id": "CI-002",
+            "severity": "high",
+            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
+            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
+          },
+          {
+            "id": "CI-004",
+            "severity": "high",
+            "title": "Multi-Device-Synchronisation unvollständig",
+            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
+          },
+          {
             "id": "CI-014",
             "severity": "medium",
             "title": "Unvollständige User Journey: Onboarding und Kontakte",
             "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "UserPasskeysResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of passkeys"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total items"
-              }
-            ]
-          },
-          {
-            "name": "DeleteUserPasskeyResponse",
-            "properties": [
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Deletion status"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
           }
         ],
         "user_story_details": [
@@ -774,568 +220,27 @@
             "as_a": "registrierter Benutzer",
             "i_want": "mich mit meiner Telefonnummer registrieren und verifizieren",
             "so_that": "damit ich schnell und sicher Zugriff auf die Plattform erhalte"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user-relations",
-      "epic_id": "EPIC-001",
-      "type": "schema_relations",
-      "title": "Define relations for: user",
-      "description": "Set up Prisma relations for user with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-user-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#user_relations"
-      ],
-      "related_requirements": [
-        "WA-AUTH-001"
-      ],
-      "related_user_stories": [
-        "US-001"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: mich mit meiner Telefonnummer registrieren und verifizieren; Address: Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy.; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Benutzer {\n        +String telefonnummer\n        +boolean verifiziert\n        +registrieren()\n        +verifizieren()\n    }\n\n    class Registrierung {\n        +String code\n        +sendCode()\n        +validateCode()\n    }\n\n    Benutzer \"1\" -- \"1\" Registrierung : registriert",
-            "file": "WA-AUTH-001_class.mmd"
           },
           {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[Benutzer] -->|Registrierung| B(Telefonnummer-Registrierung)\n    B -->|Verifizierung| C[Verifizierungsdienst]\n    B -->|Daten speichern| D[Datenbank]\n    A -->|Benachrichtigung| E[Benachrichtigungsdienst]\n\n    style A fill:#f9f,stroke:#333,stroke-width:2px;\n    style B fill:#bbf,stroke:#333,stroke-width:2px;\n    style C fill:#bbf,stroke:#333,stroke-width:2px;\n    style D fill:#bbf,stroke:#333,stroke-width:2px;\n    style E fill:#bbf,stroke:#333,stroke-width:2px;",
-            "file": "WA-AUTH-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer gibt Telefonnummer ein]\n    B --> C[System sendet Verifizierungscode]\n    C --> D[Benutzer erhält Verifizierungscode]\n    D --> E[Benutzer gibt Verifizierungscode ein]\n    E --> F{Ist der Verifizierungscode korrekt?}\n    F -->|Ja| G[Benutzer erfolgreich registriert]\n    F -->|Nein| H[Fehlermeldung anzeigen]\n    H --> B\n    G --> I[Ende]",
-            "file": "WA-AUTH-001_flowchart.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-001",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung bei Registrierung/Verifikation",
-            "suggestion": "Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy."
-          },
-          {
-            "id": "CI-016",
-            "severity": "high",
-            "title": "Nicht-funktionale Anforderungen fehlen",
-            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
-          },
-          {
-            "id": "CI-014",
-            "severity": "medium",
-            "title": "Unvollständige User Journey: Onboarding und Kontakte",
-            "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "UserPasskeysResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of passkeys"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total items"
-              }
-            ]
-          },
-          {
-            "name": "DeleteUserPasskeyResponse",
-            "properties": [
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Deletion status"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-001",
-            "title": "Telefonnummer-Registrierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Benutzer",
-            "i_want": "mich mit meiner Telefonnummer registrieren und verifizieren",
-            "so_that": "damit ich schnell und sicher Zugriff auf die Plattform erhalte"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user-migration",
-      "epic_id": "EPIC-001",
-      "type": "schema_migration",
-      "title": "Run migration for: user",
-      "description": "Execute prisma migrate dev for user changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-user-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_user/"
-      ],
-      "related_requirements": [
-        "WA-AUTH-001"
-      ],
-      "related_user_stories": [
-        "US-001"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: mich mit meiner Telefonnummer registrieren und verifizieren; Address: Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy.; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{init: {'theme': 'default'}}%%\ngraph TD\n    A[Benutzer] -->|Registrierung| B(Telefonnummer-Registrierung)\n    B -->|Verifizierung| C[Verifizierungsdienst]\n    B -->|Daten speichern| D[Datenbank]\n    A -->|Benachrichtigung| E[Benachrichtigungsdienst]\n\n    style A fill:#f9f,stroke:#333,stroke-width:2px;\n    style B fill:#bbf,stroke:#333,stroke-width:2px;\n    style C fill:#bbf,stroke:#333,stroke-width:2px;\n    style D fill:#bbf,stroke:#333,stroke-width:2px;\n    style E fill:#bbf,stroke:#333,stroke-width:2px;",
-            "file": "WA-AUTH-001_c4.mmd"
-          },
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Benutzer {\n        +String telefonnummer\n        +boolean verifiziert\n        +registrieren()\n        +verifizieren()\n    }\n\n    class Registrierung {\n        +String code\n        +sendCode()\n        +validateCode()\n    }\n\n    Benutzer \"1\" -- \"1\" Registrierung : registriert",
-            "file": "WA-AUTH-001_class.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer gibt Telefonnummer ein]\n    B --> C[System sendet Verifizierungscode]\n    C --> D[Benutzer erhält Verifizierungscode]\n    D --> E[Benutzer gibt Verifizierungscode ein]\n    E --> F{Ist der Verifizierungscode korrekt?}\n    F -->|Ja| G[Benutzer erfolgreich registriert]\n    F -->|Nein| H[Fehlermeldung anzeigen]\n    H --> B\n    G --> I[Ende]",
-            "file": "WA-AUTH-001_flowchart.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-001",
-            "severity": "high",
-            "title": "Fehlende Fehlerbehandlung bei Registrierung/Verifikation",
-            "suggestion": "Ergänzen Sie Fehlerszenarien (OTP abgelaufen, falscher Code, SMS nicht zugestellt) inkl. Retry/Lockout-Policy."
-          },
-          {
-            "id": "CI-016",
-            "severity": "high",
-            "title": "Nicht-funktionale Anforderungen fehlen",
-            "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
-          },
-          {
-            "id": "CI-014",
-            "severity": "medium",
-            "title": "Unvollständige User Journey: Onboarding und Kontakte",
-            "suggestion": "Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen."
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "UserPasskeysResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of passkeys"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total items"
-              }
-            ]
-          },
-          {
-            "name": "DeleteUserPasskeyResponse",
-            "properties": [
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Deletion status"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "displayName",
-                "type": "string",
-                "description": "User's display name"
-              },
-              {
-                "name": "phoneNumber",
-                "type": "string",
-                "description": "User's phone number in E.164 format"
-              },
-              {
-                "name": "avatarUrl",
-                "type": "string",
-                "description": "URL to the user's profile picture"
-              },
-              {
-                "name": "statusMessage",
-                "type": "string",
-                "description": "User's status message"
-              }
-            ]
-          },
-          {
-            "name": "UserProfileInfoTextResponse",
-            "properties": [
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "Unique identifier of the user"
-              },
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text displayed in the profile"
-              },
-              {
-                "name": "updatedAt",
-                "type": "string",
-                "description": "Last update timestamp of the info text"
-              }
-            ]
-          },
-          {
-            "name": "UpdateUserProfileInfoTextRequest",
-            "properties": [
-              {
-                "name": "infoText",
-                "type": "string",
-                "description": "Short info/status text to display in the profile"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-001",
-            "title": "Telefonnummer-Registrierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Benutzer",
-            "i_want": "mich mit meiner Telefonnummer registrieren und verifizieren",
-            "so_that": "damit ich schnell und sicher Zugriff auf die Plattform erhalte"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user_device-model",
-      "epic_id": "EPIC-001",
-      "type": "schema_model",
-      "title": "Create Prisma model: user_device",
-      "description": "Define user_device model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SETUP-deps"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#user_device"
-      ],
-      "related_requirements": [
-        "WA-AUTH-004"
-      ],
-      "related_user_stories": [
-        "US-004"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Dienst gleichzeitig auf mehreren Geräten nutzen; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Multi-Device Support System Architecture\n\n    Person(user, \"User\", \"A user who accesses the system from multiple devices.\")\n    \n    System(multiDeviceSystem, \"Multi-Device Support System\", \"Allows simultaneous usage on multiple devices.\")\n\n    System_Ext(device1, \"Device 1\", \"A device used by the user.\")\n    System_Ext(device2, \"Device 2\", \"Another device used by the user.\")\n    System_Ext(device3, \"Device 3\", \"A third device used by the user.\")\n\n    Rel(user, multiDeviceSystem, \"Uses\")\n    Rel(multiDeviceSystem, device1, \"Interacts w",
-            "file": "WA-AUTH-004_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Multi-Device Support}\n    B -->|Ja| C[Ermögliche gleichzeitige Nutzung]\n    B -->|Nein| D[System anpassen]\n    C --> E[Synchronisierung der Daten]\n    E --> F[Benutzererfahrung optimieren]\n    F --> G[Ende]\n    D --> G",
-            "file": "WA-AUTH-004_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant Device1 as Gerät 1\n    participant Device2 as Gerät 2\n    participant System as System\n\n    User->>Device1: Anmeldung\n    Device1->>System: Authentifizierung\n    System-->>Device1: Bestätigung\n\n    User->>Device2: Anmeldung\n    Device2->>System: Authentifizierung\n    System-->>Device2: Bestätigung\n\n    User->>Device1: Aktion ausführen\n    Device1->>System: Anfrage\n    System-->>Device1: Antwort\n\n    User->>Device2: Aktion ausführen\n    Device2->>System: Anfrage\n    System-->>Device2: Antwort",
-            "file": "WA-AUTH-004_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-004",
-            "severity": "high",
-            "title": "Multi-Device-Synchronisation unvollständig",
-            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-004",
-            "title": "Multi-Device Support",
+            "id": "US-002",
+            "title": "Zwei-Faktor-Authentifizierung",
             "priority": "must",
             "description": "",
             "as_a": "registrierter Nutzer",
-            "i_want": "den Dienst gleichzeitig auf mehreren Geräten nutzen",
-            "so_that": "um Nachrichten nahtlos und plattformübergreifend zu senden und zu empfangen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user_device-relations",
-      "epic_id": "EPIC-001",
-      "type": "schema_relations",
-      "title": "Define relations for: user_device",
-      "description": "Set up Prisma relations for user_device with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-user_device-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#user_device_relations"
-      ],
-      "related_requirements": [
-        "WA-AUTH-004"
-      ],
-      "related_user_stories": [
-        "US-004"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Dienst gleichzeitig auf mehreren Geräten nutzen; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Multi-Device Support System Architecture\n\n    Person(user, \"User\", \"A user who accesses the system from multiple devices.\")\n    \n    System(multiDeviceSystem, \"Multi-Device Support System\", \"Allows simultaneous usage on multiple devices.\")\n\n    System_Ext(device1, \"Device 1\", \"A device used by the user.\")\n    System_Ext(device2, \"Device 2\", \"Another device used by the user.\")\n    System_Ext(device3, \"Device 3\", \"A third device used by the user.\")\n\n    Rel(user, multiDeviceSystem, \"Uses\")\n    Rel(multiDeviceSystem, device1, \"Interacts w",
-            "file": "WA-AUTH-004_c4.mmd"
+            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
+            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
           },
           {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Multi-Device Support}\n    B -->|Ja| C[Ermögliche gleichzeitige Nutzung]\n    B -->|Nein| D[System anpassen]\n    C --> E[Synchronisierung der Daten]\n    E --> F[Benutzererfahrung optimieren]\n    F --> G[Ende]\n    D --> G",
-            "file": "WA-AUTH-004_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant Device1 as Gerät 1\n    participant Device2 as Gerät 2\n    participant System as System\n\n    User->>Device1: Anmeldung\n    Device1->>System: Authentifizierung\n    System-->>Device1: Bestätigung\n\n    User->>Device2: Anmeldung\n    Device2->>System: Authentifizierung\n    System-->>Device2: Bestätigung\n\n    User->>Device1: Aktion ausführen\n    Device1->>System: Anfrage\n    System-->>Device1: Antwort\n\n    User->>Device2: Aktion ausführen\n    Device2->>System: Anfrage\n    System-->>Device2: Antwort",
-            "file": "WA-AUTH-004_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-004",
-            "severity": "high",
-            "title": "Multi-Device-Synchronisation unvollständig",
-            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-004",
-            "title": "Multi-Device Support",
-            "priority": "must",
+            "id": "US-003",
+            "title": "Biometrische Entsperrung",
+            "priority": "should",
             "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Dienst gleichzeitig auf mehreren Geräten nutzen",
-            "so_that": "um Nachrichten nahtlos und plattformübergreifend zu senden und zu empfangen"
+            "as_a": "Endnutzer",
+            "i_want": "die App mit Fingerabdruck oder Face ID entsperren",
+            "so_that": "sich schnell und sicher anmelden zu koennen, ohne Passwoerter eingeben zu muessen"
           }
         ]
       }
-    },
-    {
-      "id": "EPIC-001-SCHEMA-user_device-migration",
-      "epic_id": "EPIC-001",
-      "type": "schema_migration",
-      "title": "Run migration for: user_device",
-      "description": "Execute prisma migrate dev for user_device changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-user_device-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_user_device/"
-      ],
-      "related_requirements": [
-        "WA-AUTH-004"
-      ],
-      "related_user_stories": [
-        "US-004"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: den Dienst gleichzeitig auf mehreren Geräten nutzen; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Multi-Device Support System Architecture\n\n    Person(user, \"User\", \"A user who accesses the system from multiple devices.\")\n    \n    System(multiDeviceSystem, \"Multi-Device Support System\", \"Allows simultaneous usage on multiple devices.\")\n\n    System_Ext(device1, \"Device 1\", \"A device used by the user.\")\n    System_Ext(device2, \"Device 2\", \"Another device used by the user.\")\n    System_Ext(device3, \"Device 3\", \"A third device used by the user.\")\n\n    Rel(user, multiDeviceSystem, \"Uses\")\n    Rel(multiDeviceSystem, device1, \"Interacts w",
-            "file": "WA-AUTH-004_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Multi-Device Support}\n    B -->|Ja| C[Ermögliche gleichzeitige Nutzung]\n    B -->|Nein| D[System anpassen]\n    C --> E[Synchronisierung der Daten]\n    E --> F[Benutzererfahrung optimieren]\n    F --> G[Ende]\n    D --> G",
-            "file": "WA-AUTH-004_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant Device1 as Gerät 1\n    participant Device2 as Gerät 2\n    participant System as System\n\n    User->>Device1: Anmeldung\n    Device1->>System: Authentifizierung\n    System-->>Device1: Bestätigung\n\n    User->>Device2: Anmeldung\n    Device2->>System: Authentifizierung\n    System-->>Device2: Bestätigung\n\n    User->>Device1: Aktion ausführen\n    Device1->>System: Anfrage\n    System-->>Device1: Antwort\n\n    User->>Device2: Aktion ausführen\n    Device2->>System: Anfrage\n    System-->>Device2: Antwort",
-            "file": "WA-AUTH-004_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-004",
-            "severity": "high",
-            "title": "Multi-Device-Synchronisation unvollständig",
-            "suggestion": "Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing."
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-004",
-            "title": "Multi-Device Support",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Dienst gleichzeitig auf mehreren Geräten nutzen",
-            "so_that": "um Nachrichten nahtlos und plattformübergreifend zu senden und zu empfangen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-VERIFY-schema",
-      "epic_id": "EPIC-001",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-SCHEMA-user_device-model",
-        "EPIC-001-SCHEMA-user_device-relations",
-        "EPIC-001-SCHEMA-user_device-migration"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "prisma validate exits with code 0"
-    },
-    {
-      "id": "EPIC-001-CHECKPOINT-schema",
-      "epic_id": "EPIC-001",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "User approved checkpoint"
     },
     {
       "id": "EPIC-001-API-phone-registrations-feature",
@@ -1345,7 +250,7 @@
       "description": "Generate the COMPLETE NestJS module for 'phone-registrations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/phone-registrations — Start phone registration\n  POST /api/v1/phone-registrations/{registrationId}/verify — Verify phone registration\n  POST /api/v1/phone-registrations/{registrationId}/resend-otp — Resend OTP",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -1421,7 +326,7 @@
       "description": "Generate the COMPLETE NestJS module for 'auth' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/auth/2fa/verify — Verify 2FA PIN during authentication\n  POST /api/v1/auth/passkeys/registration/options — Get passkey registration options\n  POST /api/v1/auth/passkeys/registration/verify — Verify passkey registration\n  POST /api/v1/auth/passkeys/authentication/options — Get passkey authentication options\n  POST /api/v1/auth/passkeys/authentication/verify — Verify passkey authentication\n  POST /api/v1/auth/pin/verify — Verify PIN during two-step verification",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 18,
       "output_files": [
@@ -1431,9 +336,9 @@
         "src/modules/auth/dto/"
       ],
       "related_requirements": [
-        "WA-AUTH-002",
         "WA-SEC-006",
-        "WA-AUTH-005"
+        "WA-AUTH-005",
+        "WA-AUTH-002"
       ],
       "related_user_stories": [
         "US-002",
@@ -1441,14 +346,9 @@
         "US-062"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; User can: sich per Passkey ohne Passwort anmelden; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierungsdienst\n\n    User->>System: Anmeldung\n    System->>User: Anfrage nach zusätzlicher PIN\n    User->>System: Eingabe der PIN\n    System->>Authentifizierungsdienst: Überprüfung der PIN\n    Auth->>System: Bestätigung der PIN\n    System->>User: Zugang gewährt",
@@ -1458,6 +358,11 @@
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant AuthServer as Authentifizierungsserver\n\n    User->>System: Anfrage zur passwortlosen Anmeldung\n    System->>User: Fordert Passkey an\n    User->>System: Sendet Passkey\n    System->>AuthServer: Überprüft Passkey\n    AuthServer-->>System: Bestätigt Passkey\n    System-->>User: Anmeldung erfolgreich",
             "file": "WA-AUTH-005_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
+            "file": "WA-AUTH-002_sequence.mmd"
           }
         ],
         "known_gaps": [
@@ -1475,15 +380,6 @@
           }
         ],
         "user_story_details": [
-          {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
           {
             "id": "US-062",
             "title": "Zwei-Schritte-Verifizierung",
@@ -1501,6 +397,15 @@
             "as_a": "Registrierter Nutzer",
             "i_want": "sich per Passkey ohne Passwort anmelden",
             "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
+          },
+          {
+            "id": "US-002",
+            "title": "Zwei-Faktor-Authentifizierung",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
+            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
           }
         ]
       }
@@ -1513,7 +418,7 @@
       "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 11 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/2fa — Enable 2FA with 6-digit PIN\n  DELETE /api/v1/users/{userId}/2fa — Disable 2FA\n  GET /api/v1/users/{userId}/2fa — Get 2FA status\n  GET /api/v1/users/{userId}/passkeys — List user's passkeys\n  DELETE /api/v1/users/{userId}/passkeys/{credentialId} — Delete a passkey\n  POST /api/v1/users/{userId}/pin — Enable additional PIN security\n  PUT /api/v1/users/{userId}/pin — Update additional PIN\n  DELETE /api/v1/users/{userId}/pin — Disable additional PIN security\n  GET /api/v1/users/{userId}/pin — Get PIN security status\n  GET /api/v1/users/{userId}/call-privacy-settings — Get call privacy settings\n  PUT /api/v1/users/{userId}/call-privacy-settings — Update call privacy settings",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 33,
       "output_files": [
@@ -1523,10 +428,10 @@
         "src/modules/users/dto/"
       ],
       "related_requirements": [
-        "WA-AUTH-002",
-        "WA-SEC-008",
         "WA-SEC-006",
-        "WA-AUTH-005"
+        "WA-AUTH-005",
+        "WA-AUTH-002",
+        "WA-SEC-008"
       ],
       "related_user_stories": [
         "US-002",
@@ -1535,23 +440,23 @@
         "US-064"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: IP-Adressen bei Anrufen automatisch verschleiern lassen; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; User can: sich per Passkey ohne Passwort anmelden; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Service as Dienst\n\n    User->>System: Anruf tätigen\n    System->>Service: IP-Adresse anfordern\n    Service-->>System: IP-Adresse zurückgeben\n    System->>System: IP-Adresse verschleiern\n    System-->>User: Anruf mit verschleierter IP-Adresse",
-            "file": "WA-SEC-008_sequence.mmd"
-          },
-          {
-            "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierungsdienst\n\n    User->>System: Anmeldung\n    System->>User: Anfrage nach zusätzlicher PIN\n    User->>System: Eingabe der PIN\n    System->>Authentifizierungsdienst: Überprüfung der PIN\n    Auth->>System: Bestätigung der PIN\n    System->>User: Zugang gewährt",
             "file": "WA-SEC-006_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant AuthServer as Authentifizierungsserver\n\n    User->>System: Anfrage zur passwortlosen Anmeldung\n    System->>User: Fordert Passkey an\n    User->>System: Sendet Passkey\n    System->>AuthServer: Überprüft Passkey\n    AuthServer-->>System: Bestätigt Passkey\n    System-->>User: Anmeldung erfolgreich",
+            "file": "WA-AUTH-005_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
+            "file": "WA-AUTH-002_sequence.mmd"
           }
         ],
         "known_gaps": [
@@ -1570,24 +475,6 @@
         ],
         "user_story_details": [
           {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
-          {
-            "id": "US-064",
-            "title": "IP-Adresse schuetzen",
-            "priority": "should",
-            "description": "",
-            "as_a": "Support-Mitarbeiter",
-            "i_want": "IP-Adressen bei Anrufen automatisch verschleiern lassen",
-            "so_that": "Datenschutz und Compliance einzuhalten und Missbrauch zu verhindern"
-          },
-          {
             "id": "US-062",
             "title": "Zwei-Schritte-Verifizierung",
             "priority": "must",
@@ -1595,6 +482,24 @@
             "as_a": "registrierter Nutzer",
             "i_want": "eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren",
             "so_that": "um den Zugriff besser zu schuetzen und Datenschutz sowie Sicherheit zu erhoehen"
+          },
+          {
+            "id": "US-005",
+            "title": "Passkey-Unterstuetzung",
+            "priority": "should",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "sich per Passkey ohne Passwort anmelden",
+            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
+          },
+          {
+            "id": "US-002",
+            "title": "Zwei-Faktor-Authentifizierung",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
+            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
           }
         ]
       }
@@ -1607,7 +512,7 @@
       "description": "Generate the COMPLETE NestJS module for 'biometric' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/biometric/registration-options — Create biometric registration challenge\n  POST /api/v1/biometric/credentials — Enroll biometric credential\n  GET /api/v1/biometric/credentials — List biometric credentials\n  DELETE /api/v1/biometric/credentials/{credentialId} — Revoke biometric credential\n  POST /api/v1/biometric/authentication-options — Create biometric authentication challenge\n  POST /api/v1/biometric/authenticate — Authenticate with biometrics",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 18,
       "output_files": [
@@ -1671,7 +576,7 @@
       "description": "Generate the COMPLETE NestJS module for 'devices' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/devices — Register a device\n  GET /api/v1/devices — List registered devices\n  GET /api/v1/devices/{deviceId} — Get device details\n  PUT /api/v1/devices/{deviceId} — Update device metadata\n  DELETE /api/v1/devices/{deviceId} — Revoke a device\n  POST /api/v1/devices/{deviceId}/prekeys — Upload Signal pre-keys for device",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 18,
       "output_files": [
@@ -1735,7 +640,7 @@
       "description": "Generate the COMPLETE NestJS module for 'crypto' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/crypto/keys — Register or update client encryption keys\n  GET /api/v1/crypto/prekeys/{recipientId} — Fetch recipient prekeys",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -1786,7 +691,7 @@
       "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages — Send encrypted message\n  GET /api/v1/messages — Fetch encrypted message queue\n  POST /api/v1/messages/{messageId}/ack — Acknowledge message delivery",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -1837,7 +742,7 @@
       "description": "Generate the COMPLETE NestJS module for 'security-code-verifications' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/security-code-verifications — Initiate manual security code verification\n  GET /api/v1/security-code-verifications/{verificationId} — Get verification session details\n  POST /api/v1/security-code-verifications/{verificationId}/confirm — Confirm verification result\n  GET /api/v1/security-code-verifications — List verification sessions",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "output_files": [
@@ -1893,7 +798,7 @@
       "description": "Generate the COMPLETE NestJS module for 'app-lock' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/app-lock — Get app lock status\n  PUT /api/v1/app-lock — Configure app lock\n  POST /api/v1/app-lock/verify — Verify app lock authentication",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -1949,7 +854,7 @@
       "description": "Generate the COMPLETE NestJS module for 'spam-checks' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/spam-checks — Create a spam detection job\n  GET /api/v1/spam-checks/{spamCheckId} — Get spam detection result",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2005,7 +910,7 @@
       "description": "Generate the COMPLETE NestJS module for 'call-sessions' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-sessions — Create call session with IP masking",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
+        "EPIC-001-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2054,144 +959,22 @@
       }
     },
     {
-      "id": "EPIC-001-VERIFY-build-api",
-      "epic_id": "EPIC-001",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-API-messages-feature",
-        "EPIC-001-API-security-code-verifications-feature",
-        "EPIC-001-API-app-lock-feature",
-        "EPIC-001-API-spam-checks-feature",
-        "EPIC-001-API-call-sessions-feature"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Build completes without errors"
-    },
-    {
-      "id": "EPIC-001-VERIFY-typecheck-api",
-      "epic_id": "EPIC-001",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-001-VERIFY-integration",
-      "epic_id": "EPIC-001",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "All integration tests pass"
-    },
-    {
-      "id": "EPIC-001-DOCKER-build-api",
-      "epic_id": "EPIC-001",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-typecheck-api",
-        "EPIC-001-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Docker image built successfully"
-    },
-    {
-      "id": "EPIC-001-DOCKER-start-api",
-      "epic_id": "EPIC-001",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "API container running"
-    },
-    {
-      "id": "EPIC-001-DOCKER-health-api",
-      "epic_id": "EPIC-001",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Health endpoint returns 200 OK"
-    },
-    {
-      "id": "EPIC-001-CHECKPOINT-api",
-      "epic_id": "EPIC-001",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-build-api",
-        "EPIC-001-DOCKER-start-api",
-        "EPIC-001-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
-      "id": "EPIC-001-FE-LoginPage-page",
+      "id": "EPIC-001-FE-LoginPage-feature",
       "epic_id": "EPIC-001",
       "type": "fe_page",
-      "title": "Page: LoginPage",
-      "description": "Create LoginPage page component implementing 3 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: LoginPage (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'LoginPage':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useLoginPage)\n- API client functions\n- Form with validation\n\nUser Stories: US-001, US-002, US-003",
+      "status": "pending",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-api"
+        "EPIC-001-API-call-sessions-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 15,
       "output_files": [
-        "src/pages/LoginPage/LoginPage.tsx"
+        "src/pages/LoginPage/LoginPage.tsx",
+        "src/components/LoginPage/",
+        "src/hooks/useLoginPage.ts",
+        "src/api/loginpageAPI.ts",
+        "src/components/LoginPage/LoginPageForm.tsx"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -2266,346 +1049,22 @@
       }
     },
     {
-      "id": "EPIC-001-FE-LoginPage-components",
-      "epic_id": "EPIC-001",
-      "type": "fe_component",
-      "title": "Components: LoginPage",
-      "description": "Create reusable components for LoginPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-LoginPage-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/LoginPage/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-LoginPage-hook",
-      "epic_id": "EPIC-001",
-      "type": "fe_hook",
-      "title": "Hook: useLoginPage",
-      "description": "Create custom hook for LoginPage state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-LoginPage-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useLoginPage.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-LoginPage-api",
-      "epic_id": "EPIC-001",
-      "type": "fe_api_client",
-      "title": "API Client: LoginPage",
-      "description": "Create API client functions for LoginPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-LoginPage-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/loginpageAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-LoginPage-form",
-      "epic_id": "EPIC-001",
-      "type": "fe_form",
-      "title": "Form: LoginPageForm",
-      "description": "Create form component with validation for LoginPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-LoginPage-components"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/LoginPage/LoginPageForm.tsx"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-RegisterPage-page",
+      "id": "EPIC-001-FE-RegisterPage-feature",
       "epic_id": "EPIC-001",
       "type": "fe_page",
-      "title": "Page: RegisterPage",
-      "description": "Create RegisterPage page component implementing 3 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: RegisterPage (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'RegisterPage':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useRegisterPage)\n- API client functions\n- Form with validation\n\nUser Stories: US-004, US-005, US-057",
+      "status": "running",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-api"
+        "EPIC-001-API-call-sessions-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 15,
       "output_files": [
-        "src/pages/RegisterPage/RegisterPage.tsx"
+        "src/pages/RegisterPage/RegisterPage.tsx",
+        "src/components/RegisterPage/",
+        "src/hooks/useRegisterPage.ts",
+        "src/api/registerpageAPI.ts",
+        "src/components/RegisterPage/RegisterPageForm.tsx"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -2680,346 +1139,21 @@
       }
     },
     {
-      "id": "EPIC-001-FE-RegisterPage-components",
-      "epic_id": "EPIC-001",
-      "type": "fe_component",
-      "title": "Components: RegisterPage",
-      "description": "Create reusable components for RegisterPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-RegisterPage-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/RegisterPage/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-RegisterPage-hook",
-      "epic_id": "EPIC-001",
-      "type": "fe_hook",
-      "title": "Hook: useRegisterPage",
-      "description": "Create custom hook for RegisterPage state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-RegisterPage-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useRegisterPage.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-RegisterPage-api",
-      "epic_id": "EPIC-001",
-      "type": "fe_api_client",
-      "title": "API Client: RegisterPage",
-      "description": "Create API client functions for RegisterPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-RegisterPage-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/registerpageAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-RegisterPage-form",
-      "epic_id": "EPIC-001",
-      "type": "fe_form",
-      "title": "Form: RegisterPageForm",
-      "description": "Create form component with validation for RegisterPage",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-RegisterPage-components"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/RegisterPage/RegisterPageForm.tsx"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-TwoFactorAuth-page",
+      "id": "EPIC-001-FE-TwoFactorAuth-feature",
       "epic_id": "EPIC-001",
       "type": "fe_page",
-      "title": "Page: TwoFactorAuth",
-      "description": "Create TwoFactorAuth page component implementing 3 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: TwoFactorAuth (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'TwoFactorAuth':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useTwoFactorAuth)\n- API client functions\n\nUser Stories: US-058, US-059, US-062",
+      "status": "running",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-api"
+        "EPIC-001-API-call-sessions-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 15,
       "output_files": [
-        "src/pages/TwoFactorAuth/TwoFactorAuth.tsx"
+        "src/pages/TwoFactorAuth/TwoFactorAuth.tsx",
+        "src/components/TwoFactorAuth/",
+        "src/hooks/useTwoFactorAuth.ts",
+        "src/api/twofactorauthAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -3094,343 +1228,6 @@
       }
     },
     {
-      "id": "EPIC-001-FE-TwoFactorAuth-components",
-      "epic_id": "EPIC-001",
-      "type": "fe_component",
-      "title": "Components: TwoFactorAuth",
-      "description": "Create reusable components for TwoFactorAuth",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-TwoFactorAuth-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/TwoFactorAuth/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-TwoFactorAuth-hook",
-      "epic_id": "EPIC-001",
-      "type": "fe_hook",
-      "title": "Hook: useTwoFactorAuth",
-      "description": "Create custom hook for TwoFactorAuth state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-TwoFactorAuth-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useTwoFactorAuth.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-FE-TwoFactorAuth-api",
-      "epic_id": "EPIC-001",
-      "type": "fe_api_client",
-      "title": "API Client: TwoFactorAuth",
-      "description": "Create API client functions for TwoFactorAuth",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-TwoFactorAuth-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/twofactorauthAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-001-VERIFY-build-fe",
-      "epic_id": "EPIC-001",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-FE-RegisterPage-form",
-        "EPIC-001-FE-TwoFactorAuth-page",
-        "EPIC-001-FE-TwoFactorAuth-components",
-        "EPIC-001-FE-TwoFactorAuth-hook",
-        "EPIC-001-FE-TwoFactorAuth-api"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "Frontend build completes without errors"
-    },
-    {
-      "id": "EPIC-001-VERIFY-lint",
-      "epic_id": "EPIC-001",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No linting errors"
-    },
-    {
-      "id": "EPIC-001-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-001",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-001-VERIFY-unit",
-      "epic_id": "EPIC-001",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "All unit tests pass"
-    },
-    {
-      "id": "EPIC-001-CHECKPOINT-frontend",
-      "epic_id": "EPIC-001",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-lint",
-        "EPIC-001-VERIFY-typecheck-fe",
-        "EPIC-001-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
       "id": "EPIC-001-TEST-unit",
       "epic_id": "EPIC-001",
       "type": "test",
@@ -3438,7 +1235,7 @@
       "description": "Create Vitest unit tests for all EPIC-001 services and utilities. NO MOCKS - use real implementations.",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-frontend"
+        "EPIC-001-FE-TwoFactorAuth-feature"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -3500,110 +1297,23 @@
       "success_criteria": null
     },
     {
-      "id": "EPIC-001-VERIFY-e2e",
+      "id": "EPIC-001-VERIFY-all",
       "epic_id": "EPIC-001",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "type": "verify_build",
+      "title": "Verify EPIC-001: build + typecheck",
+      "description": "Run all verification steps for EPIC-001:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-TEST-unit",
         "EPIC-001-TEST-integration",
         "EPIC-001-TEST-e2e"
       ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "test",
-      "success_criteria": "All E2E tests pass"
-    },
-    {
-      "id": "EPIC-001-DOCKER-build-prod",
-      "epic_id": "EPIC-001",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-VERIFY-e2e"
-      ],
       "estimated_minutes": 5,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Production image built"
-    },
-    {
-      "id": "EPIC-001-DOCKER-start-prod",
-      "epic_id": "EPIC-001",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers running"
-    },
-    {
-      "id": "EPIC-001-DOCKER-health-prod",
-      "epic_id": "EPIC-001",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers healthy"
-    },
-    {
-      "id": "EPIC-001-DOCKER-logs-prod",
-      "epic_id": "EPIC-001",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Logs collected, no critical errors"
-    },
-    {
-      "id": "EPIC-001-CHECKPOINT-deploy",
-      "epic_id": "EPIC-001",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-DOCKER-start-prod",
-        "EPIC-001-DOCKER-health-prod",
-        "EPIC-001-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "User approved checkpoint"
+      "phase": "verification",
+      "success_criteria": "Zero TypeScript errors, build succeeds"
     },
     {
       "id": "EPIC-001-INTEGRATION",
@@ -3613,7 +1323,7 @@
       "description": "Run all EPIC-001 tests, validate build, and verify all 11 user stories are implemented.",
       "status": "completed",
       "dependencies": [
-        "EPIC-001-CHECKPOINT-deploy"
+        "EPIC-001-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "output_files": [],

@@ -1,1650 +1,51 @@
 {
   "epic_id": "EPIC-004",
   "epic_name": "Medien- und Statusinhalte",
-  "enrichment_timestamp": "2026-03-27T17:02:36.346534",
+  "enrichment_timestamp": "2026-03-28T15:55:08.656387",
   "enrichment_stats": {
-    "total_tasks": 59,
-    "tasks_with_requirements": 15,
-    "tasks_with_user_stories": 27,
-    "tasks_with_diagrams": 27,
+    "total_tasks": 20,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 13,
+    "tasks_with_diagrams": 13,
     "tasks_with_warnings": 0,
-    "tasks_with_dtos": 6,
-    "tasks_with_success_criteria": 31,
+    "tasks_with_dtos": 0,
+    "tasks_with_success_criteria": 15,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 2,
-    "tasks_with_accessibility": 8,
+    "tasks_with_accessibility": 2,
     "tasks_with_routes": 0,
-    "tasks_with_design_tokens": 8
+    "tasks_with_design_tokens": 2
   },
   "tasks": [
     {
-      "id": "EPIC-004-SCHEMA-contact-model",
+      "id": "EPIC-004-SCHEMA-all",
       "epic_id": "EPIC-004",
       "type": "schema_model",
-      "title": "Create Prisma model: contact",
-      "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "title": "Prisma schema: contact, media_attachment, media_item, status_reply, status_update",
+      "description": "Create ALL Prisma models for EPIC-004 in prisma/schema.prisma.\n\nModels to create:\n- contact: Define model with all attributes, types, and relations to other entities\n- media_attachment: Define model with all attributes, types, and relations to other entities\n- media_item: Define model with all attributes, types, and relations to other entities\n- status_reply: Define model with all attributes, types, and relations to other entities\n- status_update: Define model with all attributes, types, and relations to other entities\n\nInclude:\n- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n- All relations between models (1:1, 1:N, N:M)\n- @@map() table name annotations\n- Run: npx prisma generate after schema changes",
+      "status": "pending",
       "dependencies": [],
-      "estimated_minutes": 5,
+      "estimated_minutes": 10,
       "output_files": [
-        "prisma/schema.prisma#contact"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> CallInitiated : Anruf starten\n    CallInitiated --> InCall : Anruf verbunden\n    InCall --> CallEnded : Anruf beenden\n    CallEnded --> Idle : Zurück zum Idle\n    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren\n    CallHistoryUpdated --> Idle : Zurück zum Idle",
-            "file": "WA-CALL-007_state.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> StatusAnzeigen\n    StatusAnzeigen --> StatusAnzeigen : Status wird angezeigt\n    StatusAnzeigen --> [*] : Beenden",
-            "file": "WA-STS-002_state.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Active\n    Active --> Muted : Stumm schalten\n    Muted --> Active : Laut schalten\n    Muted --> [*]\n    Active --> [*]",
-            "file": "WA-STS-005_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-041",
-            "title": "Anrufverlauf",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "den Anrufverlauf einsehen und nach Datum filtern",
-            "so_that": "um vergangene Anrufe schnell nachzuvollziehen und Kommunikationsverlaesse sicher zu dokumentieren"
-          },
-          {
-            "id": "US-043",
-            "title": "Status anzeigen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Kontakt-Status in der Kontaktliste und im Chat anzeigen",
-            "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
-          },
-          {
-            "id": "US-046",
-            "title": "Status stumm schalten",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Status eines Kontakts stummschalten",
-            "so_that": "benachrichtigungsfreie Nutzung bei gleichzeitiger Wahrung von Datenschutz und einer ruhigen Bedienung"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-contact-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: contact",
-      "description": "Set up Prisma relations for contact with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-contact-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#contact_relations"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Anruf erhalten?}\n    B -- Ja --> C[Anrufdaten speichern]\n    B -- Nein --> D[Warten auf Anruf]\n    D --> B\n    C --> E{Anruf beenden?}\n    E -- Ja --> F[Anrufverlauf aktualisieren]\n    E -- Nein --> G[Anruf fortsetzen]\n    G --> E\n    F --> H[Ende]",
-            "file": "WA-CALL-007_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anruf initiieren\n    System-->>User: Anruf gestartet\n    User->>System: Anruf beenden\n    System-->>User: Anruf beendet\n    System->>System: Anrufverlauf speichern\n    System-->>User: Anrufverlauf aktualisiert",
-            "file": "WA-CALL-007_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> CallInitiated : Anruf starten\n    CallInitiated --> InCall : Anruf verbunden\n    InCall --> CallEnded : Anruf beenden\n    CallEnded --> Idle : Zurück zum Idle\n    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren\n    CallHistoryUpdated --> Idle : Zurück zum Idle",
-            "file": "WA-CALL-007_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-041",
-            "title": "Anrufverlauf",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "den Anrufverlauf einsehen und nach Datum filtern",
-            "so_that": "um vergangene Anrufe schnell nachzuvollziehen und Kommunikationsverlaesse sicher zu dokumentieren"
-          },
-          {
-            "id": "US-043",
-            "title": "Status anzeigen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Kontakt-Status in der Kontaktliste und im Chat anzeigen",
-            "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
-          },
-          {
-            "id": "US-046",
-            "title": "Status stumm schalten",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Status eines Kontakts stummschalten",
-            "so_that": "benachrichtigungsfreie Nutzung bei gleichzeitiger Wahrung von Datenschutz und einer ruhigen Bedienung"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-contact-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: contact",
-      "description": "Execute prisma migrate dev for contact changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-contact-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_contact/"
-      ],
-      "related_requirements": [
-        "WA-CALL-007",
-        "WA-STS-002",
-        "WA-STS-005"
-      ],
-      "related_user_stories": [
-        "US-041",
-        "US-043",
-        "US-046"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Anruf erhalten?}\n    B -- Ja --> C[Anrufdaten speichern]\n    B -- Nein --> D[Warten auf Anruf]\n    D --> B\n    C --> E{Anruf beenden?}\n    E -- Ja --> F[Anrufverlauf aktualisieren]\n    E -- Nein --> G[Anruf fortsetzen]\n    G --> E\n    F --> H[Ende]",
-            "file": "WA-CALL-007_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anruf initiieren\n    System-->>User: Anruf gestartet\n    User->>System: Anruf beenden\n    System-->>User: Anruf beendet\n    System->>System: Anrufverlauf speichern\n    System-->>User: Anrufverlauf aktualisiert",
-            "file": "WA-CALL-007_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> CallInitiated : Anruf starten\n    CallInitiated --> InCall : Anruf verbunden\n    InCall --> CallEnded : Anruf beenden\n    CallEnded --> Idle : Zurück zum Idle\n    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren\n    CallHistoryUpdated --> Idle : Zurück zum Idle",
-            "file": "WA-CALL-007_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-041",
-            "title": "Anrufverlauf",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "den Anrufverlauf einsehen und nach Datum filtern",
-            "so_that": "um vergangene Anrufe schnell nachzuvollziehen und Kommunikationsverlaesse sicher zu dokumentieren"
-          },
-          {
-            "id": "US-043",
-            "title": "Status anzeigen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Kontakt-Status in der Kontaktliste und im Chat anzeigen",
-            "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
-          },
-          {
-            "id": "US-046",
-            "title": "Status stumm schalten",
-            "priority": "should",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Status eines Kontakts stummschalten",
-            "so_that": "benachrichtigungsfreie Nutzung bei gleichzeitiger Wahrung von Datenschutz und einer ruhigen Bedienung"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: media_attachment",
-      "description": "Define media_attachment model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#media_attachment"
-      ],
-      "related_requirements": [
-        "WA-MED-005",
-        "WA-MED-006",
-        "WA-MED-007",
-        "WA-MED-008",
-        "WA-MED-009",
-        "WA-MED-010"
-      ],
-      "related_user_stories": [
-        "US-051",
-        "US-052",
-        "US-053",
-        "US-054",
-        "US-055"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: Sticker in einem Chat senden; User can: GIFs suchen und in einer Nachricht versenden; User can: direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\" : \"Sticker System Context\", \"version\" : \"1.0\" } }%%\nC4Context\n    Person(user, \"User\", \"A person who uses the chat application.\")\n    System(stickerSystem, \"Sticker System\", \"Supports stickers in chats.\")\n    System_Ext(chatApp, \"Chat Application\", \"The application where users communicate.\")\n\n    Rel(user, chatApp, \"Uses\")\n    Rel(chatApp, stickerSystem, \"Integrates with\")\n    Rel(stickerSystem, user, \"Provides stickers to\")",
-            "file": "WA-MED-005_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant ChatSystem as Chat System\n    participant StickerService as Sticker Service\n\n    User->>ChatSystem: Request to send sticker\n    ChatSystem->>StickerService: Validate sticker availability\n    StickerService-->>ChatSystem: Sticker available\n    ChatSystem-->>User: Send sticker confirmation\n    User->>ChatSystem: Receive sticker in chat",
-            "file": "WA-MED-005_sequence.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\nC4Context\n    title System Context Diagram for GIFs\n\n    Person(user, \"User\", \"A user who searches and sends GIFs.\")\n    System(gifsSystem, \"GIF System\", \"A system that supports GIF search and sending.\")\n\n    Person(gifProvider, \"GIF Provider\", \"An external service that provides GIFs.\")\n    \n    Rel(user, gifsSystem, \"Uses\")\n    Rel(gifsSystem, gifProvider, \"Fetches GIFs from\")",
-            "file": "WA-MED-006_c4.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-051",
-            "title": "Sticker",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Sticker in einem Chat senden",
-            "so_that": "ich kann mich schneller und ausdrucksstärker verständigen"
-          },
-          {
-            "id": "US-052",
-            "title": "GIFs",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "GIFs suchen und in einer Nachricht versenden",
-            "so_that": "um die Kommunikation schnell, intuitiv und plattformübergreifend mit passenden Animationen zu bereichern"
-          },
-          {
-            "id": "US-053",
-            "title": "Kamera-Integration",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer im Chat",
-            "i_want": "direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-            "so_that": "um schnell visuelle Informationen teilen zu können, ohne die App zu verlassen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: media_attachment",
-      "description": "Set up Prisma relations for media_attachment with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_attachment-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#media_attachment_relations"
-      ],
-      "related_requirements": [
-        "WA-MED-005",
-        "WA-MED-006",
-        "WA-MED-007",
-        "WA-MED-008",
-        "WA-MED-009",
-        "WA-MED-010"
-      ],
-      "related_user_stories": [
-        "US-051",
-        "US-052",
-        "US-053",
-        "US-054",
-        "US-055"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: Sticker in einem Chat senden; User can: GIFs suchen und in einer Nachricht versenden; User can: direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\" : \"Sticker System Context\", \"version\" : \"1.0\" } }%%\nC4Context\n    Person(user, \"User\", \"A person who uses the chat application.\")\n    System(stickerSystem, \"Sticker System\", \"Supports stickers in chats.\")\n    System_Ext(chatApp, \"Chat Application\", \"The application where users communicate.\")\n\n    Rel(user, chatApp, \"Uses\")\n    Rel(chatApp, stickerSystem, \"Integrates with\")\n    Rel(stickerSystem, user, \"Provides stickers to\")",
-            "file": "WA-MED-005_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant ChatSystem as Chat System\n    participant StickerService as Sticker Service\n\n    User->>ChatSystem: Request to send sticker\n    ChatSystem->>StickerService: Validate sticker availability\n    StickerService-->>ChatSystem: Sticker available\n    ChatSystem-->>User: Send sticker confirmation\n    User->>ChatSystem: Receive sticker in chat",
-            "file": "WA-MED-005_sequence.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\nC4Context\n    title System Context Diagram for GIFs\n\n    Person(user, \"User\", \"A user who searches and sends GIFs.\")\n    System(gifsSystem, \"GIF System\", \"A system that supports GIF search and sending.\")\n\n    Person(gifProvider, \"GIF Provider\", \"An external service that provides GIFs.\")\n    \n    Rel(user, gifsSystem, \"Uses\")\n    Rel(gifsSystem, gifProvider, \"Fetches GIFs from\")",
-            "file": "WA-MED-006_c4.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-051",
-            "title": "Sticker",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Sticker in einem Chat senden",
-            "so_that": "ich kann mich schneller und ausdrucksstärker verständigen"
-          },
-          {
-            "id": "US-052",
-            "title": "GIFs",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "GIFs suchen und in einer Nachricht versenden",
-            "so_that": "um die Kommunikation schnell, intuitiv und plattformübergreifend mit passenden Animationen zu bereichern"
-          },
-          {
-            "id": "US-053",
-            "title": "Kamera-Integration",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer im Chat",
-            "i_want": "direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-            "so_that": "um schnell visuelle Informationen teilen zu können, ohne die App zu verlassen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_attachment-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: media_attachment",
-      "description": "Execute prisma migrate dev for media_attachment changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_attachment-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_media_attachment/"
-      ],
-      "related_requirements": [
-        "WA-MED-005",
-        "WA-MED-006",
-        "WA-MED-007",
-        "WA-MED-008",
-        "WA-MED-009",
-        "WA-MED-010"
-      ],
-      "related_user_stories": [
-        "US-051",
-        "US-052",
-        "US-053",
-        "US-054",
-        "US-055"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: Sticker in einem Chat senden; User can: GIFs suchen und in einer Nachricht versenden; User can: direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\" : \"Sticker System Context\", \"version\" : \"1.0\" } }%%\nC4Context\n    Person(user, \"User\", \"A person who uses the chat application.\")\n    System(stickerSystem, \"Sticker System\", \"Supports stickers in chats.\")\n    System_Ext(chatApp, \"Chat Application\", \"The application where users communicate.\")\n\n    Rel(user, chatApp, \"Uses\")\n    Rel(chatApp, stickerSystem, \"Integrates with\")\n    Rel(stickerSystem, user, \"Provides stickers to\")",
-            "file": "WA-MED-005_c4.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant ChatSystem as Chat System\n    participant StickerService as Sticker Service\n\n    User->>ChatSystem: Request to send sticker\n    ChatSystem->>StickerService: Validate sticker availability\n    StickerService-->>ChatSystem: Sticker available\n    ChatSystem-->>User: Send sticker confirmation\n    User->>ChatSystem: Receive sticker in chat",
-            "file": "WA-MED-005_sequence.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{init: {\"theme\": \"default\"}}%%\nC4Context\n    title System Context Diagram for GIFs\n\n    Person(user, \"User\", \"A user who searches and sends GIFs.\")\n    System(gifsSystem, \"GIF System\", \"A system that supports GIF search and sending.\")\n\n    Person(gifProvider, \"GIF Provider\", \"An external service that provides GIFs.\")\n    \n    Rel(user, gifsSystem, \"Uses\")\n    Rel(gifsSystem, gifProvider, \"Fetches GIFs from\")",
-            "file": "WA-MED-006_c4.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-051",
-            "title": "Sticker",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "Sticker in einem Chat senden",
-            "so_that": "ich kann mich schneller und ausdrucksstärker verständigen"
-          },
-          {
-            "id": "US-052",
-            "title": "GIFs",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "GIFs suchen und in einer Nachricht versenden",
-            "so_that": "um die Kommunikation schnell, intuitiv und plattformübergreifend mit passenden Animationen zu bereichern"
-          },
-          {
-            "id": "US-053",
-            "title": "Kamera-Integration",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer im Chat",
-            "i_want": "direkt im Chat die Gerätekamera öffnen und ein Foto aufnehmen",
-            "so_that": "um schnell visuelle Informationen teilen zu können, ohne die App zu verlassen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: media_item",
-      "description": "Define media_item model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#media_item"
-      ],
-      "related_requirements": [
-        "WA-MED-001",
-        "WA-MED-002",
-        "WA-MED-003",
-        "WA-MED-004"
-      ],
-      "related_user_stories": [
-        "US-047",
-        "US-048",
-        "US-049",
-        "US-050"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: ein Bild in einem Chat senden; User can: ein Video in einer Nachricht senden; User can: beliebige Dokumente an einen Empfaenger senden",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Bildbearbeitung {\n        +bearbeiteBild()\n        +speichereBild()\n        +ladeBild()\n    }\n\n    class Bild {\n        +dateiname: String\n        +format: String\n        +groesse: int\n    }\n\n    class Filter {\n        +anwendung()\n        +stärke: int\n    }\n\n    class Benutzer {\n        +name: String\n        +email: String\n        +passwort: String\n    }\n\n    Bildbearbeitung --> Bild : verwendet\n    Bildbearbeitung --> Filter : wendet an\n    Bildbearbeitung --> Benutzer : gehört zu",
-            "file": "WA-MED-004_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Bilder senden System Context\", \"version\": \"1.0\" } }%%\nC4Context\n    Person(customer, \"Kunde\", \"Ein Benutzer, der Bilder senden möchte.\")\n    System(bilderSendenSystem, \"Bilder senden System\", \"Ein System, das das Senden von Bildern unterstützt.\")\n    \n    Rel(customer, bilderSendenSystem, \"Sendet Bilder an\")",
-            "file": "WA-MED-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt Bild aus]\n    B --> C[System überprüft Bildformat]\n    C -->|gültig| D[System sendet Bild]\n    C -->|ungültig| E[Fehlermeldung anzeigen]\n    D --> F[Bestätigung anzeigen]\n    E --> F\n    F --> G[Ende]",
-            "file": "WA-MED-001_flowchart.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-047",
-            "title": "Bilder senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Bild in einem Chat senden",
-            "so_that": "damit ich Informationen visuell schnell und zuverlässig teilen kann"
-          },
-          {
-            "id": "US-048",
-            "title": "Videos senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Video in einer Nachricht senden",
-            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
-          },
-          {
-            "id": "US-049",
-            "title": "Dokumente senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "beliebige Dokumente an einen Empfaenger senden",
-            "so_that": "damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: media_item",
-      "description": "Set up Prisma relations for media_item with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_item-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#media_item_relations"
-      ],
-      "related_requirements": [
-        "WA-MED-001",
-        "WA-MED-002",
-        "WA-MED-003",
-        "WA-MED-004"
-      ],
-      "related_user_stories": [
-        "US-047",
-        "US-048",
-        "US-049",
-        "US-050"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: ein Bild in einem Chat senden; User can: ein Video in einer Nachricht senden; User can: beliebige Dokumente an einen Empfaenger senden",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Bildbearbeitung {\n        +bearbeiteBild()\n        +speichereBild()\n        +ladeBild()\n    }\n\n    class Bild {\n        +dateiname: String\n        +format: String\n        +groesse: int\n    }\n\n    class Filter {\n        +anwendung()\n        +stärke: int\n    }\n\n    class Benutzer {\n        +name: String\n        +email: String\n        +passwort: String\n    }\n\n    Bildbearbeitung --> Bild : verwendet\n    Bildbearbeitung --> Filter : wendet an\n    Bildbearbeitung --> Benutzer : gehört zu",
-            "file": "WA-MED-004_class.mmd"
-          },
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Bilder senden System Context\", \"version\": \"1.0\" } }%%\nC4Context\n    Person(customer, \"Kunde\", \"Ein Benutzer, der Bilder senden möchte.\")\n    System(bilderSendenSystem, \"Bilder senden System\", \"Ein System, das das Senden von Bildern unterstützt.\")\n    \n    Rel(customer, bilderSendenSystem, \"Sendet Bilder an\")",
-            "file": "WA-MED-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt Bild aus]\n    B --> C[System überprüft Bildformat]\n    C -->|gültig| D[System sendet Bild]\n    C -->|ungültig| E[Fehlermeldung anzeigen]\n    D --> F[Bestätigung anzeigen]\n    E --> F\n    F --> G[Ende]",
-            "file": "WA-MED-001_flowchart.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-047",
-            "title": "Bilder senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Bild in einem Chat senden",
-            "so_that": "damit ich Informationen visuell schnell und zuverlässig teilen kann"
-          },
-          {
-            "id": "US-048",
-            "title": "Videos senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Video in einer Nachricht senden",
-            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
-          },
-          {
-            "id": "US-049",
-            "title": "Dokumente senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "beliebige Dokumente an einen Empfaenger senden",
-            "so_that": "damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-media_item-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: media_item",
-      "description": "Execute prisma migrate dev for media_item changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-media_item-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_media_item/"
-      ],
-      "related_requirements": [
-        "WA-MED-001",
-        "WA-MED-002",
-        "WA-MED-003",
-        "WA-MED-004"
-      ],
-      "related_user_stories": [
-        "US-047",
-        "US-048",
-        "US-049",
-        "US-050"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: ein Bild in einem Chat senden; User can: ein Video in einer Nachricht senden; User can: beliebige Dokumente an einen Empfaenger senden",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "c4",
-            "content": "%%{ init : { \"theme\" : \"default\" } }%%\n%%{ c4: { \"title\": \"Bilder senden System Context\", \"version\": \"1.0\" } }%%\nC4Context\n    Person(customer, \"Kunde\", \"Ein Benutzer, der Bilder senden möchte.\")\n    System(bilderSendenSystem, \"Bilder senden System\", \"Ein System, das das Senden von Bildern unterstützt.\")\n    \n    Rel(customer, bilderSendenSystem, \"Sendet Bilder an\")",
-            "file": "WA-MED-001_c4.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B[Benutzer wählt Bild aus]\n    B --> C[System überprüft Bildformat]\n    C -->|gültig| D[System sendet Bild]\n    C -->|ungültig| E[Fehlermeldung anzeigen]\n    D --> F[Bestätigung anzeigen]\n    E --> F\n    F --> G[Ende]",
-            "file": "WA-MED-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Bild auswählen\n    System->>User: Bildvorschau anzeigen\n    User->>System: Bild senden\n    System->>User: Bestätigung des Sendens",
-            "file": "WA-MED-001_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-047",
-            "title": "Bilder senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Bild in einem Chat senden",
-            "so_that": "damit ich Informationen visuell schnell und zuverlässig teilen kann"
-          },
-          {
-            "id": "US-048",
-            "title": "Videos senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Video in einer Nachricht senden",
-            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
-          },
-          {
-            "id": "US-049",
-            "title": "Dokumente senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "beliebige Dokumente an einen Empfaenger senden",
-            "so_that": "damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: status_reply",
-      "description": "Define status_reply model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#status_reply"
-      ],
-      "related_requirements": [
-        "WA-STS-003"
-      ],
-      "related_user_stories": [
-        "US-044"
-      ],
-      "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: auf einen Status mit einer Antwort reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> AwaitingResponse : Request Status\n    AwaitingResponse --> SendingResponse : Process Request\n    SendingResponse --> ResponseSent : Send Status\n    ResponseSent --> Idle : Acknowledge Receipt\n    ResponseSent --> Error : Response Failed\n    Error --> Idle : Retry or Cancel",
-            "file": "WA-STS-003_state.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status-Anfrage erhalten?}\n    B -- Ja --> C[Antwort generieren]\n    B -- Nein --> D[Warten auf Anfrage]\n    C --> E{Antwort erfolgreich?}\n    E -- Ja --> F[Antwort senden]\n    E -- Nein --> G[Fehlerbehandlung]\n    F --> H[Ende]\n    G --> H\n    D --> B",
-            "file": "WA-STS-003_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
-            "file": "WA-STS-003_sequence.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateStatusReplyRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted reply payload (Signal Protocol)"
-              },
-              {
-                "name": "media",
-                "type": "object",
-                "description": "Optional encrypted media metadata"
-              },
-              {
-                "name": "replyToMessageId",
-                "type": "string",
-                "description": "Optional message id being replied to within the status thread"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "ID of the status"
-              },
-              {
-                "name": "senderId",
-                "type": "string",
-                "description": "ID of the sender"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp of creation"
-              },
-              {
-                "name": "deliveryState",
-                "type": "string",
-                "description": "Delivery state for offline queueing"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total number of replies"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of replies"
-              }
-            ]
-          },
-          {
-            "name": "DeleteStatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          },
-          {
-            "name": "PaginatedStatusReplyListResponse",
-            "properties": [
-              {
-                "name": "data",
-                "type": "array"
-              },
-              {
-                "name": "pagination",
-                "type": "string"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-044",
-            "title": "Status-Antwort",
-            "priority": "must",
-            "description": "",
-            "as_a": "Chat-Nutzer",
-            "i_want": "auf einen Status mit einer Antwort reagieren",
-            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: status_reply",
-      "description": "Set up Prisma relations for status_reply with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_reply-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#status_reply_relations"
-      ],
-      "related_requirements": [
-        "WA-STS-003"
-      ],
-      "related_user_stories": [
-        "US-044"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: auf einen Status mit einer Antwort reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status-Anfrage erhalten?}\n    B -- Ja --> C[Antwort generieren]\n    B -- Nein --> D[Warten auf Anfrage]\n    C --> E{Antwort erfolgreich?}\n    E -- Ja --> F[Antwort senden]\n    E -- Nein --> G[Fehlerbehandlung]\n    F --> H[Ende]\n    G --> H\n    D --> B",
-            "file": "WA-STS-003_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
-            "file": "WA-STS-003_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> AwaitingResponse : Request Status\n    AwaitingResponse --> SendingResponse : Process Request\n    SendingResponse --> ResponseSent : Send Status\n    ResponseSent --> Idle : Acknowledge Receipt\n    ResponseSent --> Error : Response Failed\n    Error --> Idle : Retry or Cancel",
-            "file": "WA-STS-003_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateStatusReplyRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted reply payload (Signal Protocol)"
-              },
-              {
-                "name": "media",
-                "type": "object",
-                "description": "Optional encrypted media metadata"
-              },
-              {
-                "name": "replyToMessageId",
-                "type": "string",
-                "description": "Optional message id being replied to within the status thread"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "ID of the status"
-              },
-              {
-                "name": "senderId",
-                "type": "string",
-                "description": "ID of the sender"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp of creation"
-              },
-              {
-                "name": "deliveryState",
-                "type": "string",
-                "description": "Delivery state for offline queueing"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total number of replies"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of replies"
-              }
-            ]
-          },
-          {
-            "name": "DeleteStatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          },
-          {
-            "name": "PaginatedStatusReplyListResponse",
-            "properties": [
-              {
-                "name": "data",
-                "type": "array"
-              },
-              {
-                "name": "pagination",
-                "type": "string"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-044",
-            "title": "Status-Antwort",
-            "priority": "must",
-            "description": "",
-            "as_a": "Chat-Nutzer",
-            "i_want": "auf einen Status mit einer Antwort reagieren",
-            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_reply-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: status_reply",
-      "description": "Execute prisma migrate dev for status_reply changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_reply-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_status_reply/"
-      ],
-      "related_requirements": [
-        "WA-STS-003"
-      ],
-      "related_user_stories": [
-        "US-044"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: auf einen Status mit einer Antwort reagieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status-Anfrage erhalten?}\n    B -- Ja --> C[Antwort generieren]\n    B -- Nein --> D[Warten auf Anfrage]\n    C --> E{Antwort erfolgreich?}\n    E -- Ja --> F[Antwort senden]\n    E -- Nein --> G[Fehlerbehandlung]\n    F --> H[Ende]\n    G --> H\n    D --> B",
-            "file": "WA-STS-003_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
-            "file": "WA-STS-003_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> AwaitingResponse : Request Status\n    AwaitingResponse --> SendingResponse : Process Request\n    SendingResponse --> ResponseSent : Send Status\n    ResponseSent --> Idle : Acknowledge Receipt\n    ResponseSent --> Error : Response Failed\n    Error --> Idle : Retry or Cancel",
-            "file": "WA-STS-003_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateStatusReplyRequest",
-            "properties": [
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "ciphertext",
-                "type": "string",
-                "description": "Encrypted reply payload (Signal Protocol)"
-              },
-              {
-                "name": "media",
-                "type": "object",
-                "description": "Optional encrypted media metadata"
-              },
-              {
-                "name": "replyToMessageId",
-                "type": "string",
-                "description": "Optional message id being replied to within the status thread"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "ID of the status"
-              },
-              {
-                "name": "senderId",
-                "type": "string",
-                "description": "ID of the sender"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp of creation"
-              },
-              {
-                "name": "deliveryState",
-                "type": "string",
-                "description": "Delivery state for offline queueing"
-              }
-            ]
-          },
-          {
-            "name": "StatusReplyListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "total",
-                "type": "integer",
-                "description": "Total number of replies"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of replies"
-              }
-            ]
-          },
-          {
-            "name": "DeleteStatusReplyResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Reply ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          },
-          {
-            "name": "PaginatedStatusReplyListResponse",
-            "properties": [
-              {
-                "name": "data",
-                "type": "array"
-              },
-              {
-                "name": "pagination",
-                "type": "string"
-              }
-            ]
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-044",
-            "title": "Status-Antwort",
-            "priority": "must",
-            "description": "",
-            "as_a": "Chat-Nutzer",
-            "i_want": "auf einen Status mit einer Antwort reagieren",
-            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-model",
-      "epic_id": "EPIC-004",
-      "type": "schema_model",
-      "title": "Create Prisma model: status_update",
-      "description": "Define status_update model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
-      "dependencies": [],
-      "estimated_minutes": 5,
-      "output_files": [
-        "prisma/schema.prisma#status_update"
+        "prisma/schema.prisma"
       ],
       "related_requirements": [
         "WA-STS-001",
         "WA-STS-002",
-        "WA-STS-004"
+        "WA-STS-003",
+        "WA-STS-004",
+        "WA-STS-005"
       ],
       "related_user_stories": [
         "US-042",
         "US-043",
-        "US-045"
+        "US-044",
+        "US-045",
+        "US-046"
       ],
       "phase": "code",
-      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: auf einen Status mit einer Antwort reagieren",
       "enrichment_context": {
         "diagrams": [
           {
@@ -1683,202 +84,16 @@
             "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
           },
           {
-            "id": "US-045",
-            "title": "Status-Datenschutz",
+            "id": "US-044",
+            "title": "Status-Antwort",
             "priority": "must",
             "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
-            "so_that": "ich meine Privatsphäre wahren und Kontrolle über meine Statusinformationen behalten kann"
+            "as_a": "Chat-Nutzer",
+            "i_want": "auf einen Status mit einer Antwort reagieren",
+            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
           }
         ]
       }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-relations",
-      "epic_id": "EPIC-004",
-      "type": "schema_relations",
-      "title": "Define relations for: status_update",
-      "description": "Set up Prisma relations for status_update with other entities.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-model"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [
-        "prisma/schema.prisma#status_update_relations"
-      ],
-      "related_requirements": [
-        "WA-STS-001",
-        "WA-STS-002",
-        "WA-STS-004"
-      ],
-      "related_user_stories": [
-        "US-042",
-        "US-043",
-        "US-045"
-      ],
-      "phase": "code",
-      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "class",
-            "content": "classDiagram\n    class Status {\n        +String name\n        +Boolean isVisible\n        +String description\n        +setVisibility(Boolean visibility)\n    }\n\n    class Datenschutz {\n        +String policy\n        +String complianceLevel\n        +List<Status> statuses\n        +addStatus(Status status)\n        +removeStatus(Status status)\n    }\n\n    Datenschutz \"1\" -- \"*\" Status : manages",
-            "file": "WA-STS-004_class.mmd"
-          },
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status erstellen?}\n    B -- Ja --> C[24-Stunden-Status-Update erstellen]\n    C --> D{Status erfolgreich?}\n    D -- Ja --> E[Status speichern]\n    D -- Nein --> F[Fehlerbehandlung]\n    F --> C\n    E --> G[Benachrichtigung senden]\n    G --> H[Ende]\n    B -- Nein --> H",
-            "file": "WA-STS-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Status erstellen anfordern\n    System->>User: Eingabeformular anzeigen\n    User->>System: Statusinformationen eingeben\n    System->>User: Statusvorschau anzeigen\n    User->>System: Status bestätigen\n    System->>User: Status erfolgreich erstellt",
-            "file": "WA-STS-001_sequence.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-042",
-            "title": "Status erstellen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen 24-Stunden-Status-Update erstellen und veröffentlichen",
-            "so_that": "damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann"
-          },
-          {
-            "id": "US-043",
-            "title": "Status anzeigen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Kontakt-Status in der Kontaktliste und im Chat anzeigen",
-            "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
-          },
-          {
-            "id": "US-045",
-            "title": "Status-Datenschutz",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
-            "so_that": "ich meine Privatsphäre wahren und Kontrolle über meine Statusinformationen behalten kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-SCHEMA-status_update-migration",
-      "epic_id": "EPIC-004",
-      "type": "schema_migration",
-      "title": "Run migration for: status_update",
-      "description": "Execute prisma migrate dev for status_update changes.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-relations"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [
-        "prisma/migrations/*_status_update/"
-      ],
-      "related_requirements": [
-        "WA-STS-001",
-        "WA-STS-002",
-        "WA-STS-004"
-      ],
-      "related_user_stories": [
-        "US-042",
-        "US-043",
-        "US-045"
-      ],
-      "phase": "code",
-      "success_criteria": "Migration generated and validated with prisma validate; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status erstellen?}\n    B -- Ja --> C[24-Stunden-Status-Update erstellen]\n    C --> D{Status erfolgreich?}\n    D -- Ja --> E[Status speichern]\n    D -- Nein --> F[Fehlerbehandlung]\n    F --> C\n    E --> G[Benachrichtigung senden]\n    G --> H[Ende]\n    B -- Nein --> H",
-            "file": "WA-STS-001_flowchart.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Status erstellen anfordern\n    System->>User: Eingabeformular anzeigen\n    User->>System: Statusinformationen eingeben\n    System->>User: Statusvorschau anzeigen\n    User->>System: Status bestätigen\n    System->>User: Status erfolgreich erstellt",
-            "file": "WA-STS-001_sequence.mmd"
-          },
-          {
-            "type": "state",
-            "content": "stateDiagram-v2\n    [*] --> StatusErstellen\n    StatusErstellen --> StatusInBearbeitung : Starten\n    StatusInBearbeitung --> StatusFertig : Fertigstellen\n    StatusFertig --> [*] : Abschluss\n    StatusInBearbeitung --> StatusAbbrechen : Abbrechen\n    StatusAbbrechen --> [*] : Abgebrochen",
-            "file": "WA-STS-001_state.mmd"
-          }
-        ],
-        "user_story_details": [
-          {
-            "id": "US-042",
-            "title": "Status erstellen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen 24-Stunden-Status-Update erstellen und veröffentlichen",
-            "so_that": "damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann"
-          },
-          {
-            "id": "US-043",
-            "title": "Status anzeigen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "den Kontakt-Status in der Kontaktliste und im Chat anzeigen",
-            "so_that": "um Verfügbarkeit schnell zu erkennen und die Kommunikation effizient zu planen"
-          },
-          {
-            "id": "US-045",
-            "title": "Status-Datenschutz",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "die Sichtbarkeit meines Status für bestimmte Kontakte oder Gruppen konfigurieren",
-            "so_that": "ich meine Privatsphäre wahren und Kontrolle über meine Statusinformationen behalten kann"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-004-VERIFY-schema",
-      "epic_id": "EPIC-004",
-      "type": "verify_schema",
-      "title": "Validate Prisma schema",
-      "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-SCHEMA-status_update-model",
-        "EPIC-004-SCHEMA-status_update-relations",
-        "EPIC-004-SCHEMA-status_update-migration"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "prisma validate exits with code 0"
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-schema",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_schema",
-      "title": "Checkpoint: Review Schema",
-      "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-schema"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "schema",
-      "success_criteria": "User approved checkpoint"
     },
     {
       "id": "EPIC-004-API-statuses-feature",
@@ -1888,7 +103,7 @@
       "description": "Generate the COMPLETE NestJS module for 'statuses' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/statuses — Create a 24-hour status update\n  POST /api/v1/statuses/{statusId}/replies — Create a reply to a status\n  GET /api/v1/statuses/{statusId}/replies — List replies to a status\n  DELETE /api/v1/statuses/{statusId}/replies/{replyId} — Delete a reply to a status",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "output_files": [
@@ -1898,43 +113,34 @@
         "src/modules/statuses/dto/"
       ],
       "related_requirements": [
-        "WA-STS-001",
-        "WA-STS-003"
+        "WA-STS-003",
+        "WA-STS-001"
       ],
       "related_user_stories": [
         "US-042",
         "US-044"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: auf einen Status mit einer Antwort reagieren",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: auf einen Status mit einer Antwort reagieren; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Status erstellen anfordern\n    System->>User: Eingabeformular anzeigen\n    User->>System: Statusinformationen eingeben\n    System->>User: Statusvorschau anzeigen\n    User->>System: Status bestätigen\n    System->>User: Status erfolgreich erstellt",
-            "file": "WA-STS-001_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
             "file": "WA-STS-003_sequence.mmd"
           },
           {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Status erstellen anfordern\n    System->>User: Eingabeformular anzeigen\n    User->>System: Statusinformationen eingeben\n    System->>User: Statusvorschau anzeigen\n    User->>System: Status bestätigen\n    System->>User: Status erfolgreich erstellt",
+            "file": "WA-STS-001_sequence.mmd"
+          },
+          {
             "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status erstellen?}\n    B -- Ja --> C[24-Stunden-Status-Update erstellen]\n    C --> D{Status erfolgreich?}\n    D -- Ja --> E[Status speichern]\n    D -- Nein --> F[Fehlerbehandlung]\n    F --> C\n    E --> G[Benachrichtigung senden]\n    G --> H[Ende]\n    B -- Nein --> H",
-            "file": "WA-STS-001_flowchart.mmd"
+            "content": "flowchart TD\n    A[Start] --> B{Status-Anfrage erhalten?}\n    B -- Ja --> C[Antwort generieren]\n    B -- Nein --> D[Warten auf Anfrage]\n    C --> E{Antwort erfolgreich?}\n    E -- Ja --> F[Antwort senden]\n    E -- Nein --> G[Fehlerbehandlung]\n    F --> H[Ende]\n    G --> H\n    D --> B",
+            "file": "WA-STS-003_flowchart.mmd"
           }
         ],
         "user_story_details": [
-          {
-            "id": "US-042",
-            "title": "Status erstellen",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "einen 24-Stunden-Status-Update erstellen und veröffentlichen",
-            "so_that": "damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann"
-          },
           {
             "id": "US-044",
             "title": "Status-Antwort",
@@ -1943,6 +149,15 @@
             "as_a": "Chat-Nutzer",
             "i_want": "auf einen Status mit einer Antwort reagieren",
             "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
+          },
+          {
+            "id": "US-042",
+            "title": "Status erstellen",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "einen 24-Stunden-Status-Update erstellen und veröffentlichen",
+            "so_that": "damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann"
           }
         ]
       }
@@ -1955,7 +170,7 @@
       "description": "Generate the COMPLETE NestJS module for 'contacts' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/contacts/{contactId}/status — Get contact status\n  GET /api/v1/contacts/statuses — List contact statuses",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2011,7 +226,7 @@
       "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/users/{userId}/status-visibility-settings — Get status visibility settings\n  PUT /api/v1/users/{userId}/status-visibility-settings — Update status visibility settings",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2065,9 +280,9 @@
       "type": "api_controller",
       "title": "Feature: status-mutes (3 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'status-mutes' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/status-mutes — Mute a contact's status\n  GET /api/v1/status-mutes — List muted status contacts\n  DELETE /api/v1/status-mutes/{contactId} — Unmute a contact's status",
-      "status": "running",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2123,7 +338,7 @@
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media/images — Upload an image\n  POST /api/v1/media/videos — Upload video media\n  GET /api/v1/media/library — List user gallery items\n  POST /api/v1/media/uploads — Upload media from device gallery\n  PUT /api/v1/media/uploads/{uploadId}/parts/{partNumber} — Upload a media chunk\n  POST /api/v1/media/uploads/{uploadId}/complete — Complete an HD media upload\n  GET /api/v1/media/{mediaId} — Retrieve encrypted media metadata and download URL",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 21,
       "output_files": [
@@ -2133,10 +348,10 @@
         "src/modules/media/dto/"
       ],
       "related_requirements": [
-        "WA-MED-002",
+        "WA-MED-010",
         "WA-MED-009",
         "WA-MED-001",
-        "WA-MED-010"
+        "WA-MED-002"
       ],
       "related_user_stories": [
         "US-047",
@@ -2145,13 +360,13 @@
         "US-056"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: ein Video in einer Nachricht senden; User can: Bilder aus der Geraete-Galerie auswaehlen, um sie in einer Nachricht zu versenden; User can: ein Bild in einem Chat senden",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: Medien in HD-Qualität senden; User can: Bilder aus der Geraete-Galerie auswaehlen, um sie in einer Nachricht zu versenden; User can: ein Bild in einem Chat senden",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    User->>System: Video auswählen\n    System->>User: Video hochladen\n    User->>System: Video senden\n    System->>User: Video erfolgreich gesendet",
-            "file": "WA-MED-002_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as HD-Medien System\n    participant MediaServer as Medienserver\n\n    User->>System: Anfrage zum Senden von Medien in HD-Qualität\n    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien\n    MediaServer-->>System: HD-Medien bereitgestellt\n    System-->>User: Medien in HD-Qualität gesendet",
+            "file": "WA-MED-010_sequence.mmd"
           },
           {
             "type": "sequence",
@@ -2166,13 +381,13 @@
         ],
         "user_story_details": [
           {
-            "id": "US-048",
-            "title": "Videos senden",
-            "priority": "must",
+            "id": "US-056",
+            "title": "HD-Medien",
+            "priority": "should",
             "description": "",
             "as_a": "Endnutzer",
-            "i_want": "ein Video in einer Nachricht senden",
-            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
+            "i_want": "Medien in HD-Qualität senden",
+            "so_that": "Nachrichten in hoher visueller Qualität zuverlässig und plattformübergreifend teilen zu können"
           },
           {
             "id": "US-055",
@@ -2203,7 +418,7 @@
       "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages — Send an image message",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2259,7 +474,7 @@
       "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages — Send a video message\n  POST /api/v1/messages/documents — Send a document message\n  POST /api/v1/messages/gifs — Send GIF message\n  POST /api/v1/messages/media — Send an HD media message",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 12,
       "output_files": [
@@ -2269,10 +484,10 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MED-002",
         "WA-MED-010",
+        "WA-MED-003",
         "WA-MED-006",
-        "WA-MED-003"
+        "WA-MED-002"
       ],
       "related_user_stories": [
         "US-048",
@@ -2281,18 +496,18 @@
         "US-056"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: ein Video in einer Nachricht senden; User can: Medien in HD-Qualität senden; User can: GIFs suchen und in einer Nachricht versenden",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: Medien in HD-Qualität senden; User can: beliebige Dokumente an einen Empfaenger senden; User can: GIFs suchen und in einer Nachricht versenden",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    User->>System: Video auswählen\n    System->>User: Video hochladen\n    User->>System: Video senden\n    System->>User: Video erfolgreich gesendet",
-            "file": "WA-MED-002_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as HD-Medien System\n    participant MediaServer as Medienserver\n\n    User->>System: Anfrage zum Senden von Medien in HD-Qualität\n    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien\n    MediaServer-->>System: HD-Medien bereitgestellt\n    System-->>User: Medien in HD-Qualität gesendet",
+            "file": "WA-MED-010_sequence.mmd"
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as HD-Medien System\n    participant MediaServer as Medienserver\n\n    User->>System: Anfrage zum Senden von Medien in HD-Qualität\n    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien\n    MediaServer-->>System: HD-Medien bereitgestellt\n    System-->>User: Medien in HD-Qualität gesendet",
-            "file": "WA-MED-010_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Dokumente auswählen\n    System-->>User: Bestätigung der Auswahl\n    User->>System: Dokumente senden\n    System-->>User: Empfangsbestätigung\n    System->>System: Dokumente verarbeiten\n    System-->>User: Dokumente erfolgreich gesendet",
+            "file": "WA-MED-003_sequence.mmd"
           },
           {
             "type": "sequence",
@@ -2302,15 +517,6 @@
         ],
         "user_story_details": [
           {
-            "id": "US-048",
-            "title": "Videos senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "ein Video in einer Nachricht senden",
-            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
-          },
-          {
             "id": "US-056",
             "title": "HD-Medien",
             "priority": "should",
@@ -2318,6 +524,15 @@
             "as_a": "Endnutzer",
             "i_want": "Medien in HD-Qualität senden",
             "so_that": "Nachrichten in hoher visueller Qualität zuverlässig und plattformübergreifend teilen zu können"
+          },
+          {
+            "id": "US-049",
+            "title": "Dokumente senden",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "beliebige Dokumente an einen Empfaenger senden",
+            "so_that": "damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann"
           },
           {
             "id": "US-052",
@@ -2339,7 +554,7 @@
       "description": "Generate the COMPLETE NestJS module for 'media-drafts' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media-drafts — Create an image draft for editing\n  PUT /api/v1/media-drafts/{draftId}/edits — Apply edits to an image draft\n  POST /api/v1/media-drafts/{draftId}/finalize — Finalize an edited image draft",
       "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2395,7 +610,7 @@
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/messages — Send sticker message\n  POST /api/v1/chats/{chatId}/media — Upload camera-captured media to a chat\n  GET /api/v1/chats/{chatId}/media/{mediaId} — Get downloadable media details",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2462,7 +677,7 @@
       "description": "Generate the COMPLETE NestJS module for 'sticker-packs' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/sticker-packs — List sticker packs\n  GET /api/v1/sticker-packs/{packId}/stickers — List stickers in a pack",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2513,7 +728,7 @@
       "description": "Generate the COMPLETE NestJS module for 'gifs' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/gifs/search — Search GIFs",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2569,7 +784,7 @@
       "description": "Generate the COMPLETE NestJS module for 'audio-messages' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/audio-messages — Send an encrypted audio message\n  GET /api/v1/audio-messages/{audioMessageId}/download — Download an audio message file",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-schema"
+        "EPIC-004-SCHEMA-all"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -2618,144 +833,21 @@
       }
     },
     {
-      "id": "EPIC-004-VERIFY-build-api",
-      "epic_id": "EPIC-004",
-      "type": "verify_build",
-      "title": "Build backend",
-      "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-API-media-drafts-feature",
-        "EPIC-004-API-chats-feature",
-        "EPIC-004-API-sticker-packs-feature",
-        "EPIC-004-API-gifs-feature",
-        "EPIC-004-API-audio-messages-feature"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Build completes without errors"
-    },
-    {
-      "id": "EPIC-004-VERIFY-typecheck-api",
-      "epic_id": "EPIC-004",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (API)",
-      "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-004-VERIFY-integration",
-      "epic_id": "EPIC-004",
-      "type": "verify_integration",
-      "title": "Run API integration tests",
-      "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "All integration tests pass"
-    },
-    {
-      "id": "EPIC-004-DOCKER-build-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_build",
-      "title": "Build API Docker image",
-      "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-api",
-        "EPIC-004-VERIFY-integration"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Docker image built successfully"
-    },
-    {
-      "id": "EPIC-004-DOCKER-start-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_start",
-      "title": "Start API container",
-      "description": "Start backend container with docker-compose.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-api"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "API container running"
-    },
-    {
-      "id": "EPIC-004-DOCKER-health-api",
-      "epic_id": "EPIC-004",
-      "type": "docker_health",
-      "title": "API health check",
-      "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-api"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "Health endpoint returns 200 OK"
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-api",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_api",
-      "title": "Checkpoint: Review Api",
-      "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-api",
-        "EPIC-004-DOCKER-start-api",
-        "EPIC-004-DOCKER-health-api"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "api",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-page",
+      "id": "EPIC-004-FE-StatusView-feature",
       "epic_id": "EPIC-004",
       "type": "fe_page",
-      "title": "Page: StatusView",
-      "description": "Create StatusView page component implementing 7 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: StatusView (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'StatusView':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useStatusView)\n- API client functions\n\nUser Stories: US-042, US-043, US-044, US-045, US-046",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-api"
+        "EPIC-004-API-audio-messages-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 35,
       "output_files": [
-        "src/pages/StatusView/StatusView.tsx"
+        "src/pages/StatusView/StatusView.tsx",
+        "src/components/StatusView/",
+        "src/hooks/useStatusView.ts",
+        "src/api/statusviewAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -3019,264 +1111,21 @@
       }
     },
     {
-      "id": "EPIC-004-FE-StatusView-components",
-      "epic_id": "EPIC-004",
-      "type": "fe_component",
-      "title": "Components: StatusView",
-      "description": "Create reusable components for StatusView",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/StatusView/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-hook",
-      "epic_id": "EPIC-004",
-      "type": "fe_hook",
-      "title": "Hook: useStatusView",
-      "description": "Create custom hook for StatusView state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useStatusView.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-FE-StatusView-api",
-      "epic_id": "EPIC-004",
-      "type": "fe_api_client",
-      "title": "API Client: StatusView",
-      "description": "Create API client functions for StatusView",
-      "status": "running",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/statusviewAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-page",
+      "id": "EPIC-004-FE-StatusCreator-feature",
       "epic_id": "EPIC-004",
       "type": "fe_page",
-      "title": "Page: StatusCreator",
-      "description": "Create StatusCreator page component implementing 7 user stories.",
-      "status": "completed",
+      "title": "Frontend Feature: StatusCreator (all layers)",
+      "description": "Generate COMPLETE frontend feature for 'StatusCreator':\n- Page component with routing\n- Reusable sub-components\n- Custom hook (useStatusCreator)\n- API client functions\n\nUser Stories: US-049, US-050, US-051, US-052, US-053",
+      "status": "pending",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-api"
+        "EPIC-004-API-audio-messages-feature"
       ],
-      "estimated_minutes": 20,
+      "estimated_minutes": 35,
       "output_files": [
-        "src/pages/StatusCreator/StatusCreator.tsx"
+        "src/pages/StatusCreator/StatusCreator.tsx",
+        "src/components/StatusCreator/",
+        "src/hooks/useStatusCreator.ts",
+        "src/api/statuscreatorAPI.ts"
       ],
       "related_requirements": [],
       "related_user_stories": [
@@ -3540,343 +1389,6 @@
       }
     },
     {
-      "id": "EPIC-004-FE-StatusCreator-components",
-      "epic_id": "EPIC-004",
-      "type": "fe_component",
-      "title": "Components: StatusCreator",
-      "description": "Create reusable components for StatusCreator",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-page"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [
-        "src/components/StatusCreator/"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": "Reusable React component with typed props interface",
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-hook",
-      "epic_id": "EPIC-004",
-      "type": "fe_hook",
-      "title": "Hook: useStatusCreator",
-      "description": "Create custom hook for StatusCreator state and logic",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-page"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [
-        "src/hooks/useStatusCreator.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-FE-StatusCreator-api",
-      "epic_id": "EPIC-004",
-      "type": "fe_api_client",
-      "title": "API Client: StatusCreator",
-      "description": "Create API client functions for StatusCreator",
-      "status": "pending",
-      "dependencies": [
-        "EPIC-004-FE-StatusCreator-hook"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [
-        "src/api/statuscreatorAPI.ts"
-      ],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "code",
-      "success_criteria": null,
-      "enrichment_context": {
-        "accessibility_rules": [
-          "WCAG 2.1 Level AA Compliance",
-          "Keyboard Navigation fuer alle Funktionen",
-          "Screen Reader Support",
-          "Kontrastverhältnis mindestens 4.5:1",
-          "Haptische und visuelle Hinweise bei Verifizierungsschritten",
-          "All images have alt text",
-          "Videos have captions",
-          "Color is not the only way to convey information"
-        ],
-        "design_tokens": {
-          "colors": {
-            "primary": "#25D366",
-            "primary-dark": "#128C7E",
-            "primary-light": "#DCF8C6",
-            "secondary": "#34B7F1",
-            "background": "#F5F5F5",
-            "surface": "#FFFFFF",
-            "text-primary": "#1C1C1C",
-            "text-secondary": "#6B6B6B",
-            "error": "#E53935",
-            "warning": "#FB8C00",
-            "success": "#43A047",
-            "info": "#1E88E5"
-          },
-          "font_family": "Inter, Arial, sans-serif",
-          "typography": {
-            "h1": "2.5rem/700",
-            "h2": "2rem/600",
-            "h3": "1.5rem/600",
-            "h4": "1.25rem/600",
-            "body": "1rem/400",
-            "body-small": "0.875rem/400",
-            "caption": "0.75rem/400"
-          },
-          "spacing": {
-            "xs": "0.25rem",
-            "sm": "0.5rem",
-            "md": "1rem",
-            "lg": "1.5rem",
-            "xl": "2rem",
-            "2xl": "3rem",
-            "3xl": "4rem"
-          },
-          "breakpoints": {
-            "mobile": 320,
-            "mobile-lg": 480,
-            "tablet": 768,
-            "desktop": 1024,
-            "desktop-lg": 1280,
-            "desktop-xl": 1536
-          },
-          "border_radius": {
-            "none": "0",
-            "sm": "0.125rem",
-            "md": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          }
-        }
-      }
-    },
-    {
-      "id": "EPIC-004-VERIFY-build-fe",
-      "epic_id": "EPIC-004",
-      "type": "verify_build",
-      "title": "Build frontend",
-      "description": "Run npm run build for React frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-FE-StatusView-api",
-        "EPIC-004-FE-StatusCreator-page",
-        "EPIC-004-FE-StatusCreator-components",
-        "EPIC-004-FE-StatusCreator-hook",
-        "EPIC-004-FE-StatusCreator-api"
-      ],
-      "estimated_minutes": 3,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "Frontend build completes without errors"
-    },
-    {
-      "id": "EPIC-004-VERIFY-lint",
-      "epic_id": "EPIC-004",
-      "type": "verify_lint",
-      "title": "Run ESLint",
-      "description": "Check code quality with ESLint.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-build-fe"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No linting errors"
-    },
-    {
-      "id": "EPIC-004-VERIFY-typecheck-fe",
-      "epic_id": "EPIC-004",
-      "type": "verify_typecheck",
-      "title": "TypeScript type check (Frontend)",
-      "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-lint"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "No TypeScript errors"
-    },
-    {
-      "id": "EPIC-004-VERIFY-unit",
-      "epic_id": "EPIC-004",
-      "type": "verify_unit",
-      "title": "Run unit tests",
-      "description": "Execute vitest unit tests.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-typecheck-fe"
-      ],
-      "estimated_minutes": 5,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "All unit tests pass"
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-frontend",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_fe",
-      "title": "Checkpoint: Review Frontend",
-      "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-lint",
-        "EPIC-004-VERIFY-typecheck-fe",
-        "EPIC-004-VERIFY-unit"
-      ],
-      "estimated_minutes": 10,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "frontend",
-      "success_criteria": "User approved checkpoint"
-    },
-    {
       "id": "EPIC-004-TEST-unit",
       "epic_id": "EPIC-004",
       "type": "test",
@@ -3884,7 +1396,7 @@
       "description": "Create Vitest unit tests for all EPIC-004 services and utilities. NO MOCKS - use real implementations.",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-frontend"
+        "EPIC-004-FE-StatusCreator-feature"
       ],
       "estimated_minutes": 10,
       "output_files": [
@@ -3950,110 +1462,23 @@
       "success_criteria": null
     },
     {
-      "id": "EPIC-004-VERIFY-e2e",
+      "id": "EPIC-004-VERIFY-all",
       "epic_id": "EPIC-004",
-      "type": "verify_e2e",
-      "title": "Run E2E tests",
-      "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "type": "verify_build",
+      "title": "Verify EPIC-004: build + typecheck",
+      "description": "Run all verification steps for EPIC-004:\n1. npx prisma generate\n2. npx tsc --noEmit (must pass with 0 errors)\n3. npm run build\n4. cd frontend && npx vite build (if frontend exists)\nFix any errors found.",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-TEST-unit",
         "EPIC-004-TEST-integration",
         "EPIC-004-TEST-e2e"
       ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "test",
-      "success_criteria": "All E2E tests pass"
-    },
-    {
-      "id": "EPIC-004-DOCKER-build-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_build",
-      "title": "Build production image",
-      "description": "Build optimized production Docker image.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-VERIFY-e2e"
-      ],
       "estimated_minutes": 5,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Production image built"
-    },
-    {
-      "id": "EPIC-004-DOCKER-start-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_start",
-      "title": "Start production container",
-      "description": "Start full stack in production mode.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-build-prod"
-      ],
-      "estimated_minutes": 2,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers running"
-    },
-    {
-      "id": "EPIC-004-DOCKER-health-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_health",
-      "title": "Production health check",
-      "description": "Verify all services are healthy.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "All containers healthy"
-    },
-    {
-      "id": "EPIC-004-DOCKER-logs-prod",
-      "epic_id": "EPIC-004",
-      "type": "docker_logs",
-      "title": "Collect production logs",
-      "description": "Collect logs from all production containers.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-health-prod"
-      ],
-      "estimated_minutes": 1,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "Logs collected, no critical errors"
-    },
-    {
-      "id": "EPIC-004-CHECKPOINT-deploy",
-      "epic_id": "EPIC-004",
-      "type": "checkpoint_deploy",
-      "title": "Checkpoint: Review Deploy",
-      "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-004-DOCKER-start-prod",
-        "EPIC-004-DOCKER-health-prod",
-        "EPIC-004-DOCKER-logs-prod"
-      ],
-      "estimated_minutes": 15,
-      "output_files": [],
-      "related_requirements": [],
-      "related_user_stories": [],
-      "phase": "deploy",
-      "success_criteria": "User approved checkpoint"
+      "phase": "verification",
+      "success_criteria": "Zero TypeScript errors, build succeeds"
     },
     {
       "id": "EPIC-004-INTEGRATION",
@@ -4063,7 +1488,7 @@
       "description": "Run all EPIC-004 tests, validate build, and verify all 15 user stories are implemented.",
       "status": "completed",
       "dependencies": [
-        "EPIC-004-CHECKPOINT-deploy"
+        "EPIC-004-VERIFY-all"
       ],
       "estimated_minutes": 15,
       "output_files": [],
