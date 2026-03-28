@@ -24,7 +24,7 @@ export function ProgressHeader({ projectName, phase, progressPct, serviceCount, 
         <span className="text-xs font-semibold text-green-400">{progressPct}%</span>
       </div>
       <span className="ml-auto text-xs text-muted-foreground">
-        {serviceCount} services · {endpointCount} endpoints
+        {serviceCount} epics · {endpointCount} tasks done
       </span>
     </div>
   );

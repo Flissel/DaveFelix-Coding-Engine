@@ -216,7 +216,25 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
 
   // Epics from JSON files (via project_path query param)
   const { data: dbEpics } = useEpics(projectPath);
-  const epicsList = dbEpics?.epics || [];
+  // Merge JSON epics with live status progress data
+  const rawEpics = dbEpics?.epics || [];
+  const statusEpics = status?.epics || [];
+  const epicsList = rawEpics.map((epic: any) => {
+    const live = statusEpics.find((s: any) => s.id === epic.id);
+    if (live) {
+      return {
+        ...epic,
+        epic_id: epic.id,
+        // EpicCard expects these field names:
+        total_tasks: live.tasks_total ?? 0,
+        completed_tasks: live.tasks_complete ?? 0,
+        failed_tasks: live.tasks_failed ?? 0,
+        progress_pct: live.progress_pct ?? 0,
+        status: live.progress_pct >= 100 ? 'completed' : live.tasks_failed > 0 ? 'failed' : live.tasks_complete > 0 ? 'running' : 'pending',
+      };
+    }
+    return { ...epic, epic_id: epic.id, total_tasks: 0, completed_tasks: 0, failed_tasks: 0, status: 'pending' };
+  });
 
   // Sync epics from status endpoint into zustand store
   useEffect(() => {
@@ -242,8 +260,8 @@ export function GenerationMonitor({ projectName, parallelism, onParallelismChang
             projectName={projectName}
             phase={status.phase}
             progressPct={status.progress_pct}
-            serviceCount={status.service_count}
-            endpointCount={status.endpoint_count}
+            serviceCount={epicsList.length}
+            endpointCount={completed}
           />
         </div>
         {total > 0 && (
