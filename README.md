@@ -1,70 +1,129 @@
-# Coding Engine
+# DaveFelix Coding Engine
 
-Autonomous code generation platform -- 10 AI agents collaborate in [Minibook](https://github.com/Flissel/minibook) to generate complete projects from JSON requirements, powered by local LLMs via [Ollama](https://ollama.com).
-
-## Architecture
+Autonomous code generation system that generates complete production-ready projects from JSON requirements using 37+ specialized AI agents.
 
 ```
-                    MINIBOOK (Collaboration Hub)
-    +------------------------------------------------------+
-    |  architect   backend-gen   frontend-gen               |
-    |  database-gen   api-gen   auth-gen                    |
-    |  tester   fixer   reviewer   infra-gen                |
-    |                                                        |
-    |  Each agent = Minibook account + Ollama LLM            |
-    |  Communication = Posts, Comments, @mentions            |
-    +------------------------+-----------------------------+
-                             |
-                    MASTER ORCHESTRATOR
-                    (reads requirements.json,
-                     assigns tasks, monitors,
-                     drives convergence loop)
-                             |
-                    OUTPUT: Complete Project
-                             |
-                    DAVELOVABLE (optional)
-                    (Live Preview UI)
+Requirements JSON  ──>  Epic Orchestrator  ──>  Complete NestJS/React Project
+                           |
+                    37+ AI Agents (Society of Mind)
+                    Kilo CLI + GPT-5.4 / Claude
+                    Docker Sandbox + VNC Preview
 ```
 
 ## Quick Start
 
+```bash
+# 1. Clone
+git clone --recursive https://github.com/Flissel/DaveFelix-Coding-Engine.git
+cd DaveFelix-Coding-Engine
+
+# 2. Setup (checks prerequisites, prompts for API keys, builds Docker images)
+bash setup.sh
+
+# 3. Start
+bash start.sh          # Core: PostgreSQL + Redis + API
+bash start.sh --all    # Full: + Sandbox, Gitea, VSCode, Worker
+
+# 4. Stop
+bash stop.sh           # Stop all
+bash stop.sh --clean   # Stop + wipe volumes
+```
+
 ### Prerequisites
 
-```bash
-# 1. Ollama (local LLM)
-ollama pull qwen2.5-coder:7b
+- **Docker Desktop** (includes Docker Compose v2)
+- **Python 3.10+**
+- **Node.js 18+**
+- **Git**
 
-# 2. Minibook (agent collaboration platform)
-cd ../minibook
-pip install -r requirements.txt
-python run.py  # starts on port 3456
+### Required API Keys
 
-# 3. Python dependencies
-cd ../Coding_engine
-pip install httpx
-```
+| Key | Purpose | Get it |
+|-----|---------|--------|
+| `OPENAI_API_KEY` | Code generation (GPT-5.4) | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `GITHUB_TOKEN` | Git push, PR management | [github.com/settings/tokens](https://github.com/settings/tokens) |
 
-### Run
+Optional: `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`, `DISCORD_BOT_TOKEN` (see `.env.example`)
 
-```bash
-python run_engine.py --project Data/all_services/whatsapp
-```
-
-### Options
+## Architecture
 
 ```
---project, -p      Path to project with requirements.json (required)
---output, -o       Output directory (default: output/<project-name>)
---model, -m        Ollama model (default: qwen2.5-coder:7b)
---ollama-url       Ollama URL (default: http://localhost:11434)
---minibook-url     Minibook URL (default: http://localhost:3456)
---max-fix-rounds   Bug-fix iterations (default: 3)
---verbose, -v      Debug logging
++-----------------------------------------------------------------+
+|  LAYER 1: Society of Mind (37+ Agents)                          |
+|  EventBus (push) + SharedState + Convergence Loop               |
+|  src/agents/ + src/mind/ + src/engine/                          |
++-----------------------------------------------------------------+
+        |
++-----------------------------------------------------------------+
+|  LAYER 2: Epic Orchestrator + MCP Tools                         |
+|  Parallel task pipeline, Kilo CLI, AutoGen 0.4+ teams           |
+|  mcp_plugins/servers/grpc_host/                                 |
++-----------------------------------------------------------------+
+        |
++-----------------------------------------------------------------+
+|  LAYER 3: MCP Plugin Servers (20+)                              |
+|  Playwright, Docker, Redis, GitHub, Prisma, Filesystem, etc.    |
+|  mcp_plugins/servers/                                           |
++-----------------------------------------------------------------+
+        |
++-----------------------------------------------------------------+
+|  OUTPUT: Production-ready project                               |
+|  TypeScript/NestJS + React + Prisma + Docker + Tests            |
++-----------------------------------------------------------------+
+```
+
+## Services & Ports
+
+| Service | Port | URL | Description |
+|---------|------|-----|-------------|
+| API Server | 8000 | http://localhost:8000 | FastAPI control plane |
+| PostgreSQL | 5432 | — | Primary database |
+| Redis | 6382 | — | Task queue + caching |
+| Sandbox VNC | 6090 | http://localhost:6090 | Live preview (noVNC) |
+| App Preview | 3100 | http://localhost:3100 | Generated app |
+| Gitea | 3000 | http://localhost:3000 | Git server |
+| VSCode | 8444 | http://localhost:8444 | Code editor (pw: `dev123`) |
+| Automation UI | 8007 | http://localhost:8007 | Debug agent |
+
+## Project Structure
+
+```
+DaveFelix-Coding-Engine/
+|-- setup.sh / start.sh / stop.sh    # Setup & lifecycle scripts
+|-- docker-compose.yml               # All services
+|-- .env.example                     # Environment template
+|-- requirements.txt                 # Python dependencies
+|
+|-- src/
+|   |-- agents/                      # 37+ autonomous AI agents
+|   |-- mind/                        # EventBus, SharedState, Orchestrator
+|   |-- engine/                      # HybridPipeline, Slicer, Merger
+|   |-- api/                         # FastAPI server (main.py)
+|   |-- tools/                       # Claude CLI, sandbox, test runner
+|   |-- mcp/                         # MCP Event Bridge
+|   |-- validators/                  # Build, TypeScript, NoMock validators
+|   +-- autogen/                     # Kilo CLI wrapper, task enricher
+|
+|-- mcp_plugins/servers/             # 20+ MCP tool servers
+|   |-- grpc_host/                   # Epic orchestrator, task executor
+|   |-- fungus_mcp/                  # Project context tools for Kilo
+|   |-- playwright/ docker/ redis/   # Infrastructure tools
+|   +-- github/ prisma/ npm/ ...     # Integration tools
+|
+|-- config/
+|   |-- engine_settings.yml          # Models, timeouts, consolidation
+|   |-- llm_models.yml               # LLM provider configuration
+|   +-- society_defaults.json        # Agent feature flags
+|
+|-- infra/docker/                    # Dockerfiles (api, sandbox, worker)
+|-- Data/                            # Project specs + generated output
+|-- dashboard-app/                   # Electron/React dashboard (optional)
++-- .claude/skills/                  # 12 skill definitions for agents
 ```
 
 ## How It Works
 
-### 1. Requirements (Input)
+### 1. Input: Requirements JSON
 
 ```json
 {
@@ -72,95 +131,91 @@ python run_engine.py --project Data/all_services/whatsapp
   "type": "nestjs",
   "features": [
     {"id": "phone-registration", "priority": "high"},
-    {"id": "2fa-auth", "priority": "high"},
     {"id": "real-time-messaging", "priority": "high"}
-  ],
-  "tech_stack": {
-    "backend": "NestJS + TypeScript",
-    "database": "PostgreSQL + Prisma"
-  }
+  ]
 }
 ```
 
-### 2. Orchestration Phases
+### 2. Epic Orchestrator Pipeline
 
-| Phase | Agent | What Happens |
-|-------|-------|-------------|
-| 1. Architecture | `architect` | Designs folder structure, DB schema, API contracts |
-| 2. Code Gen | `backend-gen`, `api-gen`, `auth-gen`, `frontend-gen` | Implements all modules |
-| 3. Database | `database-gen` | Creates Prisma schema, migrations, seeds |
-| 4. Testing | `tester` | Writes unit + integration + E2E tests |
-| 5. Fix Loop | `fixer` | Patches failures, re-tests (up to 3 rounds) |
-| 6. Review | `reviewer` | Code quality, security, architecture check |
-| 7. Infra | `infra-gen` | Docker, CI/CD, config, health checks |
+1. **Parse** requirements into Epics (EPIC-001 to EPIC-007)
+2. **Split** each Epic into ~50-60 consolidated tasks (schema, API, frontend, tests)
+3. **Execute** tasks in parallel via Kilo CLI + GPT-5.4
+4. **Verify** each task (TypeScript check, build, tests)
+5. **Fix** failures automatically via SoM agent loop
+6. **Deploy** to Docker sandbox with VNC preview
 
-### 3. Agent Communication (via Minibook)
+### 3. Output
 
-Agents don't call each other directly. They communicate through Minibook posts:
-
-```
-Orchestrator -> POST "Design Architecture" (@architect)
-Architect    -> COMMENT with folder structure + DB schema
-Orchestrator -> POST "Implement Backend" (@backend-gen) [includes architect's output]
-Backend-Gen  -> COMMENT with generated NestJS services
-Orchestrator -> POST "Write Tests" (@tester) [includes all generated code]
-...
-```
-
-### 4. Output
-
-Complete project in `output/<project-name>/` with:
-- Full source code (backend + frontend)
-- Database schema + migrations
-- Tests (unit, integration, E2E)
+Complete production-ready project:
+- NestJS backend with all endpoints
+- React frontend with all pages
+- Prisma database schema + migrations
+- JWT auth with RBAC
 - Docker + CI/CD configs
-- Documentation
+- Integration tests (no mocks)
 
-## Project Structure
+## Configuration
 
-```
-Coding_engine/
-|-- run_engine.py                 # CLI entry point
-|-- src/engine/
-|   |-- ollama_client.py          # Ollama REST API wrapper
-|   |-- minibook_client.py        # Minibook REST API wrapper
-|   |-- minibook_agent.py         # Base agent class
-|   |-- master_orchestrator.py    # Main orchestrator
-|   +-- agents/
-|       |-- architect.py          # Software architect
-|       |-- backend_gen.py        # Backend code generator
-|       |-- frontend_gen.py       # Frontend code generator
-|       |-- database_gen.py       # Database engineer
-|       |-- api_gen.py            # API developer
-|       |-- auth_gen.py           # Auth & security
-|       |-- tester.py             # QA & test engineer
-|       |-- fixer.py              # Bug fixer
-|       |-- reviewer.py           # Code reviewer
-|       +-- infra_gen.py          # DevOps engineer
-|-- Data/all_services/
-|   +-- whatsapp/
-|       +-- requirements.json     # Project requirements
-|-- src/services/                 # 902 emergent pipeline modules
-+-- tests/                        # Unit tests
+### engine_settings.yml
+
+```yaml
+models:
+  generation: gpt-5.4     # Primary code gen
+  fixing: gpt-5.4         # Bug fixing
+  planning: gpt-5.4-mini  # Task planning
+
+generation:
+  max_parallel_tasks: 4
+  consolidation_mode: feature  # granular|endpoint|feature
+  max_task_retries: 3
 ```
 
-## Emergent Pipeline
+### LLM Providers
 
-The engine includes 902 service modules providing infrastructure:
-- Pipeline data processing (validators, transformers, encoders, etc.)
-- Agent workflow management (schedulers, trackers, coordinators, etc.)
-- Pipeline step orchestration (guards, profilers, sequencers, etc.)
-- Agent task lifecycle (estimators, recyclers, dispatchers, etc.)
+The engine supports multiple LLM backends:
+- **OpenAI** (GPT-5.4) — primary, via Kilo CLI
+- **Anthropic** (Claude) — via Agent SDK
+- **OpenRouter** — free models for secondary tasks
+- **Ollama** — local models (qwen2.5-coder)
 
-952 compile-clean entries, 389 integration tests passing.
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/v1/projects` | GET/POST | Project management |
+| `/api/v1/jobs` | POST | Start generation job |
+| `/api/v1/dashboard/generation/{id}/pause` | POST | Pause generation |
+| `/api/v1/dashboard/generation/{id}/resume` | POST | Resume with feedback |
+| `/ws` | WS | Real-time dashboard updates |
+
+## Development
+
+```bash
+# Run tests
+pytest
+
+# Run specific test
+pytest tests/mind/test_push_architecture.py -v
+
+# View API logs
+docker compose logs -f api
+
+# View sandbox logs
+docker compose logs -f sandbox
+
+# Rebuild API container after code changes
+docker compose build api && docker compose up -d api
+```
 
 ## Connected Projects
 
 | Project | Purpose |
 |---------|---------|
-| [Minibook](https://github.com/Flissel/minibook) | Agent collaboration platform (posts, comments, @mentions) |
-| [DaveLovable](https://github.com/Flissel/DaveLovable) | Vibe coding UI with live preview (separate, optional) |
-| [Ollama](https://ollama.com) | Local LLM runtime (qwen2.5-coder) |
+| [Minibook](https://github.com/Flissel/minibook) | Agent collaboration (legacy mode) |
+| [DaveLovable](https://github.com/Flissel/DaveLovable) | Vibe coding UI |
+| [OpenClaw](../../openclaw) | Master orchestrator gateway |
 
 ## License
 
