@@ -44,7 +44,7 @@ export function VncPreview({
 
   // Preview URLs (auto-detected based on what's running)
   const APP_PORT = 3100;     // Frontend App (Vite / Expo Web)
-  const API_PORT = 3200;     // Backend API (NestJS / FastAPI)
+  const API_PORT = 3201;     // Backend API (NestJS / FastAPI) — mapped from 3000 in docker-compose
   const VNC_PORT = 6090;     // Android Emulator via noVNC
   const appPreviewUrl = `http://localhost:${APP_PORT}`;
   const apiPreviewUrl = `http://localhost:${API_PORT}`;
