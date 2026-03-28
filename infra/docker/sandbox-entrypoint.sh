@@ -608,14 +608,46 @@ start_mobile_preview() {
 
     echo "Detected: expo=$HAS_EXPO vite_frontend=$HAS_VITE_FRONTEND nestjs=$HAS_NESTJS"
 
-    # ─── Start NestJS Backend (port 3000 → mapped to 3200) ──────
+    # ─── Start NestJS Backend (port 3000 → mapped to 3201) ──────
     if [ "$HAS_NESTJS" = true ]; then
         echo "Installing NestJS backend dependencies..."
         npm install --legacy-peer-deps 2>&1 | tail -5
+
+        # Generate Prisma client from schema (use prisma/ dir schema, not root)
+        if [ -f "prisma/schema.prisma" ]; then
+            echo "Running prisma generate..."
+            npx prisma generate --schema=prisma/schema.prisma 2>&1 | tail -3
+
+            # Auto-create app-specific DB if .env has a unique DATABASE_URL
+            if grep -q 'DATABASE_URL' .env 2>/dev/null; then
+                DB_NAME=$(grep 'DATABASE_URL' .env | head -1 | grep -oP '/(\w+)$' | tr -d '/' || echo "")
+                if [ -n "$DB_NAME" ] && [ "$DB_NAME" != "coding_engine" ]; then
+                    echo "Ensuring database '$DB_NAME' exists..."
+                    PGPASSWORD=postgres psql -h postgres -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" 2>/dev/null | grep -q 1 || \
+                        PGPASSWORD=postgres psql -h postgres -U postgres -c "CREATE DATABASE $DB_NAME" 2>/dev/null
+                    echo "Pushing Prisma schema to $DB_NAME..."
+                    npx prisma db push --accept-data-loss 2>&1 | tail -3
+                fi
+            fi
+        fi
+
+        # Build first (nest start --watch doesn't work reliably on Docker volumes)
+        echo "Building NestJS..."
+        npm run build 2>&1 | tail -3
+
         echo "Starting NestJS backend on port 3000..."
-        npm run start:dev 2>&1 | tee /tmp/nestjs.log &
+        node dist/main.js 2>&1 | tee /tmp/nestjs.log &
         NEST_PID=$!
         echo "NestJS started (PID: $NEST_PID)"
+
+        # Wait for NestJS to be ready
+        for i in $(seq 1 15); do
+            if curl -sf http://localhost:3000/health > /dev/null 2>&1 || curl -sf http://localhost:3000/ > /dev/null 2>&1; then
+                echo "NestJS is ready!"
+                break
+            fi
+            sleep 2
+        done
     fi
 
     # ─── Start Frontend ──────────────────────────────────────────
@@ -709,13 +741,44 @@ start_mobile_preview() {
     echo "  VNC:       http://localhost:${NOVNC_PORT}/vnc.html"
     echo ""
 
-    # Keep container alive with status logging
+    # Keep container alive with status logging + auto-restart
+    NEST_FAIL_COUNT=0
+    FE_FAIL_COUNT=0
     while true; do
         sleep 30
         EMU_BOOT=$(${ANDROID_HOME}/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null || echo "0")
         FE_UP=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL" 2>/dev/null || echo "000")
         NEST_UP=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
         echo "[status] emulator_booted=${EMU_BOOT} frontend=${FE_UP} nestjs=${NEST_UP}"
+
+        # Auto-restart NestJS if crashed (3 consecutive failures)
+        if [ "$HAS_NESTJS" = true ] && [ "$NEST_UP" = "000" ]; then
+            NEST_FAIL_COUNT=$((NEST_FAIL_COUNT + 1))
+            if [ $NEST_FAIL_COUNT -ge 3 ]; then
+                echo "[health] NestJS down for 90s, restarting..."
+                cd "$PROJECT_DIR"
+                node dist/main.js 2>&1 | tee /tmp/nestjs.log &
+                NEST_PID=$!
+                NEST_FAIL_COUNT=0
+            fi
+        else
+            NEST_FAIL_COUNT=0
+        fi
+
+        # Auto-restart Vite if crashed
+        if [ "$HAS_VITE_FRONTEND" = true ] && [ "$FE_UP" = "000" ]; then
+            FE_FAIL_COUNT=$((FE_FAIL_COUNT + 1))
+            if [ $FE_FAIL_COUNT -ge 3 ]; then
+                echo "[health] Vite frontend down for 90s, restarting..."
+                cd "$PROJECT_DIR/frontend"
+                npx vite --host 0.0.0.0 --port $FRONTEND_PORT 2>&1 | tee /tmp/frontend.log &
+                FE_PID=$!
+                cd "$PROJECT_DIR"
+                FE_FAIL_COUNT=0
+            fi
+        else
+            FE_FAIL_COUNT=0
+        fi
     done
 }
 

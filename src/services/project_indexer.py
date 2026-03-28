@@ -337,7 +337,7 @@ class ProjectIndexer:
         project_dir: str,
         qdrant_url: str = "http://localhost:6333",
         collection_prefix: str = "project_",
-        embedding_model: str = "google/embeddinggemma-300m",
+        embedding_model: str = "openai:text-embedding-3-small",
     ):
         self.project_dir = Path(project_dir)
         self.qdrant_url = qdrant_url
@@ -424,12 +424,44 @@ class ProjectIndexer:
             if str(fungus_path) not in sys.path:
                 sys.path.insert(0, str(fungus_path))
 
+            # Try OpenAI embeddings first (most reliable)
+            if self.embedding_model.startswith("openai:") and os.environ.get("OPENAI_API_KEY"):
+                import httpx
+                model_name = self.embedding_model.split(":", 1)[1]
+
+                class OpenAIEmbedder:
+                    """Lightweight OpenAI embedding wrapper."""
+                    def __init__(self, model: str, api_key: str):
+                        self.model = model
+                        self.api_key = api_key
+                        self.dim = 1536
+
+                    def encode(self, texts, **kwargs):
+                        import httpx as _httpx
+                        if isinstance(texts, str):
+                            texts = [texts]
+                        resp = _httpx.post(
+                            "https://api.openai.com/v1/embeddings",
+                            headers={"Authorization": f"Bearer {self.api_key}"},
+                            json={"model": self.model, "input": texts[:20]},
+                            timeout=30,
+                        )
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            return [d["embedding"] for d in data["data"]]
+                        return [[0.0] * self.dim] * len(texts)
+
+                self._embedder = OpenAIEmbedder(model_name, os.environ["OPENAI_API_KEY"])
+                self.logger.info("embedder_initialized", model=self.embedding_model, provider="openai")
+                return True
+
+            # Fallback: try embeddinggemma
             from embeddinggemma.mcmp.embeddings import load_sentence_model
             self._embedder = load_sentence_model(self.embedding_model)
             return True
         except Exception as e:
             self.logger.warning("embedder_init_failed", error=str(e), hint="Continuing without semantic search")
-            self._embedder = None  # Explicitly mark as unavailable
+            self._embedder = None
             return False
 
     def _chunk_file(self, file_path: Path, content: str) -> List[CodeChunk]:

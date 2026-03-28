@@ -27,10 +27,18 @@
     "prisma": {
       "enabled": true,
       "env_vars": {
-        "PRISMA_SCHEMA_PATH": "/app/output/whatsapp-messaging-service_20260211_025459/prisma/schema.prisma"
+        "PRISMA_SCHEMA_PATH": "/app/output/whatsapp-messaging-service_20260211_025459/schema.prisma"
       },
       "args_override": [],
-      "notes": "Schema: /app/output/whatsapp-messaging-service_20260211_025459/prisma/schema.prisma"
+      "notes": "Schema: /app/output/whatsapp-messaging-service_20260211_025459/schema.prisma"
+    },
+    "redis": {
+      "enabled": true,
+      "env_vars": {
+        "REDIS_URL": "redis://sandbox-whatsapp-messaging-service_20260211_025459-redis:6379"
+      },
+      "args_override": [],
+      "notes": "Auto-detected from docker-compose"
     },
     "playwright": {
       "enabled": true,

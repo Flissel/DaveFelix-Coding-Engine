@@ -94,17 +94,54 @@ class KiloCLI:
         self._mcp_config_written = False
 
     def _ensure_mcp_config(self):
-        """Write MCP config to working dir so Kilo CLI can discover MCP servers."""
+        """Write Fungus MCP config into the project's .kilo/mcp.json (Kilo 7.x reads this)."""
         if self._mcp_config_written:
             return
         self._mcp_config_written = True
         try:
-            from src.mcp.project_config import generate_cli_mcp_config
-            config_path = generate_cli_mcp_config(
-                working_dir=self.working_dir,
-                output_path=os.path.join(self.working_dir, ".kilo", "mcp.json"),
-            )
-            self.logger.info("kilo_mcp_config_written", path=str(config_path))
+            import json
+            from pathlib import Path
+
+            python_cmd = "python3" if os.path.exists("/usr/bin/python3") else "python"
+
+            server_candidates = [
+                "/app/mcp_plugins/servers/fungus_mcp/server.py",
+                os.path.join(os.path.dirname(__file__), "..", "..", "mcp_plugins", "servers", "fungus_mcp", "server.py"),
+            ]
+            server_path = next((p for p in server_candidates if os.path.exists(p)), server_candidates[0])
+            server_path = str(Path(server_path).resolve())
+
+            fungus_entry = {
+                "command": python_cmd,
+                "args": [server_path],
+                "env": {
+                    "FUNGUS_PROJECT_DIR": self.working_dir,
+                },
+            }
+
+            # Write to project-level .kilo/mcp.json (Kilo 7.x reads from here)
+            project_kilo_dir = Path(self.working_dir) / ".kilo"
+            project_kilo_dir.mkdir(parents=True, exist_ok=True)
+            mcp_path = project_kilo_dir / "mcp.json"
+
+            # Merge with existing config if present
+            existing = {}
+            if mcp_path.exists():
+                try:
+                    existing = json.loads(mcp_path.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    pass
+
+            if "mcpServers" not in existing:
+                existing["mcpServers"] = {}
+            existing["mcpServers"]["fungus"] = fungus_entry
+
+            with open(mcp_path, "w", encoding="utf-8") as f:
+                json.dump(existing, f, indent=2)
+
+            self.logger.info("kilo_mcp_config_written",
+                             path=str(mcp_path),
+                             project_dir=self.working_dir)
         except Exception as e:
             self.logger.warning("kilo_mcp_config_failed", error=str(e))
 
@@ -184,6 +221,8 @@ class KiloCLI:
                 env['PYTHONIOENCODING'] = 'utf-8'
                 # Remove CLAUDECODE env var to prevent "nested session" error
                 env.pop('CLAUDECODE', None)
+                # Fungus MCP: tell it where the project output is
+                env['FUNGUS_PROJECT_DIR'] = self.working_dir
 
                 # kilo run --auto --model X "prompt text"
                 full_cmd = cmd_parts + [sanitized_prompt]
@@ -456,10 +495,17 @@ class KiloCLI:
 
         # Pattern: ```language:path or ```language filename
         patterns = [
-            r'```(\w+):([^\n]+)\n(.*?)```',
-            r'File:\s*([^\n]+)\n```(\w+)\n(.*?)```',
-            r'<!--\s*file:\s*([^\n]+)\s*-->\n```(\w+)\n(.*?)```',
+            r'```(\w+):([^\n]+)\n(.*?)```',                              # ```typescript:src/path.ts
+            r'File:\s*([^\n]+)\n```(\w+)\n(.*?)```',                     # File: path\n```ts
+            r'<!--\s*file:\s*([^\n]+)\s*-->\n```(\w+)\n(.*?)```',        # <!-- file: path -->\n```ts
+            r'// File:\s*([^\n]+)\n```(\w+)\n(.*?)```',                  # // File: path\n```ts
+            r'`([^`]+\.(?:ts|tsx|json|prisma))`[:\s]*\n```(\w+)\n(.*?)```',  # `path.ts`:\n```ts
         ]
+
+        # Also extract from Kilo apply_patch output: "Created `path`" or "Updated...path"
+        apply_patch_files = re.findall(r'Created `([^`]+\.(?:ts|tsx|js|json|prisma))`', output)
+        apply_patch_updated = re.findall(r'Updated the following files:\n(?:A|M)\s+([^\n]+)', output)
+        kilo_file_paths = set(apply_patch_files + apply_patch_updated)
 
         for pattern in patterns:
             matches = re.findall(pattern, output, re.DOTALL)
@@ -476,7 +522,7 @@ class KiloCLI:
                         language=lang.strip(),
                     ))
 
-        # Also look for standalone code blocks
+        # Also look for standalone code blocks — try to infer file path from content
         standalone_pattern = r'```(\w+)\n(.*?)```'
         standalone_matches = re.findall(standalone_pattern, output, re.DOTALL)
 
@@ -485,32 +531,154 @@ class KiloCLI:
         for lang, content in standalone_matches:
             content = content.strip()
             if content not in captured_content:
-                ext_map = {
-                    'python': '.py',
-                    'javascript': '.js',
-                    'typescript': '.ts',
-                    'rust': '.rs',
-                    'go': '.go',
-                    'java': '.java',
-                    'cpp': '.cpp',
-                    'c': '.c',
-                    'html': '.html',
-                    'css': '.css',
-                    'json': '.json',
-                    'yaml': '.yaml',
-                }
-                ext = ext_map.get(lang.lower(), f'.{lang}')
-                # Use context-based prefix for meaningful file names
-                filename = f"{prefix}_{timestamp}_{len(files) + 1}{ext}"
+                # Try to infer file path from code content
+                inferred_path = self._infer_file_path(content, lang)
+
+                if not inferred_path:
+                    ext_map = {
+                        'python': '.py', 'javascript': '.js', 'typescript': '.ts',
+                        'rust': '.rs', 'go': '.go', 'java': '.java',
+                        'cpp': '.cpp', 'c': '.c', 'html': '.html',
+                        'css': '.css', 'json': '.json', 'yaml': '.yaml',
+                        'tsx': '.tsx', 'jsx': '.jsx', 'markdown': '.md',
+                    }
+                    ext = ext_map.get(lang.lower(), f'.{lang}')
+                    inferred_path = f"{prefix}_{timestamp}_{len(files) + 1}{ext}"
 
                 files.append(GeneratedFile(
-                    path=filename,
+                    path=inferred_path,
                     content=content,
                     language=lang,
                 ))
                 captured_content.add(content)
 
         return files
+
+    def _infer_file_path(self, content: str, lang: str) -> Optional[str]:
+        """Infer the correct file path from code content patterns."""
+        # NestJS Controller: @Controller('resource') → src/modules/resource/resource.controller.ts
+        ctrl_match = re.search(r"@Controller\(['\"]/?([^'\"]+)['\"]", content)
+        if ctrl_match:
+            resource = ctrl_match.group(1).strip('/').split('/')[-1]
+            resource = re.sub(r'[^a-z0-9-]', '-', resource.lower()).strip('-')
+            return f"src/modules/{resource}/{resource}.controller.ts"
+
+        # NestJS Service: @Injectable() + class XxxService
+        svc_match = re.search(r"@Injectable\(\)[\s\S]{0,100}class\s+(\w+)Service", content)
+        if svc_match:
+            name = re.sub(r'([A-Z])', r'-\1', svc_match.group(1)).lower().strip('-')
+            return f"src/modules/{name}/{name}.service.ts"
+
+        # NestJS Module: @Module + class XxxModule
+        mod_match = re.search(r"@Module\([\s\S]{0,500}class\s+(\w+)Module", content)
+        if mod_match:
+            name = re.sub(r'([A-Z])', r'-\1', mod_match.group(1)).lower().strip('-')
+            return f"src/modules/{name}/{name}.module.ts"
+
+        # DTO: class CreateXxxDto or class XxxResponseDto
+        dto_match = re.search(r"class\s+(Create|Update|Delete|Get|Find|List)?(\w+?)(Request|Response|Dto|DTO)", content)
+        if dto_match:
+            prefix_word = (dto_match.group(1) or "").lower()
+            name = re.sub(r'([A-Z])', r'-\1', dto_match.group(2)).lower().strip('-')
+            dto_name = f"{prefix_word}-{name}" if prefix_word else name
+            return f"src/modules/{name}/dto/{dto_name}.dto.ts"
+
+        # Guard: @Injectable() + CanActivate
+        if "@Injectable()" in content and "CanActivate" in content:
+            guard_match = re.search(r"class\s+(\w+)Guard", content)
+            if guard_match:
+                name = re.sub(r'([A-Z])', r'-\1', guard_match.group(1)).lower().strip('-')
+                return f"src/guards/{name}.guard.ts"
+
+        # React Component: import React + export default/function XxxPage
+        if "import React" in content or "import {" in content and "from 'react'" in content:
+            comp_match = re.search(r"(?:export default function|function|const)\s+(\w+?)(?:Page|Screen|View|Component)", content)
+            if comp_match:
+                name = comp_match.group(1)
+                return f"src/pages/{name}/{name}.tsx"
+
+        # React Hook: export function useXxx
+        hook_match = re.search(r"export\s+(?:default\s+)?function\s+(use\w+)", content)
+        if hook_match:
+            return f"src/hooks/{hook_match.group(1)}.ts"
+
+        # Validator: class XxxValidator or XxxPipe
+        val_match = re.search(r"class\s+(\w+?)(?:Validator|Pipe|Constraint)", content)
+        if val_match:
+            name = re.sub(r'([A-Z])', r'-\1', val_match.group(1)).lower().strip('-')
+            return f"src/validators/{name}.validator.ts"
+
+        # Test file: describe('Xxx',
+        test_match = re.search(r"describe\(['\"](\w+)", content)
+        if test_match and ("it(" in content or "test(" in content):
+            name = re.sub(r'([A-Z])', r'-\1', test_match.group(1)).lower().strip('-')
+            return f"src/__tests__/{name}.spec.ts"
+
+        # Prisma schema
+        if "generator client" in content and "datasource db" in content:
+            return "prisma/schema.prisma"
+
+        # Comment-based path hint: "// File: src/modules/auth/auth.service.ts"
+        comment_match = re.search(r"//\s*(?:File|Path|Output):\s*(\S+\.(?:ts|tsx|js|json))", content)
+        if comment_match:
+            return comment_match.group(1)
+
+        # Class-name based inference: "class AuthController" → src/modules/auth/auth.controller.ts
+        class_match = re.search(r"class\s+(\w+?)(Controller|Service|Module|Guard|Resolver|Gateway)\b", content)
+        if class_match:
+            raw_name = class_match.group(1)
+            suffix = class_match.group(2).lower()
+            name = re.sub(r'([A-Z])', r'-\1', raw_name).lower().strip('-')
+            if suffix == "guard":
+                return f"src/guards/{name}.guard.ts"
+            return f"src/modules/{name}/{name}.{suffix}.ts"
+
+        # Function component: "export default function ChatRoom" → src/pages/ChatRoom/ChatRoom.tsx
+        func_comp = re.search(r"export\s+(?:default\s+)?function\s+([A-Z]\w+)", content)
+        if func_comp and ("React" in content or "jsx" in lang.lower() or "tsx" in lang.lower()):
+            name = func_comp.group(1)
+            return f"src/pages/{name}/{name}.tsx"
+
+        # E2E test: "describe('EPIC-004" → __tests__/integration/epic_004/
+        epic_test = re.search(r"describe\(['\"]EPIC[- ]?(\d+)", content)
+        if epic_test:
+            num = epic_test.group(1)
+            return f"__tests__/integration/epic_{num}/epic-{num}.integration.spec.ts"
+
+        return None
+
+    def _reroute_frontend_file(self, file_path: Path, content: str) -> Path:
+        """Reroute React/frontend files from src/ to frontend/src/ if misplaced.
+
+        Detects React files by:
+        1. File extension (.tsx) in frontend-specific directories
+        2. React imports in the content
+        Then moves them from src/{pages,components,hooks,api}/ to frontend/src/...
+        """
+        parts = file_path.parts
+        # Already in frontend/ — no rerouting needed
+        if len(parts) > 0 and parts[0] == 'frontend':
+            return file_path
+
+        # Check if this is a React/frontend file misplaced in backend src/
+        FRONTEND_DIRS = {'pages', 'components', 'hooks'}
+        is_frontend_file = False
+
+        if len(parts) >= 2 and parts[0] == 'src' and parts[1] in FRONTEND_DIRS:
+            is_frontend_file = True
+        elif len(parts) >= 2 and parts[0] == 'src' and parts[1] == 'api' and str(file_path).endswith('API.ts'):
+            is_frontend_file = True
+        elif str(file_path).endswith('.tsx') and 'import React' in content or 'from "react"' in content or "from 'react'" in content:
+            # .tsx with React import that's in src/ but not in modules/
+            if len(parts) >= 2 and parts[0] == 'src' and parts[1] != 'modules':
+                is_frontend_file = True
+
+        if is_frontend_file:
+            new_path = Path('frontend') / file_path
+            self.logger.info("frontend_file_rerouted", original=str(file_path), new=str(new_path))
+            return new_path
+
+        return file_path
 
     def _write_files(self, files: list[GeneratedFile]) -> int:
         """Write extracted files to disk."""
@@ -529,6 +697,10 @@ class KiloCLI:
                     continue
 
                 file_path = Path(*parts)
+
+                # Reroute frontend files from src/ to frontend/src/
+                file_path = self._reroute_frontend_file(file_path, file.content)
+
                 full_path = Path(self.working_dir) / file_path
                 full_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -989,10 +1161,12 @@ class KiloCLIPool:
         max_concurrent: int = 5,
         working_dir: Optional[str] = None,
         mode: str = "code",
+        timeout: Optional[int] = None,
     ):
         self.max_concurrent = max_concurrent
         self.working_dir = working_dir
         self.mode = mode
+        self.timeout = timeout
         self._semaphore = asyncio.Semaphore(max_concurrent)
         self.logger = logger.bind(component="kilo_cli_pool")
 

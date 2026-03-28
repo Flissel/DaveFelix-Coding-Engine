@@ -8,11 +8,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: Channel",
       "description": "Define Channel model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#Channel"
       ],
@@ -105,11 +105,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: Community",
       "description": "Define Community model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#Community"
       ],
@@ -202,11 +202,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: Group",
       "description": "Define Group model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#Group"
       ],
@@ -299,11 +299,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: Poll",
       "description": "Define Poll model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#Poll"
       ],
@@ -396,11 +396,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: UserPrivacySetting",
       "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#UserPrivacySetting"
       ],
@@ -493,11 +493,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: group_chat",
       "description": "Define group_chat model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#group_chat"
       ],
@@ -590,11 +590,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: group_member",
       "description": "Define group_member model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#group_member"
       ],
@@ -687,7 +687,7 @@
       "type": "verify_schema",
       "title": "Validate Prisma schema",
       "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-SCHEMA-group_member-model",
         "EPIC-005-SCHEMA-group_member-relations",
@@ -720,7 +720,7 @@
       "type": "checkpoint_schema",
       "title": "Checkpoint: Review Schema",
       "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-schema"
       ],
@@ -751,13 +751,13 @@
       "type": "api_controller",
       "title": "Feature: groups (24 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'groups' with ALL layers:\n- Controller (all 24 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/groups \u2014 Create group chat\n  GET /api/v1/groups/{groupId}/members \u2014 List group members\n  POST /api/v1/groups/{groupId}/members \u2014 Add members to group\n  DELETE /api/v1/groups/{groupId}/members/{memberId} \u2014 Remove member from group\n  PUT /api/v1/groups/{groupId}/roles \u2014 Update member roles\n  GET /api/v1/groups \u2014 List groups\n  GET /api/v1/groups/{groupId} \u2014 Get group details\n  PUT /api/v1/groups/{groupId} \u2014 Update group metadata\n  DELETE /api/v1/groups/{groupId} \u2014 Delete a group\n  PUT /api/v1/groups/{groupId}/owner \u2014 Transfer group ownership\n  POST /api/v1/groups/{groupId}/avatar \u2014 Upload group avatar\n  GET /api/v1/groups/{groupId}/settings \u2014 Get group settings\n  PUT /api/v1/groups/{groupId}/settings \u2014 Update group settings\n  POST /api/v1/groups/{groupId}/invite-links \u2014 Create a group invite link\n  DELETE /api/v1/groups/{groupId}/invite-links/{inviteId} \u2014 Revoke a group invite link\n  DELETE /api/v1/groups/{groupId}/members/me \u2014 Leave group silently\n  POST /api/v1/groups/{groupId}/events \u2014 Create a group event\n  GET /api/v1/groups/{groupId}/events \u2014 List group events\n  GET /api/v1/groups/{groupId}/events/{eventId} \u2014 Get group event details\n  PUT /api/v1/groups/{groupId}/events/{eventId} \u2014 Update a group event\n  DELETE /api/v1/groups/{groupId}/events/{eventId} \u2014 Delete a group event\n  POST /api/v1/groups/{groupId}/events/{eventId}/rsvps \u2014 RSVP to a group event\n  GET /api/v1/groups/{groupId}/settings/invite-policy \u2014 Get group invite policy\n  PUT /api/v1/groups/{groupId}/settings/invite-policy \u2014 Update group invite policy",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 72,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/groups/groups.controller.ts",
         "src/modules/groups/groups.service.ts",
@@ -765,11 +765,11 @@
         "src/modules/groups/dto/"
       ],
       "related_requirements": [
-        "WA-GRP-004",
         "WA-GRP-003",
-        "WA-SET-005",
+        "WA-GRP-001",
         "WA-GRP-002",
-        "WA-GRP-001"
+        "WA-GRP-004",
+        "WA-SET-005"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -785,7 +785,8 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "enrichment_context": null,
+      "status_message": null
     },
     {
       "id": "EPIC-005-API-invite-links-feature",
@@ -793,13 +794,13 @@
       "type": "api_controller",
       "title": "Feature: invite-links (2 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'invite-links' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/invite-links/{inviteToken} \u2014 Get invite link details\n  POST /api/v1/invite-links/{inviteToken}/accept \u2014 Accept a group invite link",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/invite-links/invite-links.controller.ts",
         "src/modules/invite-links/invite-links.service.ts",
@@ -823,7 +824,8 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "enrichment_context": null,
+      "status_message": null
     },
     {
       "id": "EPIC-005-API-communities-feature",
@@ -831,13 +833,13 @@
       "type": "api_controller",
       "title": "Feature: communities (8 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'communities' with ALL layers:\n- Controller (all 8 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/communities \u2014 Create community\n  GET /api/v1/communities \u2014 List communities\n  GET /api/v1/communities/{communityId} \u2014 Get community\n  PUT /api/v1/communities/{communityId} \u2014 Update community\n  DELETE /api/v1/communities/{communityId} \u2014 Delete community\n  POST /api/v1/communities/{communityId}/groups \u2014 Add group to community\n  GET /api/v1/communities/{communityId}/groups \u2014 List community groups\n  DELETE /api/v1/communities/{communityId}/groups/{groupId} \u2014 Remove group from community",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 24,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/communities/communities.controller.ts",
         "src/modules/communities/communities.service.ts",
@@ -869,13 +871,13 @@
       "type": "api_controller",
       "title": "Feature: broadcast-channels (9 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'broadcast-channels' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-channels \u2014 Create a one-way broadcast channel\n  GET /api/v1/broadcast-channels \u2014 List broadcast channels\n  GET /api/v1/broadcast-channels/{channelId} \u2014 Get a broadcast channel\n  PUT /api/v1/broadcast-channels/{channelId} \u2014 Update a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId} \u2014 Delete a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/recipients \u2014 Add recipients to a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId}/recipients \u2014 Remove recipients from a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/messages \u2014 Send a broadcast message\n  GET /api/v1/broadcast-channels/{channelId}/messages \u2014 List broadcast messages",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 27,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/broadcast-channels/broadcast-channels.controller.ts",
         "src/modules/broadcast-channels/broadcast-channels.service.ts",
@@ -907,13 +909,13 @@
       "type": "api_controller",
       "title": "Feature: media (1 endpoints: POST)",
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media \u2014 Upload media for broadcast messages",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/media/media.controller.ts",
         "src/modules/media/media.service.ts",
@@ -945,13 +947,13 @@
       "type": "api_controller",
       "title": "Feature: chats (5 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/polls \u2014 Create a poll in a chat\n  GET /api/v1/chats/{chatId}/polls \u2014 List polls in a chat\n  GET /api/v1/chats/{chatId}/polls/{pollId} \u2014 Get poll details\n  POST /api/v1/chats/{chatId}/polls/{pollId}/votes \u2014 Cast or update a vote\n  POST /api/v1/chats/{chatId}/polls/{pollId}/close \u2014 Close a poll",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/chats/chats.controller.ts",
         "src/modules/chats/chats.service.ts",
@@ -983,7 +985,7 @@
       "type": "verify_build",
       "title": "Build backend",
       "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-API-invite-links-feature",
         "EPIC-005-API-communities-feature",
@@ -1018,7 +1020,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (API)",
       "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-build-api"
       ],
@@ -1049,7 +1051,7 @@
       "type": "verify_integration",
       "title": "Run API integration tests",
       "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-typecheck-api"
       ],
@@ -1080,7 +1082,7 @@
       "type": "docker_build",
       "title": "Build API Docker image",
       "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-typecheck-api",
         "EPIC-005-VERIFY-integration"
@@ -1112,7 +1114,7 @@
       "type": "docker_start",
       "title": "Start API container",
       "description": "Start backend container with docker-compose.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-build-api"
       ],
@@ -1143,7 +1145,7 @@
       "type": "docker_health",
       "title": "API health check",
       "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-start-api"
       ],
@@ -1174,7 +1176,7 @@
       "type": "checkpoint_api",
       "title": "Checkpoint: Review Api",
       "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-build-api",
         "EPIC-005-DOCKER-start-api",
@@ -1207,13 +1209,13 @@
       "type": "fe_page",
       "title": "Page: EPIC005Page",
       "description": "Create EPIC005Page page component implementing 10 user stories.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-api"
       ],
       "estimated_minutes": 20,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/pages/EPIC005Page/EPIC005Page.tsx"
       ],
@@ -1251,7 +1253,7 @@
       "type": "fe_component",
       "title": "Components: EPIC005Page",
       "description": "Create reusable components for EPIC005Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-page"
       ],
@@ -1284,7 +1286,7 @@
       "type": "fe_hook",
       "title": "Hook: useEPIC005Page",
       "description": "Create custom hook for EPIC005Page state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-page"
       ],
@@ -1317,7 +1319,7 @@
       "type": "fe_api_client",
       "title": "API Client: EPIC005Page",
       "description": "Create API client functions for EPIC005Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-hook"
       ],
@@ -1350,7 +1352,7 @@
       "type": "verify_build",
       "title": "Build frontend",
       "description": "Run npm run build for React frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-page",
         "EPIC-005-FE-EPIC005Page-components",
@@ -1384,7 +1386,7 @@
       "type": "verify_lint",
       "title": "Run ESLint",
       "description": "Check code quality with ESLint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-build-fe"
       ],
@@ -1415,7 +1417,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (Frontend)",
       "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-lint"
       ],
@@ -1446,7 +1448,7 @@
       "type": "verify_unit",
       "title": "Run unit tests",
       "description": "Execute vitest unit tests.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-typecheck-fe"
       ],
@@ -1477,7 +1479,7 @@
       "type": "checkpoint_fe",
       "title": "Checkpoint: Review Frontend",
       "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-lint",
         "EPIC-005-VERIFY-typecheck-fe",
@@ -1510,13 +1512,13 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-005",
       "description": "Create Vitest unit tests for all EPIC-005 services and utilities. NO MOCKS - use real implementations.",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-frontend"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "__tests__/unit/epic_005/"
       ],
@@ -1543,7 +1545,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-005",
       "description": "Create Vitest integration tests for EPIC-005 API endpoints with real database.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-TEST-unit"
       ],
@@ -1576,7 +1578,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-005",
       "description": "Create Playwright E2E tests for 10 user stories in EPIC-005.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-005-TEST-integration"
       ],
@@ -1612,7 +1614,8 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "enrichment_context": null,
+      "status_message": null
     },
     {
       "id": "EPIC-005-VERIFY-e2e",
@@ -1620,7 +1623,7 @@
       "type": "verify_e2e",
       "title": "Run E2E tests",
       "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-TEST-unit",
         "EPIC-005-TEST-integration",
@@ -1653,7 +1656,7 @@
       "type": "docker_build",
       "title": "Build production image",
       "description": "Build optimized production Docker image.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-VERIFY-e2e"
       ],
@@ -1684,7 +1687,7 @@
       "type": "docker_start",
       "title": "Start production container",
       "description": "Start full stack in production mode.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-build-prod"
       ],
@@ -1715,7 +1718,7 @@
       "type": "docker_health",
       "title": "Production health check",
       "description": "Verify all services are healthy.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-start-prod"
       ],
@@ -1746,7 +1749,7 @@
       "type": "docker_logs",
       "title": "Collect production logs",
       "description": "Collect logs from all production containers.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-health-prod"
       ],
@@ -1777,7 +1780,7 @@
       "type": "checkpoint_deploy",
       "title": "Checkpoint: Review Deploy",
       "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-DOCKER-start-prod",
         "EPIC-005-DOCKER-health-prod",
@@ -1810,13 +1813,13 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-005",
       "description": "Run all EPIC-005 tests, validate build, and verify all 10 user stories are implemented.",
-      "status": "failed",
+      "status": "running",
       "dependencies": [
         "EPIC-005-CHECKPOINT-deploy"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1833,15 +1836,16 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "enrichment_context": null,
+      "status_message": null
     }
   ],
   "total_tasks": 55,
-  "completed_tasks": 20,
-  "failed_tasks": 16,
-  "progress_percent": 36.36363636363637,
+  "completed_tasks": 8,
+  "failed_tasks": 0,
+  "progress_percent": 14.545454545454545,
   "run_count": 0,
-  "last_run_at": "2026-03-25T14:41:44.739085",
-  "created_at": "2026-03-25T11:32:51.772781",
+  "last_run_at": "2026-03-27T16:32:06.558403",
+  "created_at": "2026-03-26T15:04:41.899455",
   "estimated_total_minutes": 438
 }

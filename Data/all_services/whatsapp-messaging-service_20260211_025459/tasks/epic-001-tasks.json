@@ -8,7 +8,7 @@
       "type": "setup_project",
       "title": "Initialize project structure",
       "description": "Create package.json, tsconfig.json, and project folder structure.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 2,
       "actual_minutes": null,
@@ -42,7 +42,7 @@
       "type": "setup_env",
       "title": "Create .env configuration",
       "description": "Setup 20 environment variables: NODE_ENV, PORT, API_URL, FRONTEND_URL, JWT_SECRET, ... (+15 more)",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-project"
       ],
@@ -76,7 +76,7 @@
       "type": "setup_secrets",
       "title": "Configure 10 secrets",
       "description": "User input needed for: JWT_SECRET, SMTP_USER, SMTP_PASSWORD, S3_ACCESS_KEY, S3_SECRET_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, TWILIO_AUTH_TOKEN, OPENAI_API_KEY, GOOGLE_CLIENT_SECRET",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-env"
       ],
@@ -107,7 +107,7 @@
       "type": "setup_database",
       "title": "Configure database connection",
       "description": "Setup DATABASE_URL in .env and run initial Prisma setup.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-secrets"
       ],
@@ -140,7 +140,7 @@
       "type": "setup_docker",
       "title": "Create Docker configuration",
       "description": "Generate docker-compose.yml with all required services (database, redis, etc.).",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-database"
       ],
@@ -174,7 +174,7 @@
       "type": "setup_deps",
       "title": "Install dependencies",
       "description": "Run npm install for all required packages.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-docker"
       ],
@@ -205,7 +205,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: auth_credential",
       "description": "Define auth_credential model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-deps"
       ],
@@ -238,7 +238,7 @@
       "type": "schema_relations",
       "title": "Define relations for: auth_credential",
       "description": "Set up Prisma relations for auth_credential with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-auth_credential-model"
       ],
@@ -271,7 +271,7 @@
       "type": "schema_migration",
       "title": "Run migration for: auth_credential",
       "description": "Execute prisma migrate dev for auth_credential changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-auth_credential-relations"
       ],
@@ -304,7 +304,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: encryption_session",
       "description": "Define encryption_session model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-deps"
       ],
@@ -337,7 +337,7 @@
       "type": "schema_relations",
       "title": "Define relations for: encryption_session",
       "description": "Set up Prisma relations for encryption_session with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-encryption_session-model"
       ],
@@ -370,13 +370,13 @@
       "type": "schema_migration",
       "title": "Run migration for: encryption_session",
       "description": "Execute prisma migrate dev for encryption_session changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-encryption_session-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_encryption_session/"
       ],
@@ -403,7 +403,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: user",
       "description": "Define user model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-deps"
       ],
@@ -436,7 +436,7 @@
       "type": "schema_relations",
       "title": "Define relations for: user",
       "description": "Set up Prisma relations for user with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-user-model"
       ],
@@ -469,7 +469,7 @@
       "type": "schema_migration",
       "title": "Run migration for: user",
       "description": "Execute prisma migrate dev for user changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-user-relations"
       ],
@@ -502,7 +502,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: user_device",
       "description": "Define user_device model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SETUP-deps"
       ],
@@ -535,7 +535,7 @@
       "type": "schema_relations",
       "title": "Define relations for: user_device",
       "description": "Set up Prisma relations for user_device with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-user_device-model"
       ],
@@ -568,7 +568,7 @@
       "type": "schema_migration",
       "title": "Run migration for: user_device",
       "description": "Execute prisma migrate dev for user_device changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-user_device-relations"
       ],
@@ -601,7 +601,7 @@
       "type": "verify_schema",
       "title": "Validate Prisma schema",
       "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-SCHEMA-user_device-model",
         "EPIC-001-SCHEMA-user_device-relations",
@@ -634,7 +634,7 @@
       "type": "checkpoint_schema",
       "title": "Checkpoint: Review Schema",
       "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-schema"
       ],
@@ -664,8 +664,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: phone-registrations (3 endpoints: POST)",
-      "description": "Generate the COMPLETE NestJS module for 'phone-registrations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/phone-registrations \u2014 Start phone registration\n  POST /api/v1/phone-registrations/{registrationId}/verify \u2014 Verify phone registration\n  POST /api/v1/phone-registrations/{registrationId}/resend-otp \u2014 Resend OTP",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'phone-registrations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/phone-registrations — Start phone registration\n  POST /api/v1/phone-registrations/{registrationId}/verify — Verify phone registration\n  POST /api/v1/phone-registrations/{registrationId}/resend-otp — Resend OTP",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -702,8 +702,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: auth (6 endpoints: POST)",
-      "description": "Generate the COMPLETE NestJS module for 'auth' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/auth/2fa/verify \u2014 Verify 2FA PIN during authentication\n  POST /api/v1/auth/passkeys/registration/options \u2014 Get passkey registration options\n  POST /api/v1/auth/passkeys/registration/verify \u2014 Verify passkey registration\n  POST /api/v1/auth/passkeys/authentication/options \u2014 Get passkey authentication options\n  POST /api/v1/auth/passkeys/authentication/verify \u2014 Verify passkey authentication\n  POST /api/v1/auth/pin/verify \u2014 Verify PIN during two-step verification",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'auth' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/auth/2fa/verify — Verify 2FA PIN during authentication\n  POST /api/v1/auth/passkeys/registration/options — Get passkey registration options\n  POST /api/v1/auth/passkeys/registration/verify — Verify passkey registration\n  POST /api/v1/auth/passkeys/authentication/options — Get passkey authentication options\n  POST /api/v1/auth/passkeys/authentication/verify — Verify passkey authentication\n  POST /api/v1/auth/pin/verify — Verify PIN during two-step verification",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -718,8 +718,8 @@
       ],
       "related_requirements": [
         "WA-AUTH-002",
-        "WA-AUTH-005",
-        "WA-SEC-006"
+        "WA-SEC-006",
+        "WA-AUTH-005"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -742,8 +742,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: users (11 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 11 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/2fa \u2014 Enable 2FA with 6-digit PIN\n  DELETE /api/v1/users/{userId}/2fa \u2014 Disable 2FA\n  GET /api/v1/users/{userId}/2fa \u2014 Get 2FA status\n  GET /api/v1/users/{userId}/passkeys \u2014 List user's passkeys\n  DELETE /api/v1/users/{userId}/passkeys/{credentialId} \u2014 Delete a passkey\n  POST /api/v1/users/{userId}/pin \u2014 Enable additional PIN security\n  PUT /api/v1/users/{userId}/pin \u2014 Update additional PIN\n  DELETE /api/v1/users/{userId}/pin \u2014 Disable additional PIN security\n  GET /api/v1/users/{userId}/pin \u2014 Get PIN security status\n  GET /api/v1/users/{userId}/call-privacy-settings \u2014 Get call privacy settings\n  PUT /api/v1/users/{userId}/call-privacy-settings \u2014 Update call privacy settings",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 11 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/2fa — Enable 2FA with 6-digit PIN\n  DELETE /api/v1/users/{userId}/2fa — Disable 2FA\n  GET /api/v1/users/{userId}/2fa — Get 2FA status\n  GET /api/v1/users/{userId}/passkeys — List user's passkeys\n  DELETE /api/v1/users/{userId}/passkeys/{credentialId} — Delete a passkey\n  POST /api/v1/users/{userId}/pin — Enable additional PIN security\n  PUT /api/v1/users/{userId}/pin — Update additional PIN\n  DELETE /api/v1/users/{userId}/pin — Disable additional PIN security\n  GET /api/v1/users/{userId}/pin — Get PIN security status\n  GET /api/v1/users/{userId}/call-privacy-settings — Get call privacy settings\n  PUT /api/v1/users/{userId}/call-privacy-settings — Update call privacy settings",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -757,10 +757,10 @@
         "src/modules/users/dto/"
       ],
       "related_requirements": [
-        "WA-SEC-008",
         "WA-AUTH-002",
-        "WA-AUTH-005",
-        "WA-SEC-006"
+        "WA-SEC-008",
+        "WA-SEC-006",
+        "WA-AUTH-005"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -783,8 +783,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: biometric (6 endpoints: DELETE, GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'biometric' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/biometric/registration-options \u2014 Create biometric registration challenge\n  POST /api/v1/biometric/credentials \u2014 Enroll biometric credential\n  GET /api/v1/biometric/credentials \u2014 List biometric credentials\n  DELETE /api/v1/biometric/credentials/{credentialId} \u2014 Revoke biometric credential\n  POST /api/v1/biometric/authentication-options \u2014 Create biometric authentication challenge\n  POST /api/v1/biometric/authenticate \u2014 Authenticate with biometrics",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'biometric' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/biometric/registration-options — Create biometric registration challenge\n  POST /api/v1/biometric/credentials — Enroll biometric credential\n  GET /api/v1/biometric/credentials — List biometric credentials\n  DELETE /api/v1/biometric/credentials/{credentialId} — Revoke biometric credential\n  POST /api/v1/biometric/authentication-options — Create biometric authentication challenge\n  POST /api/v1/biometric/authenticate — Authenticate with biometrics",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -821,8 +821,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: devices (6 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'devices' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/devices \u2014 Register a device\n  GET /api/v1/devices \u2014 List registered devices\n  GET /api/v1/devices/{deviceId} \u2014 Get device details\n  PUT /api/v1/devices/{deviceId} \u2014 Update device metadata\n  DELETE /api/v1/devices/{deviceId} \u2014 Revoke a device\n  POST /api/v1/devices/{deviceId}/prekeys \u2014 Upload Signal pre-keys for device",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'devices' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/devices — Register a device\n  GET /api/v1/devices — List registered devices\n  GET /api/v1/devices/{deviceId} — Get device details\n  PUT /api/v1/devices/{deviceId} — Update device metadata\n  DELETE /api/v1/devices/{deviceId} — Revoke a device\n  POST /api/v1/devices/{deviceId}/prekeys — Upload Signal pre-keys for device",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -859,8 +859,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: crypto (2 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'crypto' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/crypto/keys \u2014 Register or update client encryption keys\n  GET /api/v1/crypto/prekeys/{recipientId} \u2014 Fetch recipient prekeys",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'crypto' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/crypto/keys — Register or update client encryption keys\n  GET /api/v1/crypto/prekeys/{recipientId} — Fetch recipient prekeys",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -897,8 +897,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: messages (3 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages \u2014 Send encrypted message\n  GET /api/v1/messages \u2014 Fetch encrypted message queue\n  POST /api/v1/messages/{messageId}/ack \u2014 Acknowledge message delivery",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages — Send encrypted message\n  GET /api/v1/messages — Fetch encrypted message queue\n  POST /api/v1/messages/{messageId}/ack — Acknowledge message delivery",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -935,8 +935,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: security-code-verifications (4 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'security-code-verifications' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/security-code-verifications \u2014 Initiate manual security code verification\n  GET /api/v1/security-code-verifications/{verificationId} \u2014 Get verification session details\n  POST /api/v1/security-code-verifications/{verificationId}/confirm \u2014 Confirm verification result\n  GET /api/v1/security-code-verifications \u2014 List verification sessions",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'security-code-verifications' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/security-code-verifications — Initiate manual security code verification\n  GET /api/v1/security-code-verifications/{verificationId} — Get verification session details\n  POST /api/v1/security-code-verifications/{verificationId}/confirm — Confirm verification result\n  GET /api/v1/security-code-verifications — List verification sessions",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -973,8 +973,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: app-lock (3 endpoints: GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'app-lock' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/app-lock \u2014 Get app lock status\n  PUT /api/v1/app-lock \u2014 Configure app lock\n  POST /api/v1/app-lock/verify \u2014 Verify app lock authentication",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'app-lock' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/app-lock — Get app lock status\n  PUT /api/v1/app-lock — Configure app lock\n  POST /api/v1/app-lock/verify — Verify app lock authentication",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -1011,8 +1011,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: spam-checks (2 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'spam-checks' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/spam-checks \u2014 Create a spam detection job\n  GET /api/v1/spam-checks/{spamCheckId} \u2014 Get spam detection result",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'spam-checks' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/spam-checks — Create a spam detection job\n  GET /api/v1/spam-checks/{spamCheckId} — Get spam detection result",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -1049,8 +1049,8 @@
       "epic_id": "EPIC-001",
       "type": "api_controller",
       "title": "Feature: call-sessions (1 endpoints: POST)",
-      "description": "Generate the COMPLETE NestJS module for 'call-sessions' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-sessions \u2014 Create call session with IP masking",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'call-sessions' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-sessions — Create call session with IP masking",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-schema"
       ],
@@ -1088,7 +1088,7 @@
       "type": "verify_build",
       "title": "Build backend",
       "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-API-messages-feature",
         "EPIC-001-API-security-code-verifications-feature",
@@ -1098,7 +1098,7 @@
       ],
       "estimated_minutes": 3,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1123,13 +1123,13 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (API)",
       "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-build-api"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: unblocking pipeline",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1154,7 +1154,7 @@
       "type": "verify_integration",
       "title": "Run API integration tests",
       "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-api"
       ],
@@ -1185,14 +1185,14 @@
       "type": "docker_build",
       "title": "Build API Docker image",
       "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-api",
         "EPIC-001-VERIFY-integration"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1217,13 +1217,13 @@
       "type": "docker_start",
       "title": "Start API container",
       "description": "Start backend container with docker-compose.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-build-api"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1248,7 +1248,7 @@
       "type": "docker_health",
       "title": "API health check",
       "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-start-api"
       ],
@@ -1279,7 +1279,7 @@
       "type": "checkpoint_api",
       "title": "Checkpoint: Review Api",
       "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-build-api",
         "EPIC-001-DOCKER-start-api",
@@ -1312,7 +1312,7 @@
       "type": "fe_page",
       "title": "Page: LoginPage",
       "description": "Create LoginPage page component implementing 3 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -1349,7 +1349,7 @@
       "type": "fe_component",
       "title": "Components: LoginPage",
       "description": "Create reusable components for LoginPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-LoginPage-page"
       ],
@@ -1382,7 +1382,7 @@
       "type": "fe_hook",
       "title": "Hook: useLoginPage",
       "description": "Create custom hook for LoginPage state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-LoginPage-page"
       ],
@@ -1415,7 +1415,7 @@
       "type": "fe_api_client",
       "title": "API Client: LoginPage",
       "description": "Create API client functions for LoginPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-LoginPage-hook"
       ],
@@ -1448,7 +1448,7 @@
       "type": "fe_form",
       "title": "Form: LoginPageForm",
       "description": "Create form component with validation for LoginPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-LoginPage-components"
       ],
@@ -1481,7 +1481,7 @@
       "type": "fe_page",
       "title": "Page: RegisterPage",
       "description": "Create RegisterPage page component implementing 3 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -1518,7 +1518,7 @@
       "type": "fe_component",
       "title": "Components: RegisterPage",
       "description": "Create reusable components for RegisterPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-page"
       ],
@@ -1551,7 +1551,7 @@
       "type": "fe_hook",
       "title": "Hook: useRegisterPage",
       "description": "Create custom hook for RegisterPage state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-page"
       ],
@@ -1584,7 +1584,7 @@
       "type": "fe_api_client",
       "title": "API Client: RegisterPage",
       "description": "Create API client functions for RegisterPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-hook"
       ],
@@ -1617,7 +1617,7 @@
       "type": "fe_form",
       "title": "Form: RegisterPageForm",
       "description": "Create form component with validation for RegisterPage",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-components"
       ],
@@ -1650,7 +1650,7 @@
       "type": "fe_page",
       "title": "Page: TwoFactorAuth",
       "description": "Create TwoFactorAuth page component implementing 3 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-api"
       ],
@@ -1687,7 +1687,7 @@
       "type": "fe_component",
       "title": "Components: TwoFactorAuth",
       "description": "Create reusable components for TwoFactorAuth",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-page"
       ],
@@ -1720,7 +1720,7 @@
       "type": "fe_hook",
       "title": "Hook: useTwoFactorAuth",
       "description": "Create custom hook for TwoFactorAuth state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-page"
       ],
@@ -1753,7 +1753,7 @@
       "type": "fe_api_client",
       "title": "API Client: TwoFactorAuth",
       "description": "Create API client functions for TwoFactorAuth",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-TwoFactorAuth-hook"
       ],
@@ -1786,7 +1786,7 @@
       "type": "verify_build",
       "title": "Build frontend",
       "description": "Run npm run build for React frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-FE-RegisterPage-form",
         "EPIC-001-FE-TwoFactorAuth-page",
@@ -1821,7 +1821,7 @@
       "type": "verify_lint",
       "title": "Run ESLint",
       "description": "Check code quality with ESLint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-build-fe"
       ],
@@ -1852,7 +1852,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (Frontend)",
       "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-lint"
       ],
@@ -1883,7 +1883,7 @@
       "type": "verify_unit",
       "title": "Run unit tests",
       "description": "Execute vitest unit tests.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-typecheck-fe"
       ],
@@ -1914,7 +1914,7 @@
       "type": "checkpoint_fe",
       "title": "Checkpoint: Review Frontend",
       "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-lint",
         "EPIC-001-VERIFY-typecheck-fe",
@@ -1947,7 +1947,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-001",
       "description": "Create Vitest unit tests for all EPIC-001 services and utilities. NO MOCKS - use real implementations.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-frontend"
       ],
@@ -1980,7 +1980,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-001",
       "description": "Create Vitest integration tests for EPIC-001 API endpoints with real database.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-TEST-unit"
       ],
@@ -2013,7 +2013,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-001",
       "description": "Create Playwright E2E tests for 11 user stories in EPIC-001.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-TEST-integration"
       ],
@@ -2058,7 +2058,7 @@
       "type": "verify_e2e",
       "title": "Run E2E tests",
       "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-TEST-unit",
         "EPIC-001-TEST-integration",
@@ -2091,13 +2091,13 @@
       "type": "docker_build",
       "title": "Build production image",
       "description": "Build optimized production Docker image.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-VERIFY-e2e"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -2122,13 +2122,13 @@
       "type": "docker_start",
       "title": "Start production container",
       "description": "Start full stack in production mode.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-build-prod"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -2153,7 +2153,7 @@
       "type": "docker_health",
       "title": "Production health check",
       "description": "Verify all services are healthy.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-start-prod"
       ],
@@ -2184,7 +2184,7 @@
       "type": "docker_logs",
       "title": "Collect production logs",
       "description": "Collect logs from all production containers.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-health-prod"
       ],
@@ -2215,7 +2215,7 @@
       "type": "checkpoint_deploy",
       "title": "Checkpoint: Review Deploy",
       "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-DOCKER-start-prod",
         "EPIC-001-DOCKER-health-prod",
@@ -2248,7 +2248,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-001",
       "description": "Run all EPIC-001 tests, validate build, and verify all 11 user stories are implemented.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-001-CHECKPOINT-deploy"
       ],
@@ -2275,11 +2275,11 @@
     }
   ],
   "total_tasks": 67,
-  "completed_tasks": 67,
+  "completed_tasks": 0,
   "failed_tasks": 0,
-  "progress_percent": 92.53731343283582,
+  "progress_percent": 0.0,
   "run_count": 0,
-  "last_run_at": "2026-03-25T13:32:45.929049",
-  "created_at": "2026-03-25T11:32:51.600058",
+  "last_run_at": null,
+  "created_at": "2026-03-26T15:04:41.758094",
   "estimated_total_minutes": 567
 }

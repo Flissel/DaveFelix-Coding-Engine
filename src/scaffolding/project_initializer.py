@@ -29,6 +29,7 @@ class ProjectType(Enum):
     REACT_ELECTRON = "react_electron"
     NODE_EXPRESS = "node_express"
     FULLSTACK = "fullstack"  # React frontend + Express backend
+    NESTJS_FULLSTACK = "nestjs_fullstack"  # React frontend + NestJS backend + Prisma
     PYTHON_FASTAPI = "python_fastapi"
     UNKNOWN = "unknown"
 
@@ -114,6 +115,32 @@ class ProjectInitializer:
             "prisma/seed.ts",
             ".claude/CLAUDE.md",
         ],
+        ProjectType.NESTJS_FULLSTACK: [
+            "package.json",
+            "tsconfig.json",
+            "tsconfig.build.json",
+            ".env",
+            "nest-cli.json",
+            "src/main.ts",
+            "src/app.module.ts",
+            "src/app.controller.ts",
+            "src/app.service.ts",
+            "src/prisma.service.ts",
+            "src/prisma/prisma.module.ts",
+            "src/gateway/events.gateway.ts",
+            "src/gateway/events.module.ts",
+            "prisma/schema.prisma",
+            "frontend/package.json",
+            "frontend/tsconfig.json",
+            "frontend/vite.config.ts",
+            "frontend/index.html",
+            "frontend/src/main.tsx",
+            "frontend/src/App.tsx",
+            "frontend/.env",
+            "Dockerfile",
+            ".github/workflows/ci.yml",
+            ".claude/CLAUDE.md",
+        ],
         ProjectType.PYTHON_FASTAPI: [
             "requirements.txt",
             "pyproject.toml",
@@ -129,6 +156,13 @@ class ProjectInitializer:
         ProjectType.REACT_ELECTRON: ["src", "src/main", "src/preload", "src/renderer", "src/components", "public", "tests", ".claude"],
         ProjectType.NODE_EXPRESS: ["src", "src/routes", "src/middleware", "src/utils", "tests", ".claude"],
         ProjectType.FULLSTACK: ["src", "src/components", "src/hooks", "src/api", "src/api/routes", "src/services", "src/types", "src/lib", "public", "tests", "prisma", ".claude"],
+        ProjectType.NESTJS_FULLSTACK: [
+            "src", "src/modules", "src/guards", "src/gateway", "prisma",
+            "frontend/src", "frontend/src/pages", "frontend/src/components",
+            "frontend/src/hooks", "frontend/src/api", "frontend/public",
+            "tests", "__tests__", "__tests__/unit", "__tests__/integration",
+            ".claude",
+        ],
         ProjectType.PYTHON_FASTAPI: ["src", "src/routers", "src/models", "src/utils", "tests", ".claude"],
     }
 
@@ -151,6 +185,11 @@ class ProjectInitializer:
 
         has_frontend = any(ind in req_text for ind in frontend_indicators)
         has_backend = any(ind in req_text for ind in backend_indicators)
+
+        # Check for NestJS specifically
+        nestjs_indicators = ["nestjs", "nest.js", "nest ", "@nestjs"]
+        if any(ind in req_text for ind in nestjs_indicators) and has_frontend:
+            return ProjectType.NESTJS_FULLSTACK
 
         if has_frontend and has_backend:
             return ProjectType.FULLSTACK
@@ -330,6 +369,26 @@ class ProjectInitializer:
             "src/app.py": self._get_fastapi_app(),
             # Claude Code integration
             ".claude/CLAUDE.md": self._get_claude_md(project_name, project_type, requirements),
+            # NestJS Fullstack templates
+            "tsconfig.build.json": self._get_nestjs_tsconfig_build() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "nest-cli.json": self._get_nestjs_cli_json() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/main.ts": self._get_nestjs_main() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/app.module.ts": self._get_nestjs_app_module() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/app.controller.ts": self._get_nestjs_app_controller(project_name) if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/app.service.ts": self._get_nestjs_app_service() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/prisma.service.ts": self._get_nestjs_prisma_service() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/prisma/prisma.module.ts": self._get_nestjs_prisma_module() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/gateway/events.gateway.ts": self._get_nestjs_events_gateway() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "src/gateway/events.module.ts": self._get_nestjs_events_module() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/package.json": self._get_nestjs_frontend_package_json(project_name) if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/tsconfig.json": self._get_nestjs_frontend_tsconfig() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/vite.config.ts": self._get_nestjs_frontend_vite_config() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/index.html": self._get_nestjs_frontend_index_html(project_name) if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/src/main.tsx": self._get_main_tsx() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/src/App.tsx": self._get_nestjs_frontend_app_tsx() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "frontend/.env": self._get_nestjs_frontend_env() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            "Dockerfile": self._get_nestjs_dockerfile() if project_type == ProjectType.NESTJS_FULLSTACK else None,
+            ".github/workflows/ci.yml": self._get_nestjs_ci_yml() if project_type == ProjectType.NESTJS_FULLSTACK else None,
         }
 
         return templates.get(file_path)
@@ -492,6 +551,9 @@ class ProjectInitializer:
                 },
             }, indent=2)
 
+        elif project_type == ProjectType.NESTJS_FULLSTACK:
+            return self._get_nestjs_package_json(base.get("name", "app"))
+
         return json.dumps(base, indent=2)
 
     def _get_tsconfig(self, project_type: ProjectType) -> str:
@@ -525,6 +587,9 @@ class ProjectInitializer:
         if project_type == ProjectType.NODE_EXPRESS:
             base["compilerOptions"]["noEmit"] = False
             base["compilerOptions"]["outDir"] = "./dist"
+
+        if project_type == ProjectType.NESTJS_FULLSTACK:
+            return self._get_nestjs_tsconfig()
 
         return json.dumps(base, indent=2)
 
@@ -1289,6 +1354,24 @@ export default app
         # Generate a random secret key for JWT
         secret_key = secrets.token_urlsafe(32)
 
+        if project_type == ProjectType.NESTJS_FULLSTACK:
+            return f'''# NestJS Backend
+PORT=3000
+NODE_ENV=development
+
+# Database (PostgreSQL via Prisma) — separate DB per app
+DATABASE_URL="postgresql://postgres:postgres@postgres:5432/{db_name}"
+
+# JWT
+JWT_SECRET="{secret_key}"
+JWT_EXPIRY_HOURS=24
+
+# Admin Seed
+ADMIN_EMAIL="admin@{db_name}.com"
+ADMIN_PASSWORD="admin123"
+ADMIN_NAME="Admin User"
+'''
+
         if project_type == ProjectType.FULLSTACK:
             return f'''# Server Configuration
 PORT=3001
@@ -1920,6 +2003,465 @@ coverage/
 
         except Exception as e:
             self.logger.debug("git_commit_error", error=str(e))
+
+
+    # ── NestJS Fullstack Templates ─────────────────────────────────────
+
+    def _get_nestjs_package_json(self, name: str) -> str:
+        return json.dumps({
+            "name": name.lower().replace(" ", "-"),
+            "version": "1.0.0",
+            "private": True,
+            "scripts": {
+                "build": "nest build",
+                "start": "nest start",
+                "start:dev": "nest start --watch",
+                "start:prod": "node dist/main",
+                "test": "jest",
+                "test:e2e": "jest --config ./test/jest-e2e.json",
+                "db:generate": "prisma generate",
+                "db:push": "prisma db push",
+                "db:migrate": "prisma migrate dev",
+            },
+            "dependencies": {
+                "@nestjs/common": "^10.0.0",
+                "@nestjs/config": "^3.0.0",
+                "@nestjs/core": "^10.0.0",
+                "@nestjs/platform-express": "^10.0.0",
+                "@nestjs/websockets": "^10.0.0",
+                "@nestjs/platform-socket.io": "^10.0.0",
+                "@prisma/client": "^5.0.0",
+                "bcryptjs": "^2.4.3",
+                "class-validator": "^0.14.0",
+                "class-transformer": "^0.5.0",
+                "reflect-metadata": "^0.1.13",
+                "rxjs": "^7.8.0",
+                "socket.io": "^4.7.0",
+                "dotenv": "^16.3.0",
+            },
+            "devDependencies": {
+                "@nestjs/cli": "^10.0.0",
+                "@nestjs/schematics": "^10.0.0",
+                "@nestjs/testing": "^10.0.0",
+                "@types/bcryptjs": "^2.4.0",
+                "@types/express": "^4.17.0",
+                "@types/node": "^20.0.0",
+                "prisma": "^5.0.0",
+                "tsx": "^4.7.0",
+                "typescript": "^5.3.0",
+                "ts-loader": "^9.5.0",
+                "ts-node": "^10.9.0",
+            },
+            "prisma": {"seed": "ts-node prisma/seed.ts"},
+        }, indent=2)
+
+    def _get_nestjs_tsconfig(self) -> str:
+        return json.dumps({
+            "compilerOptions": {
+                "module": "commonjs",
+                "declaration": True,
+                "removeComments": True,
+                "emitDecoratorMetadata": True,
+                "experimentalDecorators": True,
+                "allowSyntheticDefaultImports": True,
+                "target": "ES2021",
+                "sourceMap": True,
+                "outDir": "./dist",
+                "baseUrl": "./",
+                "incremental": True,
+                "skipLibCheck": True,
+                "strictNullChecks": False,
+                "noImplicitAny": False,
+                "strictBindCallApply": False,
+                "forceConsistentCasingInFileNames": False,
+                "noFallthroughCasesInSwitch": False,
+                "strictPropertyInitialization": False,
+            },
+        }, indent=2)
+
+    def _get_nestjs_tsconfig_build(self) -> str:
+        return json.dumps({
+            "extends": "./tsconfig.json",
+            "exclude": ["node_modules", "test", "dist", "**/*spec.ts", "frontend"],
+        }, indent=2)
+
+    def _get_nestjs_cli_json(self) -> str:
+        return json.dumps({
+            "$schema": "https://json.schemastore.org/nest-cli",
+            "collection": "@nestjs/schematics",
+            "sourceRoot": "src",
+            "compilerOptions": {"deleteOutDir": True},
+        }, indent=2)
+
+    def _get_nestjs_main(self) -> str:
+        return """import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: ['http://localhost:3100', 'http://localhost:3201'],
+    credentials: true,
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({ transform: true, whitelist: true }),
+  );
+
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port);
+  console.log(`NestJS running on port ${port}`);
+}
+
+void bootstrap();
+"""
+
+    def _get_nestjs_events_gateway(self) -> str:
+        """Generate WebSocket gateway for real-time events."""
+        return """import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  ConnectedSocket,
+  MessageBody,
+} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
+
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:3100', 'http://localhost:3201'],
+    credentials: true,
+  },
+  namespace: '/events',
+})
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer() server: Server;
+  private readonly logger = new Logger(EventsGateway.name);
+  private connectedUsers = new Map<string, string>(); // socketId -> userId
+
+  handleConnection(client: Socket) {
+    this.logger.log(`Client connected: ${client.id}`);
+  }
+
+  handleDisconnect(client: Socket) {
+    const userId = this.connectedUsers.get(client.id);
+    this.connectedUsers.delete(client.id);
+    if (userId) {
+      this.server.emit('user:offline', { userId });
+    }
+    this.logger.log(`Client disconnected: ${client.id}`);
+  }
+
+  @SubscribeMessage('auth')
+  handleAuth(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string },
+  ) {
+    this.connectedUsers.set(client.id, data.userId);
+    client.join(`user:${data.userId}`);
+    this.server.emit('user:online', { userId: data.userId });
+    return { event: 'auth', data: { success: true } };
+  }
+
+  @SubscribeMessage('join:chat')
+  handleJoinChat(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { chatId: string },
+  ) {
+    client.join(`chat:${data.chatId}`);
+    return { event: 'join:chat', data: { chatId: data.chatId } };
+  }
+
+  @SubscribeMessage('leave:chat')
+  handleLeaveChat(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { chatId: string },
+  ) {
+    client.leave(`chat:${data.chatId}`);
+  }
+
+  @SubscribeMessage('typing')
+  handleTyping(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { chatId: string; userId: string },
+  ) {
+    client.to(`chat:${data.chatId}`).emit('typing', data);
+  }
+
+  // Utility: emit to specific user
+  emitToUser(userId: string, event: string, data: unknown) {
+    this.server.to(`user:${userId}`).emit(event, data);
+  }
+
+  // Utility: emit to chat room
+  emitToChat(chatId: string, event: string, data: unknown) {
+    this.server.to(`chat:${chatId}`).emit(event, data);
+  }
+
+  // Utility: broadcast new message
+  notifyNewMessage(chatId: string, message: unknown) {
+    this.emitToChat(chatId, 'message:new', message);
+  }
+}
+"""
+
+    def _get_nestjs_events_module(self) -> str:
+        """Generate WebSocket events module."""
+        return """import { Module, Global } from '@nestjs/common';
+import { EventsGateway } from './events.gateway';
+
+@Global()
+@Module({
+  providers: [EventsGateway],
+  exports: [EventsGateway],
+})
+export class EventsModule {}
+"""
+
+    def _get_nestjs_app_module(self) -> str:
+        return """import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { EventsModule } from './gateway/events.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+    PrismaModule,
+    EventsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+"""
+
+    def _get_nestjs_app_controller(self, name: str) -> str:
+        return f"""import {{ Controller, Get }} from '@nestjs/common';
+import {{ AppService }} from './app.service';
+
+@Controller()
+export class AppController {{
+  constructor(private readonly appService: AppService) {{}}
+
+  @Get()
+  getInfo() {{
+    return {{ message: '{name} is running' }};
+  }}
+
+  @Get('health')
+  health() {{
+    return {{ status: 'ok', timestamp: new Date().toISOString() }};
+  }}
+}}
+"""
+
+    def _get_nestjs_app_service(self) -> str:
+        return """import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AppService {}
+"""
+
+    def _get_nestjs_prisma_service(self) -> str:
+        return """import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await this.$connect();
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+}
+"""
+
+    def _get_nestjs_prisma_module(self) -> str:
+        return """import { Global, Module } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+"""
+
+    def _get_nestjs_frontend_package_json(self, name: str) -> str:
+        return json.dumps({
+            "name": f"{name.lower().replace(' ', '-')}-frontend",
+            "private": True,
+            "version": "0.1.0",
+            "type": "module",
+            "scripts": {
+                "dev": "vite",
+                "build": "vite build",
+                "preview": "vite preview",
+            },
+            "dependencies": {
+                "react": "^18.3.1",
+                "react-dom": "^18.3.1",
+                "react-router-dom": "^6.23.1",
+            },
+            "devDependencies": {
+                "@types/react": "^18.3.3",
+                "@types/react-dom": "^18.3.0",
+                "@vitejs/plugin-react": "^4.3.1",
+                "typescript": "^5.5.3",
+                "vite": "^5.4.0",
+            },
+        }, indent=2)
+
+    def _get_nestjs_frontend_tsconfig(self) -> str:
+        return json.dumps({
+            "compilerOptions": {
+                "target": "ES2020",
+                "useDefineForClassFields": True,
+                "lib": ["ES2020", "DOM", "DOM.Iterable"],
+                "module": "ESNext",
+                "skipLibCheck": True,
+                "moduleResolution": "bundler",
+                "allowImportingTsExtensions": True,
+                "resolveJsonModule": True,
+                "isolatedModules": True,
+                "noEmit": True,
+                "jsx": "react-jsx",
+                "strict": False,
+            },
+            "include": ["src"],
+        }, indent=2)
+
+    def _get_nestjs_frontend_vite_config(self) -> str:
+        return """import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: { host: '0.0.0.0', port: 3100 },
+});
+"""
+
+    def _get_nestjs_frontend_index_html(self, name: str) -> str:
+        return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{name}</title></head>
+<body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body>
+</html>
+"""
+
+    def _get_nestjs_frontend_app_tsx(self) -> str:
+        return """import React from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+function Home() {
+  return (
+    <div style={{minHeight:'100vh',background:'#0a0a0a',color:'#fff',fontFamily:'system-ui',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+      <h1 style={{fontSize:'2rem',marginBottom:'1rem'}}>App</h1>
+      <p style={{color:'#888'}}>Frontend pages will be generated here.</p>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+"""
+
+    def _get_nestjs_frontend_env(self) -> str:
+        return "VITE_API_BASE_URL=http://localhost:3201\n"
+
+    def _get_nestjs_dockerfile(self) -> str:
+        return '''# Multi-stage build for NestJS + React frontend
+FROM node:20-alpine AS backend-build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+COPY prisma ./prisma
+RUN npx prisma generate
+COPY tsconfig*.json nest-cli.json ./
+COPY src ./src
+RUN npm run build
+
+FROM node:20-alpine AS frontend-build
+WORKDIR /app
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend ./
+RUN npm run build
+
+FROM node:20-alpine AS production
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=backend-build /app/dist ./dist
+COPY --from=backend-build /app/node_modules ./node_modules
+COPY --from=backend-build /app/prisma ./prisma
+COPY --from=backend-build /app/package.json ./
+COPY --from=frontend-build /app/dist ./frontend/dist
+EXPOSE 3000
+CMD ["node", "dist/main.js"]
+'''
+
+    def _get_nestjs_ci_yml(self) -> str:
+        return '''name: CI
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci --legacy-peer-deps
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npm test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run: { working-directory: frontend }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci
+      - run: npx vite build
+'''
 
 
 async def initialize_project(

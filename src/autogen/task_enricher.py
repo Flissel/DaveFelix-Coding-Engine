@@ -1202,12 +1202,31 @@ class TaskEnricher:
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     def _save_enriched_tasks(self, task_list: Any):
-        """Save enriched tasks to epic-{id}-tasks-enriched.json."""
+        """Save enriched tasks to epic-{id}-tasks-enriched.json.
+        Preserves existing task status (completed/failed) from previous runs."""
         tasks_dir = self.project_path / "tasks"
         if not tasks_dir.exists():
             tasks_dir.mkdir(parents=True, exist_ok=True)
 
         output_path = tasks_dir / f"{task_list.epic_id.lower()}-tasks-enriched.json"
+
+        # Preserve existing task statuses from previous runs
+        existing_statuses = {}
+        if output_path.exists():
+            try:
+                old_data = json.loads(output_path.read_text(encoding="utf-8"))
+                for t in old_data.get("tasks", []):
+                    tid = t.get("id", "")
+                    status = t.get("status", "pending")
+                    if status in ("completed", "verified"):
+                        existing_statuses[tid] = status
+            except Exception:
+                pass
+
+        # Apply preserved statuses to current task list
+        for task in task_list.tasks:
+            if task.id in existing_statuses and task.status not in ("completed", "verified"):
+                task.status = existing_statuses[task.id]
 
         tasks_data = {
             "epic_id": task_list.epic_id,

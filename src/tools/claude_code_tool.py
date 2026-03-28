@@ -321,7 +321,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             if KiloCLI is not None:
                 try:
                     self.cli = KiloCLI(working_dir=working_dir, timeout=self.timeout)
-                    self.cli_pool = KiloCLIPool(max_concurrent=max_concurrent, working_dir=working_dir)
+                    self.cli_pool = KiloCLIPool(max_concurrent=max_concurrent, working_dir=working_dir, timeout=self.timeout)
                     self._using_kilo = True
                     self.logger.info(
                         "backend_selected",
@@ -1205,10 +1205,18 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             full_prompt=full_prompt,
         )
 
-        # Execute via OpenRouter (primary) > SDK > CLI (fallback)
+        # Execute via Kilo (primary if configured) > OpenRouter > SDK > CLI (fallback)
         import time
         start_time = time.time()
-        if self._using_openrouter:
+        if self._using_kilo:
+            # Kilo CLI: uses --auto (no root restriction like Claude CLI)
+            result = await self._execute_via_cli(
+                full_prompt,
+                agent_type=agent_type,
+                claude_agent=claude_agent,
+                max_turns=max_turns,
+            )
+        elif self._using_openrouter:
             result = await self._execute_via_openrouter(full_prompt, agent_type=agent_type)
         elif self._using_sdk and self._sdk_backend:
             result = await self._execute_via_sdk(full_prompt, context_files)

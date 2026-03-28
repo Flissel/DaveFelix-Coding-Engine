@@ -1,7 +1,7 @@
 {
   "epic_id": "EPIC-002",
   "epic_name": "Profil- und Identitätsverwaltung",
-  "enrichment_timestamp": "2026-03-25T20:57:55.468648",
+  "enrichment_timestamp": "2026-03-27T17:02:31.305934",
   "enrichment_stats": {
     "total_tasks": 38,
     "tasks_with_requirements": 9,
@@ -972,28 +972,23 @@
         "src/modules/users/dto/"
       ],
       "related_requirements": [
-        "WA-SET-002",
         "WA-PROF-005",
+        "WA-PROF-001",
+        "WA-SET-002",
         "WA-SET-004",
-        "WA-PROF-003",
-        "WA-PROF-001"
+        "WA-SET-003"
       ],
       "related_user_stories": [
         "US-006",
-        "US-008",
         "US-010",
         "US-081",
+        "US-082",
         "US-083"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; User can: einen scanbaren QR-Code zu meinem Profil anzeigen und herunterladen; User can: die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren; Address: Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen.; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen scanbaren QR-Code zu meinem Profil anzeigen und herunterladen; User can: ein Profilbild hochladen und verwalten; User can: Lesebestätigungen pro Konversation ein- oder ausschalten; Address: Ergänzen Sie Kontakt-Sync, Suche, Block/Report und Einladungen.; Address: Ergänzen Sie Dateitypen/Größen, Upload-Fehlerbehandlung und Richtlinien.",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Config as Konfiguration\n\n    User->>System: Anfrage zur Lesebestätigung\n    System->>Config: Konfiguration abrufen\n    Config-->>System: Lesebestätigungseinstellungen\n    System-->>User: Lesebestätigung anzeigen\n    User->>System: Lesebestätigung bestätigen\n    System-->>User: Bestätigung gespeichert",
-            "file": "WA-SET-002_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant QRCodeGenerator as QR-Code Generator\n\n    User->>System: Anfrage zum Hinzufügen\n    System->>QRCodeGenerator: Generiere QR-Code\n    QRCodeGenerator-->>System: QR-Code generiert\n    System-->>User: Zeige QR-Code an",
@@ -1003,6 +998,11 @@
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User\n    participant System\n\n    User->>System: Upload Profilbild\n    System-->>User: Bestätigung des Uploads\n    User->>System: Zeige Profilbild an\n    System-->>User: Profilbild anzeigen\n    User->>System: Ändere Profilbild\n    System-->>User: Bestätigung der Änderung\n    User->>System: Lösche Profilbild\n    System-->>User: Bestätigung des Löschens",
             "file": "WA-PROF-001_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Config as Konfiguration\n\n    User->>System: Anfrage zur Lesebestätigung\n    System->>Config: Konfiguration abrufen\n    Config-->>System: Lesebestätigungseinstellungen\n    System-->>User: Lesebestätigung anzeigen\n    User->>System: Lesebestätigung bestätigen\n    System-->>User: Bestätigung gespeichert",
+            "file": "WA-SET-002_sequence.mmd"
           }
         ],
         "known_gaps": [
@@ -1021,15 +1021,6 @@
         ],
         "user_story_details": [
           {
-            "id": "US-081",
-            "title": "Lesebestaetigung",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
-            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
-          },
-          {
             "id": "US-010",
             "title": "QR-Code Profil",
             "priority": "should",
@@ -1039,13 +1030,22 @@
             "so_that": "damit Kunden mich schnell und plattformübergreifend hinzufügen können"
           },
           {
-            "id": "US-083",
-            "title": "Info-Sichtbarkeit",
+            "id": "US-006",
+            "title": "Profilbild",
             "priority": "must",
             "description": "",
-            "as_a": "Support-Administrator",
-            "i_want": "die Sichtbarkeit von Info- und Status-Texten für definierte Nutzergruppen konfigurieren",
-            "so_that": "damit sensible Informationen geschützt und gleichzeitig eine klare, professionelle Kommunikation sichergestellt wird"
+            "as_a": "registrierter Benutzer",
+            "i_want": "ein Profilbild hochladen und verwalten",
+            "so_that": "damit mein Profil professionell wirkt und ich leichter erkannt werde"
+          },
+          {
+            "id": "US-081",
+            "title": "Lesebestaetigung",
+            "priority": "must",
+            "description": "",
+            "as_a": "Business-Nutzer",
+            "i_want": "Lesebestätigungen pro Konversation ein- oder ausschalten",
+            "so_that": "damit ich die Kommunikationsqualität steuern und Datenschutzanforderungen einhalten kann"
           }
         ]
       }

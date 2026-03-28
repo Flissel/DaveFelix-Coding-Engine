@@ -216,6 +216,24 @@ async def run(args):
         "task_results_file": str(task_status_file),
     }, indent=2))
 
+    # ── Post-Generation Fixes ──────────────────────────────────────────
+    # Automatically fix common NestJS/React issues in the generated project
+    try:
+        from src.postgen.fix_nestjs_project import fix_nestjs_project
+        logger.info("Running post-generation fixes on %s ...", output_dir)
+        postgen_result = fix_nestjs_project(output_dir)
+        fixes = postgen_result.get("fixes_applied", [])
+        ts_errs = postgen_result.get("ts_errors", -1)
+        vite_errs = postgen_result.get("vite_errors", -1)
+        logger.info(
+            "Post-gen complete: %d fixes applied, %d TS errors, %d Vite errors",
+            len(fixes), ts_errs, vite_errs,
+        )
+        for fix in fixes:
+            logger.info("  [postgen] %s", fix)
+    except Exception as postgen_err:
+        logger.warning("Post-generation fixes failed: %s", postgen_err)
+
     # Remove lock file
     lock_file = Path(output_dir) / ".generation_running"
     lock_file.unlink(missing_ok=True)
@@ -328,6 +346,30 @@ async def _auto_fix_between_epics(output_dir: str, epic_id: str, result):
             )
         except Exception:
             pass
+
+    # ── 4. TypeScript build check ──
+    try:
+        tsc_result = _sp.run(
+            ["npx", "tsc", "--noEmit"],
+            cwd=str(output_path),
+            capture_output=True, text=True, timeout=60,
+        )
+        error_count = tsc_result.stdout.count("error TS") + tsc_result.stderr.count("error TS")
+        if error_count > 0:
+            logger.warning("Auto-fix: %d TypeScript errors after %s", error_count, epic_id)
+        else:
+            logger.info("Auto-fix: TypeScript clean after %s", epic_id)
+    except Exception as e:
+        logger.debug("Auto-fix: tsc check failed: %s", e)
+
+    # ── 5. Run postgen fixes (modules, prisma imports, frontend routing) ──
+    try:
+        from src.postgen.fix_nestjs_project import fix_nestjs_project
+        postgen = fix_nestjs_project(str(output_path))
+        if postgen.get("fixes_applied"):
+            logger.info("Auto-fix: postgen applied %d fixes after %s", len(postgen["fixes_applied"]), epic_id)
+    except Exception as e:
+        logger.debug("Auto-fix: postgen failed: %s", e)
 
     logger.info("Auto-fix: done for %s", epic_id)
 

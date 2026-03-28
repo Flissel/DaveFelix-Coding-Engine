@@ -67,17 +67,17 @@ services:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/coding_engine
       - REDIS_URL=redis://redis:6379/0
       - GIT_SERVER_URL=http://gitea:3000
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - LLM_BACKEND=openai
-      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
-      - DISCORD_BOT_TOKEN_ANALYZER=${DISCORD_BOT_TOKEN_ANALYZER}
+      - LLM_BACKEND=kilo
       - DISCORD_CHANNEL_ID=1484160715580510242
       - DISCORD_CH_DEV_TASKS=1484193408955322399
       - DISCORD_CH_PRS=${DISCORD_CH_PRS:-1485666130474303562}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - GH_TOKEN=${GITHUB_TOKEN}
+    secrets:
+      - openai_api_key
+      - anthropic_api_key
+      - openrouter_api_key
+      - github_token
+      - discord_bot_token
+      - discord_bot_token_analyzer
     volumes:
       - ./src:/app/src
       - ./mcp_plugins:/app/mcp_plugins
@@ -87,6 +87,7 @@ services:
       - artifact_data:/data/artifacts
       - ./Data:/app/Data
       - ./Data/generated:/app/output
+      - ./config/kilo:/root/.kilocode
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       resources:
@@ -112,7 +113,7 @@ services:
     ports:
       - "6090:6090"   # noVNC web client (VNC + Android Emulator)
       - "3100:3100"   # App preview (Expo Web / static files)
-      - "3200:3000"   # Backend dev server (NestJS/FastAPI)
+      - "3201:3000"   # Backend dev server (NestJS/FastAPI) — 3200 taken by ExpressVPN
     volumes:
       - ./Data:/workspace/data
       - ./Data/generated:/workspace/app
@@ -268,11 +269,18 @@ volumes:
   automation_ui_data:
   vscode_extensions:
 
-# Secrets from .env file (docker-compose v3.1+)
-# In Swarm mode, use external secrets instead
+# Docker Secrets — all sensitive keys
+# In compose mode: reads from .env via environment directive
+# In Swarm mode: use `docker secret create` + external: true
 secrets:
+  openai_api_key:
+    environment: OPENAI_API_KEY
+  anthropic_api_key:
+    environment: ANTHROPIC_API_KEY
   openrouter_api_key:
     environment: OPENROUTER_API_KEY
+  github_token:
+    environment: GITHUB_TOKEN
   discord_bot_token:
     environment: DISCORD_BOT_TOKEN
   discord_bot_token_analyzer:

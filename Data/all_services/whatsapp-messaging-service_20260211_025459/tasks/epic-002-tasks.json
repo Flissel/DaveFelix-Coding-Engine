@@ -1,6 +1,6 @@
 {
   "epic_id": "EPIC-002",
-  "epic_name": "Profil- und Identit\u00e4tsverwaltung",
+  "epic_name": "Profil- und Identitätsverwaltung",
   "tasks": [
     {
       "id": "EPIC-002-SCHEMA-UserPrivacySetting-model",
@@ -8,7 +8,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: UserPrivacySetting",
       "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -39,7 +39,7 @@
       "type": "schema_relations",
       "title": "Define relations for: UserPrivacySetting",
       "description": "Set up Prisma relations for UserPrivacySetting with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-UserPrivacySetting-model"
       ],
@@ -72,13 +72,13 @@
       "type": "schema_migration",
       "title": "Run migration for: UserPrivacySetting",
       "description": "Execute prisma migrate dev for UserPrivacySetting changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-UserPrivacySetting-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_userprivacysetting/"
       ],
@@ -105,7 +105,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: user_profile",
       "description": "Define user_profile model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -136,7 +136,7 @@
       "type": "schema_relations",
       "title": "Define relations for: user_profile",
       "description": "Set up Prisma relations for user_profile with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-user_profile-model"
       ],
@@ -169,13 +169,13 @@
       "type": "schema_migration",
       "title": "Run migration for: user_profile",
       "description": "Execute prisma migrate dev for user_profile changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-user_profile-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_user_profile/"
       ],
@@ -202,7 +202,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: whatsapp_user",
       "description": "Define whatsapp_user model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -233,7 +233,7 @@
       "type": "schema_relations",
       "title": "Define relations for: whatsapp_user",
       "description": "Set up Prisma relations for whatsapp_user with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-model"
       ],
@@ -266,13 +266,13 @@
       "type": "schema_migration",
       "title": "Run migration for: whatsapp_user",
       "description": "Execute prisma migrate dev for whatsapp_user changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_whatsapp_user/"
       ],
@@ -299,7 +299,7 @@
       "type": "verify_schema",
       "title": "Validate Prisma schema",
       "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-SCHEMA-whatsapp_user-model",
         "EPIC-002-SCHEMA-whatsapp_user-relations",
@@ -332,7 +332,7 @@
       "type": "checkpoint_schema",
       "title": "Checkpoint: Review Schema",
       "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-schema"
       ],
@@ -362,8 +362,8 @@
       "epic_id": "EPIC-002",
       "type": "api_controller",
       "title": "Feature: users (20 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 20 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/profile-images \u2014 Upload profile image\n  GET /api/v1/users/{userId}/profile-images/current \u2014 Get current profile image\n  PUT /api/v1/users/{userId}/profile-images/current \u2014 Replace current profile image\n  DELETE /api/v1/users/{userId}/profile-images/current \u2014 Delete current profile image\n  GET /api/v1/users/{userId}/profile \u2014 Get user profile\n  PUT /api/v1/users/{userId}/profile/display-name \u2014 Update display name\n  GET /api/v1/users/{userId}/profile/info-text \u2014 Get profile info text\n  PUT /api/v1/users/{userId}/profile/info-text \u2014 Update profile info text\n  POST /api/v1/users/{userId}/qr-codes \u2014 Generate a new profile QR code\n  GET /api/v1/users/{userId}/qr-codes/{qrCodeId} \u2014 Retrieve a profile QR code\n  GET /api/v1/users/{userId}/presence-visibility \u2014 Get online status visibility setting\n  PUT /api/v1/users/{userId}/presence-visibility \u2014 Update online status visibility setting\n  GET /api/v1/users/{userId}/presence-visibility/allowed-users \u2014 List users allowed to see online status\n  GET /api/v1/users/{userId}/presence-visibility/denied-users \u2014 List users denied to see online status\n  GET /api/v1/users/{userId}/settings/read-receipts \u2014 Get read receipt settings\n  PUT /api/v1/users/{userId}/settings/read-receipts \u2014 Update read receipt settings\n  GET /api/v1/users/{userId}/settings/profile-picture-visibility \u2014 Get profile picture visibility setting\n  PUT /api/v1/users/{userId}/settings/profile-picture-visibility \u2014 Update profile picture visibility setting\n  GET /api/v1/users/{userId}/privacy/infoVisibility \u2014 Get info/status text visibility settings\n  PUT /api/v1/users/{userId}/privacy/infoVisibility \u2014 Update info/status text visibility settings",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 20 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/profile-images — Upload profile image\n  GET /api/v1/users/{userId}/profile-images/current — Get current profile image\n  PUT /api/v1/users/{userId}/profile-images/current — Replace current profile image\n  DELETE /api/v1/users/{userId}/profile-images/current — Delete current profile image\n  GET /api/v1/users/{userId}/profile — Get user profile\n  PUT /api/v1/users/{userId}/profile/display-name — Update display name\n  GET /api/v1/users/{userId}/profile/info-text — Get profile info text\n  PUT /api/v1/users/{userId}/profile/info-text — Update profile info text\n  POST /api/v1/users/{userId}/qr-codes — Generate a new profile QR code\n  GET /api/v1/users/{userId}/qr-codes/{qrCodeId} — Retrieve a profile QR code\n  GET /api/v1/users/{userId}/presence-visibility — Get online status visibility setting\n  PUT /api/v1/users/{userId}/presence-visibility — Update online status visibility setting\n  GET /api/v1/users/{userId}/presence-visibility/allowed-users — List users allowed to see online status\n  GET /api/v1/users/{userId}/presence-visibility/denied-users — List users denied to see online status\n  GET /api/v1/users/{userId}/settings/read-receipts — Get read receipt settings\n  PUT /api/v1/users/{userId}/settings/read-receipts — Update read receipt settings\n  GET /api/v1/users/{userId}/settings/profile-picture-visibility — Get profile picture visibility setting\n  PUT /api/v1/users/{userId}/settings/profile-picture-visibility — Update profile picture visibility setting\n  GET /api/v1/users/{userId}/privacy/infoVisibility — Get info/status text visibility settings\n  PUT /api/v1/users/{userId}/privacy/infoVisibility — Update info/status text visibility settings",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-CHECKPOINT-schema"
       ],
@@ -377,11 +377,11 @@
         "src/modules/users/dto/"
       ],
       "related_requirements": [
-        "WA-SET-002",
         "WA-PROF-005",
+        "WA-PROF-001",
+        "WA-SET-002",
         "WA-SET-004",
-        "WA-PROF-003",
-        "WA-PROF-001"
+        "WA-SET-003"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -405,13 +405,13 @@
       "type": "verify_build",
       "title": "Build backend",
       "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-API-users-feature"
       ],
       "estimated_minutes": 3,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: unblocking pipeline",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -436,7 +436,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (API)",
       "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-build-api"
       ],
@@ -467,7 +467,7 @@
       "type": "verify_integration",
       "title": "Run API integration tests",
       "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-typecheck-api"
       ],
@@ -498,14 +498,14 @@
       "type": "docker_build",
       "title": "Build API Docker image",
       "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-typecheck-api",
         "EPIC-002-VERIFY-integration"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -530,13 +530,13 @@
       "type": "docker_start",
       "title": "Start API container",
       "description": "Start backend container with docker-compose.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-build-api"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -561,7 +561,7 @@
       "type": "docker_health",
       "title": "API health check",
       "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-start-api"
       ],
@@ -592,7 +592,7 @@
       "type": "checkpoint_api",
       "title": "Checkpoint: Review Api",
       "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-build-api",
         "EPIC-002-DOCKER-start-api",
@@ -625,7 +625,7 @@
       "type": "fe_page",
       "title": "Page: EPIC002Page",
       "description": "Create EPIC002Page page component implementing 9 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-CHECKPOINT-api"
       ],
@@ -668,7 +668,7 @@
       "type": "fe_component",
       "title": "Components: EPIC002Page",
       "description": "Create reusable components for EPIC002Page",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-FE-EPIC002Page-page"
       ],
@@ -701,7 +701,7 @@
       "type": "fe_hook",
       "title": "Hook: useEPIC002Page",
       "description": "Create custom hook for EPIC002Page state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-FE-EPIC002Page-page"
       ],
@@ -734,7 +734,7 @@
       "type": "fe_api_client",
       "title": "API Client: EPIC002Page",
       "description": "Create API client functions for EPIC002Page",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-FE-EPIC002Page-hook"
       ],
@@ -767,7 +767,7 @@
       "type": "verify_build",
       "title": "Build frontend",
       "description": "Run npm run build for React frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-FE-EPIC002Page-page",
         "EPIC-002-FE-EPIC002Page-components",
@@ -801,7 +801,7 @@
       "type": "verify_lint",
       "title": "Run ESLint",
       "description": "Check code quality with ESLint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-build-fe"
       ],
@@ -832,7 +832,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (Frontend)",
       "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-lint"
       ],
@@ -863,7 +863,7 @@
       "type": "verify_unit",
       "title": "Run unit tests",
       "description": "Execute vitest unit tests.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-typecheck-fe"
       ],
@@ -894,7 +894,7 @@
       "type": "checkpoint_fe",
       "title": "Checkpoint: Review Frontend",
       "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-lint",
         "EPIC-002-VERIFY-typecheck-fe",
@@ -927,7 +927,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-002",
       "description": "Create Vitest unit tests for all EPIC-002 services and utilities. NO MOCKS - use real implementations.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-CHECKPOINT-frontend"
       ],
@@ -960,7 +960,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-002",
       "description": "Create Vitest integration tests for EPIC-002 API endpoints with real database.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-TEST-unit"
       ],
@@ -993,7 +993,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-002",
       "description": "Create Playwright E2E tests for 9 user stories in EPIC-002.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-TEST-integration"
       ],
@@ -1036,7 +1036,7 @@
       "type": "verify_e2e",
       "title": "Run E2E tests",
       "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-TEST-unit",
         "EPIC-002-TEST-integration",
@@ -1069,13 +1069,13 @@
       "type": "docker_build",
       "title": "Build production image",
       "description": "Build optimized production Docker image.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-VERIFY-e2e"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1100,13 +1100,13 @@
       "type": "docker_start",
       "title": "Start production container",
       "description": "Start full stack in production mode.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-build-prod"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1131,7 +1131,7 @@
       "type": "docker_health",
       "title": "Production health check",
       "description": "Verify all services are healthy.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-start-prod"
       ],
@@ -1162,7 +1162,7 @@
       "type": "docker_logs",
       "title": "Collect production logs",
       "description": "Collect logs from all production containers.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-health-prod"
       ],
@@ -1193,7 +1193,7 @@
       "type": "checkpoint_deploy",
       "title": "Checkpoint: Review Deploy",
       "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-DOCKER-start-prod",
         "EPIC-002-DOCKER-health-prod",
@@ -1226,7 +1226,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-002",
       "description": "Run all EPIC-002 tests, validate build, and verify all 9 user stories are implemented.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-002-CHECKPOINT-deploy"
       ],
@@ -1253,11 +1253,11 @@
     }
   ],
   "total_tasks": 38,
-  "completed_tasks": 38,
+  "completed_tasks": 0,
   "failed_tasks": 0,
-  "progress_percent": 86.8421052631579,
+  "progress_percent": 0.0,
   "run_count": 0,
-  "last_run_at": "2026-03-25T13:32:45.955292",
-  "created_at": "2026-03-25T11:32:51.644569",
+  "last_run_at": null,
+  "created_at": "2026-03-26T15:04:41.798913",
   "estimated_total_minutes": 300
 }

@@ -18,6 +18,7 @@ import asyncio
 import json
 import logging
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -366,11 +367,17 @@ class EpicOrchestrator:
             if self.enable_som and self.som_bridge and result.failed_tasks > 0:
                 result = await self._convergence_loop(epic_id, task_list, result)
 
-            # 6. Update execution metadata
+            # 6. Inter-epic build check
+            try:
+                await self._run_inter_epic_build_check(epic_id, result)
+            except Exception as e:
+                logger.warning(f"Post-epic build check failed (non-fatal): {e}")
+
+            # 7. Update execution metadata
             result.duration_seconds = time.time() - start_time
             self._update_task_list_metadata(epic_id, task_list)
 
-            # 7. Publish completion event
+            # 8. Publish completion event
             await self._publish_event({
                 "type": "epic_execution_completed",
                 "epic_id": epic_id,
@@ -1776,6 +1783,116 @@ class EpicOrchestrator:
         )
 
     # =========================================================================
+    # Build Check Between Epics
+    # =========================================================================
+
+    def _run_build_check(self, project_dir: str, label: str = "build_check") -> dict:
+        """
+        Run `npx tsc --noEmit` in the given directory and return a result dict.
+
+        Args:
+            project_dir: Directory to run the TypeScript build check in.
+            label: Label for logging (e.g. "build_check" or "frontend_build_check").
+
+        Returns:
+            {"success": bool, "error_count": int, "errors": str}
+        """
+        try:
+            result = subprocess.run(
+                ["npx", "tsc", "--noEmit"],
+                cwd=project_dir,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                shell=(sys.platform == "win32"),
+            )
+            stderr_out = result.stderr or ""
+            stdout_out = result.stdout or ""
+            combined = (stdout_out + "\n" + stderr_out).strip()
+
+            # Count TS error lines (format: "src/file.ts(10,5): error TS...")
+            error_count = combined.count(": error TS")
+
+            success = result.returncode == 0
+            return {
+                "success": success,
+                "error_count": error_count,
+                "errors": combined if not success else "",
+            }
+        except subprocess.TimeoutExpired:
+            logger.warning(f"[{label}] tsc --noEmit timed out after 120s in {project_dir}")
+            return {
+                "success": False,
+                "error_count": -1,
+                "errors": "TypeScript build check timed out after 120 seconds",
+            }
+        except FileNotFoundError:
+            logger.debug(f"[{label}] npx/tsc not found in {project_dir}, skipping build check")
+            return {
+                "success": True,
+                "error_count": 0,
+                "errors": "",
+            }
+        except Exception as e:
+            logger.warning(f"[{label}] Build check failed unexpectedly: {e}")
+            return {
+                "success": False,
+                "error_count": -1,
+                "errors": str(e),
+            }
+
+    async def _run_inter_epic_build_check(self, epic_id: str, epic_result: EpicExecutionResult) -> dict:
+        """
+        Run build checks (root + frontend/) between epics.
+        Logs results, stores them on the epic result, and publishes events.
+
+        Returns the root build check result dict.
+        """
+        output_dir = str(self.output_dir)
+        build_checks = {}
+
+        # Root project build check
+        root_check = await asyncio.get_event_loop().run_in_executor(
+            None, self._run_build_check, output_dir, "build_check"
+        )
+        build_checks["root"] = root_check
+
+        if root_check["success"]:
+            logger.info(f"[build_check] Epic {epic_id}: TypeScript build clean (0 errors)")
+        else:
+            logger.warning(
+                f"[build_check] Epic {epic_id}: TypeScript build has {root_check['error_count']} error(s)"
+            )
+
+        # Frontend build check if frontend/ exists
+        frontend_dir = os.path.join(output_dir, "frontend")
+        if os.path.isdir(frontend_dir):
+            fe_check = await asyncio.get_event_loop().run_in_executor(
+                None, self._run_build_check, frontend_dir, "frontend_build_check"
+            )
+            build_checks["frontend"] = fe_check
+
+            if fe_check["success"]:
+                logger.info(f"[frontend_build_check] Epic {epic_id}: Frontend build clean (0 errors)")
+            else:
+                logger.warning(
+                    f"[frontend_build_check] Epic {epic_id}: Frontend build has {fe_check['error_count']} error(s)"
+                )
+
+        # Store on epic result for dashboard visibility
+        epic_result_dict = epic_result.to_dict()
+        epic_result_dict["build_checks"] = build_checks
+
+        # Publish build_check event via EventBus
+        await self._publish_event({
+            "type": "build_check",
+            "epic_id": epic_id,
+            "build_checks": build_checks,
+        })
+
+        return root_check
+
+    # =========================================================================
     # Multi-Epic Support
     # =========================================================================
 
@@ -1796,10 +1913,18 @@ class EpicOrchestrator:
 
         results = {}
 
-        for epic_id in epic_ids:
+        for i, epic_id in enumerate(epic_ids):
             logger.info(f"Starting epic: {epic_id}")
             result = await self.run_epic(epic_id, skip_failed_deps=True)
             results[epic_id] = result
+
+            # Run build check after each epic (before the next one starts)
+            is_last = (i == len(epic_ids) - 1)
+            if not is_last:
+                try:
+                    await self._run_inter_epic_build_check(epic_id, result)
+                except Exception as e:
+                    logger.warning(f"Build check after {epic_id} failed (non-fatal): {e}")
 
             # Stop if epic failed (unless it's just a checkpoint pause)
             if not result.success and not result.checkpoint_paused:

@@ -8,11 +8,11 @@
       "type": "schema_model",
       "title": "Create Prisma model: Call",
       "description": "Define Call model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#Call"
       ],
@@ -21,7 +21,11 @@
         "WA-CALL-002",
         "WA-CALL-003"
       ],
-      "related_user_stories": [],
+      "related_user_stories": [
+        "US-035",
+        "US-036",
+        "US-037"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -32,10 +36,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-Call-relations",
@@ -43,7 +46,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Call",
       "description": "Set up Prisma relations for Call with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-Call-model"
       ],
@@ -53,8 +56,21 @@
       "output_files": [
         "prisma/schema.prisma#Call_relations"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-001",
+        "WA-CALL-002",
+        "WA-CALL-003",
+        "WA-CALL-004",
+        "WA-CALL-005",
+        "WA-CALL-006"
+      ],
+      "related_user_stories": [
+        "US-035",
+        "US-036",
+        "US-037",
+        "US-038",
+        "US-039"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -65,10 +81,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-Call-migration",
@@ -76,7 +91,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Call",
       "description": "Execute prisma migrate dev for Call changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-Call-relations"
       ],
@@ -86,8 +101,21 @@
       "output_files": [
         "prisma/migrations/*_call/"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-001",
+        "WA-CALL-002",
+        "WA-CALL-003",
+        "WA-CALL-004",
+        "WA-CALL-005",
+        "WA-CALL-006"
+      ],
+      "related_user_stories": [
+        "US-035",
+        "US-036",
+        "US-037",
+        "US-038",
+        "US-039"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -98,10 +126,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Migration generated and validated with prisma validate; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-call_log-model",
@@ -109,16 +136,20 @@
       "type": "schema_model",
       "title": "Create Prisma model: call_log",
       "description": "Define call_log model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#call_log"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007"
+      ],
+      "related_user_stories": [
+        "US-041"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -129,10 +160,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Anrufverlauf einsehen und nach Datum filtern",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-call_log-relations",
@@ -140,7 +170,7 @@
       "type": "schema_relations",
       "title": "Define relations for: call_log",
       "description": "Set up Prisma relations for call_log with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-call_log-model"
       ],
@@ -150,8 +180,12 @@
       "output_files": [
         "prisma/schema.prisma#call_log_relations"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007"
+      ],
+      "related_user_stories": [
+        "US-041"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -162,10 +196,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Anrufverlauf einsehen und nach Datum filtern",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-call_log-migration",
@@ -173,7 +206,7 @@
       "type": "schema_migration",
       "title": "Run migration for: call_log",
       "description": "Execute prisma migrate dev for call_log changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-call_log-relations"
       ],
@@ -183,8 +216,12 @@
       "output_files": [
         "prisma/migrations/*_call_log/"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007"
+      ],
+      "related_user_stories": [
+        "US-041"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -195,10 +232,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Migration generated and validated with prisma validate; User can: den Anrufverlauf einsehen und nach Datum filtern",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-contact-model",
@@ -206,16 +242,24 @@
       "type": "schema_model",
       "title": "Create Prisma model: contact",
       "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "prisma/schema.prisma#contact"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007",
+        "WA-STS-002",
+        "WA-STS-005"
+      ],
+      "related_user_stories": [
+        "US-041",
+        "US-043",
+        "US-046"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -226,10 +270,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Prisma model defined with all attributes, correct types, and @id field; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-contact-relations",
@@ -237,7 +280,7 @@
       "type": "schema_relations",
       "title": "Define relations for: contact",
       "description": "Set up Prisma relations for contact with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-contact-model"
       ],
@@ -247,8 +290,16 @@
       "output_files": [
         "prisma/schema.prisma#contact_relations"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007",
+        "WA-STS-002",
+        "WA-STS-005"
+      ],
+      "related_user_stories": [
+        "US-041",
+        "US-043",
+        "US-046"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -259,10 +310,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "All Prisma relations defined with correct cardinality and referential actions; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-SCHEMA-contact-migration",
@@ -270,7 +320,7 @@
       "type": "schema_migration",
       "title": "Run migration for: contact",
       "description": "Execute prisma migrate dev for contact changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-contact-relations"
       ],
@@ -280,8 +330,16 @@
       "output_files": [
         "prisma/migrations/*_contact/"
       ],
-      "related_requirements": [],
-      "related_user_stories": [],
+      "related_requirements": [
+        "WA-CALL-007",
+        "WA-STS-002",
+        "WA-STS-005"
+      ],
+      "related_user_stories": [
+        "US-041",
+        "US-043",
+        "US-046"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -292,10 +350,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Migration generated and validated with prisma validate; User can: den Anrufverlauf einsehen und nach Datum filtern; User can: den Kontakt-Status in der Kontaktliste und im Chat anzeigen; User can: den Status eines Kontakts stummschalten",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-schema",
@@ -327,8 +384,7 @@
       "command": "npx prisma validate",
       "success_criteria": "prisma validate exits with code 0",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-CHECKPOINT-schema",
@@ -358,8 +414,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-API-calls-feature",
@@ -367,13 +422,13 @@
       "type": "api_controller",
       "title": "Feature: calls (15 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'calls' with ALL layers:\n- Controller (all 15 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/calls \u2014 Create encrypted voice call session\n  GET /api/v1/calls \u2014 List calls\n  GET /api/v1/calls/{callId} \u2014 Get call details\n  POST /api/v1/calls/{callId}/participants \u2014 Add participant to call\n  DELETE /api/v1/calls/{callId}/participants/{participantId} \u2014 Remove participant from call\n  POST /api/v1/calls/{callId}/end \u2014 End call session\n  POST /api/v1/calls/{callId}/signaling/messages \u2014 Post WebRTC signaling message\n  GET /api/v1/calls/{callId}/signaling/messages \u2014 Fetch queued signaling messages\n  POST /api/v1/calls/{id}/join \u2014 Join a video call session\n  GET /api/v1/calls/{id} \u2014 Get video call session details\n  POST /api/v1/calls/{id}/end \u2014 End a video call session\n  POST /api/v1/calls/{callId}/screen-shares \u2014 Start screen sharing in a call\n  GET /api/v1/calls/{callId}/screen-shares \u2014 List screen sharing sessions in a call\n  DELETE /api/v1/calls/{callId}/screen-shares/{screenShareId} \u2014 Stop screen sharing in a call\n  POST /api/v1/calls/{callId}/reject \u2014 Reject an incoming call with a message",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
       "estimated_minutes": 45,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/calls/calls.controller.ts",
         "src/modules/calls/calls.service.ts",
@@ -382,11 +437,16 @@
       ],
       "related_requirements": [
         "WA-CALL-002",
-        "WA-CALL-006",
         "WA-CALL-001",
+        "WA-CALL-006",
         "WA-CALL-004"
       ],
-      "related_user_stories": [],
+      "related_user_stories": [
+        "US-035",
+        "US-036",
+        "US-038",
+        "US-040"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -397,10 +457,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen verschl\u00fcsselten Sprachanruf starten; User can: einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-API-group-calls-feature",
@@ -408,13 +467,13 @@
       "type": "api_controller",
       "title": "Feature: group-calls (7 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'group-calls' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-calls \u2014 Create a group call\n  GET /api/v1/group-calls/{callId} \u2014 Get group call details\n  POST /api/v1/group-calls/{callId}/participants \u2014 Invite participants to a group call\n  GET /api/v1/group-calls/{callId}/participants \u2014 List group call participants\n  POST /api/v1/group-calls/{callId}/join \u2014 Join a group call\n  DELETE /api/v1/group-calls/{callId}/participants/{participantId} \u2014 Leave or remove a participant from a group call\n  DELETE /api/v1/group-calls/{callId} \u2014 End a group call",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
       "estimated_minutes": 21,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/group-calls/group-calls.controller.ts",
         "src/modules/group-calls/group-calls.service.ts",
@@ -424,7 +483,9 @@
       "related_requirements": [
         "WA-CALL-003"
       ],
-      "related_user_stories": [],
+      "related_user_stories": [
+        "US-037"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -435,10 +496,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Gruppen-Sprach- oder Videoanruf starten und Teilnehmende einladen",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-API-call-links-feature",
@@ -446,13 +506,13 @@
       "type": "api_controller",
       "title": "Feature: call-links (5 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'call-links' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-links \u2014 Create a scheduled call link\n  GET /api/v1/call-links \u2014 List scheduled call links\n  GET /api/v1/call-links/{callLinkId} \u2014 Get scheduled call link details\n  PUT /api/v1/call-links/{callLinkId} \u2014 Update a scheduled call link\n  DELETE /api/v1/call-links/{callLinkId} \u2014 Delete a scheduled call link",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/call-links/call-links.controller.ts",
         "src/modules/call-links/call-links.service.ts",
@@ -462,7 +522,9 @@
       "related_requirements": [
         "WA-CALL-005"
       ],
-      "related_user_stories": [],
+      "related_user_stories": [
+        "US-039"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -473,10 +535,10 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Anruflink fuer einen geplanten Anruf erstellen und teilen",
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "status_message": null
     },
     {
       "id": "EPIC-006-API-call-logs-feature",
@@ -484,13 +546,13 @@
       "type": "api_controller",
       "title": "Feature: call-logs (4 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'call-logs' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/call-logs \u2014 List call history\n  GET /api/v1/call-logs/{callLogId} \u2014 Get call log detail\n  POST /api/v1/call-logs \u2014 Create call log entry\n  DELETE /api/v1/call-logs/{callLogId} \u2014 Delete call log entry",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
       "estimated_minutes": 12,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/modules/call-logs/call-logs.controller.ts",
         "src/modules/call-logs/call-logs.service.ts",
@@ -500,7 +562,9 @@
       "related_requirements": [
         "WA-CALL-007"
       ],
-      "related_user_stories": [],
+      "related_user_stories": [
+        "US-041"
+      ],
       "requires_user_input": false,
       "user_prompt": null,
       "user_response": null,
@@ -511,10 +575,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: den Anrufverlauf einsehen und nach Datum filtern",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-build-api",
@@ -547,8 +610,7 @@
       "command": "npm run build",
       "success_criteria": "Build completes without errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-typecheck-api",
@@ -578,8 +640,7 @@
       "command": "npx tsc --noEmit",
       "success_criteria": "No TypeScript errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-integration",
@@ -609,8 +670,7 @@
       "command": "npm run test:integration",
       "success_criteria": "All integration tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-build-api",
@@ -641,8 +701,7 @@
       "command": "docker-compose build api",
       "success_criteria": "Docker image built successfully",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-start-api",
@@ -672,8 +731,7 @@
       "command": "docker-compose up -d api",
       "success_criteria": "API container running",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-health-api",
@@ -703,8 +761,7 @@
       "command": "curl -f http://localhost:3000/health",
       "success_criteria": "Health endpoint returns 200 OK",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-CHECKPOINT-api",
@@ -736,8 +793,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-FE-EPIC006Page-page",
@@ -745,13 +801,13 @@
       "type": "fe_page",
       "title": "Page: EPIC006Page",
       "description": "Create EPIC006Page page component implementing 7 user stories.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-api"
       ],
       "estimated_minutes": 20,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "src/pages/EPIC006Page/EPIC006Page.tsx"
       ],
@@ -775,10 +831,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "React page component with routing, state management, and error boundaries",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-FE-EPIC006Page-components",
@@ -786,7 +841,7 @@
       "type": "fe_component",
       "title": "Components: EPIC006Page",
       "description": "Create reusable components for EPIC006Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-page"
       ],
@@ -808,10 +863,9 @@
       "timeout_seconds": 300,
       "phase": "code",
       "command": null,
-      "success_criteria": null,
+      "success_criteria": "Reusable React component with typed props interface",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-FE-EPIC006Page-hook",
@@ -819,7 +873,7 @@
       "type": "fe_hook",
       "title": "Hook: useEPIC006Page",
       "description": "Create custom hook for EPIC006Page state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-page"
       ],
@@ -843,8 +897,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-FE-EPIC006Page-api",
@@ -852,7 +905,7 @@
       "type": "fe_api_client",
       "title": "API Client: EPIC006Page",
       "description": "Create API client functions for EPIC006Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-hook"
       ],
@@ -876,8 +929,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-build-fe",
@@ -910,8 +962,7 @@
       "command": "npm run build",
       "success_criteria": "Frontend build completes without errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-lint",
@@ -941,8 +992,7 @@
       "command": "npm run lint",
       "success_criteria": "No linting errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-typecheck-fe",
@@ -972,8 +1022,7 @@
       "command": "npx tsc --noEmit",
       "success_criteria": "No TypeScript errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-unit",
@@ -1003,8 +1052,7 @@
       "command": "npm run test:unit",
       "success_criteria": "All unit tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-CHECKPOINT-frontend",
@@ -1036,8 +1084,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-TEST-unit",
@@ -1045,13 +1092,13 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-006",
       "description": "Create Vitest unit tests for all EPIC-006 services and utilities. NO MOCKS - use real implementations.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-frontend"
       ],
       "estimated_minutes": 10,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [
         "__tests__/unit/epic_006/"
       ],
@@ -1069,8 +1116,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-TEST-integration",
@@ -1084,7 +1130,7 @@
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": null,
+      "error_message": "Command timed out after 1800s",
       "output_files": [
         "__tests__/integration/epic_006/"
       ],
@@ -1103,7 +1149,7 @@
       "success_criteria": null,
       "tested": false,
       "user_fix_instructions": null,
-      "enrichment_context": null
+      "status_message": null
     },
     {
       "id": "EPIC-006-TEST-e2e",
@@ -1111,13 +1157,13 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-006",
       "description": "Create Playwright E2E tests for 7 user stories in EPIC-006.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-006-TEST-integration"
       ],
       "estimated_minutes": 20,
       "actual_minutes": null,
-      "error_message": null,
+      "error_message": "Dependency failed: ['EPIC-006-TEST-integration']",
       "output_files": [
         "e2e/epic_006.spec.ts"
       ],
@@ -1143,8 +1189,7 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-VERIFY-e2e",
@@ -1176,8 +1221,7 @@
       "command": "npm run test:e2e",
       "success_criteria": "All E2E tests pass",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-build-prod",
@@ -1207,8 +1251,7 @@
       "command": "docker-compose -f docker-compose.prod.yml build",
       "success_criteria": "Production image built",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-start-prod",
@@ -1238,8 +1281,7 @@
       "command": "docker-compose -f docker-compose.prod.yml up -d",
       "success_criteria": "All containers running",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-health-prod",
@@ -1269,8 +1311,7 @@
       "command": "docker-compose -f docker-compose.prod.yml ps",
       "success_criteria": "All containers healthy",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-DOCKER-logs-prod",
@@ -1300,8 +1341,7 @@
       "command": "docker-compose -f docker-compose.prod.yml logs --tail=100",
       "success_criteria": "Logs collected, no critical errors",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-CHECKPOINT-deploy",
@@ -1333,8 +1373,7 @@
       "command": null,
       "success_criteria": "User approved checkpoint",
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     },
     {
       "id": "EPIC-006-INTEGRATION",
@@ -1342,13 +1381,13 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-006",
       "description": "Run all EPIC-006 tests, validate build, and verify all 7 user stories are implemented.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-deploy"
       ],
       "estimated_minutes": 15,
       "actual_minutes": null,
-      "error_message": "--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1364,16 +1403,15 @@
       "command": null,
       "success_criteria": null,
       "tested": false,
-      "user_fix_instructions": null,
-      "enrichment_context": null
+      "user_fix_instructions": null
     }
   ],
   "total_tasks": 41,
-  "completed_tasks": 20,
-  "failed_tasks": 10,
-  "progress_percent": 48.78048780487805,
-  "run_count": 0,
-  "last_run_at": "2026-03-25T14:21:27.631293",
-  "created_at": "2026-03-25T11:32:51.819171",
-  "estimated_total_minutes": 333
+  "completed_tasks": 38,
+  "failed_tasks": 1,
+  "progress_percent": 92.6829268292683,
+  "run_count": 1,
+  "last_run_at": "2026-03-26T17:56:17.675253",
+  "created_at": "2026-03-26T15:04:41.935386",
+  "estimated_total_minutes": 0
 }

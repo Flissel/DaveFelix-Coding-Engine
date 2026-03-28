@@ -10,13 +10,15 @@ from typing import Any, Dict, List, Optional
 import jwt
 import structlog
 
+from src.secrets import get_secret
+
 logger = structlog.get_logger()
 
 
 @dataclass
 class JWTConfig:
     """JWT configuration."""
-    secret_key: str = field(default_factory=lambda: os.environ.get("JWT_SECRET_KEY", "change-me-in-production"))
+    secret_key: str = field(default_factory=lambda: get_secret("jwt_secret_key", "change-me-in-production"))
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     refresh_token_expire_days: int = 30

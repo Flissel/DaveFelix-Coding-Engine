@@ -149,7 +149,7 @@ class LLMSearchService:
                 self._embedder = OpenAIEmbeddingClient(
                     api_key=openai_key,
                     model="text-embedding-3-small",
-                    base_url="https://api.openai.com/api"
+                    base_url="https://api.openai.com/v1"
                 )
                 self.logger.info("embedder_initialized", model="openai/text-embedding-3-small")
                 return

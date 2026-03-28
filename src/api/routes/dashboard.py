@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
+from src.secrets import get_secret
 from src.models.dashboard_models import (
     TimelineResponse,
     DashboardMetrics,
@@ -2405,7 +2406,7 @@ async def _mcmp_post_epic_verify(epic_id: str, result):
     # Post result to Discord
     try:
         from src.tools.discord_agent import DiscordAgent
-        bot_token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        bot_token = get_secret("discord_bot_token")
         ch_done = os.environ.get("DISCORD_CH_DONE", "1484193417381679225")
 
         if bot_token:
@@ -2730,7 +2731,7 @@ async def _post_pr_notification(task_id: str, pr_url: str, branch: str,
 
         prs_channel = os.environ.get("DISCORD_CH_PRS", "")
         dev_channel = os.environ.get("DISCORD_CH_DEV_TASKS", "1484193408955322399")
-        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        token = get_secret("discord_bot_token")
         if not token:
             return
 
@@ -2794,7 +2795,7 @@ async def _run_cli_fix(prompt: str, project_path: str, backend: str) -> dict:
     settings = get_settings()
 
     # Try OpenAI API first (most reliable — no CLI dependency issues)
-    openai_key = os.environ.get("OPENAI_API_KEY", "")
+    openai_key = get_secret("openai_api_key")
     if openai_key and backend in ("openai", "openrouter", ""):
         result = await _run_openai_fix(prompt, project_path, openai_key)
         if result.get("success"):
@@ -2963,7 +2964,7 @@ async def _post_fix_result(task_id: str, attempts: int, success: bool,
         from src.tools.discord_agent import DiscordAgent
 
         fixes_ch = os.environ.get("DISCORD_CH_DEV_TASKS", "1484193408955322399")
-        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        token = get_secret("discord_bot_token")
         if not token:
             return
 
@@ -3019,7 +3020,7 @@ async def trigger_bot_command(request: TriggerBotCommandRequest):
     """Send a !command to Discord channel so the bot picks it up."""
     import httpx
 
-    bot_token = os.environ.get("DISCORD_BOT_TOKEN_ANALYZER", "")
+    bot_token = get_secret("discord_bot_token_analyzer")
     channel_id = os.environ.get("DISCORD_CH_DEV_TASKS", "")
 
     if not bot_token or not channel_id:
@@ -3161,7 +3162,7 @@ async def fixall_endpoint(request: FixAllRequest, db: AsyncSession = Depends(get
             try:
                 fix_result = await _run_openai_fix(
                     "Fix this failed task: %s\nError: %s" % (t["title"], t.get("status_message", "unknown")),
-                    output_dir, os.environ.get("OPENAI_API_KEY", ""),
+                    output_dir, get_secret("openai_api_key"),
                 )
                 if fix_result.get("success"):
                     await db.execute(sql_text(
@@ -3217,7 +3218,7 @@ async def fix_prisma_schema(request: FixPrismaRequest):
                 db_url = "postgresql://postgres:postgres@postgres:5432/coding_engine?schema=public"
     schema_path = Path(project_dir) / "prisma" / "schema.prisma"
     root_schema_path = Path(project_dir) / "schema.prisma"
-    openai_key = os.environ.get("OPENAI_API_KEY", "")
+    openai_key = get_secret("openai_api_key")
 
     if not openai_key:
         return {"success": False, "error": "No OPENAI_API_KEY"}
@@ -3527,7 +3528,7 @@ async def _post_review_result(pr_url: str, approved: bool, error: str = ""):
         from src.tools.discord_agent import DiscordAgent
 
         prs_channel = os.environ.get("DISCORD_CH_PRS", "")
-        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        token = get_secret("discord_bot_token")
         if not token or not prs_channel:
             return
 
@@ -5205,7 +5206,7 @@ async def get_backend_config():
     auth_status = {}
 
     # OpenRouter: needs OPENROUTER_API_KEY
-    or_key = os.environ.get("OPENROUTER_API_KEY", "")
+    or_key = get_secret("openrouter_api_key")
     auth_status["openrouter"] = {"ready": bool(or_key), "reason": "OPENROUTER_API_KEY set" if or_key else "OPENROUTER_API_KEY not set"}
 
     # Kilo: needs kilo binary + OPENROUTER_API_KEY (uses it from env)
@@ -5220,7 +5221,7 @@ async def get_backend_config():
 
     # Claude: needs claude binary + ANTHROPIC_API_KEY
     claude_installed = bool(shutil.which("claude"))
-    ant_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    ant_key = get_secret("anthropic_api_key")
     claude_ready = claude_installed and bool(ant_key)
     claude_reason = []
     if not claude_installed:
@@ -5263,7 +5264,7 @@ async def set_backend_config(request: BackendConfigRequest):
             pass
 
     if request.backend == "claude":
-        api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        api_key = get_secret("anthropic_api_key")
         if not api_key:
             return BackendConfigResponse(
                 success=True, active_backend="claude",

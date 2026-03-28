@@ -1,15 +1,15 @@
 {
   "epic_id": "EPIC-006",
   "epic_name": "Anrufe und Echtzeitkommunikation",
-  "enrichment_timestamp": "2026-03-25T20:58:07.333686",
+  "enrichment_timestamp": "2026-03-27T17:02:40.382694",
   "enrichment_stats": {
     "total_tasks": 41,
-    "tasks_with_requirements": 8,
-    "tasks_with_user_stories": 13,
+    "tasks_with_requirements": 0,
+    "tasks_with_user_stories": 0,
     "tasks_with_diagrams": 13,
     "tasks_with_warnings": 0,
-    "tasks_with_dtos": 9,
-    "tasks_with_success_criteria": 15,
+    "tasks_with_dtos": 0,
+    "tasks_with_success_criteria": 0,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
     "tasks_with_screen_specs": 0,
@@ -24,7 +24,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: Call",
       "description": "Define Call model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -58,128 +58,6 @@
             "type": "c4",
             "content": "%%{ init : { \"theme\" : \"default\" } }%%\nC4Context\n    title Videoanruf System Context Diagram\n\n    Person(user, \"Benutzer\", \"Ein Benutzer, der Videoanrufe tätigt.\")\n    System(videoanrufSystem, \"Videoanruf System\", \"Ein System, das verschlüsselte Videoanrufe unterstützt.\")\n    System_Ext(externalService, \"Externer Dienst\", \"Ein externer Dienst zur Authentifizierung und Verschlüsselung.\")\n\n    Rel(user, videoanrufSystem, \"Nutzt\")\n    Rel(videoanrufSystem, externalService, \"Kommuniziert mit\", \"HTTPS\")",
             "file": "WA-CALL-002_c4.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateCallRequest",
-            "properties": [
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call (oneToOne, group)"
-              },
-              {
-                "name": "participantIds",
-                "type": "array",
-                "description": "List of initial participant user IDs (max 1024 for group calls)"
-              },
-              {
-                "name": "e2eKeyBundleId",
-                "type": "string",
-                "description": "Signal Protocol key bundle ID used to establish end-to-end encryption"
-              }
-            ]
-          },
-          {
-            "name": "CallResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current call status (created, active, ended)"
-              },
-              {
-                "name": "iceServers",
-                "type": "array",
-                "description": "WebRTC ICE servers configuration"
-              },
-              {
-                "name": "signalingChannel",
-                "type": "string",
-                "description": "WebSocket channel identifier for real-time signaling"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the call was created"
-              }
-            ]
-          },
-          {
-            "name": "CallListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call sessions"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call sessions"
-              }
-            ]
-          },
-          {
-            "name": "CallDetailResponse",
-            "properties": [
-              {
-                "name": "callId",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current status"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp"
-              }
-            ]
-          },
-          {
-            "name": "EndCallRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Reason for ending the call (completed, declined, error)"
-              }
-            ]
           }
         ],
         "user_story_details": [
@@ -219,7 +97,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Call",
       "description": "Set up Prisma relations for Call with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-Call-model"
       ],
@@ -262,128 +140,6 @@
             "file": "WA-CALL-002_c4.mmd"
           }
         ],
-        "related_dtos": [
-          {
-            "name": "CreateCallRequest",
-            "properties": [
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call (oneToOne, group)"
-              },
-              {
-                "name": "participantIds",
-                "type": "array",
-                "description": "List of initial participant user IDs (max 1024 for group calls)"
-              },
-              {
-                "name": "e2eKeyBundleId",
-                "type": "string",
-                "description": "Signal Protocol key bundle ID used to establish end-to-end encryption"
-              }
-            ]
-          },
-          {
-            "name": "CallResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current call status (created, active, ended)"
-              },
-              {
-                "name": "iceServers",
-                "type": "array",
-                "description": "WebRTC ICE servers configuration"
-              },
-              {
-                "name": "signalingChannel",
-                "type": "string",
-                "description": "WebSocket channel identifier for real-time signaling"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the call was created"
-              }
-            ]
-          },
-          {
-            "name": "CallListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call sessions"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call sessions"
-              }
-            ]
-          },
-          {
-            "name": "CallDetailResponse",
-            "properties": [
-              {
-                "name": "callId",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current status"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp"
-              }
-            ]
-          },
-          {
-            "name": "EndCallRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Reason for ending the call (completed, declined, error)"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-035",
@@ -421,7 +177,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Call",
       "description": "Execute prisma migrate dev for Call changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-Call-relations"
       ],
@@ -464,128 +220,6 @@
             "file": "WA-CALL-002_c4.mmd"
           }
         ],
-        "related_dtos": [
-          {
-            "name": "CreateCallRequest",
-            "properties": [
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call (oneToOne, group)"
-              },
-              {
-                "name": "participantIds",
-                "type": "array",
-                "description": "List of initial participant user IDs (max 1024 for group calls)"
-              },
-              {
-                "name": "e2eKeyBundleId",
-                "type": "string",
-                "description": "Signal Protocol key bundle ID used to establish end-to-end encryption"
-              }
-            ]
-          },
-          {
-            "name": "CallResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "callType",
-                "type": "string",
-                "description": "Type of call"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current call status (created, active, ended)"
-              },
-              {
-                "name": "iceServers",
-                "type": "array",
-                "description": "WebRTC ICE servers configuration"
-              },
-              {
-                "name": "signalingChannel",
-                "type": "string",
-                "description": "WebSocket channel identifier for real-time signaling"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when the call was created"
-              }
-            ]
-          },
-          {
-            "name": "CallListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call sessions"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call sessions"
-              }
-            ]
-          },
-          {
-            "name": "CallDetailResponse",
-            "properties": [
-              {
-                "name": "callId",
-                "type": "string",
-                "description": "Call ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Current status"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp"
-              }
-            ]
-          },
-          {
-            "name": "EndCallRequest",
-            "properties": [
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Reason for ending the call (completed, declined, error)"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-035",
@@ -623,7 +257,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: call_log",
       "description": "Define call_log model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -655,168 +289,6 @@
             "file": "WA-CALL-007_sequence.mmd"
           }
         ],
-        "related_dtos": [
-          {
-            "name": "CallLogListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call logs"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call logs"
-              }
-            ]
-          },
-          {
-            "name": "CallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogRequest",
-            "properties": [
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 creation timestamp"
-              }
-            ]
-          },
-          {
-            "name": "DeleteCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Deleted call log ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-041",
@@ -836,7 +308,7 @@
       "type": "schema_relations",
       "title": "Define relations for: call_log",
       "description": "Set up Prisma relations for call_log with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-call_log-model"
       ],
@@ -870,168 +342,6 @@
             "file": "WA-CALL-007_state.mmd"
           }
         ],
-        "related_dtos": [
-          {
-            "name": "CallLogListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call logs"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call logs"
-              }
-            ]
-          },
-          {
-            "name": "CallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogRequest",
-            "properties": [
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 creation timestamp"
-              }
-            ]
-          },
-          {
-            "name": "DeleteCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Deleted call log ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-041",
@@ -1051,7 +361,7 @@
       "type": "schema_migration",
       "title": "Run migration for: call_log",
       "description": "Execute prisma migrate dev for call_log changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-call_log-relations"
       ],
@@ -1085,168 +395,6 @@
             "file": "WA-CALL-007_state.mmd"
           }
         ],
-        "related_dtos": [
-          {
-            "name": "CallLogListResponse",
-            "properties": [
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of call logs"
-              },
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of call logs"
-              }
-            ]
-          },
-          {
-            "name": "CallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogRequest",
-            "properties": [
-              {
-                "name": "type",
-                "type": "string",
-                "description": "Call type: voice or video"
-              },
-              {
-                "name": "direction",
-                "type": "string",
-                "description": "Direction: inbound or outbound"
-              },
-              {
-                "name": "status",
-                "type": "string",
-                "description": "Call status: completed, missed, declined, failed"
-              },
-              {
-                "name": "startedAt",
-                "type": "string",
-                "description": "ISO-8601 start time"
-              },
-              {
-                "name": "endedAt",
-                "type": "string",
-                "description": "ISO-8601 end time"
-              },
-              {
-                "name": "durationSeconds",
-                "type": "integer",
-                "description": "Call duration in seconds"
-              },
-              {
-                "name": "participants",
-                "type": "array",
-                "description": "Participant user IDs"
-              },
-              {
-                "name": "webrtcSessionId",
-                "type": "string",
-                "description": "WebRTC session identifier"
-              },
-              {
-                "name": "encryptedMetadata",
-                "type": "string",
-                "description": "Signal Protocol encrypted metadata blob"
-              }
-            ]
-          },
-          {
-            "name": "CreateCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Call log ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 creation timestamp"
-              }
-            ]
-          },
-          {
-            "name": "DeleteCallLogResponse",
-            "properties": [
-              {
-                "name": "id",
-                "type": "string",
-                "description": "Deleted call log ID"
-              },
-              {
-                "name": "deleted",
-                "type": "boolean",
-                "description": "Deletion result"
-              }
-            ]
-          }
-        ],
         "user_story_details": [
           {
             "id": "US-041",
@@ -1266,7 +414,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: contact",
       "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -1300,148 +448,6 @@
             "type": "state",
             "content": "stateDiagram-v2\n    [*] --> Active\n    Active --> Muted : Stumm schalten\n    Muted --> Active : Laut schalten\n    Muted --> [*]\n    Active --> [*]",
             "file": "WA-STS-005_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
           }
         ],
         "user_story_details": [
@@ -1481,7 +487,7 @@
       "type": "schema_relations",
       "title": "Define relations for: contact",
       "description": "Set up Prisma relations for contact with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-contact-model"
       ],
@@ -1517,148 +523,6 @@
             "type": "state",
             "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> CallInitiated : Anruf starten\n    CallInitiated --> InCall : Anruf verbunden\n    InCall --> CallEnded : Anruf beenden\n    CallEnded --> Idle : Zurück zum Idle\n    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren\n    CallHistoryUpdated --> Idle : Zurück zum Idle",
             "file": "WA-CALL-007_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
           }
         ],
         "user_story_details": [
@@ -1698,7 +562,7 @@
       "type": "schema_migration",
       "title": "Run migration for: contact",
       "description": "Execute prisma migrate dev for contact changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-SCHEMA-contact-relations"
       ],
@@ -1734,148 +598,6 @@
             "type": "state",
             "content": "stateDiagram-v2\n    [*] --> Idle\n    Idle --> CallInitiated : Anruf starten\n    CallInitiated --> InCall : Anruf verbunden\n    InCall --> CallEnded : Anruf beenden\n    CallEnded --> Idle : Zurück zum Idle\n    CallEnded --> CallHistoryUpdated : Anrufverlauf aktualisieren\n    CallHistoryUpdated --> Idle : Zurück zum Idle",
             "file": "WA-CALL-007_state.mmd"
-          }
-        ],
-        "related_dtos": [
-          {
-            "name": "CreateContactShareMessageRequest",
-            "properties": [
-              {
-                "name": "messageType",
-                "type": "string",
-                "description": "Message type; must be 'contact'"
-              },
-              {
-                "name": "recipientType",
-                "type": "string",
-                "description": "Recipient type: 'direct', 'group', or 'broadcast'"
-              },
-              {
-                "name": "encryptedPayload",
-                "type": "string",
-                "description": "Signal Protocol encrypted payload containing the contact data (e.g., vCard)"
-              },
-              {
-                "name": "payloadChecksum",
-                "type": "string",
-                "description": "Checksum for encrypted payload integrity validation"
-              },
-              {
-                "name": "clientMessageId",
-                "type": "string",
-                "description": "Client-generated idempotency key for offline queueing"
-              },
-              {
-                "name": "timestamp",
-                "type": "string",
-                "description": "Client timestamp in ISO 8601"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusResponse",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Contact ID"
-              },
-              {
-                "name": "statusId",
-                "type": "string",
-                "description": "Status ID"
-              },
-              {
-                "name": "text",
-                "type": "string",
-                "description": "Status text"
-              },
-              {
-                "name": "mediaUrl",
-                "type": "string",
-                "description": "Encrypted media URL"
-              },
-              {
-                "name": "mediaType",
-                "type": "string",
-                "description": "Media type (image, video, document)"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp of status creation"
-              },
-              {
-                "name": "expiresAt",
-                "type": "string",
-                "description": "ISO 8601 timestamp when status expires"
-              }
-            ]
-          },
-          {
-            "name": "ContactStatusListResponse",
-            "properties": [
-              {
-                "name": "page",
-                "type": "integer",
-                "description": "Current page number"
-              },
-              {
-                "name": "pageSize",
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              {
-                "name": "totalItems",
-                "type": "integer",
-                "description": "Total number of available statuses"
-              },
-              {
-                "name": "items",
-                "type": "array",
-                "description": "List of contact statuses"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactRequest",
-            "properties": [
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "ID of the contact to block"
-              },
-              {
-                "name": "reason",
-                "type": "string",
-                "description": "Optional reason for blocking"
-              }
-            ]
-          },
-          {
-            "name": "BlockContactResponse",
-            "properties": [
-              {
-                "name": "blockId",
-                "type": "string",
-                "description": "Block relationship ID"
-              },
-              {
-                "name": "userId",
-                "type": "string",
-                "description": "User ID who blocked"
-              },
-              {
-                "name": "contactId",
-                "type": "string",
-                "description": "Blocked contact ID"
-              },
-              {
-                "name": "createdAt",
-                "type": "string",
-                "description": "ISO-8601 timestamp when the block was created"
-              }
-            ]
           }
         ],
         "user_story_details": [
@@ -1951,7 +673,7 @@
       "type": "api_controller",
       "title": "Feature: calls (15 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'calls' with ALL layers:\n- Controller (all 15 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/calls — Create encrypted voice call session\n  GET /api/v1/calls — List calls\n  GET /api/v1/calls/{callId} — Get call details\n  POST /api/v1/calls/{callId}/participants — Add participant to call\n  DELETE /api/v1/calls/{callId}/participants/{participantId} — Remove participant from call\n  POST /api/v1/calls/{callId}/end — End call session\n  POST /api/v1/calls/{callId}/signaling/messages — Post WebRTC signaling message\n  GET /api/v1/calls/{callId}/signaling/messages — Fetch queued signaling messages\n  POST /api/v1/calls/{id}/join — Join a video call session\n  GET /api/v1/calls/{id} — Get video call session details\n  POST /api/v1/calls/{id}/end — End a video call session\n  POST /api/v1/calls/{callId}/screen-shares — Start screen sharing in a call\n  GET /api/v1/calls/{callId}/screen-shares — List screen sharing sessions in a call\n  DELETE /api/v1/calls/{callId}/screen-shares/{screenShareId} — Stop screen sharing in a call\n  POST /api/v1/calls/{callId}/reject — Reject an incoming call with a message",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
@@ -1964,8 +686,8 @@
       ],
       "related_requirements": [
         "WA-CALL-002",
-        "WA-CALL-006",
         "WA-CALL-001",
+        "WA-CALL-006",
         "WA-CALL-004"
       ],
       "related_user_stories": [
@@ -1975,7 +697,7 @@
         "US-040"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden; User can: einen verschlüsselten Sprachanruf starten",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen verschluesselten Videoanruf starten und fuehren; User can: einen verschlüsselten Sprachanruf starten; User can: einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden",
       "enrichment_context": {
         "diagrams": [
           {
@@ -1985,13 +707,13 @@
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anruf ablehnen\n    System-->>User: Schnelle Antwort anzeigen\n    User->>System: Nachricht eingeben\n    System-->>User: Nachricht gesendet",
-            "file": "WA-CALL-006_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Encryption as Verschlüsselung\n\n    User->>System: Initiate Voice Call\n    System->>Encryption: Encrypt Call Data\n    Encryption-->>System: Return Encrypted Data\n    System->>User: Establish Encrypted Call\n    User->>System: Send Voice Data\n    System->>Encryption: Encrypt Voice Data\n    Encryption-->>System: Return Encrypted Voice Data\n    System->>User: Transmit Encrypted Voice Data\n    User->>System: End Call\n    System->>Encryption: Terminate Encryption\n    Encryption-->>System: Confirm Termina",
+            "file": "WA-CALL-001_sequence.mmd"
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Encryption as Verschlüsselung\n\n    User->>System: Initiate Voice Call\n    System->>Encryption: Encrypt Call Data\n    Encryption-->>System: Return Encrypted Data\n    System->>User: Establish Encrypted Call\n    User->>System: Send Voice Data\n    System->>Encryption: Encrypt Voice Data\n    Encryption-->>System: Return Encrypted Voice Data\n    System->>User: Transmit Encrypted Voice Data\n    User->>System: End Call\n    System->>Encryption: Terminate Encryption\n    Encryption-->>System: Confirm Termina",
-            "file": "WA-CALL-001_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anruf ablehnen\n    System-->>User: Schnelle Antwort anzeigen\n    User->>System: Nachricht eingeben\n    System-->>User: Nachricht gesendet",
+            "file": "WA-CALL-006_sequence.mmd"
           }
         ],
         "user_story_details": [
@@ -2005,15 +727,6 @@
             "so_that": "um vertraulich und sicher in Echtzeit kommunizieren zu koennen"
           },
           {
-            "id": "US-040",
-            "title": "Anruf ablehnen mit Nachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden",
-            "so_that": "ich kann den Anrufer schnell informieren und professionell kommunizieren, ohne den Anruf anzunehmen"
-          },
-          {
             "id": "US-035",
             "title": "Sprachanruf",
             "priority": "must",
@@ -2021,6 +734,15 @@
             "as_a": "Endnutzer",
             "i_want": "einen verschlüsselten Sprachanruf starten",
             "so_that": "vertrauliche und sichere Kommunikation über verschiedene Plattformen hinweg zu gewährleisten"
+          },
+          {
+            "id": "US-040",
+            "title": "Anruf ablehnen mit Nachricht",
+            "priority": "must",
+            "description": "",
+            "as_a": "Endnutzer",
+            "i_want": "einen eingehenden Anruf ablehnen und eine vordefinierte Schnellantwort senden",
+            "so_that": "ich kann den Anrufer schnell informieren und professionell kommunizieren, ohne den Anruf anzunehmen"
           }
         ]
       }
@@ -2031,7 +753,7 @@
       "type": "api_controller",
       "title": "Feature: group-calls (7 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'group-calls' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-calls — Create a group call\n  GET /api/v1/group-calls/{callId} — Get group call details\n  POST /api/v1/group-calls/{callId}/participants — Invite participants to a group call\n  GET /api/v1/group-calls/{callId}/participants — List group call participants\n  POST /api/v1/group-calls/{callId}/join — Join a group call\n  DELETE /api/v1/group-calls/{callId}/participants/{participantId} — Leave or remove a participant from a group call\n  DELETE /api/v1/group-calls/{callId} — End a group call",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
@@ -2087,7 +809,7 @@
       "type": "api_controller",
       "title": "Feature: call-links (5 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'call-links' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/call-links — Create a scheduled call link\n  GET /api/v1/call-links — List scheduled call links\n  GET /api/v1/call-links/{callLinkId} — Get scheduled call link details\n  PUT /api/v1/call-links/{callLinkId} — Update a scheduled call link\n  DELETE /api/v1/call-links/{callLinkId} — Delete a scheduled call link",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
@@ -2143,7 +865,7 @@
       "type": "api_controller",
       "title": "Feature: call-logs (4 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'call-logs' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/call-logs — List call history\n  GET /api/v1/call-logs/{callLogId} — Get call log detail\n  POST /api/v1/call-logs — Create call log entry\n  DELETE /api/v1/call-logs/{callLogId} — Delete call log entry",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-schema"
       ],
@@ -2324,7 +1046,7 @@
       "type": "fe_page",
       "title": "Page: EPIC006Page",
       "description": "Create EPIC006Page page component implementing 7 user stories.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-api"
       ],
@@ -2414,7 +1136,7 @@
       "type": "fe_component",
       "title": "Components: EPIC006Page",
       "description": "Create reusable components for EPIC006Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-page"
       ],
@@ -2496,7 +1218,7 @@
       "type": "fe_hook",
       "title": "Hook: useEPIC006Page",
       "description": "Create custom hook for EPIC006Page state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-page"
       ],
@@ -2578,7 +1300,7 @@
       "type": "fe_api_client",
       "title": "API Client: EPIC006Page",
       "description": "Create API client functions for EPIC006Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-FE-EPIC006Page-hook"
       ],
@@ -2750,7 +1472,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-006",
       "description": "Create Vitest unit tests for all EPIC-006 services and utilities. NO MOCKS - use real implementations.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-frontend"
       ],
@@ -2788,7 +1510,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-006",
       "description": "Create Playwright E2E tests for 7 user stories in EPIC-006.",
-      "status": "pending",
+      "status": "skipped",
       "dependencies": [
         "EPIC-006-TEST-integration"
       ],
@@ -2921,7 +1643,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-006",
       "description": "Run all EPIC-006 tests, validate build, and verify all 7 user stories are implemented.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-006-CHECKPOINT-deploy"
       ],

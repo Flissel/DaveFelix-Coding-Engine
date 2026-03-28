@@ -1,14 +1,14 @@
 {
   "epic_id": "EPIC-003",
   "epic_name": "Messaging-Kernfunktionen",
-  "enrichment_timestamp": "2026-03-25T20:57:57.394464",
+  "enrichment_timestamp": "2026-03-27T17:02:33.879691",
   "enrichment_stats": {
     "total_tasks": 57,
     "tasks_with_requirements": 15,
     "tasks_with_user_stories": 21,
     "tasks_with_diagrams": 21,
     "tasks_with_warnings": 15,
-    "tasks_with_dtos": 0,
+    "tasks_with_dtos": 6,
     "tasks_with_success_criteria": 27,
     "tasks_with_test_scenarios": 0,
     "tasks_with_component_specs": 0,
@@ -54,6 +54,138 @@
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierung\n\n    User->>System: Anfrage zum Sperren eines Chats\n    System->>User: Zusätzliche Authentifizierung erforderlich\n    User->>Auth: Authentifizierung durchführen\n    Auth-->>User: Authentifizierung erfolgreich\n    User->>System: Bestätigung der Authentifizierung\n    System->>System: Chat sperren\n    System-->>User: Chat erfolgreich gesperrt",
             "file": "WA-MSG-010_sequence.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "LockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatLockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "lockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was locked"
+              }
+            ]
+          },
+          {
+            "name": "UnlockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatUnlockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "unlockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was unlocked"
+              }
+            ]
+          },
+          {
+            "name": "UploadChatMediaRequest",
+            "properties": [
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Media file captured by camera"
+              },
+              {
+                "name": "mediaType",
+                "type": "string",
+                "description": "Type of media (image|video|document)"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the media"
+              },
+              {
+                "name": "captureSource",
+                "type": "string",
+                "description": "Capture source, must be 'camera' for direct camera integration"
+              },
+              {
+                "name": "encryptedMediaKey",
+                "type": "string",
+                "description": "Encrypted media key for Signal Protocol E2E encryption"
+              },
+              {
+                "name": "encryptedThumbnail",
+                "type": "string",
+                "description": "Optional encrypted thumbnail data (base64)"
+              },
+              {
+                "name": "width",
+                "type": "integer",
+                "description": "Image/video width in pixels"
+              },
+              {
+                "name": "height",
+                "type": "integer",
+                "description": "Image/video height in pixels"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Video duration in milliseconds (if mediaType=video)"
+              }
+            ]
           }
         ],
         "user_story_details": [
@@ -109,6 +241,138 @@
             "file": "WA-MSG-010_state.mmd"
           }
         ],
+        "related_dtos": [
+          {
+            "name": "LockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatLockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "lockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was locked"
+              }
+            ]
+          },
+          {
+            "name": "UnlockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatUnlockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "unlockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was unlocked"
+              }
+            ]
+          },
+          {
+            "name": "UploadChatMediaRequest",
+            "properties": [
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Media file captured by camera"
+              },
+              {
+                "name": "mediaType",
+                "type": "string",
+                "description": "Type of media (image|video|document)"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the media"
+              },
+              {
+                "name": "captureSource",
+                "type": "string",
+                "description": "Capture source, must be 'camera' for direct camera integration"
+              },
+              {
+                "name": "encryptedMediaKey",
+                "type": "string",
+                "description": "Encrypted media key for Signal Protocol E2E encryption"
+              },
+              {
+                "name": "encryptedThumbnail",
+                "type": "string",
+                "description": "Optional encrypted thumbnail data (base64)"
+              },
+              {
+                "name": "width",
+                "type": "integer",
+                "description": "Image/video width in pixels"
+              },
+              {
+                "name": "height",
+                "type": "integer",
+                "description": "Image/video height in pixels"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Video duration in milliseconds (if mediaType=video)"
+              }
+            ]
+          }
+        ],
         "user_story_details": [
           {
             "id": "US-020",
@@ -160,6 +424,138 @@
             "type": "state",
             "content": "stateDiagram-v2\n    [*] --> Chat_Offen\n    Chat_Offen --> Chat_Sperren : Anfrage zum Sperren\n    Chat_Sperren --> Authentifizierung : Zusätzliche Authentifizierung erforderlich\n    Authentifizierung --> Chat_Gesperrt : Authentifizierung erfolgreich\n    Authentifizierung --> Chat_Offen : Authentifizierung fehlgeschlagen\n    Chat_Gesperrt --> Chat_Offen : Chat entsperren",
             "file": "WA-MSG-010_state.mmd"
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "LockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatLockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "lockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was locked"
+              }
+            ]
+          },
+          {
+            "name": "UnlockChatRequest",
+            "properties": [
+              {
+                "name": "authMethod",
+                "type": "string",
+                "description": "Additional authentication method used (e.g., biometric, otp, devicePin)"
+              },
+              {
+                "name": "authToken",
+                "type": "string",
+                "description": "Proof of additional authentication (e.g., OTP code or signed device assertion)"
+              },
+              {
+                "name": "deviceId",
+                "type": "string",
+                "description": "Identifier of the client device used for authentication"
+              }
+            ]
+          },
+          {
+            "name": "ChatUnlockResponse",
+            "properties": [
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "locked",
+                "type": "boolean",
+                "description": "Indicates whether the chat is locked"
+              },
+              {
+                "name": "unlockedAt",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the chat was unlocked"
+              }
+            ]
+          },
+          {
+            "name": "UploadChatMediaRequest",
+            "properties": [
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Media file captured by camera"
+              },
+              {
+                "name": "mediaType",
+                "type": "string",
+                "description": "Type of media (image|video|document)"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the media"
+              },
+              {
+                "name": "captureSource",
+                "type": "string",
+                "description": "Capture source, must be 'camera' for direct camera integration"
+              },
+              {
+                "name": "encryptedMediaKey",
+                "type": "string",
+                "description": "Encrypted media key for Signal Protocol E2E encryption"
+              },
+              {
+                "name": "encryptedThumbnail",
+                "type": "string",
+                "description": "Optional encrypted thumbnail data (base64)"
+              },
+              {
+                "name": "width",
+                "type": "integer",
+                "description": "Image/video width in pixels"
+              },
+              {
+                "name": "height",
+                "type": "integer",
+                "description": "Image/video height in pixels"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Video duration in milliseconds (if mediaType=video)"
+              }
+            ]
           }
         ],
         "user_story_details": [
@@ -253,6 +649,158 @@
             "severity": "high",
             "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
             "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "SendTextMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "Encrypted message payload using Signal Protocol"
+              },
+              {
+                "name": "senderDeviceId",
+                "type": "string",
+                "description": "Sender device identifier"
+              },
+              {
+                "name": "sentAt",
+                "type": "string",
+                "description": "ISO 8601 timestamp when the message was created on the client"
+              }
+            ]
+          },
+          {
+            "name": "MessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Message ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "type",
+                "type": "string",
+                "description": "Message type"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (queued, sent, delivered)"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "Server timestamp in ISO 8601"
+              }
+            ]
+          },
+          {
+            "name": "CreateVoiceMessageRequest",
+            "properties": [
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Duration of the voice message in milliseconds"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
+              },
+              {
+                "name": "waveform",
+                "type": "string",
+                "description": "Optional compact waveform representation for UI rendering"
+              },
+              {
+                "name": "encryptionHeader",
+                "type": "string",
+                "description": "Signal Protocol header or metadata required to decrypt the payload"
+              },
+              {
+                "name": "ciphertextHash",
+                "type": "string",
+                "description": "Hash of the encrypted payload for integrity verification"
+              },
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Encrypted voice message file"
+              }
+            ]
+          },
+          {
+            "name": "VoiceMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-generated message ID"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the server accepted the message"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (e.g., queued, sent)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteMessageRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for deletion"
+              }
+            ]
           }
         ],
         "user_story_details": [
@@ -368,6 +916,158 @@
             "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
           }
         ],
+        "related_dtos": [
+          {
+            "name": "SendTextMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "Encrypted message payload using Signal Protocol"
+              },
+              {
+                "name": "senderDeviceId",
+                "type": "string",
+                "description": "Sender device identifier"
+              },
+              {
+                "name": "sentAt",
+                "type": "string",
+                "description": "ISO 8601 timestamp when the message was created on the client"
+              }
+            ]
+          },
+          {
+            "name": "MessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Message ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "type",
+                "type": "string",
+                "description": "Message type"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (queued, sent, delivered)"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "Server timestamp in ISO 8601"
+              }
+            ]
+          },
+          {
+            "name": "CreateVoiceMessageRequest",
+            "properties": [
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Duration of the voice message in milliseconds"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
+              },
+              {
+                "name": "waveform",
+                "type": "string",
+                "description": "Optional compact waveform representation for UI rendering"
+              },
+              {
+                "name": "encryptionHeader",
+                "type": "string",
+                "description": "Signal Protocol header or metadata required to decrypt the payload"
+              },
+              {
+                "name": "ciphertextHash",
+                "type": "string",
+                "description": "Hash of the encrypted payload for integrity verification"
+              },
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Encrypted voice message file"
+              }
+            ]
+          },
+          {
+            "name": "VoiceMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-generated message ID"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the server accepted the message"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (e.g., queued, sent)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteMessageRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for deletion"
+              }
+            ]
+          }
+        ],
         "user_story_details": [
           {
             "id": "US-011",
@@ -479,6 +1179,158 @@
             "severity": "high",
             "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
             "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
+          }
+        ],
+        "related_dtos": [
+          {
+            "name": "SendTextMessageRequest",
+            "properties": [
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated idempotency key for deduplication"
+              },
+              {
+                "name": "ciphertext",
+                "type": "string",
+                "description": "Encrypted message payload using Signal Protocol"
+              },
+              {
+                "name": "senderDeviceId",
+                "type": "string",
+                "description": "Sender device identifier"
+              },
+              {
+                "name": "sentAt",
+                "type": "string",
+                "description": "ISO 8601 timestamp when the message was created on the client"
+              }
+            ]
+          },
+          {
+            "name": "MessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Message ID"
+              },
+              {
+                "name": "chatId",
+                "type": "string",
+                "description": "Chat ID"
+              },
+              {
+                "name": "type",
+                "type": "string",
+                "description": "Message type"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (queued, sent, delivered)"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "Server timestamp in ISO 8601"
+              }
+            ]
+          },
+          {
+            "name": "CreateVoiceMessageRequest",
+            "properties": [
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "durationMs",
+                "type": "integer",
+                "description": "Duration of the voice message in milliseconds"
+              },
+              {
+                "name": "mimeType",
+                "type": "string",
+                "description": "MIME type of the audio file (e.g., audio/ogg, audio/m4a)"
+              },
+              {
+                "name": "waveform",
+                "type": "string",
+                "description": "Optional compact waveform representation for UI rendering"
+              },
+              {
+                "name": "encryptionHeader",
+                "type": "string",
+                "description": "Signal Protocol header or metadata required to decrypt the payload"
+              },
+              {
+                "name": "ciphertextHash",
+                "type": "string",
+                "description": "Hash of the encrypted payload for integrity verification"
+              },
+              {
+                "name": "file",
+                "type": "string",
+                "description": "Encrypted voice message file"
+              }
+            ]
+          },
+          {
+            "name": "VoiceMessageResponse",
+            "properties": [
+              {
+                "name": "messageId",
+                "type": "string",
+                "description": "Server-generated message ID"
+              },
+              {
+                "name": "clientMessageId",
+                "type": "string",
+                "description": "Client-generated unique identifier for idempotency"
+              },
+              {
+                "name": "recipientType",
+                "type": "string",
+                "description": "Recipient type: user, group, or broadcast"
+              },
+              {
+                "name": "recipientId",
+                "type": "string",
+                "description": "ID of the target user, group, or broadcast list"
+              },
+              {
+                "name": "serverTimestamp",
+                "type": "string",
+                "description": "ISO-8601 timestamp when the server accepted the message"
+              },
+              {
+                "name": "status",
+                "type": "string",
+                "description": "Message status (e.g., queued, sent)"
+              }
+            ]
+          },
+          {
+            "name": "DeleteMessageRequest",
+            "properties": [
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "Optional reason for deletion"
+              }
+            ]
           }
         ],
         "user_story_details": [
@@ -1154,9 +2006,9 @@
         "src/modules/conversations/dto/"
       ],
       "related_requirements": [
+        "WA-MSG-012",
         "WA-MSG-001",
-        "WA-MSG-014",
-        "WA-MSG-012"
+        "WA-MSG-014"
       ],
       "related_user_stories": [
         "US-011",
@@ -1164,7 +2016,7 @@
         "US-024"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine Textnachricht in Echtzeit an einen Kontakt senden; User can: einen Standort in einer Unterhaltung teilen; User can: Nachrichten mit grundlegender Textformatierung verfassen und senden; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: Nachrichten mit grundlegender Textformatierung verfassen und senden; User can: eine Textnachricht in Echtzeit an einen Kontakt senden; User can: einen Standort in einer Unterhaltung teilen; Address: Create user stories that explicitly link to each of these requirements.; Address: Spezifizieren Sie Sync-Mechanismen, Konfliktlösung und Offline-Queueing.",
       "enrichment_context": {
         "diagrams": [
           {
@@ -1185,6 +2037,12 @@
         ],
         "known_gaps": [
           {
+            "id": "CI-027",
+            "severity": "high",
+            "title": "Orphan requirements",
+            "suggestion": "Create user stories that explicitly link to each of these requirements."
+          },
+          {
             "id": "CI-004",
             "severity": "high",
             "title": "Multi-Device-Synchronisation unvollständig",
@@ -1203,12 +2061,6 @@
             "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
           },
           {
-            "id": "CI-027",
-            "severity": "high",
-            "title": "Orphan requirements",
-            "suggestion": "Create user stories that explicitly link to each of these requirements."
-          },
-          {
             "id": "CI-015",
             "severity": "medium",
             "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
@@ -1216,6 +2068,15 @@
           }
         ],
         "user_story_details": [
+          {
+            "id": "US-022",
+            "title": "Formatierte Texte",
+            "priority": "must",
+            "description": "",
+            "as_a": "Business-Nutzer",
+            "i_want": "Nachrichten mit grundlegender Textformatierung verfassen und senden",
+            "so_that": "um professionell und klar mit Kunden zu kommunizieren"
+          },
           {
             "id": "US-011",
             "title": "Textnachricht senden",
@@ -1233,15 +2094,6 @@
             "as_a": "Endnutzer",
             "i_want": "einen Standort in einer Unterhaltung teilen",
             "so_that": "damit der Empfaenger den Standort schnell finden kann und die Kommunikation effizienter wird"
-          },
-          {
-            "id": "US-022",
-            "title": "Formatierte Texte",
-            "priority": "must",
-            "description": "",
-            "as_a": "Business-Nutzer",
-            "i_want": "Nachrichten mit grundlegender Textformatierung verfassen und senden",
-            "so_that": "um professionell und klar mit Kunden zu kommunizieren"
           }
         ]
       }
@@ -1264,86 +2116,80 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MSG-007",
-        "WA-MSG-002",
-        "WA-MSG-006",
+        "WA-MSG-003",
+        "WA-MSG-008",
+        "WA-MSG-004",
         "WA-MSG-005",
-        "WA-MSG-008"
+        "WA-MSG-007"
       ],
       "related_user_stories": [
-        "US-012",
+        "US-013",
+        "US-014",
         "US-015",
-        "US-016",
         "US-017",
         "US-018"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: auf eine Nachricht mit einem Emoji reagieren; User can: eine Sprachnachricht aufnehmen und senden; User can: eine spezifische Nachricht in einem Chat zitieren und darauf antworten; Address: Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: eine gesendete oder empfangene Nachricht loeschen; User can: selbstloeschende Nachrichten mit einer festgelegten Ablaufzeit senden; User can: eine bereits gesendete Nachricht bearbeiten; Address: Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync.; Address: Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung.",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n    participant Message as Nachricht\n\n    Nutzer->>System: Sendet Nachricht\n    System->>Nachricht: Zeigt Nachricht an\n    Nutzer->>System: Wählt Emoji-Reaktion\n    System->>Nachricht: Aktualisiert Emoji-Reaktion\n    System->>Nutzer: Bestätigt Reaktion",
-            "file": "WA-MSG-007_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    Benutzer->>System: Nachricht auswählen\n    System-->>Benutzer: Bestätigung anzeigen\n    Benutzer->>System: Bestätigen (Nachricht löschen)\n    System-->>Benutzer: Nachricht gelöscht",
+            "file": "WA-MSG-003_sequence.mmd"
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    Nutzer->>System: Sprachnachricht senden\n    System-->>Nutzer: Bestätigung des Sendens\n    Nutzer->>System: Sprachnachricht empfangen\n    System-->>Nutzer: Sprachnachricht wiedergeben",
-            "file": "WA-MSG-002_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as User\n    participant System as Self-Deleting Message System\n\n    User->>System: Send self-deleting message\n    System-->>User: Confirm message sent\n    System->>System: Set timer for message deletion\n    Note over System: Message is displayed to recipient\n    System->>User: Notify recipient of message\n    User->>System: Recipient reads message\n    System-->>User: Confirm message read\n    System->>System: Delete message after timer expires\n    Note over System: Message is deleted",
+            "file": "WA-MSG-008_sequence.mmd"
           },
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Wählt Nachricht zum Zitieren\n    System-->>User: Zeigt zitierte Nachricht an\n    User->>System: Gibt Antwort ein\n    System-->>User: Bestätigt das Zitieren/Antworten\n    System-->>All: Aktualisiert Nachricht mit Zitat",
-            "file": "WA-MSG-006_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Database as Datenbank\n\n    User->>System: Anfrage zum Bearbeiten der Nachricht\n    System->>Database: Nachricht abrufen\n    Database-->>System: Nachrichtdaten\n    System->>User: Nachricht anzeigen\n    User->>System: Änderungen vornehmen\n    System->>Database: Nachricht aktualisieren\n    Database-->>System: Bestätigung der Aktualisierung\n    System->>User: Bestätigung der Bearbeitung",
+            "file": "WA-MSG-004_sequence.mmd"
           }
         ],
         "known_gaps": [
           {
-            "id": "CI-010",
+            "id": "CI-008",
             "severity": "high",
-            "title": "Fehlende Fehlerbehandlung beim Senden",
-            "suggestion": "Ergänzen Sie Zustellstatus (gesendet/zugestellt/gelesen), Retry-Policy und Offline-Queue."
+            "title": "Nachrichten löschen/bearbeiten ohne Scope/Logik",
+            "suggestion": "Definieren Sie Zeitfenster, Geltung (alle/ich), Kennzeichnung und Sync."
           },
           {
             "id": "CI-009",
             "severity": "high",
             "title": "Verschwindende/Einmal-Ansicht Medien ohne Edge Cases",
             "suggestion": "Spezifizieren Sie Verhalten bei Screenshots/Backups/Offline und Weiterleitung."
-          },
-          {
-            "id": "CI-015",
-            "severity": "medium",
-            "title": "Fehlende Integrationspunkte (Benachrichtigungen/OS)",
-            "suggestion": "Ergänzen Sie Push-Integrationen und erforderliche OS-Permissions."
           }
         ],
         "user_story_details": [
           {
-            "id": "US-017",
-            "title": "Reaktionen",
+            "id": "US-013",
+            "title": "Nachricht loeschen",
             "priority": "must",
             "description": "",
             "as_a": "Endnutzer",
-            "i_want": "auf eine Nachricht mit einem Emoji reagieren",
-            "so_that": "um meine Antwort schnell und intuitiv auszudruecken und die Kommunikation zu vereinfachen"
+            "i_want": "eine gesendete oder empfangene Nachricht loeschen",
+            "so_that": "den Chat uebersichtlich halten und Datenschutzanforderungen erfuellen"
           },
           {
-            "id": "US-012",
-            "title": "Sprachnachricht",
-            "priority": "must",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "eine Sprachnachricht aufnehmen und senden",
-            "so_that": "um schnell und intuitiv zu kommunizieren und eine zuverlaessige Zustellung zu erhalten"
-          },
-          {
-            "id": "US-016",
-            "title": "Nachricht zitieren",
+            "id": "US-018",
+            "title": "Verschwindende Nachrichten",
             "priority": "must",
             "description": "",
             "as_a": "registrierter Nutzer",
-            "i_want": "eine spezifische Nachricht in einem Chat zitieren und darauf antworten",
-            "so_that": "den Gesprächskontext klar nachvollziehbar zu halten und Missverständnisse zu vermeiden"
+            "i_want": "selbstloeschende Nachrichten mit einer festgelegten Ablaufzeit senden",
+            "so_that": "private Kommunikation zu ermoeglichen und Datenschutz zu erhoehen"
+          },
+          {
+            "id": "US-014",
+            "title": "Nachricht bearbeiten",
+            "priority": "must",
+            "description": "",
+            "as_a": "Endnutzer",
+            "i_want": "eine bereits gesendete Nachricht bearbeiten",
+            "so_that": "Fehler zu korrigieren und eine professionelle, zuverlässige Kommunikation sicherzustellen"
           }
         ]
       }

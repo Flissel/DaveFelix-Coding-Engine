@@ -1,7 +1,7 @@
 {
   "epic_id": "EPIC-001",
   "epic_name": "Authentifizierung und Kontosicherheit",
-  "enrichment_timestamp": "2026-03-25T20:57:52.771477",
+  "enrichment_timestamp": "2026-03-27T17:02:28.716174",
   "enrichment_stats": {
     "total_tasks": 67,
     "tasks_with_requirements": 12,
@@ -1432,8 +1432,8 @@
       ],
       "related_requirements": [
         "WA-AUTH-002",
-        "WA-AUTH-005",
-        "WA-SEC-006"
+        "WA-SEC-006",
+        "WA-AUTH-005"
       ],
       "related_user_stories": [
         "US-002",
@@ -1441,7 +1441,7 @@
         "US-062"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: sich per Passkey ohne Passwort anmelden; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
       "enrichment_context": {
         "diagrams": [
           {
@@ -1451,8 +1451,102 @@
           },
           {
             "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Auth as Authentifizierungsdienst\n\n    User->>System: Anmeldung\n    System->>User: Anfrage nach zusätzlicher PIN\n    User->>System: Eingabe der PIN\n    System->>Authentifizierungsdienst: Überprüfung der PIN\n    Auth->>System: Bestätigung der PIN\n    System->>User: Zugang gewährt",
+            "file": "WA-SEC-006_sequence.mmd"
+          },
+          {
+            "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant AuthServer as Authentifizierungsserver\n\n    User->>System: Anfrage zur passwortlosen Anmeldung\n    System->>User: Fordert Passkey an\n    User->>System: Sendet Passkey\n    System->>AuthServer: Überprüft Passkey\n    AuthServer-->>System: Bestätigt Passkey\n    System-->>User: Anmeldung erfolgreich",
             "file": "WA-AUTH-005_sequence.mmd"
+          }
+        ],
+        "known_gaps": [
+          {
+            "id": "CI-002",
+            "severity": "high",
+            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
+            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
+          },
+          {
+            "id": "CI-005",
+            "severity": "medium",
+            "title": "Passkey-Unterstützung ohne Plattform-Integration",
+            "suggestion": "Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery."
+          }
+        ],
+        "user_story_details": [
+          {
+            "id": "US-002",
+            "title": "Zwei-Faktor-Authentifizierung",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
+            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
+          },
+          {
+            "id": "US-062",
+            "title": "Zwei-Schritte-Verifizierung",
+            "priority": "must",
+            "description": "",
+            "as_a": "registrierter Nutzer",
+            "i_want": "eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren",
+            "so_that": "um den Zugriff besser zu schuetzen und Datenschutz sowie Sicherheit zu erhoehen"
+          },
+          {
+            "id": "US-005",
+            "title": "Passkey-Unterstuetzung",
+            "priority": "should",
+            "description": "",
+            "as_a": "Registrierter Nutzer",
+            "i_want": "sich per Passkey ohne Passwort anmelden",
+            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
+          }
+        ]
+      }
+    },
+    {
+      "id": "EPIC-001-API-users-feature",
+      "epic_id": "EPIC-001",
+      "type": "api_controller",
+      "title": "Feature: users (11 endpoints: DELETE, GET, POST, PUT)",
+      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 11 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/2fa — Enable 2FA with 6-digit PIN\n  DELETE /api/v1/users/{userId}/2fa — Disable 2FA\n  GET /api/v1/users/{userId}/2fa — Get 2FA status\n  GET /api/v1/users/{userId}/passkeys — List user's passkeys\n  DELETE /api/v1/users/{userId}/passkeys/{credentialId} — Delete a passkey\n  POST /api/v1/users/{userId}/pin — Enable additional PIN security\n  PUT /api/v1/users/{userId}/pin — Update additional PIN\n  DELETE /api/v1/users/{userId}/pin — Disable additional PIN security\n  GET /api/v1/users/{userId}/pin — Get PIN security status\n  GET /api/v1/users/{userId}/call-privacy-settings — Get call privacy settings\n  PUT /api/v1/users/{userId}/call-privacy-settings — Update call privacy settings",
+      "status": "completed",
+      "dependencies": [
+        "EPIC-001-CHECKPOINT-schema"
+      ],
+      "estimated_minutes": 33,
+      "output_files": [
+        "src/modules/users/users.controller.ts",
+        "src/modules/users/users.service.ts",
+        "src/modules/users/users.module.ts",
+        "src/modules/users/dto/"
+      ],
+      "related_requirements": [
+        "WA-AUTH-002",
+        "WA-SEC-008",
+        "WA-SEC-006",
+        "WA-AUTH-005"
+      ],
+      "related_user_stories": [
+        "US-002",
+        "US-005",
+        "US-062",
+        "US-064"
+      ],
+      "phase": "code",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: IP-Adressen bei Anrufen automatisch verschleiern lassen; User can: eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
+      "enrichment_context": {
+        "diagrams": [
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
+            "file": "WA-AUTH-002_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Service as Dienst\n\n    User->>System: Anruf tätigen\n    System->>Service: IP-Adresse anfordern\n    Service-->>System: IP-Adresse zurückgeben\n    System->>System: IP-Adresse verschleiern\n    System-->>User: Anruf mit verschleierter IP-Adresse",
+            "file": "WA-SEC-008_sequence.mmd"
           },
           {
             "type": "sequence",
@@ -1485,91 +1579,6 @@
             "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
           },
           {
-            "id": "US-005",
-            "title": "Passkey-Unterstuetzung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Registrierter Nutzer",
-            "i_want": "sich per Passkey ohne Passwort anmelden",
-            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
-          },
-          {
-            "id": "US-062",
-            "title": "Zwei-Schritte-Verifizierung",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren",
-            "so_that": "um den Zugriff besser zu schuetzen und Datenschutz sowie Sicherheit zu erhoehen"
-          }
-        ]
-      }
-    },
-    {
-      "id": "EPIC-001-API-users-feature",
-      "epic_id": "EPIC-001",
-      "type": "api_controller",
-      "title": "Feature: users (11 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 11 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/users/{userId}/2fa — Enable 2FA with 6-digit PIN\n  DELETE /api/v1/users/{userId}/2fa — Disable 2FA\n  GET /api/v1/users/{userId}/2fa — Get 2FA status\n  GET /api/v1/users/{userId}/passkeys — List user's passkeys\n  DELETE /api/v1/users/{userId}/passkeys/{credentialId} — Delete a passkey\n  POST /api/v1/users/{userId}/pin — Enable additional PIN security\n  PUT /api/v1/users/{userId}/pin — Update additional PIN\n  DELETE /api/v1/users/{userId}/pin — Disable additional PIN security\n  GET /api/v1/users/{userId}/pin — Get PIN security status\n  GET /api/v1/users/{userId}/call-privacy-settings — Get call privacy settings\n  PUT /api/v1/users/{userId}/call-privacy-settings — Update call privacy settings",
-      "status": "completed",
-      "dependencies": [
-        "EPIC-001-CHECKPOINT-schema"
-      ],
-      "estimated_minutes": 33,
-      "output_files": [
-        "src/modules/users/users.controller.ts",
-        "src/modules/users/users.service.ts",
-        "src/modules/users/users.module.ts",
-        "src/modules/users/dto/"
-      ],
-      "related_requirements": [
-        "WA-SEC-008",
-        "WA-AUTH-002",
-        "WA-AUTH-005",
-        "WA-SEC-006"
-      ],
-      "related_user_stories": [
-        "US-002",
-        "US-005",
-        "US-062",
-        "US-064"
-      ],
-      "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: IP-Adressen bei Anrufen automatisch verschleiern lassen; User can: die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen; User can: sich per Passkey ohne Passwort anmelden; Address: Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout.; Address: Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery.",
-      "enrichment_context": {
-        "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Service as Dienst\n\n    User->>System: Anruf tätigen\n    System->>Service: IP-Adresse anfordern\n    Service-->>System: IP-Adresse zurückgeben\n    System->>System: IP-Adresse verschleiern\n    System-->>User: Anruf mit verschleierter IP-Adresse",
-            "file": "WA-SEC-008_sequence.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Authenticator as Authenticator\n\n    User->>System: Anmelden\n    System->>User: Sende 6-stellige PIN zur Bestätigung\n    User->>Authenticator: Generiere 6-stellige PIN\n    Authenticator-->>User: PIN generiert\n    User->>System: Sende 6-stellige PIN\n    System->>System: Überprüfe PIN\n    alt PIN korrekt\n        System->>User: Zugang gewährt\n    else PIN falsch\n        System->>User: Zugang verweigert\n    end",
-            "file": "WA-AUTH-002_sequence.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant AuthServer as Authentifizierungsserver\n\n    User->>System: Anfrage zur passwortlosen Anmeldung\n    System->>User: Fordert Passkey an\n    User->>System: Sendet Passkey\n    System->>AuthServer: Überprüft Passkey\n    AuthServer-->>System: Bestätigt Passkey\n    System-->>User: Anmeldung erfolgreich",
-            "file": "WA-AUTH-005_sequence.mmd"
-          }
-        ],
-        "known_gaps": [
-          {
-            "id": "CI-002",
-            "severity": "high",
-            "title": "Unklare Definition von „optionaler 2FA“ und PIN-Fluss",
-            "suggestion": "Definieren Sie Aktivierung/Deaktivierung, Recovery-Methoden und Fehlversuche/Lockout."
-          },
-          {
-            "id": "CI-005",
-            "severity": "medium",
-            "title": "Passkey-Unterstützung ohne Plattform-Integration",
-            "suggestion": "Definieren Sie unterstützte Plattformen, Fallback-Login und Recovery."
-          }
-        ],
-        "user_story_details": [
-          {
             "id": "US-064",
             "title": "IP-Adresse schuetzen",
             "priority": "should",
@@ -1579,22 +1588,13 @@
             "so_that": "Datenschutz und Compliance einzuhalten und Missbrauch zu verhindern"
           },
           {
-            "id": "US-002",
-            "title": "Zwei-Faktor-Authentifizierung",
+            "id": "US-062",
+            "title": "Zwei-Schritte-Verifizierung",
             "priority": "must",
             "description": "",
             "as_a": "registrierter Nutzer",
-            "i_want": "die optionale Zwei-Faktor-Authentifizierung mit einer 6-stelligen PIN aktivieren und nutzen",
-            "so_that": "mein Konto besser vor unbefugtem Zugriff zu schützen, ohne die Bedienung zu verkomplizieren"
-          },
-          {
-            "id": "US-005",
-            "title": "Passkey-Unterstuetzung",
-            "priority": "should",
-            "description": "",
-            "as_a": "Registrierter Nutzer",
-            "i_want": "sich per Passkey ohne Passwort anmelden",
-            "so_that": "um eine schnelle, sichere und plattformübergreifende Anmeldung zu erhalten"
+            "i_want": "eine optionale zusaetzliche PIN-Sicherung fuer sein Konto aktivieren",
+            "so_that": "um den Zugriff besser zu schuetzen und Datenschutz sowie Sicherheit zu erhoehen"
           }
         ]
       }

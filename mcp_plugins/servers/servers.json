@@ -309,9 +309,25 @@
       "cwd": "env:PROJECT_ROOT",
       "read_timeout_seconds": 600,
       "description": "Claude Code MCP - Wraps Claude CLI/SDK for AI code generation"
+    },
+    {
+      "name": "fungus",
+      "active": true,
+      "type": "stdio",
+      "grpc_port": 50087,
+      "command": "python",
+      "args": [
+        "mcp_plugins/servers/fungus_mcp/server.py"
+      ],
+      "env": {
+        "FUNGUS_PROJECT_DIR": "env:OUTPUT_DIR"
+      },
+      "cwd": "env:PROJECT_ROOT",
+      "read_timeout_seconds": 30,
+      "description": "Fungus MCP - Project tree, schema, module templates, file search for code generation context"
     }
   ],
   "inactive_servers_note": "Disabled: github (needs token), desktop (not in Docker), supabase (needs token), brave-search (needs key), taskmanager, youtube, n8n, tavily, puppeteer, huggingface, elevenlabs, mindsdb, gpt-researcher",
-  "active_agents_count": 17,
-  "custom_agents": ["npm", "prisma", "postgres", "qdrant", "supermemory", "claude-code"]
+  "active_agents_count": 18,
+  "custom_agents": ["npm", "prisma", "postgres", "qdrant", "supermemory", "claude-code", "fungus"]
 }

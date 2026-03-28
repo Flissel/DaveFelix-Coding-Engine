@@ -1,7 +1,7 @@
 {
   "epic_id": "EPIC-004",
   "epic_name": "Medien- und Statusinhalte",
-  "enrichment_timestamp": "2026-03-25T20:58:00.035455",
+  "enrichment_timestamp": "2026-03-27T17:02:36.346534",
   "enrichment_stats": {
     "total_tasks": 59,
     "tasks_with_requirements": 15,
@@ -24,7 +24,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: contact",
       "description": "Define contact model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -239,7 +239,7 @@
       "type": "schema_relations",
       "title": "Define relations for: contact",
       "description": "Set up Prisma relations for contact with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-contact-model"
       ],
@@ -456,7 +456,7 @@
       "type": "schema_migration",
       "title": "Run migration for: contact",
       "description": "Execute prisma migrate dev for contact changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-contact-relations"
       ],
@@ -673,7 +673,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: media_attachment",
       "description": "Define media_attachment model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -751,7 +751,7 @@
       "type": "schema_relations",
       "title": "Define relations for: media_attachment",
       "description": "Set up Prisma relations for media_attachment with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-media_attachment-model"
       ],
@@ -831,7 +831,7 @@
       "type": "schema_migration",
       "title": "Run migration for: media_attachment",
       "description": "Execute prisma migrate dev for media_attachment changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-media_attachment-relations"
       ],
@@ -911,7 +911,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: media_item",
       "description": "Define media_item model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -986,7 +986,7 @@
       "type": "schema_relations",
       "title": "Define relations for: media_item",
       "description": "Set up Prisma relations for media_item with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-media_item-model"
       ],
@@ -1063,7 +1063,7 @@
       "type": "schema_migration",
       "title": "Run migration for: media_item",
       "description": "Execute prisma migrate dev for media_item changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-media_item-relations"
       ],
@@ -1140,7 +1140,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: status_reply",
       "description": "Define status_reply model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -1301,7 +1301,7 @@
       "type": "schema_relations",
       "title": "Define relations for: status_reply",
       "description": "Set up Prisma relations for status_reply with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-status_reply-model"
       ],
@@ -1464,7 +1464,7 @@
       "type": "schema_migration",
       "title": "Run migration for: status_reply",
       "description": "Execute prisma migrate dev for status_reply changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-status_reply-relations"
       ],
@@ -1627,7 +1627,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: status_update",
       "description": "Define status_update model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -1700,7 +1700,7 @@
       "type": "schema_relations",
       "title": "Define relations for: status_update",
       "description": "Set up Prisma relations for status_update with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-status_update-model"
       ],
@@ -1775,7 +1775,7 @@
       "type": "schema_migration",
       "title": "Run migration for: status_update",
       "description": "Execute prisma migrate dev for status_update changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-SCHEMA-status_update-relations"
       ],
@@ -1886,7 +1886,7 @@
       "type": "api_controller",
       "title": "Feature: statuses (4 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'statuses' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/statuses — Create a 24-hour status update\n  POST /api/v1/statuses/{statusId}/replies — Create a reply to a status\n  GET /api/v1/statuses/{statusId}/replies — List replies to a status\n  DELETE /api/v1/statuses/{statusId}/replies/{replyId} — Delete a reply to a status",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -1898,43 +1898,34 @@
         "src/modules/statuses/dto/"
       ],
       "related_requirements": [
-        "WA-STS-003",
-        "WA-STS-001"
+        "WA-STS-001",
+        "WA-STS-003"
       ],
       "related_user_stories": [
         "US-042",
         "US-044"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: auf einen Status mit einer Antwort reagieren; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen 24-Stunden-Status-Update erstellen und veröffentlichen; User can: auf einen Status mit einer Antwort reagieren",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
-            "file": "WA-STS-003_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Status erstellen anfordern\n    System->>User: Eingabeformular anzeigen\n    User->>System: Statusinformationen eingeben\n    System->>User: Statusvorschau anzeigen\n    User->>System: Status bestätigen\n    System->>User: Status erfolgreich erstellt",
             "file": "WA-STS-001_sequence.mmd"
           },
           {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Anfrage für Status\n    System-->>User: Status-Antwort",
+            "file": "WA-STS-003_sequence.mmd"
+          },
+          {
             "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Status-Anfrage erhalten?}\n    B -- Ja --> C[Antwort generieren]\n    B -- Nein --> D[Warten auf Anfrage]\n    C --> E{Antwort erfolgreich?}\n    E -- Ja --> F[Antwort senden]\n    E -- Nein --> G[Fehlerbehandlung]\n    F --> H[Ende]\n    G --> H\n    D --> B",
-            "file": "WA-STS-003_flowchart.mmd"
+            "content": "flowchart TD\n    A[Start] --> B{Status erstellen?}\n    B -- Ja --> C[24-Stunden-Status-Update erstellen]\n    C --> D{Status erfolgreich?}\n    D -- Ja --> E[Status speichern]\n    D -- Nein --> F[Fehlerbehandlung]\n    F --> C\n    E --> G[Benachrichtigung senden]\n    G --> H[Ende]\n    B -- Nein --> H",
+            "file": "WA-STS-001_flowchart.mmd"
           }
         ],
         "user_story_details": [
-          {
-            "id": "US-044",
-            "title": "Status-Antwort",
-            "priority": "must",
-            "description": "",
-            "as_a": "Chat-Nutzer",
-            "i_want": "auf einen Status mit einer Antwort reagieren",
-            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
-          },
           {
             "id": "US-042",
             "title": "Status erstellen",
@@ -1943,6 +1934,15 @@
             "as_a": "registrierter Nutzer",
             "i_want": "einen 24-Stunden-Status-Update erstellen und veröffentlichen",
             "so_that": "damit ich zeitlich begrenzte Informationen schnell und plattformuebergreifend teilen kann"
+          },
+          {
+            "id": "US-044",
+            "title": "Status-Antwort",
+            "priority": "must",
+            "description": "",
+            "as_a": "Chat-Nutzer",
+            "i_want": "auf einen Status mit einer Antwort reagieren",
+            "so_that": "um schnell und zuverlässig Rückmeldungen zu geben und die Kommunikation effizient zu halten"
           }
         ]
       }
@@ -1953,7 +1953,7 @@
       "type": "api_controller",
       "title": "Feature: contacts (2 endpoints: GET)",
       "description": "Generate the COMPLETE NestJS module for 'contacts' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/contacts/{contactId}/status — Get contact status\n  GET /api/v1/contacts/statuses — List contact statuses",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2009,7 +2009,7 @@
       "type": "api_controller",
       "title": "Feature: users (2 endpoints: GET, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'users' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/users/{userId}/status-visibility-settings — Get status visibility settings\n  PUT /api/v1/users/{userId}/status-visibility-settings — Update status visibility settings",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2065,7 +2065,7 @@
       "type": "api_controller",
       "title": "Feature: status-mutes (3 endpoints: DELETE, GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'status-mutes' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/status-mutes — Mute a contact's status\n  GET /api/v1/status-mutes — List muted status contacts\n  DELETE /api/v1/status-mutes/{contactId} — Unmute a contact's status",
-      "status": "failed",
+      "status": "running",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2121,7 +2121,7 @@
       "type": "api_controller",
       "title": "Feature: media (7 endpoints: GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 7 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media/images — Upload an image\n  POST /api/v1/media/videos — Upload video media\n  GET /api/v1/media/library — List user gallery items\n  POST /api/v1/media/uploads — Upload media from device gallery\n  PUT /api/v1/media/uploads/{uploadId}/parts/{partNumber} — Upload a media chunk\n  POST /api/v1/media/uploads/{uploadId}/complete — Complete an HD media upload\n  GET /api/v1/media/{mediaId} — Retrieve encrypted media metadata and download URL",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2133,10 +2133,10 @@
         "src/modules/media/dto/"
       ],
       "related_requirements": [
-        "WA-MED-010",
-        "WA-MED-001",
+        "WA-MED-002",
         "WA-MED-009",
-        "WA-MED-002"
+        "WA-MED-001",
+        "WA-MED-010"
       ],
       "related_user_stories": [
         "US-047",
@@ -2145,43 +2145,34 @@
         "US-056"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: Medien in HD-Qualität senden; User can: ein Bild in einem Chat senden; User can: Bilder aus der Geraete-Galerie auswaehlen, um sie in einer Nachricht zu versenden",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: ein Video in einer Nachricht senden; User can: Bilder aus der Geraete-Galerie auswaehlen, um sie in einer Nachricht zu versenden; User can: ein Bild in einem Chat senden",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as HD-Medien System\n    participant MediaServer as Medienserver\n\n    User->>System: Anfrage zum Senden von Medien in HD-Qualität\n    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien\n    MediaServer-->>System: HD-Medien bereitgestellt\n    System-->>User: Medien in HD-Qualität gesendet",
-            "file": "WA-MED-010_sequence.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Bild auswählen\n    System->>User: Bildvorschau anzeigen\n    User->>System: Bild senden\n    System->>User: Bestätigung des Sendens",
-            "file": "WA-MED-001_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    User->>System: Video auswählen\n    System->>User: Video hochladen\n    User->>System: Video senden\n    System->>User: Video erfolgreich gesendet",
+            "file": "WA-MED-002_sequence.mmd"
           },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Gallery as Geraete-Galerie\n\n    User->>System: Anfrage für Galerie-Zugriff\n    System->>Gallery: Zugriff auf Geraete-Galerie anfordern\n    Gallery-->>System: Zugriff gewährt\n    System-->>User: Galerie angezeigt",
             "file": "WA-MED-009_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Bild auswählen\n    System->>User: Bildvorschau anzeigen\n    User->>System: Bild senden\n    System->>User: Bestätigung des Sendens",
+            "file": "WA-MED-001_sequence.mmd"
           }
         ],
         "user_story_details": [
           {
-            "id": "US-056",
-            "title": "HD-Medien",
-            "priority": "should",
-            "description": "",
-            "as_a": "Endnutzer",
-            "i_want": "Medien in HD-Qualität senden",
-            "so_that": "Nachrichten in hoher visueller Qualität zuverlässig und plattformübergreifend teilen zu können"
-          },
-          {
-            "id": "US-047",
-            "title": "Bilder senden",
+            "id": "US-048",
+            "title": "Videos senden",
             "priority": "must",
             "description": "",
             "as_a": "Endnutzer",
-            "i_want": "ein Bild in einem Chat senden",
-            "so_that": "damit ich Informationen visuell schnell und zuverlässig teilen kann"
+            "i_want": "ein Video in einer Nachricht senden",
+            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
           },
           {
             "id": "US-055",
@@ -2191,6 +2182,15 @@
             "as_a": "App-Nutzer",
             "i_want": "Bilder aus der Geraete-Galerie auswaehlen, um sie in einer Nachricht zu versenden",
             "so_that": "schnell und intuitiv Medien teilen zu koennen, ohne die App zu verlassen"
+          },
+          {
+            "id": "US-047",
+            "title": "Bilder senden",
+            "priority": "must",
+            "description": "",
+            "as_a": "Endnutzer",
+            "i_want": "ein Bild in einem Chat senden",
+            "so_that": "damit ich Informationen visuell schnell und zuverlässig teilen kann"
           }
         ]
       }
@@ -2201,7 +2201,7 @@
       "type": "api_controller",
       "title": "Feature: conversations (1 endpoints: POST)",
       "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages — Send an image message",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2257,7 +2257,7 @@
       "type": "api_controller",
       "title": "Feature: messages (4 endpoints: POST)",
       "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 4 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages — Send a video message\n  POST /api/v1/messages/documents — Send a document message\n  POST /api/v1/messages/gifs — Send GIF message\n  POST /api/v1/messages/media — Send an HD media message",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2269,10 +2269,10 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MED-003",
-        "WA-MED-006",
+        "WA-MED-002",
         "WA-MED-010",
-        "WA-MED-002"
+        "WA-MED-006",
+        "WA-MED-003"
       ],
       "related_user_stories": [
         "US-048",
@@ -2281,43 +2281,34 @@
         "US-056"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: beliebige Dokumente an einen Empfaenger senden; User can: GIFs suchen und in einer Nachricht versenden; User can: Medien in HD-Qualität senden",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: ein Video in einer Nachricht senden; User can: Medien in HD-Qualität senden; User can: GIFs suchen und in einer Nachricht versenden",
       "enrichment_context": {
         "diagrams": [
           {
             "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Dokumente auswählen\n    System-->>User: Bestätigung der Auswahl\n    User->>System: Dokumente senden\n    System-->>User: Empfangsbestätigung\n    System->>System: Dokumente verarbeiten\n    System-->>User: Dokumente erfolgreich gesendet",
-            "file": "WA-MED-003_sequence.mmd"
-          },
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as User\n    participant System as System\n    participant GIFService as GIF Service\n\n    User->>System: Search for GIF\n    System->>GIFService: Request GIFs based on search query\n    GIFService-->>System: Return list of GIFs\n    System-->>User: Display GIFs\n    User->>System: Select GIF to send\n    System->>GIFService: Send selected GIF\n    GIFService-->>System: Confirm GIF sent\n    System-->>User: Confirm GIF sent successfully",
-            "file": "WA-MED-006_sequence.mmd"
+            "content": "sequenceDiagram\n    participant User as Nutzer\n    participant System as System\n\n    User->>System: Video auswählen\n    System->>User: Video hochladen\n    User->>System: Video senden\n    System->>User: Video erfolgreich gesendet",
+            "file": "WA-MED-002_sequence.mmd"
           },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as HD-Medien System\n    participant MediaServer as Medienserver\n\n    User->>System: Anfrage zum Senden von Medien in HD-Qualität\n    System->>MediaServer: Anfrage zur Bereitstellung von HD-Medien\n    MediaServer-->>System: HD-Medien bereitgestellt\n    System-->>User: Medien in HD-Qualität gesendet",
             "file": "WA-MED-010_sequence.mmd"
+          },
+          {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as User\n    participant System as System\n    participant GIFService as GIF Service\n\n    User->>System: Search for GIF\n    System->>GIFService: Request GIFs based on search query\n    GIFService-->>System: Return list of GIFs\n    System-->>User: Display GIFs\n    User->>System: Select GIF to send\n    System->>GIFService: Send selected GIF\n    GIFService-->>System: Confirm GIF sent\n    System-->>User: Confirm GIF sent successfully",
+            "file": "WA-MED-006_sequence.mmd"
           }
         ],
         "user_story_details": [
           {
-            "id": "US-049",
-            "title": "Dokumente senden",
-            "priority": "must",
-            "description": "",
-            "as_a": "registrierter Nutzer",
-            "i_want": "beliebige Dokumente an einen Empfaenger senden",
-            "so_that": "damit ich Informationen professionell und sicher teilen und die Kommunikation beschleunigen kann"
-          },
-          {
-            "id": "US-052",
-            "title": "GIFs",
+            "id": "US-048",
+            "title": "Videos senden",
             "priority": "must",
             "description": "",
             "as_a": "Endnutzer",
-            "i_want": "GIFs suchen und in einer Nachricht versenden",
-            "so_that": "um die Kommunikation schnell, intuitiv und plattformübergreifend mit passenden Animationen zu bereichern"
+            "i_want": "ein Video in einer Nachricht senden",
+            "so_that": "um Inhalte anschaulich zu teilen und die Kommunikation effizienter zu gestalten"
           },
           {
             "id": "US-056",
@@ -2327,6 +2318,15 @@
             "as_a": "Endnutzer",
             "i_want": "Medien in HD-Qualität senden",
             "so_that": "Nachrichten in hoher visueller Qualität zuverlässig und plattformübergreifend teilen zu können"
+          },
+          {
+            "id": "US-052",
+            "title": "GIFs",
+            "priority": "must",
+            "description": "",
+            "as_a": "Endnutzer",
+            "i_want": "GIFs suchen und in einer Nachricht versenden",
+            "so_that": "um die Kommunikation schnell, intuitiv und plattformübergreifend mit passenden Animationen zu bereichern"
           }
         ]
       }
@@ -2337,7 +2337,7 @@
       "type": "api_controller",
       "title": "Feature: media-drafts (3 endpoints: POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'media-drafts' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media-drafts — Create an image draft for editing\n  PUT /api/v1/media-drafts/{draftId}/edits — Apply edits to an image draft\n  POST /api/v1/media-drafts/{draftId}/finalize — Finalize an edited image draft",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2393,7 +2393,7 @@
       "type": "api_controller",
       "title": "Feature: chats (3 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/messages — Send sticker message\n  POST /api/v1/chats/{chatId}/media — Upload camera-captured media to a chat\n  GET /api/v1/chats/{chatId}/media/{mediaId} — Get downloadable media details",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2460,7 +2460,7 @@
       "type": "api_controller",
       "title": "Feature: sticker-packs (2 endpoints: GET)",
       "description": "Generate the COMPLETE NestJS module for 'sticker-packs' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/sticker-packs — List sticker packs\n  GET /api/v1/sticker-packs/{packId}/stickers — List stickers in a pack",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2511,7 +2511,7 @@
       "type": "api_controller",
       "title": "Feature: gifs (1 endpoints: GET)",
       "description": "Generate the COMPLETE NestJS module for 'gifs' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/gifs/search — Search GIFs",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2567,7 +2567,7 @@
       "type": "api_controller",
       "title": "Feature: audio-messages (2 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'audio-messages' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/audio-messages — Send an encrypted audio message\n  GET /api/v1/audio-messages/{audioMessageId}/download — Download an audio message file",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-schema"
       ],
@@ -2749,7 +2749,7 @@
       "type": "fe_page",
       "title": "Page: StatusView",
       "description": "Create StatusView page component implementing 7 user stories.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-api"
       ],
@@ -3106,7 +3106,7 @@
       "type": "fe_hook",
       "title": "Hook: useStatusView",
       "description": "Create custom hook for StatusView state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-FE-StatusView-page"
       ],
@@ -3188,7 +3188,7 @@
       "type": "fe_api_client",
       "title": "API Client: StatusView",
       "description": "Create API client functions for StatusView",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-004-FE-StatusView-hook"
       ],
@@ -3270,7 +3270,7 @@
       "type": "fe_page",
       "title": "Page: StatusCreator",
       "description": "Create StatusCreator page component implementing 7 user stories.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-api"
       ],
@@ -3627,7 +3627,7 @@
       "type": "fe_hook",
       "title": "Hook: useStatusCreator",
       "description": "Create custom hook for StatusCreator state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-FE-StatusCreator-page"
       ],
@@ -3882,7 +3882,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-004",
       "description": "Create Vitest unit tests for all EPIC-004 services and utilities. NO MOCKS - use real implementations.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-frontend"
       ],
@@ -3901,7 +3901,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-004",
       "description": "Create Vitest integration tests for EPIC-004 API endpoints with real database.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-TEST-unit"
       ],
@@ -4061,7 +4061,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-004",
       "description": "Run all EPIC-004 tests, validate build, and verify all 15 user stories are implemented.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-004-CHECKPOINT-deploy"
       ],

@@ -18,6 +18,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -835,11 +836,38 @@ Output ONLY the execution plan, nothing else."""
             ])
         else:
             parts.extend([
+                "",
+                "## CRITICAL: Output Format",
+                "For EVERY file you create, you MUST use this EXACT format with file path annotation:",
+                "",
+                "```typescript:src/modules/{resource}/{resource}.controller.ts",
+                "// complete file content here",
+                "```",
+                "",
+                "## File Path Rules:",
+                "- Controllers: `src/modules/{resource}/{resource}.controller.ts`",
+                "- Services: `src/modules/{resource}/{resource}.service.ts`",
+                "- Modules: `src/modules/{resource}/{resource}.module.ts`",
+                "- DTOs: `src/modules/{resource}/dto/{name}.dto.ts`",
+                "- Guards: `src/guards/{name}.guard.ts`",
+                "- Validators: `src/modules/{resource}/validators/{name}.validator.ts`",
+                "- React Pages: `frontend/src/pages/{Name}/{Name}.tsx`",
+                "- React Components: `frontend/src/components/{Name}/{Name}.tsx`",
+                "- React Hooks: `frontend/src/hooks/use{Name}.ts`",
+                "- React API clients: `frontend/src/api/{name}API.ts`",
+                "- Tests: `__tests__/unit/{module}.spec.ts`",
+                "- Integration Tests: `__tests__/integration/{epic}/{name}.spec.ts`",
+                "",
+                "NEVER output code without a `language:path` annotation on the opening fence.",
+                "NEVER use generic names like `file1.ts` or `index.ts` without the full path.",
+                "Every code block MUST have the complete relative path from project root.",
+                "",
                 "## Final Check",
-                "- All files written under `src/`?",
-                "- All imports resolve correctly?",
-                "- All Prisma types match schema?",
-                "- Error handling for all edge cases?",
+                "- All files written under `src/` with correct path annotations?",
+                "- All imports resolve correctly (use relative paths)?",
+                "- All Prisma types match schema (import from `@prisma/client`)?",
+                "- Complete class with all decorators (NestJS: @Controller, @Injectable, @Module)?",
+                "- No orphaned statements outside class/function bodies?",
             ])
 
         return "\n".join(parts)
@@ -1350,6 +1378,14 @@ Execute this task using the available MCP tools. Write all files to the working 
             ])
 
         # =====================================================================
+        # 2b. BACKEND API ROUTES: Inject real routes for frontend tasks
+        # =====================================================================
+        if task.type.startswith("fe_"):
+            backend_routes = self._get_backend_routes()
+            if backend_routes:
+                prompt_parts.extend([backend_routes, ""])
+
+        # =====================================================================
         # 3. AGENT PREFIX: Role-specific folder path instructions
         # =====================================================================
         agent_type = self._get_agent_type(task)
@@ -1443,6 +1479,62 @@ Execute this task using the available MCP tools. Write all files to the working 
             prompt_parts.extend([
                 "## Existing Code (follow these patterns)",
                 code_context,
+                "",
+            ])
+
+        # =====================================================================
+        # 10b. NestJS MODULE TEMPLATE (if no existing code found)
+        # =====================================================================
+        if not code_context and (task.type.startswith("api_") or "API" in task.id):
+            prompt_parts.extend([
+                "## NestJS Module Template (follow this EXACT structure)",
+                "Each feature module MUST have these files:",
+                "",
+                "```typescript:src/modules/example/example.module.ts",
+                "import { Module } from '@nestjs/common';",
+                "import { ExampleController } from './example.controller';",
+                "import { ExampleService } from './example.service';",
+                "",
+                "@Module({",
+                "  controllers: [ExampleController],",
+                "  providers: [ExampleService],",
+                "  exports: [ExampleService],",
+                "})",
+                "export class ExampleModule {}",
+                "```",
+                "",
+                "```typescript:src/modules/example/example.controller.ts",
+                "import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';",
+                "import { ExampleService } from './example.service';",
+                "import { JwtAuthGuard } from '../../guards/jwt-auth.guard';",
+                "",
+                "@Controller('example')",
+                "@UseGuards(JwtAuthGuard)",
+                "export class ExampleController {",
+                "  constructor(private readonly exampleService: ExampleService) {}",
+                "",
+                "  @Get()",
+                "  async findAll() { return this.exampleService.findAll(); }",
+                "",
+                "  @Get(':id')",
+                "  async findOne(@Param('id') id: string) { return this.exampleService.findOne(id); }",
+                "}",
+                "```",
+                "",
+                "```typescript:src/modules/example/example.service.ts",
+                "import { Injectable } from '@nestjs/common';",
+                "import { PrismaService } from '../../prisma/prisma.service';",
+                "",
+                "@Injectable()",
+                "export class ExampleService {",
+                "  constructor(private prisma: PrismaService) {}",
+                "",
+                "  async findAll() { return this.prisma.example.findMany(); }",
+                "  async findOne(id: string) { return this.prisma.example.findUnique({ where: { id } }); }",
+                "}",
+                "```",
+                "",
+                "IMPORTANT: Generate COMPLETE files, not fragments. Every class needs its decorators.",
                 "",
             ])
 
@@ -1600,12 +1692,23 @@ Execute this task using the available MCP tools. Write all files to the working 
 - Use Prisma ORM imported from '../../generated/prisma'
 - Use class-based controllers with decorators (@Controller, @Get, @Post, etc.)
 - Use dependency injection for services""",
-            "frontend": """You are a React/TypeScript frontend expert.
-- Pages go in: src/pages/
-- Components go in: src/components/
-- Hooks go in: src/hooks/
+            "frontend": """You are a Web React/TypeScript frontend expert building a BROWSER-BASED web application.
+- Pages go in: frontend/src/pages/{Name}/{Name}.tsx
+- Components go in: frontend/src/components/{Name}/{Name}.tsx
+- Hooks go in: frontend/src/hooks/use{Name}.ts
+- API clients go in: frontend/src/api/{name}API.ts
+- IMPORTANT: ALL React/frontend files MUST be under the frontend/ directory, NOT src/
 - Use functional components with TypeScript (.tsx)
-- Use modern React patterns (hooks, context)""",
+- Use modern React patterns (hooks, context, react-router-dom)
+- CRITICAL: Use ONLY the backend API endpoints listed in the context. Do NOT invent API paths.
+- API base URL comes from `import.meta.env.VITE_API_BASE_URL`
+- All API calls must match the exact paths from the backend endpoints list
+- CRITICAL: This is a WEB application using Vite + React, NOT a mobile app.
+  * Use standard HTML elements (div, span, button, input) NOT React Native components
+  * Use CSS/Tailwind/CSS-in-JS for styling, NOT StyleSheet.create()
+  * Use react-router-dom for navigation, NOT @react-navigation/native
+  * NEVER import from 'react-native', 'react-native-paper', '@react-navigation/*'
+  * Use fetch/axios for API calls, NOT react-native AsyncStorage""",
             "testing": """You are a testing expert.
 - Unit tests go in: tests/unit/
 - Integration tests go in: tests/integration/
@@ -1635,6 +1738,77 @@ Execute this task using the available MCP tools. Write all files to the working 
             return content
         except Exception as e:
             logger.debug(f"Failed to load tech stack: {e}")
+            return ""
+
+    def _get_backend_routes(self) -> str:
+        """
+        Parse api_documentation.md and return a formatted list of backend API endpoints.
+
+        Used to inject real backend routes into frontend task context so that
+        generated API clients use the correct paths instead of guessing.
+
+        Returns:
+            Formatted string with all backend endpoints, or empty string if
+            no api_documentation.md is found.
+        """
+        try:
+            api_doc_path = self.project_path / "api" / "api_documentation.md"
+            if not api_doc_path.exists():
+                logger.debug("No api/api_documentation.md found — skipping backend route injection")
+                return ""
+
+            content = api_doc_path.read_text(encoding="utf-8")
+
+            # Parse endpoints using the same regex as APIDocumentationParser
+            endpoint_pattern = re.compile(
+                r"^####\s+`?(GET|POST|PUT|DELETE|PATCH)`?\s+(/[^\s]+)", re.MULTILINE
+            )
+            # Capture summaries: bold text on the line(s) following the endpoint header
+            summary_pattern = re.compile(r"^\*\*([^*]+)\*\*$", re.MULTILINE)
+
+            lines = content.split("\n")
+            endpoints: list[str] = []
+            current_resource = ""
+
+            for i, line in enumerate(lines):
+                # Track resource headers (### ResourceName)
+                if line.startswith("### ") and not line.startswith("####"):
+                    current_resource = line.lstrip("# ").strip()
+                    continue
+
+                ep_match = endpoint_pattern.match(line)
+                if ep_match:
+                    method = ep_match.group(1)
+                    path = ep_match.group(2)
+                    # Look ahead for summary (bold text within next 3 lines)
+                    summary = ""
+                    for j in range(i + 1, min(i + 4, len(lines))):
+                        s_match = summary_pattern.match(lines[j])
+                        if s_match:
+                            summary = s_match.group(1).strip()
+                            break
+                    entry = f"{method} {path}"
+                    if summary:
+                        entry += f" - {summary}"
+                    endpoints.append(entry)
+
+            if not endpoints:
+                logger.debug("api_documentation.md found but no endpoints parsed")
+                return ""
+
+            header = (
+                "## Available Backend API Endpoints\n"
+                "Use these EXACT paths in your API client. Do NOT invent new paths.\n"
+                "API base URL: `import.meta.env.VITE_API_BASE_URL`\n"
+            )
+            route_list = "\n".join(f"- {ep}" for ep in endpoints)
+            result = f"{header}\n{route_list}"
+
+            logger.info(f"Injected {len(endpoints)} backend API routes into frontend context")
+            return result
+
+        except Exception as e:
+            logger.debug(f"Failed to parse backend routes: {e}")
             return ""
 
     def _get_schema_context(self) -> str:

@@ -11,6 +11,8 @@ from urllib.parse import urlencode
 import httpx
 import structlog
 
+from src.secrets import get_secret
+
 logger = structlog.get_logger()
 
 
@@ -100,7 +102,7 @@ class GitHubOAuth(OAuthProvider):
         if config is None:
             config = OAuthConfig(
                 client_id=os.environ.get("GITHUB_CLIENT_ID", ""),
-                client_secret=os.environ.get("GITHUB_CLIENT_SECRET", ""),
+                client_secret=get_secret("github_client_secret"),
                 redirect_uri=os.environ.get("GITHUB_REDIRECT_URI", "http://localhost:8000/auth/github/callback"),
                 scopes=["read:user", "user:email"],
             )
@@ -154,7 +156,7 @@ class GoogleOAuth(OAuthProvider):
         if config is None:
             config = OAuthConfig(
                 client_id=os.environ.get("GOOGLE_CLIENT_ID", ""),
-                client_secret=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+                client_secret=get_secret("google_client_secret"),
                 redirect_uri=os.environ.get("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/google/callback"),
                 scopes=["openid", "email", "profile"],
             )

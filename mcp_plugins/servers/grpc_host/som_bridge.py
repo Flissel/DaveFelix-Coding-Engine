@@ -47,24 +47,24 @@ class SoMBridgeConfig:
     enable_docker_diagnostics: bool = True
     enable_preview_monitor: bool = True
 
-    # Tier 1: Standard agents
-    enable_e2e_testing: bool = False   # Off by default (heavy)
-    enable_security_scan: bool = False
+    # Tier 1: Standard agents (enabled by default for quality)
+    enable_e2e_testing: bool = False   # Off by default (heavy, needs sandbox)
+    enable_security_scan: bool = True  # Lightweight, catches common issues
 
     # Tier 2: Advanced agents
     enable_verification_debate: bool = False
     enable_fullstack_verify: bool = True
-    enable_architecture_health: bool = False
+    enable_architecture_health: bool = True   # Catch structural issues early
     enable_traceability: bool = False
     enable_mcp_proxy: bool = True
     enable_git_push: bool = False
 
     # Tier 3: Heavy / conditional agents
-    enable_fungus: bool = False
-    enable_fungus_validation: bool = False  # Autonomous MCMP validation
-    enable_fungus_memory: bool = False      # Memory-augmented MCMP search
-    enable_differential_analysis: bool = False  # Docs vs code gap detection
-    enable_cross_layer_validation: bool = False  # Frontend ↔ Backend consistency
+    enable_fungus: bool = True                 # Provides context to Kilo via MCP
+    enable_fungus_validation: bool = False      # Autonomous MCMP validation (heavy)
+    enable_fungus_memory: bool = False          # Memory-augmented MCMP search (needs Qdrant)
+    enable_differential_analysis: bool = True   # Docs vs code gap detection — catches schema/service mismatch
+    enable_cross_layer_validation: bool = True  # Frontend ↔ Backend consistency — catches API path mismatches
     enable_deployment_team: bool = False
     enable_ux_review: bool = False
 
@@ -284,6 +284,17 @@ def _build_success_map() -> Dict[str, str]:
         "test_":            ET.TEST_PASSED,
         "docker_":          ET.DEPLOY_SUCCEEDED,
         "setup_":           ET.PROJECT_SCAFFOLDED,
+        # Feature-consolidated task types (from feature mode)
+        "api_controller":   ET.API_ROUTES_GENERATED,
+        "fe_page":          ET.CODE_GENERATED,
+        "test_e2e_happy":   ET.E2E_TEST_PASSED,
+        "test_e2e_negative": ET.E2E_TEST_PASSED,
+        "test_integration": ET.TEST_PASSED,
+        # Infrastructure & env
+        "env_":             ET.ENV_CONFIG_GENERATED,
+        "migration_":       ET.DATABASE_SCHEMA_GENERATED,
+        "infra_":           ET.DOCKER_CONFIG_GENERATED,
+        "deps_":            ET.PROJECT_SCAFFOLDED,
         # Exact match: verification tasks
         "verify_build":     ET.BUILD_SUCCEEDED,
         "verify_typecheck": ET.TYPE_CHECK_PASSED,
@@ -291,6 +302,8 @@ def _build_success_map() -> Dict[str, str]:
         "verify_unit":      ET.TEST_PASSED,
         "verify_e2e":       ET.E2E_TEST_PASSED,
         "verify_schema":    ET.DATABASE_SCHEMA_GENERATED,
+        "verify_all":       ET.BUILD_SUCCEEDED,
+        "integration":      ET.BUILD_SUCCEEDED,
     }
 
 
@@ -304,6 +317,7 @@ def _build_failure_map() -> Dict[str, str]:
         "verify_unit":      ET.TEST_FAILED,
         "verify_e2e":       ET.E2E_TEST_FAILED,
         "verify_schema":    ET.DATABASE_SCHEMA_FAILED,
+        "verify_all":       ET.BUILD_FAILED,
         "schema_":          ET.DATABASE_SCHEMA_FAILED,
         "docker_":          ET.DEPLOY_FAILED,
         "setup_":           ET.VALIDATION_ERROR,
@@ -311,6 +325,17 @@ def _build_failure_map() -> Dict[str, str]:
         "auth_":            ET.AUTH_SETUP_FAILED,
         "fe_":              ET.BUILD_FAILED,
         "test_":            ET.TEST_FAILED,
+        # Feature-consolidated types
+        "api_controller":   ET.API_GENERATION_FAILED,
+        "fe_page":          ET.BUILD_FAILED,
+        "test_e2e_happy":   ET.E2E_TEST_FAILED,
+        "test_e2e_negative": ET.E2E_TEST_FAILED,
+        "test_integration": ET.TEST_FAILED,
+        "env_":             ET.VALIDATION_ERROR,
+        "migration_":       ET.DATABASE_SCHEMA_FAILED,
+        "infra_":           ET.DEPLOY_FAILED,
+        "deps_":            ET.VALIDATION_ERROR,
+        "integration":      ET.BUILD_FAILED,
     }
 
 

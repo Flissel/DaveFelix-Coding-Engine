@@ -8,7 +8,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: chat",
       "description": "Define chat model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -39,7 +39,7 @@
       "type": "schema_relations",
       "title": "Define relations for: chat",
       "description": "Set up Prisma relations for chat with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-chat-model"
       ],
@@ -72,13 +72,13 @@
       "type": "schema_migration",
       "title": "Run migration for: chat",
       "description": "Execute prisma migrate dev for chat changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-chat-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_chat/"
       ],
@@ -105,7 +105,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: message",
       "description": "Define message model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -136,7 +136,7 @@
       "type": "schema_relations",
       "title": "Define relations for: message",
       "description": "Set up Prisma relations for message with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message-model"
       ],
@@ -169,13 +169,13 @@
       "type": "schema_migration",
       "title": "Run migration for: message",
       "description": "Execute prisma migrate dev for message changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_message/"
       ],
@@ -202,7 +202,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: message_media",
       "description": "Define message_media model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -233,7 +233,7 @@
       "type": "schema_relations",
       "title": "Define relations for: message_media",
       "description": "Set up Prisma relations for message_media with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_media-model"
       ],
@@ -266,7 +266,7 @@
       "type": "schema_migration",
       "title": "Run migration for: message_media",
       "description": "Execute prisma migrate dev for message_media changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_media-relations"
       ],
@@ -299,7 +299,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: message_mention",
       "description": "Define message_mention model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -330,7 +330,7 @@
       "type": "schema_relations",
       "title": "Define relations for: message_mention",
       "description": "Set up Prisma relations for message_mention with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_mention-model"
       ],
@@ -363,13 +363,13 @@
       "type": "schema_migration",
       "title": "Run migration for: message_mention",
       "description": "Execute prisma migrate dev for message_mention changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_mention-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_message_mention/"
       ],
@@ -396,7 +396,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: message_reaction",
       "description": "Define message_reaction model in prisma/schema.prisma with all required attributes and types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [],
       "estimated_minutes": 5,
       "actual_minutes": null,
@@ -427,7 +427,7 @@
       "type": "schema_relations",
       "title": "Define relations for: message_reaction",
       "description": "Set up Prisma relations for message_reaction with other entities.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_reaction-model"
       ],
@@ -460,13 +460,13 @@
       "type": "schema_migration",
       "title": "Run migration for: message_reaction",
       "description": "Execute prisma migrate dev for message_reaction changes.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_reaction-relations"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: marked completed",
+      "error_message": null,
       "output_files": [
         "prisma/migrations/*_message_reaction/"
       ],
@@ -493,7 +493,7 @@
       "type": "verify_schema",
       "title": "Validate Prisma schema",
       "description": "Run prisma validate to check schema integrity.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-SCHEMA-message_reaction-model",
         "EPIC-003-SCHEMA-message_reaction-relations",
@@ -526,7 +526,7 @@
       "type": "checkpoint_schema",
       "title": "Checkpoint: Review Schema",
       "description": "User approval required before continuing. Review the schema phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-schema"
       ],
@@ -556,8 +556,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: conversations (3 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages \u2014 Send a text message\n  GET /api/v1/conversations/{conversationId}/messages \u2014 List messages with formatted text metadata\n  POST /api/v1/conversations/{conversationId}/messages/location \u2014 Share location in a conversation",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'conversations' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/conversations/{conversationId}/messages — Send a text message\n  GET /api/v1/conversations/{conversationId}/messages — List messages with formatted text metadata\n  POST /api/v1/conversations/{conversationId}/messages/location — Share location in a conversation",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -571,9 +571,9 @@
         "src/modules/conversations/dto/"
       ],
       "related_requirements": [
+        "WA-MSG-012",
         "WA-MSG-001",
-        "WA-MSG-014",
-        "WA-MSG-012"
+        "WA-MSG-014"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -596,8 +596,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: messages (9 endpoints: DELETE, GET, PATCH, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages/voice \u2014 Send a voice message\n  DELETE /api/v1/messages/{messageId} \u2014 Nachricht loeschen\n  PUT /api/v1/messages/{messageId} \u2014 Edit a sent message\n  POST /api/v1/messages/{messageId}/forward \u2014 Forward a message\n  POST /api/v1/messages \u2014 Send a message with optional quote\n  POST /api/v1/messages/{messageId}/reactions \u2014 Add an emoji reaction to a message\n  GET /api/v1/messages/{messageId}/reactions \u2014 List emoji reactions for a message\n  DELETE /api/v1/messages/{messageId}/reactions/{reactionId} \u2014 Remove an emoji reaction from a message\n  PATCH /api/v1/messages/{messageId}/self-destruct \u2014 Update self-destruct policy for a message",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'messages' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/messages/voice — Send a voice message\n  DELETE /api/v1/messages/{messageId} — Nachricht loeschen\n  PUT /api/v1/messages/{messageId} — Edit a sent message\n  POST /api/v1/messages/{messageId}/forward — Forward a message\n  POST /api/v1/messages — Send a message with optional quote\n  POST /api/v1/messages/{messageId}/reactions — Add an emoji reaction to a message\n  GET /api/v1/messages/{messageId}/reactions — List emoji reactions for a message\n  DELETE /api/v1/messages/{messageId}/reactions/{reactionId} — Remove an emoji reaction from a message\n  PATCH /api/v1/messages/{messageId}/self-destruct — Update self-destruct policy for a message",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -611,11 +611,11 @@
         "src/modules/messages/dto/"
       ],
       "related_requirements": [
-        "WA-MSG-007",
-        "WA-MSG-002",
-        "WA-MSG-006",
+        "WA-MSG-003",
+        "WA-MSG-008",
+        "WA-MSG-004",
         "WA-MSG-005",
-        "WA-MSG-008"
+        "WA-MSG-007"
       ],
       "related_user_stories": [],
       "requires_user_input": false,
@@ -638,8 +638,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: media (2 endpoints: GET, POST)",
-      "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media \u2014 Upload encrypted media for view-once use\n  GET /api/v1/media/{mediaId}/view-once \u2014 Retrieve and consume view-once media",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media — Upload encrypted media for view-once use\n  GET /api/v1/media/{mediaId}/view-once — Retrieve and consume view-once media",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -676,8 +676,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: chats (3 endpoints: POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  PUT /api/v1/chats/{chatId}/lock \u2014 Lock a chat with additional authentication\n  PUT /api/v1/chats/{chatId}/unlock \u2014 Unlock a chat with additional authentication\n  POST /api/v1/chats/{chatId}/messages \u2014 Share a contact in a chat",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 3 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  PUT /api/v1/chats/{chatId}/lock — Lock a chat with additional authentication\n  PUT /api/v1/chats/{chatId}/unlock — Unlock a chat with additional authentication\n  POST /api/v1/chats/{chatId}/messages — Share a contact in a chat",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -715,8 +715,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: broadcast-lists (6 endpoints: DELETE, GET, POST, PUT)",
-      "description": "Generate the COMPLETE NestJS module for 'broadcast-lists' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-lists \u2014 Create a broadcast list\n  GET /api/v1/broadcast-lists \u2014 List broadcast lists\n  GET /api/v1/broadcast-lists/{broadcastListId} \u2014 Get broadcast list details\n  PUT /api/v1/broadcast-lists/{broadcastListId} \u2014 Update broadcast list\n  DELETE /api/v1/broadcast-lists/{broadcastListId} \u2014 Delete broadcast list\n  POST /api/v1/broadcast-lists/{broadcastListId}/messages \u2014 Send broadcast message",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'broadcast-lists' with ALL layers:\n- Controller (all 6 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-lists — Create a broadcast list\n  GET /api/v1/broadcast-lists — List broadcast lists\n  GET /api/v1/broadcast-lists/{broadcastListId} — Get broadcast list details\n  PUT /api/v1/broadcast-lists/{broadcastListId} — Update broadcast list\n  DELETE /api/v1/broadcast-lists/{broadcastListId} — Delete broadcast list\n  POST /api/v1/broadcast-lists/{broadcastListId}/messages — Send broadcast message",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -753,8 +753,8 @@
       "epic_id": "EPIC-003",
       "type": "api_controller",
       "title": "Feature: group-chats (1 endpoints: POST)",
-      "description": "Generate the COMPLETE NestJS module for 'group-chats' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-chats/{groupId}/messages \u2014 Send a group message with @mentions",
-      "status": "completed",
+      "description": "Generate the COMPLETE NestJS module for 'group-chats' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/group-chats/{groupId}/messages — Send a group message with @mentions",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-schema"
       ],
@@ -792,7 +792,7 @@
       "type": "verify_build",
       "title": "Build backend",
       "description": "Run npm run build for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-API-messages-feature",
         "EPIC-003-API-media-feature",
@@ -802,7 +802,7 @@
       ],
       "estimated_minutes": 3,
       "actual_minutes": null,
-      "error_message": "Auto-fixed: unblocking pipeline",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -827,7 +827,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (API)",
       "description": "Run tsc --noEmit to verify TypeScript types.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-build-api"
       ],
@@ -858,7 +858,7 @@
       "type": "verify_integration",
       "title": "Run API integration tests",
       "description": "Execute integration tests against API endpoints.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-typecheck-api"
       ],
@@ -889,14 +889,14 @@
       "type": "docker_build",
       "title": "Build API Docker image",
       "description": "Build Docker image for NestJS backend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-typecheck-api",
         "EPIC-003-VERIFY-integration"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -921,13 +921,13 @@
       "type": "docker_start",
       "title": "Start API container",
       "description": "Start backend container with docker-compose.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-build-api"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -952,7 +952,7 @@
       "type": "docker_health",
       "title": "API health check",
       "description": "Verify API container is healthy via /health endpoint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-start-api"
       ],
@@ -983,7 +983,7 @@
       "type": "checkpoint_api",
       "title": "Checkpoint: Review Api",
       "description": "User approval required before continuing. Review the api phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-build-api",
         "EPIC-003-DOCKER-start-api",
@@ -1016,7 +1016,7 @@
       "type": "fe_page",
       "title": "Page: ChatList",
       "description": "Create ChatList page component implementing 5 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-api"
       ],
@@ -1055,7 +1055,7 @@
       "type": "fe_component",
       "title": "Components: ChatList",
       "description": "Create reusable components for ChatList",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatList-page"
       ],
@@ -1088,7 +1088,7 @@
       "type": "fe_hook",
       "title": "Hook: useChatList",
       "description": "Create custom hook for ChatList state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatList-page"
       ],
@@ -1121,7 +1121,7 @@
       "type": "fe_api_client",
       "title": "API Client: ChatList",
       "description": "Create API client functions for ChatList",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatList-hook"
       ],
@@ -1154,7 +1154,7 @@
       "type": "fe_page",
       "title": "Page: ChatRoom",
       "description": "Create ChatRoom page component implementing 5 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-api"
       ],
@@ -1193,7 +1193,7 @@
       "type": "fe_component",
       "title": "Components: ChatRoom",
       "description": "Create reusable components for ChatRoom",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatRoom-page"
       ],
@@ -1226,7 +1226,7 @@
       "type": "fe_hook",
       "title": "Hook: useChatRoom",
       "description": "Create custom hook for ChatRoom state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatRoom-page"
       ],
@@ -1259,7 +1259,7 @@
       "type": "fe_api_client",
       "title": "API Client: ChatRoom",
       "description": "Create API client functions for ChatRoom",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatRoom-hook"
       ],
@@ -1292,7 +1292,7 @@
       "type": "fe_page",
       "title": "Page: MessageInput",
       "description": "Create MessageInput page component implementing 5 user stories.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-api"
       ],
@@ -1331,7 +1331,7 @@
       "type": "fe_component",
       "title": "Components: MessageInput",
       "description": "Create reusable components for MessageInput",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-MessageInput-page"
       ],
@@ -1364,7 +1364,7 @@
       "type": "fe_hook",
       "title": "Hook: useMessageInput",
       "description": "Create custom hook for MessageInput state and logic",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-MessageInput-page"
       ],
@@ -1397,7 +1397,7 @@
       "type": "fe_api_client",
       "title": "API Client: MessageInput",
       "description": "Create API client functions for MessageInput",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-MessageInput-hook"
       ],
@@ -1430,7 +1430,7 @@
       "type": "verify_build",
       "title": "Build frontend",
       "description": "Run npm run build for React frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-FE-ChatRoom-api",
         "EPIC-003-FE-MessageInput-page",
@@ -1465,7 +1465,7 @@
       "type": "verify_lint",
       "title": "Run ESLint",
       "description": "Check code quality with ESLint.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-build-fe"
       ],
@@ -1496,7 +1496,7 @@
       "type": "verify_typecheck",
       "title": "TypeScript type check (Frontend)",
       "description": "Run tsc --noEmit for frontend.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-lint"
       ],
@@ -1527,7 +1527,7 @@
       "type": "verify_unit",
       "title": "Run unit tests",
       "description": "Execute vitest unit tests.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-typecheck-fe"
       ],
@@ -1558,7 +1558,7 @@
       "type": "checkpoint_fe",
       "title": "Checkpoint: Review Frontend",
       "description": "User approval required before continuing. Review the frontend phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-lint",
         "EPIC-003-VERIFY-typecheck-fe",
@@ -1591,7 +1591,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-003",
       "description": "Create Vitest unit tests for all EPIC-003 services and utilities. NO MOCKS - use real implementations.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-frontend"
       ],
@@ -1624,7 +1624,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-003",
       "description": "Create Vitest integration tests for EPIC-003 API endpoints with real database.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-TEST-unit"
       ],
@@ -1657,7 +1657,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-003",
       "description": "Create Playwright E2E tests for 15 user stories in EPIC-003.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-TEST-integration"
       ],
@@ -1706,7 +1706,7 @@
       "type": "verify_e2e",
       "title": "Run E2E tests",
       "description": "Execute Playwright E2E test suite.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-TEST-unit",
         "EPIC-003-TEST-integration",
@@ -1739,13 +1739,13 @@
       "type": "docker_build",
       "title": "Build production image",
       "description": "Build optimized production Docker image.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-VERIFY-e2e"
       ],
       "estimated_minutes": 5,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1770,13 +1770,13 @@
       "type": "docker_start",
       "title": "Start production container",
       "description": "Start full stack in production mode.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-build-prod"
       ],
       "estimated_minutes": 2,
       "actual_minutes": null,
-      "error_message": "/bin/sh: 1: docker-compose: not found\n",
+      "error_message": null,
       "output_files": [],
       "related_requirements": [],
       "related_user_stories": [],
@@ -1801,7 +1801,7 @@
       "type": "docker_health",
       "title": "Production health check",
       "description": "Verify all services are healthy.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-start-prod"
       ],
@@ -1832,7 +1832,7 @@
       "type": "docker_logs",
       "title": "Collect production logs",
       "description": "Collect logs from all production containers.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-health-prod"
       ],
@@ -1863,7 +1863,7 @@
       "type": "checkpoint_deploy",
       "title": "Checkpoint: Review Deploy",
       "description": "User approval required before continuing. Review the deploy phase results.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-DOCKER-start-prod",
         "EPIC-003-DOCKER-health-prod",
@@ -1896,7 +1896,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-003",
       "description": "Run all EPIC-003 tests, validate build, and verify all 15 user stories are implemented.",
-      "status": "completed",
+      "status": "pending",
       "dependencies": [
         "EPIC-003-CHECKPOINT-deploy"
       ],
@@ -1923,11 +1923,11 @@
     }
   ],
   "total_tasks": 57,
-  "completed_tasks": 57,
+  "completed_tasks": 0,
   "failed_tasks": 0,
-  "progress_percent": 91.22807017543859,
+  "progress_percent": 0.0,
   "run_count": 0,
-  "last_run_at": "2026-03-25T13:32:46.011341",
-  "created_at": "2026-03-25T11:32:51.682227",
+  "last_run_at": null,
+  "created_at": "2026-03-26T15:04:41.834350",
   "estimated_total_minutes": 445
 }

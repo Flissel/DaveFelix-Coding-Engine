@@ -190,6 +190,71 @@ DEFAULT_MAPPINGS: List[EventTaskMapping] = [
         },
         enabled=False,  # Disabled by default - enable for auto-commit workflow
     ),
+
+    # ==========================================================================
+    # Phase 35: SoM Bridge Integration — Forward task lifecycle events to MCP
+    # ==========================================================================
+
+    # Epic task completed → run verification tools
+    EventTaskMapping(
+        event_type=EventType.EPIC_TASK_COMPLETED,
+        task_template="Verify generated files from task {task_id}: check for empty files, broken imports, and TypeScript errors",
+        context_extractor=lambda e: {
+            "task_id": e.data.get("task_id", ""),
+            "task_type": e.data.get("task_type", ""),
+            "files_created": e.data.get("files_created", []),
+        },
+    ),
+
+    # Epic task failed → collect debug context
+    EventTaskMapping(
+        event_type=EventType.EPIC_TASK_FAILED,
+        task_template="Collect error context for failed task {task_id}: check Docker logs, build output, and recent file changes",
+        context_extractor=lambda e: {
+            "task_id": e.data.get("task_id", ""),
+            "task_type": e.data.get("task_type", ""),
+            "error": e.data.get("error", ""),
+        },
+    ),
+
+    # API routes generated → start dev server for testing
+    EventTaskMapping(
+        event_type=EventType.API_ROUTES_GENERATED,
+        task_template="Start development server and verify API endpoints are reachable",
+        context_extractor=lambda e: {
+            "task_type": e.data.get("task_type", ""),
+            "epic_id": e.data.get("epic_id", ""),
+        },
+    ),
+
+    # Auth setup complete → verify auth middleware is wired
+    EventTaskMapping(
+        event_type=EventType.AUTH_SETUP_COMPLETE,
+        task_template="Verify JWT auth guards are registered and login endpoint returns tokens",
+        context_extractor=lambda e: {
+            "epic_id": e.data.get("epic_id", ""),
+        },
+    ),
+
+    # Type error → run prisma generate + tsc for targeted fix info
+    EventTaskMapping(
+        event_type=EventType.TYPE_ERROR,
+        task_template="Run npx prisma generate && npx tsc --noEmit to get full type error list for targeted fixing",
+        context_extractor=lambda e: {
+            "errors": e.data.get("errors", []),
+            "file_path": e.data.get("file_path", ""),
+        },
+    ),
+
+    # Test passed → run coverage report
+    EventTaskMapping(
+        event_type=EventType.TEST_PASSED,
+        task_template="Generate test coverage report and check for uncovered critical paths",
+        context_extractor=lambda e: {
+            "test_count": e.data.get("test_count", 0),
+        },
+        enabled=False,  # Enable for coverage-aware workflows
+    ),
 ]
 
 

@@ -412,80 +412,65 @@ class EpicTaskGenerator:
         tasks.extend(schema_tasks)
         schema_task_ids = [t.id for t in schema_tasks]
 
-        # Verification after Schema
-        verify_schema_tasks = self._generate_verification_tasks(epic, "schema", schema_task_ids)
-        tasks.extend(verify_schema_tasks)
-        verify_schema_ids = [t.id for t in verify_schema_tasks]
-
-        # Checkpoint after Schema
-        checkpoint_schema = self._generate_checkpoint_task(epic, "schema", verify_schema_ids)
-        tasks.append(checkpoint_schema)
-
         # =====================================================================
-        # PHASE 2: API
+        # PHASE 2: API (depends on schema)
         # =====================================================================
-        api_tasks = self._generate_granular_api_tasks(epic, [checkpoint_schema.id])
+        api_tasks = self._generate_granular_api_tasks(epic, schema_task_ids[-1:] if schema_task_ids else schema_deps)
         tasks.extend(api_tasks)
         api_task_ids = [t.id for t in api_tasks]
 
-        # Verification after API
-        verify_api_tasks = self._generate_verification_tasks(epic, "api", api_task_ids)
-        tasks.extend(verify_api_tasks)
-        verify_api_ids = [t.id for t in verify_api_tasks]
-
-        # Docker for API
-        docker_api_tasks = self._generate_docker_tasks(epic, "api", verify_api_ids)
-        tasks.extend(docker_api_tasks)
-        docker_api_ids = [t.id for t in docker_api_tasks]
-
-        # Checkpoint after API
-        checkpoint_api = self._generate_checkpoint_task(epic, "api", docker_api_ids)
-        tasks.append(checkpoint_api)
-
         # =====================================================================
-        # PHASE 3: FRONTEND
+        # PHASE 3: FRONTEND (depends on API)
         # =====================================================================
-        frontend_tasks = self._generate_granular_frontend_tasks(epic, [checkpoint_api.id])
+        fe_deps = api_task_ids[-1:] if api_task_ids else schema_task_ids[-1:]
+        if self.consolidation_mode == "feature":
+            frontend_tasks = self._generate_feature_consolidated_frontend_tasks(epic, fe_deps)
+        else:
+            frontend_tasks = self._generate_granular_frontend_tasks(epic, fe_deps)
         tasks.extend(frontend_tasks)
         frontend_task_ids = [t.id for t in frontend_tasks]
 
-        # Verification after Frontend
-        verify_fe_tasks = self._generate_verification_tasks(epic, "frontend", frontend_task_ids)
-        tasks.extend(verify_fe_tasks)
-        verify_fe_ids = [t.id for t in verify_fe_tasks]
-
-        # Checkpoint after Frontend
-        checkpoint_fe = self._generate_checkpoint_task(epic, "frontend", verify_fe_ids)
-        tasks.append(checkpoint_fe)
-
         # =====================================================================
-        # PHASE 4: TESTS
+        # PHASE 4: TESTS (depends on frontend)
         # =====================================================================
-        test_tasks = self._generate_granular_test_tasks(epic, [checkpoint_fe.id])
+        test_deps = frontend_task_ids[-1:] if frontend_task_ids else api_task_ids[-1:]
+        if self.consolidation_mode == "feature":
+            test_tasks = self._generate_feature_consolidated_test_tasks(epic, test_deps)
+        else:
+            test_tasks = self._generate_granular_test_tasks(epic, test_deps)
         tasks.extend(test_tasks)
         test_task_ids = [t.id for t in test_tasks]
 
-        # Verification after Tests (E2E)
-        verify_test_tasks = self._generate_verification_tasks(epic, "tests", test_task_ids)
-        tasks.extend(verify_test_tasks)
-        verify_test_ids = [t.id for t in verify_test_tasks]
+        # =====================================================================
+        # PHASE 5: SINGLE VERIFICATION (replaces per-phase verify+docker+checkpoint)
+        # One verify task at the end: tsc + build + prisma generate
+        # This replaces ~13 overhead tasks per epic with 1.
+        # =====================================================================
+        all_code_ids = schema_task_ids + api_task_ids + frontend_task_ids + test_task_ids
+        verify_task = Task(
+            id=f"{epic.id}-VERIFY-all",
+            epic_id=epic.id,
+            type=TaskType.VERIFY_BUILD.value,
+            title=f"Verify {epic.id}: build + typecheck",
+            description=(
+                f"Run all verification steps for {epic.id}:\n"
+                f"1. npx prisma generate\n"
+                f"2. npx tsc --noEmit (must pass with 0 errors)\n"
+                f"3. npm run build\n"
+                f"4. cd frontend && npx vite build (if frontend exists)\n"
+                f"Fix any errors found."
+            ),
+            status=TaskStatus.PENDING.value,
+            dependencies=all_code_ids[-3:] if all_code_ids else [],
+            estimated_minutes=5,
+            phase=TaskPhase.VERIFICATION.value,
+            command="npx tsc --noEmit && npm run build",
+            success_criteria="Zero TypeScript errors, build succeeds"
+        )
+        tasks.append(verify_task)
 
-        # =====================================================================
-        # PHASE 5: DEPLOY
-        # =====================================================================
-        # Docker for Deploy
-        docker_deploy_tasks = self._generate_docker_tasks(epic, "deploy", verify_test_ids)
-        tasks.extend(docker_deploy_tasks)
-        docker_deploy_ids = [t.id for t in docker_deploy_tasks]
-
-        # Final Checkpoint
-        checkpoint_deploy = self._generate_checkpoint_task(epic, "deploy", docker_deploy_ids)
-        tasks.append(checkpoint_deploy)
-
-        # =====================================================================
-        # Final Integration Task
-        # =====================================================================
-        integration_task = self._generate_integration_task(epic, [checkpoint_deploy.id])
+        # Integration task depends on verify
+        integration_task = self._generate_integration_task(epic, [verify_task.id])
         tasks.append(integration_task)
 
         # Calculate totals
@@ -556,56 +541,52 @@ class EpicTaskGenerator:
         return task_list
 
     def _generate_granular_schema_tasks(self, epic: Epic) -> List[Task]:
-        """Generiert 3 granulare Tasks pro Entity"""
+        """Generate ONE consolidated schema task per Epic instead of 3 per entity.
+
+        Previously: 3 tasks per entity (model, relations, migration) = 51 tasks for 17 entities.
+        Now: 1 task per epic that creates ALL models + relations + runs migration.
+        This reduces schema tasks from ~51 to ~7 (one per epic).
+        """
         tasks = []
         processed_entities: Set[str] = set()
+        entity_list = []
 
         for entity in epic.entities:
             if entity in processed_entities:
                 continue
             processed_entities.add(entity)
+            entity_list.append(entity)
 
-            entity_safe = entity.replace(' ', '_').replace('-', '_')
+        if not entity_list:
+            return tasks
 
-            # Task 1: Create Prisma Model
-            tasks.append(Task(
-                id=f"{epic.id}-SCHEMA-{entity_safe}-model",
-                epic_id=epic.id,
-                type=TaskType.SCHEMA_MODEL.value,
-                title=f"Create Prisma model: {entity}",
-                description=f"Define {entity} model in prisma/schema.prisma with all required attributes and types.",
-                status=TaskStatus.PENDING.value,
-                dependencies=[],
-                estimated_minutes=self.TASK_ESTIMATES[TaskType.SCHEMA_MODEL],
-                related_requirements=[r for r in epic.requirements if entity.lower() in r.lower()][:3],
-                output_files=[f"prisma/schema.prisma#{entity}"]
-            ))
+        entities_str = ", ".join(entity_list)
+        entity_descriptions = "\n".join(
+            f"- {entity}: Define model with all attributes, types, and relations to other entities"
+            for entity in entity_list
+        )
 
-            # Task 2: Define Relations
-            tasks.append(Task(
-                id=f"{epic.id}-SCHEMA-{entity_safe}-relations",
-                epic_id=epic.id,
-                type=TaskType.SCHEMA_RELATIONS.value,
-                title=f"Define relations for: {entity}",
-                description=f"Set up Prisma relations for {entity} with other entities.",
-                status=TaskStatus.PENDING.value,
-                dependencies=[f"{epic.id}-SCHEMA-{entity_safe}-model"],
-                estimated_minutes=self.TASK_ESTIMATES[TaskType.SCHEMA_RELATIONS],
-                output_files=[f"prisma/schema.prisma#{entity}_relations"]
-            ))
-
-            # Task 3: Run Migration
-            tasks.append(Task(
-                id=f"{epic.id}-SCHEMA-{entity_safe}-migration",
-                epic_id=epic.id,
-                type=TaskType.SCHEMA_MIGRATION.value,
-                title=f"Run migration for: {entity}",
-                description=f"Execute prisma migrate dev for {entity} changes.",
-                status=TaskStatus.PENDING.value,
-                dependencies=[f"{epic.id}-SCHEMA-{entity_safe}-relations"],
-                estimated_minutes=self.TASK_ESTIMATES[TaskType.SCHEMA_MIGRATION],
-                output_files=[f"prisma/migrations/*_{entity.lower()}/"]
-            ))
+        # ONE consolidated schema task for the entire epic
+        tasks.append(Task(
+            id=f"{epic.id}-SCHEMA-all",
+            epic_id=epic.id,
+            type=TaskType.SCHEMA_MODEL.value,
+            title=f"Prisma schema: {entities_str[:80]}{'...' if len(entities_str) > 80 else ''}",
+            description=(
+                f"Create ALL Prisma models for {epic.id} in prisma/schema.prisma.\n\n"
+                f"Models to create:\n{entity_descriptions}\n\n"
+                f"Include:\n"
+                f"- All model fields with correct Prisma types (@id, @default, @unique, @db.*)\n"
+                f"- All relations between models (1:1, 1:N, N:M)\n"
+                f"- @@map() table name annotations\n"
+                f"- Run: npx prisma generate after schema changes"
+            ),
+            status=TaskStatus.PENDING.value,
+            dependencies=[],
+            estimated_minutes=max(5, len(entity_list) * 2),
+            related_requirements=[r for r in epic.requirements][:5],
+            output_files=["prisma/schema.prisma"]
+        ))
 
         return tasks
 
@@ -896,6 +877,111 @@ class EpicTaskGenerator:
                     output_files=[f"src/components/{component}/{component}Form.tsx"]
                 ))
 
+        return tasks
+
+    def _generate_feature_consolidated_frontend_tasks(self, epic: Epic, api_dependencies: List[str]) -> List[Task]:
+        """1 Task pro Frontend-Component (Page+Components+Hook+API+Form zusammen)."""
+        tasks = []
+        components = self._derive_components_from_epic(epic)
+
+        for component, user_stories in components.items():
+            component_safe = component.replace(' ', '_')
+            has_form = any(kw in component.lower() for kw in ['register', 'login', 'edit', 'create', 'form', 'settings'])
+
+            output_files = [
+                f"src/pages/{component}/{component}.tsx",
+                f"src/components/{component}/",
+                f"src/hooks/use{component}.ts",
+                f"src/api/{component.lower()}API.ts",
+            ]
+            if has_form:
+                output_files.append(f"src/components/{component}/{component}Form.tsx")
+
+            tasks.append(Task(
+                id=f"{epic.id}-FE-{component_safe}-feature",
+                epic_id=epic.id,
+                type=TaskType.FE_PAGE.value,
+                title=f"Frontend Feature: {component} (all layers)",
+                description=(
+                    f"Generate COMPLETE frontend feature for '{component}':\n"
+                    f"- Page component with routing\n"
+                    f"- Reusable sub-components\n"
+                    f"- Custom hook (use{component})\n"
+                    f"- API client functions\n"
+                    + (f"- Form with validation\n" if has_form else "")
+                    + f"\nUser Stories: {', '.join(user_stories[:5])}"
+                ),
+                status=TaskStatus.PENDING.value,
+                dependencies=api_dependencies[:3] if api_dependencies else [],
+                estimated_minutes=max(15, len(user_stories) * 5),
+                related_user_stories=user_stories,
+                output_files=output_files
+            ))
+
+        logger.info(f"FE feature consolidation: {sum(len(v) for v in components.values())} stories → {len(tasks)} feature tasks")
+        return tasks
+
+    def _generate_feature_consolidated_test_tasks(self, epic: Epic, code_dependencies: List[str]) -> List[Task]:
+        """1-3 Test Tasks pro Epic statt 1 pro Gherkin Scenario."""
+        tasks = []
+
+        if not self.test_parser:
+            return self._generate_test_tasks(epic, code_dependencies)
+
+        # Collect all scenarios grouped by user story
+        us_scenarios = {}
+        for us_id in epic.user_stories:
+            features = self.test_parser.get_features_by_user_story(us_id)
+            scenarios = []
+            for feature in features:
+                scenarios.extend(feature.scenarios)
+            if scenarios:
+                us_scenarios[us_id] = scenarios
+
+        if not us_scenarios:
+            return self._generate_test_tasks(epic, code_dependencies)
+
+        # Group into max 3 tasks: happy-path, negative/boundary, integration
+        happy = []
+        negative = []
+        integration = []
+        for us_id, scenarios in us_scenarios.items():
+            for s in scenarios:
+                if s.is_happy_path:
+                    happy.append((us_id, s))
+                elif s.is_negative or s.is_boundary:
+                    negative.append((us_id, s))
+                else:
+                    integration.append((us_id, s))
+
+        for label, group, task_type in [
+            ("Happy Path", happy, TaskType.TEST_E2E_HAPPY),
+            ("Negative & Boundary", negative, TaskType.TEST_E2E_NEGATIVE),
+            ("Integration", integration, TaskType.TEST_INTEGRATION),
+        ]:
+            if not group:
+                continue
+            scenario_list = "\n".join(f"  - [{us}] {s.name[:50]}" for us, s in group[:20])
+            us_ids = list(set(us for us, _ in group))
+            tasks.append(Task(
+                id=f"{epic.id}-TEST-{label.replace(' ', '_').replace('&', 'and')}",
+                epic_id=epic.id,
+                type=task_type.value,
+                title=f"Tests: {label} ({len(group)} scenarios)",
+                description=(
+                    f"Generate {label} test suite for {epic.id}:\n"
+                    f"{len(group)} scenarios covering {len(us_ids)} user stories.\n\n"
+                    f"Scenarios:\n{scenario_list}"
+                    + (f"\n  ... and {len(group) - 20} more" if len(group) > 20 else "")
+                ),
+                status=TaskStatus.PENDING.value,
+                dependencies=code_dependencies[-3:] if code_dependencies else [],
+                estimated_minutes=max(10, len(group) * 2),
+                related_user_stories=us_ids[:5],
+                output_files=[f"e2e/{epic.id.lower()}/{label.lower().replace(' ', '-')}.spec.ts"]
+            ))
+
+        logger.info(f"Test feature consolidation: {sum(len(v) for v in us_scenarios.values())} scenarios → {len(tasks)} test tasks")
         return tasks
 
     def _generate_granular_test_tasks(self, epic: Epic, code_dependencies: List[str]) -> List[Task]:

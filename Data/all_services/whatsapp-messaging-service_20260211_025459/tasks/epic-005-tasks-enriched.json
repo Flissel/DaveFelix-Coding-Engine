@@ -1,7 +1,7 @@
 {
   "epic_id": "EPIC-005",
   "epic_name": "Gruppen, Communities und Broadcasts",
-  "enrichment_timestamp": "2026-03-25T20:58:03.424208",
+  "enrichment_timestamp": "2026-03-27T17:02:38.809267",
   "enrichment_stats": {
     "total_tasks": 55,
     "tasks_with_requirements": 21,
@@ -24,7 +24,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: Channel",
       "description": "Define Channel model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -187,7 +187,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Channel",
       "description": "Set up Prisma relations for Channel with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Channel-model"
       ],
@@ -352,7 +352,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Channel",
       "description": "Execute prisma migrate dev for Channel changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Channel-relations"
       ],
@@ -517,7 +517,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: Community",
       "description": "Define Community model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -675,7 +675,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Community",
       "description": "Set up Prisma relations for Community with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Community-model"
       ],
@@ -835,7 +835,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Community",
       "description": "Execute prisma migrate dev for Community changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Community-relations"
       ],
@@ -995,7 +995,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: Group",
       "description": "Define Group model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -1179,7 +1179,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Group",
       "description": "Set up Prisma relations for Group with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Group-model"
       ],
@@ -1365,7 +1365,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Group",
       "description": "Execute prisma migrate dev for Group changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Group-relations"
       ],
@@ -1551,7 +1551,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: Poll",
       "description": "Define Poll model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -1744,7 +1744,7 @@
       "type": "schema_relations",
       "title": "Define relations for: Poll",
       "description": "Set up Prisma relations for Poll with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Poll-model"
       ],
@@ -1939,7 +1939,7 @@
       "type": "schema_migration",
       "title": "Run migration for: Poll",
       "description": "Execute prisma migrate dev for Poll changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-Poll-relations"
       ],
@@ -2134,7 +2134,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: UserPrivacySetting",
       "description": "Define UserPrivacySetting model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -2209,7 +2209,7 @@
       "type": "schema_relations",
       "title": "Define relations for: UserPrivacySetting",
       "description": "Set up Prisma relations for UserPrivacySetting with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-UserPrivacySetting-model"
       ],
@@ -2286,7 +2286,7 @@
       "type": "schema_migration",
       "title": "Run migration for: UserPrivacySetting",
       "description": "Execute prisma migrate dev for UserPrivacySetting changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-UserPrivacySetting-relations"
       ],
@@ -2363,7 +2363,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: group_chat",
       "description": "Define group_chat model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -2456,7 +2456,7 @@
       "type": "schema_relations",
       "title": "Define relations for: group_chat",
       "description": "Set up Prisma relations for group_chat with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-group_chat-model"
       ],
@@ -2551,7 +2551,7 @@
       "type": "schema_migration",
       "title": "Run migration for: group_chat",
       "description": "Execute prisma migrate dev for group_chat changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-group_chat-relations"
       ],
@@ -2646,7 +2646,7 @@
       "type": "schema_model",
       "title": "Create Prisma model: group_member",
       "description": "Define group_member model in prisma/schema.prisma with all required attributes and types.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [],
       "estimated_minutes": 5,
       "output_files": [
@@ -2824,7 +2824,7 @@
       "type": "schema_relations",
       "title": "Define relations for: group_member",
       "description": "Set up Prisma relations for group_member with other entities.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-group_member-model"
       ],
@@ -3004,7 +3004,7 @@
       "type": "schema_migration",
       "title": "Run migration for: group_member",
       "description": "Execute prisma migrate dev for group_member changes.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-SCHEMA-group_member-relations"
       ],
@@ -3220,7 +3220,7 @@
       "type": "api_controller",
       "title": "Feature: groups (24 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'groups' with ALL layers:\n- Controller (all 24 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/groups — Create group chat\n  GET /api/v1/groups/{groupId}/members — List group members\n  POST /api/v1/groups/{groupId}/members — Add members to group\n  DELETE /api/v1/groups/{groupId}/members/{memberId} — Remove member from group\n  PUT /api/v1/groups/{groupId}/roles — Update member roles\n  GET /api/v1/groups — List groups\n  GET /api/v1/groups/{groupId} — Get group details\n  PUT /api/v1/groups/{groupId} — Update group metadata\n  DELETE /api/v1/groups/{groupId} — Delete a group\n  PUT /api/v1/groups/{groupId}/owner — Transfer group ownership\n  POST /api/v1/groups/{groupId}/avatar — Upload group avatar\n  GET /api/v1/groups/{groupId}/settings — Get group settings\n  PUT /api/v1/groups/{groupId}/settings — Update group settings\n  POST /api/v1/groups/{groupId}/invite-links — Create a group invite link\n  DELETE /api/v1/groups/{groupId}/invite-links/{inviteId} — Revoke a group invite link\n  DELETE /api/v1/groups/{groupId}/members/me — Leave group silently\n  POST /api/v1/groups/{groupId}/events — Create a group event\n  GET /api/v1/groups/{groupId}/events — List group events\n  GET /api/v1/groups/{groupId}/events/{eventId} — Get group event details\n  PUT /api/v1/groups/{groupId}/events/{eventId} — Update a group event\n  DELETE /api/v1/groups/{groupId}/events/{eventId} — Delete a group event\n  POST /api/v1/groups/{groupId}/events/{eventId}/rsvps — RSVP to a group event\n  GET /api/v1/groups/{groupId}/settings/invite-policy — Get group invite policy\n  PUT /api/v1/groups/{groupId}/settings/invite-policy — Update group invite policy",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3232,11 +3232,11 @@
         "src/modules/groups/dto/"
       ],
       "related_requirements": [
-        "WA-GRP-004",
         "WA-GRP-003",
-        "WA-SET-005",
+        "WA-GRP-001",
         "WA-GRP-002",
-        "WA-GRP-001"
+        "WA-GRP-004",
+        "WA-SET-005"
       ],
       "related_user_stories": [
         "US-026",
@@ -3246,23 +3246,23 @@
         "US-084"
       ],
       "phase": "code",
-      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: einen Einladungslink für eine Gruppe erstellen und teilen; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: festlegen, wer Mitglieder zu einer Gruppe hinzufügen darf; Address: Create user stories that explicitly link to each of these requirements.; Address: Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.).",
+      "success_criteria": "NestJS controller with correct decorators, DTOs, and route paths; User can: konfigurierbare Gruppeneinstellungen anlegen und anpassen; User can: einen neuen Gruppenchat erstellen; User can: Gruppen verwalten und Mitgliederrechte zentral konfigurieren; Address: Create user stories that explicitly link to each of these requirements.; Address: Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR.",
       "enrichment_context": {
         "diagrams": [
-          {
-            "type": "sequence",
-            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Group as Gruppe\n\n    User->>System: Anfrage für Gruppeneinladung\n    System->>Group: Generiere Einladungslink\n    Group-->>System: Einladungslink erstellt\n    System-->>User: Sende Einladungslink\n    User->>System: Klicke auf Einladungslink\n    System->>Group: Benutzer beitreten\n    Group-->>System: Benutzer erfolgreich hinzugefügt\n    System-->>User: Bestätigung des Beitritts",
-            "file": "WA-GRP-004_sequence.mmd"
-          },
           {
             "type": "sequence",
             "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n\n    User->>System: Gruppenerstellungsanfrage\n    System-->>User: Bestätigung der Anfrage\n    System->>System: Gruppe erstellen\n    System-->>User: Gruppenchats erstellt",
             "file": "WA-GRP-001_sequence.mmd"
           },
           {
+            "type": "sequence",
+            "content": "sequenceDiagram\n    participant User as Benutzer\n    participant System as System\n    participant Group as Gruppe\n\n    User->>System: Anfrage für Gruppeneinladung\n    System->>Group: Generiere Einladungslink\n    Group-->>System: Einladungslink erstellt\n    System-->>User: Sende Einladungslink\n    User->>System: Klicke auf Einladungslink\n    System->>Group: Benutzer beitreten\n    Group-->>System: Benutzer erfolgreich hinzugefügt\n    System-->>User: Bestätigung des Beitritts",
+            "file": "WA-GRP-004_sequence.mmd"
+          },
+          {
             "type": "flowchart",
-            "content": "flowchart TD\n    A[Start] --> B{Gruppeneinladung?}\n    B -- Ja --> C[Link generieren]\n    B -- Nein --> D[Prozess beenden]\n    C --> E[Link an Benutzer senden]\n    E --> F[Benutzer klickt auf Link]\n    F --> G{Zugriff gewähren?}\n    G -- Ja --> H[Benutzer zur Gruppe hinzufügen]\n    G -- Nein --> I[Zugriff verweigern]\n    H --> J[Prozess beenden]\n    I --> J\n    D --> J",
-            "file": "WA-GRP-004_flowchart.mmd"
+            "content": "flowchart TD\n    A[Start] --> B{Gruppeneinstellungen konfigurierbar?}\n    B -->|Ja| C[Gruppeneinstellungen laden]\n    B -->|Nein| D[Standard Gruppeneinstellungen verwenden]\n    C --> E[Gruppeneinstellungen anpassen]\n    D --> E\n    E --> F{Einstellungen speichern?}\n    F -->|Ja| G[Einstellungen speichern]\n    F -->|Nein| H[Prozess beenden]\n    G --> I[Prozess beenden]\n    H --> I\n    I[Ende]",
+            "file": "WA-GRP-003_flowchart.mmd"
           }
         ],
         "known_gaps": [
@@ -3273,16 +3273,16 @@
             "suggestion": "Create user stories that explicitly link to each of these requirements."
           },
           {
-            "id": "CI-012",
-            "severity": "high",
-            "title": "Gruppenadministration zu vage",
-            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
-          },
-          {
             "id": "CI-016",
             "severity": "high",
             "title": "Nicht-funktionale Anforderungen fehlen",
             "suggestion": "Definieren Sie NFRs: E2E-Verschlüsselung, Latenz, SLA, Datenaufbewahrung, GDPR."
+          },
+          {
+            "id": "CI-012",
+            "severity": "high",
+            "title": "Gruppenadministration zu vage",
+            "suggestion": "Listen Sie konkrete Admin-Funktionen (Rollen, Entfernen, Nur-Admins posten, etc.)."
           },
           {
             "id": "CI-013",
@@ -3293,15 +3293,6 @@
         ],
         "user_story_details": [
           {
-            "id": "US-029",
-            "title": "Einladungslink",
-            "priority": "must",
-            "description": "",
-            "as_a": "Gruppenadministrator",
-            "i_want": "einen Einladungslink für eine Gruppe erstellen und teilen",
-            "so_that": "damit neue Mitglieder einfach beitreten können und die Einladung plattformübergreifend funktioniert"
-          },
-          {
             "id": "US-028",
             "title": "Gruppeneinstellungen",
             "priority": "must",
@@ -3311,13 +3302,22 @@
             "so_that": "damit die Gruppenkommunikation sicher, effizient und nutzungsfreundlich gesteuert wird"
           },
           {
-            "id": "US-084",
-            "title": "Gruppen-Einladungen",
+            "id": "US-026",
+            "title": "Gruppe erstellen",
             "priority": "must",
             "description": "",
-            "as_a": "Gruppen-Admin",
-            "i_want": "festlegen, wer Mitglieder zu einer Gruppe hinzufügen darf",
-            "so_that": "Datenschutz und Sicherheit zu gewährleisten und Missbrauch zu verhindern"
+            "as_a": "Registrierter Nutzer",
+            "i_want": "einen neuen Gruppenchat erstellen",
+            "so_that": "mit mehreren Kontakten effizient und sicher kommunizieren zu können"
+          },
+          {
+            "id": "US-027",
+            "title": "Gruppenadministration",
+            "priority": "must",
+            "description": "",
+            "as_a": "Support-Administrator",
+            "i_want": "Gruppen verwalten und Mitgliederrechte zentral konfigurieren",
+            "so_that": "um sichere und regelkonforme Kommunikation zu gewährleisten und Missbrauch effizient zu verhindern"
           }
         ]
       }
@@ -3328,7 +3328,7 @@
       "type": "api_controller",
       "title": "Feature: invite-links (2 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'invite-links' with ALL layers:\n- Controller (all 2 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  GET /api/v1/invite-links/{inviteToken} — Get invite link details\n  POST /api/v1/invite-links/{inviteToken}/accept — Accept a group invite link",
-      "status": "failed",
+      "status": "pending",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3398,7 +3398,7 @@
       "type": "api_controller",
       "title": "Feature: communities (8 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'communities' with ALL layers:\n- Controller (all 8 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/communities — Create community\n  GET /api/v1/communities — List communities\n  GET /api/v1/communities/{communityId} — Get community\n  PUT /api/v1/communities/{communityId} — Update community\n  DELETE /api/v1/communities/{communityId} — Delete community\n  POST /api/v1/communities/{communityId}/groups — Add group to community\n  GET /api/v1/communities/{communityId}/groups — List community groups\n  DELETE /api/v1/communities/{communityId}/groups/{groupId} — Remove group from community",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3454,7 +3454,7 @@
       "type": "api_controller",
       "title": "Feature: broadcast-channels (9 endpoints: DELETE, GET, POST, PUT)",
       "description": "Generate the COMPLETE NestJS module for 'broadcast-channels' with ALL layers:\n- Controller (all 9 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/broadcast-channels — Create a one-way broadcast channel\n  GET /api/v1/broadcast-channels — List broadcast channels\n  GET /api/v1/broadcast-channels/{channelId} — Get a broadcast channel\n  PUT /api/v1/broadcast-channels/{channelId} — Update a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId} — Delete a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/recipients — Add recipients to a broadcast channel\n  DELETE /api/v1/broadcast-channels/{channelId}/recipients — Remove recipients from a broadcast channel\n  POST /api/v1/broadcast-channels/{channelId}/messages — Send a broadcast message\n  GET /api/v1/broadcast-channels/{channelId}/messages — List broadcast messages",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3510,7 +3510,7 @@
       "type": "api_controller",
       "title": "Feature: media (1 endpoints: POST)",
       "description": "Generate the COMPLETE NestJS module for 'media' with ALL layers:\n- Controller (all 1 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/media — Upload media for broadcast messages",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3566,7 +3566,7 @@
       "type": "api_controller",
       "title": "Feature: chats (5 endpoints: GET, POST)",
       "description": "Generate the COMPLETE NestJS module for 'chats' with ALL layers:\n- Controller (all 5 endpoints)\n- Service (business logic)\n- DTOs (request/response types)\n- Guards (JWT auth where needed)\n- Validators (input validation)\n- Module registration\n\nEndpoints:\n  POST /api/v1/chats/{chatId}/polls — Create a poll in a chat\n  GET /api/v1/chats/{chatId}/polls — List polls in a chat\n  GET /api/v1/chats/{chatId}/polls/{pollId} — Get poll details\n  POST /api/v1/chats/{chatId}/polls/{pollId}/votes — Cast or update a vote\n  POST /api/v1/chats/{chatId}/polls/{pollId}/close — Close a poll",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-schema"
       ],
@@ -3748,7 +3748,7 @@
       "type": "fe_page",
       "title": "Page: EPIC005Page",
       "description": "Create EPIC005Page page component implementing 10 user stories.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-api"
       ],
@@ -3841,7 +3841,7 @@
       "type": "fe_component",
       "title": "Components: EPIC005Page",
       "description": "Create reusable components for EPIC005Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-page"
       ],
@@ -3923,7 +3923,7 @@
       "type": "fe_hook",
       "title": "Hook: useEPIC005Page",
       "description": "Create custom hook for EPIC005Page state and logic",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-page"
       ],
@@ -4005,7 +4005,7 @@
       "type": "fe_api_client",
       "title": "API Client: EPIC005Page",
       "description": "Create API client functions for EPIC005Page",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-FE-EPIC005Page-hook"
       ],
@@ -4177,7 +4177,7 @@
       "type": "test",
       "title": "Generate unit tests for EPIC-005",
       "description": "Create Vitest unit tests for all EPIC-005 services and utilities. NO MOCKS - use real implementations.",
-      "status": "failed",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-CHECKPOINT-frontend"
       ],
@@ -4196,7 +4196,7 @@
       "type": "test",
       "title": "Generate integration tests for EPIC-005",
       "description": "Create Vitest integration tests for EPIC-005 API endpoints with real database.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         "EPIC-005-TEST-unit"
       ],
@@ -4215,7 +4215,7 @@
       "type": "test",
       "title": "Generate E2E tests for EPIC-005",
       "description": "Create Playwright E2E tests for 10 user stories in EPIC-005.",
-      "status": "pending",
+      "status": "running",
       "dependencies": [
         "EPIC-005-TEST-integration"
       ],
@@ -4351,7 +4351,7 @@
       "type": "integration",
       "title": "Validate and integrate EPIC-005",
       "description": "Run all EPIC-005 tests, validate build, and verify all 10 user stories are implemented.",
-      "status": "failed",
+      "status": "running",
       "dependencies": [
         "EPIC-005-CHECKPOINT-deploy"
       ],

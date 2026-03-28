@@ -28,6 +28,7 @@ os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '3')
 from .autonomous_base import AutonomousAgent
 from ..mind.event_bus import EventBus, Event, EventType
 from ..mind.shared_state import SharedState
+from ..secrets import get_secret
 from ..services.project_indexer import ProjectIndexer
 from src.llm_config import get_model
 
@@ -492,7 +493,7 @@ class FungusContextAgent(AutonomousAgent):
             return
 
         # Try OpenAI embeddings first (uses OPENAI_API_KEY — preferred)
-        openai_key = os.environ.get('OPENAI_API_KEY', '')
+        openai_key = get_secret("openai_api_key")
         if openai_key:
             try:
                 self._embedder = OpenAIEmbeddingClient(
@@ -508,7 +509,7 @@ class FungusContextAgent(AutonomousAgent):
                 self.logger.debug(f"openai_embedder_failed: {e}")
 
         # Fallback to OpenRouter embeddings (uses OPENROUTER_API_KEY)
-        openrouter_key = os.environ.get('OPENROUTER_API_KEY', '')
+        openrouter_key = get_secret("openrouter_api_key")
         if openrouter_key:
             try:
                 self._embedder = OpenAIEmbeddingClient(
@@ -735,7 +736,7 @@ class FungusContextAgent(AutonomousAgent):
         if self._llm_search_service is not None:
             return
 
-        if not os.environ.get('OPENROUTER_API_KEY'):
+        if not get_secret("openrouter_api_key"):
             self.logger.debug("llm_search_disabled", reason="No OPENROUTER_API_KEY")
             return
 

@@ -70,7 +70,7 @@ class Settings(BaseSettings):
     sandbox_timeout: int = 300
 
     # CLI / Agent Timeouts
-    cli_timeout: int = 1800  # Default 30 minutes for Claude CLI calls
+    cli_timeout: int = 3600  # Default 60 minutes for Kilo/Claude CLI calls (large feature tasks need >30min)
 
     # Adaptive Timeout Settings
     base_timeout: int = 600  # Base timeout in seconds (increased for LLM code generation)
