@@ -175,6 +175,7 @@ services:
     secrets:
       - openrouter_api_key
       - anthropic_api_key
+      - claude_credentials
     environment:
       KILO_HOME: /root/.kilocode
     networks:
@@ -214,6 +215,8 @@ secrets:
   trae_postgres_password:
     external: true
   redis_password:
+    external: true
+  claude_credentials:
     external: true
 
 # === Networks (overlay for Swarm) ===
