@@ -67,7 +67,8 @@ services:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/coding_engine
       - REDIS_URL=redis://redis:6379/0
       - GIT_SERVER_URL=http://gitea:3000
-      - LLM_BACKEND=kilo
+      - LLM_BACKEND=clawcode-router
+      - CLAWCODE_ROUTER_URL=http://clawcode-router:8090
       - DISCORD_CHANNEL_ID=1484160715580510242
       - DISCORD_CH_DEV_TASKS=1484193408955322399
       - DISCORD_CH_PRS=${DISCORD_CH_PRS:-1485666130474303562}
@@ -286,6 +287,51 @@ services:
       resources:
         limits:
           memory: 1G
+
+  # ClawCode Router — Multi-backend LLM routing (Claude + Kilo + OpenRouter + Ollama)
+  # All agents call POST http://clawcode-router:8090/v1/chat/completions
+  # Router selects backend per agent_role (see clawcode-router.toml)
+  clawcode-router:
+    build:
+      context: ../../ClawCode
+      dockerfile: Dockerfile
+    container_name: coding-engine-clawcode-router
+    ports:
+      - "8090:8090"
+    secrets:
+      - openai_api_key
+      - anthropic_api_key
+      - openrouter_api_key
+    environment:
+      # Fallback: also accept env vars directly (for local dev without secrets)
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      # Kilo config
+      - KILO_HOME=/root/.kilocode
+    volumes:
+      # Kilo CLI config (auth tokens etc.)
+      - ./config/kilo:/root/.kilocode:ro
+      # ClawCode provider config (mounted, not baked in — easy to change)
+      - ../../ClawCode/clawcode-providers.toml:/app/clawcode-providers.toml:ro
+      # Router routing config
+      - ../../ClawCode/clawcode-router.docker.toml:/app/clawcode-router.toml:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   postgres_data:
