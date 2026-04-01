@@ -299,8 +299,6 @@ services:
     ports:
       - "8090:8090"
     secrets:
-      - openai_api_key
-      - anthropic_api_key
       - openrouter_api_key
     environment:
       # Fallback: also accept env vars directly (for local dev without secrets)
@@ -310,6 +308,9 @@ services:
       # Kilo config
       - KILO_HOME=/root/.kilocode
     volumes:
+      # Claude Pro/Max credentials (mounted from host — login via 'claude login' on host)
+      # Falls back to ANTHROPIC_API_KEY env var if not present
+      - ~/.claude:/root/.claude:ro
       # Kilo CLI config (auth tokens etc.)
       - ./config/kilo:/root/.kilocode:ro
       # ClawCode provider config (mounted, not baked in — easy to change)
