@@ -115,23 +115,40 @@ class ClawCodeClient:
         start = time.time()
 
         try:
+            env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+            # Windows: force UTF-8 codepage for subprocess
+            kwargs = {}
+            if os.name == "nt":
+                import ctypes
+                kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
             result = subprocess.run(
                 cmd,
                 capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
+                text=False,  # Raw bytes to avoid codepage issues
                 timeout=self.timeout,
-                env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+                env=env,
+                **kwargs,
             )
             duration_ms = int((time.time() - start) * 1000)
+            stdout = result.stdout.decode("utf-8", errors="replace")
+            stderr = result.stderr.decode("utf-8", errors="replace")
 
             if result.returncode != 0:
-                error = result.stderr.strip() or f"Exit code {result.returncode}"
+                error = stderr.strip() or f"Exit code {result.returncode}"
                 logger.error("ClawCode error: %s", error)
                 return ("", duration_ms, error)
 
-            return (result.stdout, duration_ms, None)
+            # Strip ANSI escape codes and spinner artifacts from terminal output
+            clean = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', stdout)
+            clean = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', clean)
+            # Remove spinner lines (⠋ Waiting..., ✔ Claude response...)
+            lines = clean.split('\n')
+            lines = [l for l in lines if not any(
+                s in l for s in ['Waiting for Claude', 'Claude response complete', 'Claude request failed']
+            )]
+            clean = '\n'.join(lines).strip()
+
+            return (clean, duration_ms, None)
 
         except subprocess.TimeoutExpired:
             duration_ms = int((time.time() - start) * 1000)
