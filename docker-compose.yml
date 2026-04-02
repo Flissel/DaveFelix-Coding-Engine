@@ -332,6 +332,44 @@ services:
       retries: 3
       start_period: 30s
 
+  # OpenClaude Service — Full Claude Code with 200+ model support + all tools
+  # POST http://openclaude-service:8091/v1/chat/completions
+  # For complex tasks needing file ops, bash, MCP, agent spawning
+  openclaude-service:
+    build:
+      context: ../../openclaude
+      dockerfile: Dockerfile
+    container_name: coding-engine-openclaude
+    ports:
+      - "8091:8091"
+    secrets:
+      - claude_credentials
+      - openrouter_api_key
+      - openai_api_key
+    environment:
+      - CLAUDE_CODE_USE_OPENAI=1
+      - OPENAI_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_BASE_URL=https://openrouter.ai/api/v1
+      - OPENAI_MODEL=qwen/qwen3.6-plus-preview:free
+    volumes:
+      - ./Data/generated:/workspace:rw
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
 volumes:
   postgres_data:
   redis_data:
