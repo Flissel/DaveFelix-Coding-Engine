@@ -72,6 +72,13 @@ services:
       - DISCORD_CHANNEL_ID=1484160715580510242
       - DISCORD_CH_DEV_TASKS=1484193408955322399
       - DISCORD_CH_PRS=${DISCORD_CH_PRS:-1485666130474303562}
+      # Egress firewall — all outbound HTTP(S) must go through proxy
+      - HTTP_PROXY=http://egress-proxy:8888
+      - HTTPS_PROXY=http://egress-proxy:8888
+      - NO_PROXY=localhost,127.0.0.1,postgres,redis,gitea,sandbox,openclaude-service,clawcode-router,egress-proxy
+    networks:
+      - default
+      - openclaude-net
     secrets:
       - openai_api_key
       - anthropic_api_key
@@ -158,7 +165,7 @@ services:
   # that the coding engine's automation_ui_bridge.py calls after code generation.
   automation-ui-backend:
     build:
-      context: ./external/Automation_ui/backend
+      context: ../spaces/coding/Coding_engine/external/Automation_ui/backend
       dockerfile: Dockerfile
     container_name: coding-engine-automation-ui
     ports:
@@ -185,11 +192,18 @@ services:
       - CODING_ENGINE_API_URL=http://api:8000
       # Point at sandbox for browser debug
       - SANDBOX_APP_URL=http://sandbox:3100
+      # Egress firewall
+      - HTTP_PROXY=http://egress-proxy:8888
+      - HTTPS_PROXY=http://egress-proxy:8888
+      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,openclaude-service,clawcode-router,egress-proxy
+    networks:
+      - default
+      - openclaude-net
     volumes:
       - ./Data:/workspace/data:ro
       - automation_ui_data:/app/data
-      - ./external/Automation_ui/backend/app/services/discord_listener.py:/app/app/services/discord_listener.py
-      - ./external/Automation_ui/backend/app/config.py:/app/app/config.py
+      - ../spaces/coding/Coding_engine/external/Automation_ui/backend/app/services/discord_listener.py:/app/app/services/discord_listener.py
+      - ../spaces/coding/Coding_engine/external/Automation_ui/backend/app/config.py:/app/app/config.py
     restart: unless-stopped
     deploy:
       resources:
@@ -293,7 +307,7 @@ services:
   # Router selects backend per agent_role (see clawcode-router.toml)
   clawcode-router:
     build:
-      context: ../../ClawCode
+      context: ../clawcode
       dockerfile: Dockerfile
     container_name: coding-engine-clawcode-router
     ports:
@@ -308,13 +322,20 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       # Kilo config
       - KILO_HOME=/root/.kilocode
+      # Egress firewall
+      - HTTP_PROXY=http://egress-proxy:8888
+      - HTTPS_PROXY=http://egress-proxy:8888
+      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,openclaude-service,egress-proxy
+    networks:
+      - default
+      - openclaude-net
     volumes:
       # Kilo CLI config (auth tokens etc.)
       - ./config/kilo:/root/.kilocode:ro
       # ClawCode provider config (mounted, not baked in — easy to change)
-      - ../../ClawCode/clawcode-providers.toml:/app/clawcode-providers.toml:ro
+      - ../clawcode/clawcode-providers.toml:/app/clawcode-providers.toml:ro
       # Router routing config
-      - ../../ClawCode/clawcode-router.docker.toml:/app/clawcode-router.toml:ro
+      - ../clawcode/clawcode-router.docker.toml:/app/clawcode-router.toml:ro
     depends_on:
       api:
         condition: service_healthy
@@ -337,25 +358,35 @@ services:
   # For complex tasks needing file ops, bash, MCP, agent spawning
   openclaude-service:
     build:
-      context: ../../openclaude
+      context: ../openclaude
       dockerfile: Dockerfile
     container_name: coding-engine-openclaude
     ports:
       - "8091:8091"
     secrets:
-      - claude_credentials
       - openrouter_api_key
-      - openai_api_key
     environment:
       - CLAUDE_CODE_USE_OPENAI=1
       - OPENAI_API_KEY=${OPENROUTER_API_KEY}
       - OPENAI_BASE_URL=https://openrouter.ai/api/v1
       - OPENAI_MODEL=qwen/qwen3.6-plus-preview:free
+      # Telemetry kill-switches (belt-and-suspenders to build-time plugin)
+      - DISABLE_TELEMETRY=1
+      - CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+      # Egress firewall — all outbound HTTP(S) must go through proxy
+      - HTTP_PROXY=http://egress-proxy:8888
+      - HTTPS_PROXY=http://egress-proxy:8888
+      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,clawcode-router,sandbox,gitea,egress-proxy
     volumes:
       - ./Data/generated:/workspace:rw
+    networks:
+      - default
+      - openclaude-net
     depends_on:
       api:
         condition: service_healthy
+      egress-proxy:
+        condition: service_started
     restart: unless-stopped
     deploy:
       resources:
@@ -369,6 +400,20 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  # Egress Firewall — tinyproxy filters outbound traffic to a domain whitelist.
+  # openclaude-service and api are routed through this proxy so malicious or
+  # compromised code cannot exfiltrate secrets to arbitrary hosts.
+  egress-proxy:
+    image: vimagick/tinyproxy:latest
+    container_name: coding-engine-egress-proxy
+    restart: unless-stopped
+    volumes:
+      - ./infra/egress-proxy/tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf:ro
+      - ./infra/egress-proxy/filter:/etc/tinyproxy/filter:ro
+    networks:
+      - egress-net
+      - openclaude-net
 
 volumes:
   postgres_data:
@@ -396,3 +441,14 @@ secrets:
     environment: DISCORD_BOT_TOKEN_ANALYZER
   claude_credentials:
     file: ~/.claude/.credentials.json
+
+# Networks — egress-net has Internet; openclaude-net is internal and only
+# reaches outside via the egress-proxy.
+networks:
+  default:
+    driver: bridge
+  egress-net:
+    driver: bridge
+  openclaude-net:
+    driver: bridge
+    internal: true

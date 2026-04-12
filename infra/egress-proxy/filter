@@ -1,0 +1,15 @@
+^openrouter\.ai$
+^api\.openai\.com$
+^api\.anthropic\.com$
+^generativelanguage\.googleapis\.com$
+^api\.deepseek\.com$
+^api\.mistral\.ai$
+^github\.com$
+^api\.github\.com$
+^raw\.githubusercontent\.com$
+^codeload\.github\.com$
+^discord\.com$
+^discordapp\.com$
+^gateway\.discord\.gg$
+^cdn\.discordapp\.com$
+^registry\.npmjs\.org$

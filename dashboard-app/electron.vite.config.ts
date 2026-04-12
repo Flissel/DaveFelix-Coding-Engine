@@ -21,5 +21,8 @@ export default defineConfig({
         }
       }
     }
-  }
+  },
+  // Renderer is built separately via `npm run build:renderer` (web-app/front).
+  // electron-vite only handles main + preload.
+  renderer: {}
 })
