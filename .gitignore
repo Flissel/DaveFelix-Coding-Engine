@@ -127,3 +127,9 @@ dashboard-app/electron-bin.exe
 discord_debug.py
 discord_monitor.py
 test_mcmp_prerun.py
+
+# === Sanitized env templates (use .env.example instead) ===
+.env.sanitized
+
+# === Migration scratch files ===
+*.migrated

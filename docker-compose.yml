@@ -75,7 +75,11 @@ services:
       # Egress firewall — all outbound HTTP(S) must go through proxy
       - HTTP_PROXY=http://egress-proxy:8888
       - HTTPS_PROXY=http://egress-proxy:8888
-      - NO_PROXY=localhost,127.0.0.1,postgres,redis,gitea,sandbox,openclaude-service,clawcode-router,egress-proxy
+      - NO_PROXY=localhost,127.0.0.1,postgres,redis,gitea,sandbox,openclaude-service,clawcode-router,egress-proxy,host.docker.internal
+      # OpenClaw — shared instance via voice/docker-compose.openclaw.yml on host:18789
+      - OPENCLAW_URL=http://host.docker.internal:18789
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - default
       - openclaude-net
