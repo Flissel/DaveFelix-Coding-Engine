@@ -6,6 +6,7 @@ Maps events to skills, provides skill injection to agents.
 """
 
 import structlog
+import sys
 from pathlib import Path
 from typing import Optional, TYPE_CHECKING
 
@@ -17,6 +18,39 @@ if TYPE_CHECKING:
 
 
 logger = structlog.get_logger(__name__)
+
+
+_VIBEMIND_SHARED_SRC = Path(r"C:\Users\User\Desktop\Vibemind_V1\vibemind-os\shared\src")
+if str(_VIBEMIND_SHARED_SRC) not in sys.path:
+    sys.path.insert(0, str(_VIBEMIND_SHARED_SRC))
+
+
+def _profile_for_skill(skill: "Skill") -> str:
+    """Pick the memory profile that matches the skill's domain.
+
+    HR skills tagged via path or metadata get "hr"; everything else "coding".
+    """
+    path_str = str(getattr(skill, "path", "")).replace("\\", "/").lower()
+    if "/skills/hr/" in path_str or "\\skills\\hr\\" in path_str:
+        return "hr"
+    return "coding"
+
+
+def _prepend_memory(skill: "Skill", skill_prompt: str) -> str:
+    """Prepend the shared VibeMind memory block to a skill prompt.
+
+    Hard-fails: agents must not run skills without memory context.
+    """
+    from vibemind_shared import load_memory, MemoryLoadError  # type: ignore
+
+    profile = _profile_for_skill(skill)
+    try:
+        memory = load_memory(profile)
+    except MemoryLoadError as e:
+        raise RuntimeError(
+            f"Skill {skill.name!r} cannot start without memory (profile={profile}): {e}"
+        ) from e
+    return f"{memory}\n\n{skill_prompt}"
 
 
 class SkillRegistry:
@@ -281,6 +315,10 @@ class SkillRegistry:
         """
         Get formatted prompt for a skill (full instructions).
 
+        Prepends the shared VibeMind memory block (profile depends on the
+        skill's app tag — HR skills use "hr", others use "coding"). Hard-fails
+        if memory cannot be loaded — agents must not run without memory.
+
         Args:
             skill_name: Name of the skill
 
@@ -288,9 +326,9 @@ class SkillRegistry:
             Formatted prompt or empty string
         """
         skill = self.get_skill(skill_name)
-        if skill:
-            return skill.get_full_prompt()
-        return ""
+        if not skill:
+            return ""
+        return _prepend_memory(skill, skill.get_full_prompt())
 
     def list_skills_metadata(self) -> list[dict]:
         """

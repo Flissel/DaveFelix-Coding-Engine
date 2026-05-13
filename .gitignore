@@ -55,6 +55,7 @@ output_*/
 # Data — only WhatsApp requirements/docs included
 Data/logs/
 Data/all_services/unnamed_project_*/
+Data/all_services/*.zip
 
 # Test artifacts
 .pytest_cache/

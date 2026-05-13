@@ -77,7 +77,7 @@ class CoordinatorResult:
         }
 
 
-COORDINATOR_SYSTEM_PROMPT = """You are a Coordinator Agent orchestrating code generation.
+_COORDINATOR_BASE_PROMPT = """You are a Coordinator Agent orchestrating code generation.
 
 You have access to these tools:
 1. generate_code - Generate code using Claude Code CLI
@@ -93,6 +93,26 @@ Your goal is to:
 
 Be methodical. Generate code slice by slice. Verify each slice before moving on.
 When tests fail, analyze the error and generate a targeted fix."""
+
+
+def _build_coordinator_system_prompt() -> str:
+    """Prepend shared VibeMind memory (hard-fail by design)."""
+    import sys as _sys
+    from pathlib import Path as _Path
+
+    shared_src = _Path(r"C:\Users\User\Desktop\Vibemind_V1\vibemind-os\shared\src")
+    if str(shared_src) not in _sys.path:
+        _sys.path.insert(0, str(shared_src))
+    from vibemind_shared import load_memory, MemoryLoadError  # type: ignore
+
+    try:
+        memory_block = load_memory("coding")
+    except MemoryLoadError as e:
+        raise RuntimeError(f"Coordinator cannot start without memory: {e}") from e
+    return f"{memory_block}\n\n{_COORDINATOR_BASE_PROMPT}"
+
+
+COORDINATOR_SYSTEM_PROMPT = _build_coordinator_system_prompt()
 
 
 class CoordinatorAgent:
