@@ -330,6 +330,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self._openrouter_max_tokens = 16384
         self._using_router = False
         self._router_url: Optional[str] = None
+        self._router_kind: Optional[str] = None  # "openclaude" or "clawcode"
         self._instance_fallback_reason: Optional[str] = None
 
         # Phase 11.W: clawcode-router is the preferred backend when reachable
@@ -1408,25 +1409,54 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         )
 
     def _detect_router_mode(self):
-        """Phase 11.W — primary backend: clawcode-router HTTP API with role-dispatch.
+        """Phase 11.W — primary backend: HTTP code-gen service.
 
-        Health-checks CLAWCODE_ROUTER_URL (default http://coding-clawcode-router:8090).
-        If healthy → use router with self.agent_role for backend selection.
-        If not → fall through to existing backend chain (OpenRouter / SDK / CLI).
+        Preference order (router as proxy/dispatcher; first healthy wins):
+          1. OPENCLAUDE_URL (default http://coding-openclaude:8091)
+             — openclaude HTTP wrapper around the openclaude CLI; speaks
+             OpenAI /v1/chat/completions; CLAUDE_CODE_USE_OPENAI=1 in the
+             container routes provider calls through OpenRouter HTTP
+             cleanly (no clawcode-binary parse bug, no per-role TOML).
+          2. CLAWCODE_ROUTER_URL (default http://coding-clawcode-router:8090)
+             — Rust router with TOML role-dispatch (architect/tester/...).
+             Currently all backends behind it are degraded (Anthropic
+             credits empty, clawcode-binary OpenRouter parse bug); kept
+             as a 2nd-choice that may come back once those are fixed.
 
         Router DOWN ≠ quota exhausted: an outage falls through silently; a
         quota error is raised as LLMQuotaExhausted by _execute_via_router so
         the worker can atomically rollback the task.
         """
+        import urllib.request
+
+        # 1) openclaude — preferred, single-shot HTTP, no role-dispatch but works
+        openclaude_url = os.getenv("OPENCLAUDE_URL", "http://coding-openclaude:8091")
+        try:
+            req = urllib.request.Request(f"{openclaude_url}/health", method="GET")
+            with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — internal overlay
+                if r.status == 200:
+                    self._using_router = True
+                    self._router_url = openclaude_url
+                    self._router_kind = "openclaude"
+                    self.logger.info(
+                        "backend_selected",
+                        backend="openclaude",
+                        router_url=openclaude_url,
+                        agent_role=self.agent_role,
+                    )
+                    return
+        except Exception as e:
+            self.logger.debug("openclaude_unavailable", error=str(e)[:200])
+
+        # 2) clawcode-router — role-dispatched but backends currently degraded
         url = os.getenv("CLAWCODE_ROUTER_URL", "http://coding-clawcode-router:8090")
         try:
-            # Lazy stdlib HTTP — avoid pulling httpx into __init__ path
-            import urllib.request
             req = urllib.request.Request(f"{url}/health", method="GET")
             with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — internal overlay
                 if r.status == 200:
                     self._using_router = True
                     self._router_url = url
+                    self._router_kind = "clawcode"
                     self.logger.info(
                         "backend_selected",
                         backend="router",
@@ -1487,16 +1517,20 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         prompt: str,
         agent_type: str = "general",
     ) -> "CodeGenerationResult":
-        """Phase 11.W — call clawcode-router with agent_role for role-dispatch.
+        """Phase 11.W — call the HTTP code-gen service selected at boot.
 
-        Router (vibemind-os/clawcode/clawcode-router.docker.toml) maps
-        agent_role → backend per TOML:
-          architect      → claude
-          backend_gen    → claw:openrouter/qwen…:free
-          fixer          → kilo
-          tester         → claw:openrouter/qwen…:free
-          default        → claw:openrouter/qwen…:free
-          (etc.)
+        self._router_kind is either:
+          - "openclaude" : :8091 wrapper around the openclaude CLI, OpenAI
+                           protocol, currently the working primary; ignores
+                           agent_role but the field is harmlessly passed.
+          - "clawcode"   : :8090 Rust router with TOML role-dispatch
+                           (architect→claude, tester→claw, fixer→kilo, ...).
+                           Currently degraded (Anthropic credits empty +
+                           clawcode-binary OpenRouter parse bug).
+
+        Both speak OpenAI /v1/chat/completions with the same shape, so this
+        method is identical for both — the only diff is whether agent_role
+        actually dispatches anything downstream.
 
         Failure modes:
           - HTTP 402/429 → LLMQuotaExhausted (worker rolls task back to PENDING)
@@ -1866,9 +1900,9 @@ Use this for implementing features, fixing bugs, or creating new components.""",
 
     @property
     def backend_type(self) -> str:
-        """Return the current backend type ('router', 'openrouter', 'sdk', 'cli', or 'kilo')."""
+        """Return the current backend type ('openclaude', 'router', 'openrouter', 'sdk', 'cli', or 'kilo')."""
         if self._using_router:
-            return "router"
+            return self._router_kind or "router"
         if self._using_openrouter:
             return "openrouter"
         if self._using_kilo:
