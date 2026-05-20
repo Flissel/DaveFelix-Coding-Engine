@@ -27,6 +27,7 @@ from src.agents.backend_agent import BackendAgent
 from src.agents.testing_agent import TestingAgent
 from src.agents.security_agent import SecurityAgent
 from src.agents.devops_agent import DevOpsAgent
+from src.tools.claude_code_tool import LLMQuotaExhausted
 
 logger = structlog.get_logger()
 
@@ -226,6 +227,37 @@ class AgentWorker:
 
             # Acknowledge message
             await self.scheduler.ack_task(self.CONSUMER_GROUP, message_id)
+
+        except LLMQuotaExhausted as quota_err:
+            # Phase 11.W — LLM credits/rate exhausted upstream. Atomic rollback:
+            # reset task to PENDING (NOT FAILED) so it re-queues once the user
+            # decides next step (load credits / swap backend). No partial code
+            # persisted, no auto-fallback to a different LLM.
+            self.logger.warning(
+                "task_rolled_back_quota_exhausted",
+                task_id=task_id,
+                job_id=job_id,
+                backend=quota_err.backend,
+                status=quota_err.status,
+                detail=quota_err.detail[:200],
+            )
+            try:
+                async with self._session_factory() as session:
+                    orchestrator = Orchestrator(session)
+                    await orchestrator.update_task_status(
+                        job_id,
+                        task_id.split(":")[-1],
+                        TaskStatus.PENDING,
+                        error=f"LLM quota exhausted ({quota_err.backend}): {quota_err.detail[:200]}",
+                    )
+                    await session.commit()
+            except Exception as rb_err:
+                self.logger.error(
+                    "quota_rollback_failed",
+                    task_id=task_id,
+                    error=str(rb_err),
+                )
+            # Do NOT ack — leave message for re-delivery once user re-enables LLM.
 
         except Exception as e:
             self.logger.error(

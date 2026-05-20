@@ -222,8 +222,7 @@ class AgentFactory:
         """
         return ClaudeCodeTool(
             working_dir=self.working_dir,
-            agent_type=config.agent_role,
-            system_prompt=config.system_prompt,
+            agent_role=config.agent_role,
         )
 
 

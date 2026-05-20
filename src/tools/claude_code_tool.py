@@ -196,6 +196,22 @@ class FungusContextProvider:
             return []
 
 
+class LLMQuotaExhausted(Exception):
+    """Phase 11.W — raised by ClaudeCodeTool when the router/backend reports
+    credit or rate-limit exhaustion (HTTP 402/429 from clawcode-router).
+
+    The worker MUST catch this and atomically reset the task to PENDING;
+    no partial output should be persisted. The user decides next steps
+    (load credits, swap backend) — no auto-fallback to a different LLM.
+    """
+
+    def __init__(self, backend: str, status: int, detail: str):
+        self.backend = backend
+        self.status = status
+        self.detail = detail
+        super().__init__(f"{backend} quota exhausted (HTTP {status}): {detail}")
+
+
 @dataclass
 class CodeGenerationResult:
     """Result from code generation."""
@@ -288,6 +304,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         skill: Optional["Skill"] = None,  # Skill for progressive disclosure prompt enrichment
         minimal_context: bool = False,  # Skip engine/skills docs for validation fixes
         skill_tier: Optional[str] = None,  # Override tier: "minimal", "standard", "full"
+        agent_role: Optional[str] = None,  # Phase 11.W: routes through clawcode-router role-dispatch
     ):
         self.working_dir = working_dir
         self.timeout = timeout if timeout is not None else get_settings().cli_timeout
@@ -298,6 +315,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self.domain = domain  # NEW
         self.skill = skill  # Skill for progressive disclosure
         self.skill_tier = skill_tier  # Tier override for skill loading
+        self.agent_role = agent_role or "default"  # Phase 11.W: matches clawcode-router TOML key
         self._skill_cache: dict[str, "Skill"] = {}  # Cache skills by agent_type
         self._doc_registry = None
         self.logger = logger.bind(tool="claude_code")
@@ -310,7 +328,12 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self._using_openrouter = False
         self._openrouter_model = None
         self._openrouter_max_tokens = 16384
+        self._using_router = False
+        self._router_url: Optional[str] = None
         self._instance_fallback_reason: Optional[str] = None
+
+        # Phase 11.W: clawcode-router is the preferred backend when reachable
+        self._detect_router_mode()
 
         # Check if LLM config has OpenRouter models configured
         self._detect_openrouter_config()
@@ -1205,28 +1228,43 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             full_prompt=full_prompt,
         )
 
-        # Execute via Kilo (primary if configured) > OpenRouter > SDK > CLI (fallback)
+        # Execute via Router (Phase 11.W primary, role-dispatch) >
+        # Kilo > OpenRouter > SDK > CLI (fallback chain)
         import time
+        import httpx
         start_time = time.time()
-        if self._using_kilo:
-            # Kilo CLI: uses --auto (no root restriction like Claude CLI)
-            result = await self._execute_via_cli(
-                full_prompt,
-                agent_type=agent_type,
-                claude_agent=claude_agent,
-                max_turns=max_turns,
-            )
-        elif self._using_openrouter:
-            result = await self._execute_via_openrouter(full_prompt, agent_type=agent_type)
-        elif self._using_sdk and self._sdk_backend:
-            result = await self._execute_via_sdk(full_prompt, context_files)
-        else:
-            result = await self._execute_via_cli(
-                full_prompt,
-                agent_type=agent_type,
-                claude_agent=claude_agent,
-                max_turns=max_turns,
-            )
+        result: Optional[CodeGenerationResult] = None
+        if self._using_router:
+            try:
+                result = await self._execute_via_router(full_prompt, agent_type=agent_type)
+            except LLMQuotaExhausted:
+                # Quota — propagate so the worker can rollback the task to PENDING.
+                # Do NOT fall back to a different backend (user explicit choice).
+                raise
+            except (httpx.ConnectError, httpx.ReadTimeout, httpx.ConnectTimeout, RuntimeError) as e:
+                # Router outage (not quota) → fall through to existing chain.
+                self.logger.warning("router_fallback", reason=str(e)[:200])
+                result = None  # signal: try next backend below
+        if result is None:
+            if self._using_kilo:
+                # Kilo CLI: uses --auto (no root restriction like Claude CLI)
+                result = await self._execute_via_cli(
+                    full_prompt,
+                    agent_type=agent_type,
+                    claude_agent=claude_agent,
+                    max_turns=max_turns,
+                )
+            elif self._using_openrouter:
+                result = await self._execute_via_openrouter(full_prompt, agent_type=agent_type)
+            elif self._using_sdk and self._sdk_backend:
+                result = await self._execute_via_sdk(full_prompt, context_files)
+            else:
+                result = await self._execute_via_cli(
+                    full_prompt,
+                    agent_type=agent_type,
+                    claude_agent=claude_agent,
+                    max_turns=max_turns,
+                )
         actual_duration_ms = int((time.time() - start_time) * 1000)
 
         # Enhanced completion logging
@@ -1369,6 +1407,37 @@ Use this for implementing features, fixing bugs, or creating new components.""",
             execution_time_ms=response.execution_time_ms,
         )
 
+    def _detect_router_mode(self):
+        """Phase 11.W — primary backend: clawcode-router HTTP API with role-dispatch.
+
+        Health-checks CLAWCODE_ROUTER_URL (default http://coding-clawcode-router:8090).
+        If healthy → use router with self.agent_role for backend selection.
+        If not → fall through to existing backend chain (OpenRouter / SDK / CLI).
+
+        Router DOWN ≠ quota exhausted: an outage falls through silently; a
+        quota error is raised as LLMQuotaExhausted by _execute_via_router so
+        the worker can atomically rollback the task.
+        """
+        url = os.getenv("CLAWCODE_ROUTER_URL", "http://coding-clawcode-router:8090")
+        try:
+            # Lazy stdlib HTTP — avoid pulling httpx into __init__ path
+            import urllib.request
+            req = urllib.request.Request(f"{url}/health", method="GET")
+            with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — internal overlay
+                if r.status == 200:
+                    self._using_router = True
+                    self._router_url = url
+                    self.logger.info(
+                        "backend_selected",
+                        backend="router",
+                        router_url=url,
+                        agent_role=self.agent_role,
+                    )
+                    return
+        except Exception as e:
+            self.logger.debug("router_unavailable_fallback", error=str(e)[:200])
+        self._using_router = False
+
     def _detect_openrouter_config(self):
         """Check LLM config for OpenRouter provider and enable HTTP backend."""
         try:
@@ -1412,6 +1481,131 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                         self.logger.warning("api_no_key", reason="%s API key not set" % provider.upper())
         except Exception as e:
             self.logger.debug("openrouter_config_detect_failed", error=str(e))
+
+    async def _execute_via_router(
+        self,
+        prompt: str,
+        agent_type: str = "general",
+    ) -> "CodeGenerationResult":
+        """Phase 11.W — call clawcode-router with agent_role for role-dispatch.
+
+        Router (vibemind-os/clawcode/clawcode-router.docker.toml) maps
+        agent_role → backend per TOML:
+          architect      → claude
+          backend_gen    → claw:openrouter/qwen…:free
+          fixer          → kilo
+          tester         → claw:openrouter/qwen…:free
+          default        → claw:openrouter/qwen…:free
+          (etc.)
+
+        Failure modes:
+          - HTTP 402/429 → LLMQuotaExhausted (worker rolls task back to PENDING)
+          - Connection error / read timeout → re-raise so caller falls through
+            to the existing chain (OpenRouter / SDK / CLI). Outage ≠ quota.
+          - Other 5xx → RuntimeError (caller may fall back or fail the task).
+        """
+        import httpx
+
+        url = f"{self._router_url}/v1/chat/completions"
+        system_msg = (
+            "You are a code generation assistant. Generate production-ready code files. "
+            "For each file, output it in this format:\n"
+            "```filepath: <relative/path/to/file>\n<code content>\n```\n"
+            "Generate complete, working files. No placeholders or TODOs."
+        )
+        payload = {
+            "agent_role": self.agent_role,  # router primary dispatch axis
+            "messages": [
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": prompt},
+            ],
+            "max_tokens": 16384,
+            "temperature": 0.3,
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                resp = await client.post(url, json=payload)
+        except (httpx.ConnectError, httpx.ReadTimeout, httpx.ConnectTimeout) as e:
+            # Router DOWN — not a quota issue. Disable for this instance and
+            # let the caller fall through to the existing backend chain.
+            self.logger.warning(
+                "router_unreachable_fallback",
+                error=str(e)[:200],
+                agent_role=self.agent_role,
+            )
+            self._using_router = False
+            raise
+
+        # HTTP-level quota / rate-limit signal — worker MUST rollback the task
+        if resp.status_code in (402, 429):
+            detail = resp.text[:500]
+            self.logger.error(
+                "llm_quota_exhausted",
+                backend="router",
+                status=resp.status_code,
+                agent_role=self.agent_role,
+                detail=detail[:200],
+            )
+            raise LLMQuotaExhausted("router", resp.status_code, detail)
+
+        if resp.status_code >= 400:
+            body = resp.text[:500]
+            self.logger.error(
+                "router_http_error",
+                status=resp.status_code,
+                agent_role=self.agent_role,
+                error=body,
+            )
+            raise RuntimeError(f"router HTTP {resp.status_code}: {body}")
+
+        data = resp.json()
+        msg = data.get("choices", [{}])[0].get("message", {})
+        content = msg.get("content") or msg.get("reasoning") or ""
+
+        self.logger.info(
+            "router_response_received",
+            agent_role=self.agent_role,
+            content_length=len(content),
+            preview=content[:200],
+        )
+
+        files = self._parse_code_files(content)
+
+        # Write generated files (same pattern as _execute_via_openrouter)
+        written_files: list = []
+        if self.working_dir and files:
+            for gf in files:
+                try:
+                    out_path = Path(self.working_dir) / gf.path
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(gf.content, encoding="utf-8")
+                    written_files.append(gf)
+                except Exception as write_err:
+                    self.logger.warning(
+                        "file_write_failed",
+                        path=gf.path,
+                        error=str(write_err),
+                    )
+            if written_files:
+                self._sync_to_sandbox(written_files)
+
+        usage = data.get("usage", {})
+        self.logger.info(
+            "router_complete",
+            agent_role=self.agent_role,
+            files_generated=len(written_files),
+            prompt_tokens=usage.get("prompt_tokens", 0),
+            completion_tokens=usage.get("completion_tokens", 0),
+        )
+
+        return CodeGenerationResult(
+            success=True,
+            files=written_files if written_files else files,
+            output=content[:500],
+            error=None,
+            execution_time_ms=0,
+        )
 
     async def _execute_via_openrouter(
         self,
@@ -1672,7 +1866,9 @@ Use this for implementing features, fixing bugs, or creating new components.""",
 
     @property
     def backend_type(self) -> str:
-        """Return the current backend type ('openrouter', 'sdk', 'cli', or 'kilo')."""
+        """Return the current backend type ('router', 'openrouter', 'sdk', 'cli', or 'kilo')."""
+        if self._using_router:
+            return "router"
         if self._using_openrouter:
             return "openrouter"
         if self._using_kilo:

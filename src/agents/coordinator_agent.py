@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 from src.engine.contracts import InterfaceContracts
 from src.engine.slicer import SliceManifest, TaskSlice
 from src.engine.planning_engine import ExecutionPlan
-from src.tools.claude_code_tool import ClaudeCodeTool, CodeGenerationResult
+from src.tools.claude_code_tool import ClaudeCodeTool, CodeGenerationResult, LLMQuotaExhausted
 from src.tools.test_runner_tool import TestRunnerTool, TestResult
 from src.tools.supermemory_tools import SupermemoryTools
 from src.mind.shared_state import SharedState
@@ -480,11 +480,11 @@ class CoordinatorAgent:
             CodeGenerationResult from code_tool
         """
         last_error: Optional[str] = None
-        
+
         for attempt in range(self.GENERATION_MAX_RETRIES):
             try:
                 result = await self.code_tool.execute(prompt, context, agent_type)
-                
+
                 # Check if generation actually succeeded (has files)
                 if result.success and result.files:
                     if attempt > 0:
@@ -494,7 +494,7 @@ class CoordinatorAgent:
                             attempt=attempt + 1,
                         )
                     return result
-                
+
                 # Generation returned but no files - this is a soft failure
                 if not result.files:
                     last_error = result.error or "No files generated"
@@ -513,7 +513,11 @@ class CoordinatorAgent:
                         attempt=attempt + 1,
                         error=last_error,
                     )
-                
+
+            except LLMQuotaExhausted:
+                # Phase 11.W — DO NOT retry, DO NOT fall back. Propagate so the
+                # worker rolls the task back to PENDING; user decides next.
+                raise
             except Exception as e:
                 last_error = str(e)
                 self.logger.warning(
