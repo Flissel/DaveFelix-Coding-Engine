@@ -1,8 +1,0 @@
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> AwaitingResponse : Request Status
-    AwaitingResponse --> SendingResponse : Process Request
-    SendingResponse --> ResponseSent : Send Status
-    ResponseSent --> Idle : Acknowledge Receipt
-    ResponseSent --> Error : Response Failed
-    Error --> Idle : Retry or Cancel

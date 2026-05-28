@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant User as Benutzer
-    participant System as System
-    participant Auth as Authentifizierung
-
-    User->>System: Anfrage zur App-Sperre
-    System->>Auth: Authentifizierung anfordern
-    Auth-->>System: Authentifizierung erfolgreich
-    System-->>User: App-Sperre aktiviert

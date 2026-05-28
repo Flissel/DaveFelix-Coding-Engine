@@ -1,7 +1,0 @@
-flowchart TD
-    A[Sprachnachricht empfangen] --> B{Audioformat überprüfen}
-    B -->|Unterstützt| C[Audio in Text umwandeln]
-    B -->|Nicht unterstützt| D[Fehler melden]
-    C --> E[Transkription speichern]
-    E --> F[Transkription anzeigen]
-    D --> G[Benutzer informieren]
