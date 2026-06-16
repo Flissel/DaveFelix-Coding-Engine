@@ -134,3 +134,7 @@ test_mcmp_prerun.py
 
 # === Migration scratch files ===
 *.migrated
+
+# Graphify code-graph output (local dev tool, ~MB) — rebuilt via `graphify update .`, never commit.
+graphify-out/
+.graphifyignore
