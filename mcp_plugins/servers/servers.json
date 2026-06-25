@@ -8,6 +8,7 @@
   "servers": [
     {
       "name": "playwright",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50061,
@@ -23,6 +24,7 @@
     },
     {
       "name": "github",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50062,
@@ -39,6 +41,7 @@
     },
     {
       "name": "docker",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50063,
@@ -52,6 +55,7 @@
     },
     {
       "name": "desktop",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50064,
@@ -65,6 +69,7 @@
     },
     {
       "name": "context7",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50065,
@@ -81,6 +86,7 @@
     },
     {
       "name": "redis",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50066,
@@ -97,6 +103,7 @@
     },
     {
       "name": "supabase",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50067,
@@ -113,6 +120,7 @@
     },
     {
       "name": "time",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50068,
@@ -126,6 +134,7 @@
     },
     {
       "name": "taskmanager",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50069,
@@ -142,6 +151,7 @@
     },
     {
       "name": "memory",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50071,
@@ -155,6 +165,7 @@
     },
     {
       "name": "filesystem",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50072,
@@ -169,6 +180,7 @@
     },
     {
       "name": "brave-search",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50073,
@@ -186,6 +198,7 @@
     },
     {
       "name": "fetch",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50074,
@@ -199,6 +212,7 @@
     },
     {
       "name": "sequential-thinking",
+      "scope": "global",
       "active": true,
       "type": "stdio",
       "grpc_port": 50077,
@@ -212,6 +226,7 @@
     },
     {
       "name": "git",
+      "scope": "global",
       "active": false,
       "type": "stdio",
       "grpc_port": 50079,
@@ -225,6 +240,7 @@
     },
     {
       "name": "npm",
+      "scope": "coding-only",
       "active": true,
       "type": "custom",
       "grpc_port": 50080,
@@ -238,6 +254,7 @@
     },
     {
       "name": "prisma",
+      "scope": "coding-only",
       "active": true,
       "type": "custom",
       "grpc_port": 50081,
@@ -251,6 +268,7 @@
     },
     {
       "name": "postgres",
+      "scope": "global",
       "active": true,
       "type": "custom",
       "grpc_port": 50082,
@@ -267,6 +285,7 @@
     },
     {
       "name": "qdrant",
+      "scope": "global",
       "active": true,
       "type": "custom",
       "grpc_port": 50083,
@@ -283,6 +302,7 @@
     },
     {
       "name": "supermemory",
+      "scope": "global",
       "active": true,
       "type": "custom",
       "grpc_port": 50084,
@@ -299,6 +319,7 @@
     },
     {
       "name": "claude-code",
+      "scope": "coding-only",
       "active": true,
       "type": "custom",
       "grpc_port": 50086,
@@ -312,6 +333,7 @@
     },
     {
       "name": "fungus",
+      "scope": "coding-only",
       "active": true,
       "type": "stdio",
       "grpc_port": 50087,
