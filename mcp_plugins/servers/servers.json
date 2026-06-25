@@ -20,7 +20,14 @@
         "--viewport-size=1280,720"
       ],
       "read_timeout_seconds": 120,
-      "description": "Playwright MCP - Browser automation, DOM interaction, screenshots"
+      "description": "Playwright MCP - Browser automation, DOM interaction, screenshots",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@playwright/mcp@latest"
+        ]
+      }
     },
     {
       "name": "github",
@@ -51,7 +58,11 @@
         "mcp_server_docker"
       ],
       "read_timeout_seconds": 120,
-      "description": "Docker MCP - Container operations, compose, logs"
+      "description": "Docker MCP - Container operations, compose, logs",
+      "host": {
+        "command": "${HOME}/.local/bin/docker-mcp.exe",
+        "args": []
+      }
     },
     {
       "name": "desktop",
@@ -82,7 +93,14 @@
       "env_vars": {
         "DEFAULT_MINIMUM_TOKENS": "10000"
       },
-      "description": "Context7 MCP - Up-to-date library documentation and code examples"
+      "description": "Context7 MCP - Up-to-date library documentation and code examples",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp@latest"
+        ]
+      }
     },
     {
       "name": "redis",
@@ -99,7 +117,15 @@
       "env_vars": {
         "REDIS_URL": "env:REDIS_URL"
       },
-      "description": "Redis MCP - Key-value store, caching"
+      "description": "Redis MCP - Key-value store, caching",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-redis",
+          "redis://localhost:6379"
+        ]
+      }
     },
     {
       "name": "supabase",
@@ -130,7 +156,11 @@
         "mcp_server_time"
       ],
       "read_timeout_seconds": 120,
-      "description": "Time MCP - Current time and timezone operations"
+      "description": "Time MCP - Current time and timezone operations",
+      "host": {
+        "command": "${HOME}/.local/bin/mcp-server-time.exe",
+        "args": []
+      }
     },
     {
       "name": "taskmanager",
@@ -147,7 +177,14 @@
       "env_vars": {
         "TASK_MANAGER_FILE_PATH": "/data/tasks.json"
       },
-      "description": "TaskManager MCP - Task tracking"
+      "description": "TaskManager MCP - Task tracking",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@kazuph/mcp-taskmanager"
+        ]
+      }
     },
     {
       "name": "memory",
@@ -161,7 +198,14 @@
         "@modelcontextprotocol/server-memory"
       ],
       "read_timeout_seconds": 120,
-      "description": "Memory MCP - Knowledge graph with entities and relations"
+      "description": "Memory MCP - Knowledge graph with entities and relations",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-memory"
+        ]
+      }
     },
     {
       "name": "filesystem",
@@ -176,7 +220,15 @@
         "/app"
       ],
       "read_timeout_seconds": 120,
-      "description": "Filesystem MCP - File and directory operations scoped to /app"
+      "description": "Filesystem MCP - File and directory operations scoped to /app",
+      "host": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "${VIBEMIND_ROOT}"
+        ]
+      }
     },
     {
       "name": "brave-search",
@@ -208,7 +260,11 @@
         "mcp_server_fetch"
       ],
       "read_timeout_seconds": 120,
-      "description": "Fetch MCP - HTTP requests and web content retrieval"
+      "description": "Fetch MCP - HTTP requests and web content retrieval",
+      "host": {
+        "command": "${HOME}/.local/bin/mcp-server-fetch.exe",
+        "args": []
+      }
     },
     {
       "name": "sequential-thinking",
@@ -236,7 +292,14 @@
         "@modelcontextprotocol/server-git"
       ],
       "read_timeout_seconds": 120,
-      "description": "Git MCP - DISABLED (npm package not found, git CLI available directly)"
+      "description": "Git MCP - DISABLED (npm package not found, git CLI available directly)",
+      "host": {
+        "command": "${HOME}/.local/bin/mcp-server-git.exe",
+        "args": [
+          "--repository",
+          "${VIBEMIND_ROOT}/vibemind-os"
+        ]
+      }
     },
     {
       "name": "npm",
@@ -298,7 +361,14 @@
       "env_vars": {
         "QDRANT_URL": "env:QDRANT_URL"
       },
-      "description": "Qdrant MCP agent for vector database operations, semantic search, and code indexing"
+      "description": "Qdrant MCP agent for vector database operations, semantic search, and code indexing",
+      "host": {
+        "command": "${HOME}/.local/bin/mcp-server-qdrant.exe",
+        "args": [],
+        "env": {
+          "QDRANT_URL": "http://localhost:6340"
+        }
+      }
     },
     {
       "name": "supermemory",
@@ -347,9 +417,31 @@
       "cwd": "env:PROJECT_ROOT",
       "read_timeout_seconds": 30,
       "description": "Fungus MCP - Project tree, schema, module templates, file search for code generation context"
+    },
+    {
+      "name": "tavily",
+      "active": false,
+      "scope": "global",
+      "type": "stdio",
+      "command": "tavily-mcp",
+      "args": [],
+      "read_timeout_seconds": 30,
+      "description": "Tavily MCP - web search/extraction (host-only; needs TAVILY_API_KEY)",
+      "host": {
+        "command": "tavily-mcp",
+        "args": []
+      }
     }
   ],
   "inactive_servers_note": "Disabled: github (needs token), desktop (not in Docker), supabase (needs token), brave-search (needs key), taskmanager, youtube, n8n, tavily, puppeteer, huggingface, elevenlabs, mindsdb, gpt-researcher",
   "active_agents_count": 18,
-  "custom_agents": ["npm", "prisma", "postgres", "qdrant", "supermemory", "claude-code", "fungus"]
+  "custom_agents": [
+    "npm",
+    "prisma",
+    "postgres",
+    "qdrant",
+    "supermemory",
+    "claude-code",
+    "fungus"
+  ]
 }
