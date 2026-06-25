@@ -67,15 +67,15 @@ services:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/coding_engine
       - REDIS_URL=redis://redis:6379/0
       - GIT_SERVER_URL=http://gitea:3000
-      - LLM_BACKEND=clawcode-router
-      - CLAWCODE_ROUTER_URL=http://clawcode-router:8090
+      - LLM_BACKEND=openrouter
+      - OPENCLAUDE_URL=http://openclaude-service:8091
       - DISCORD_CHANNEL_ID=1484160715580510242
       - DISCORD_CH_DEV_TASKS=1484193408955322399
       - DISCORD_CH_PRS=${DISCORD_CH_PRS:-1485666130474303562}
       # Egress firewall — all outbound HTTP(S) must go through proxy
       - HTTP_PROXY=http://egress-proxy:8888
       - HTTPS_PROXY=http://egress-proxy:8888
-      - NO_PROXY=localhost,127.0.0.1,postgres,redis,gitea,sandbox,openclaude-service,clawcode-router,egress-proxy,host.docker.internal
+      - NO_PROXY=localhost,127.0.0.1,postgres,redis,gitea,sandbox,openclaude-service,egress-proxy,host.docker.internal
       # OpenClaw — shared instance via voice/docker-compose.openclaw.yml on host:18789
       - OPENCLAW_URL=http://host.docker.internal:18789
     extra_hosts:
@@ -199,7 +199,7 @@ services:
       # Egress firewall
       - HTTP_PROXY=http://egress-proxy:8888
       - HTTPS_PROXY=http://egress-proxy:8888
-      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,openclaude-service,clawcode-router,egress-proxy
+      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,openclaude-service,egress-proxy
     networks:
       - default
       - openclaude-net
@@ -306,57 +306,6 @@ services:
         limits:
           memory: 1G
 
-  # ClawCode Router — Multi-backend LLM routing (Claude + Kilo + OpenRouter + Ollama)
-  # All agents call POST http://clawcode-router:8090/v1/chat/completions
-  # Router selects backend per agent_role (see clawcode-router.toml)
-  clawcode-router:
-    build:
-      context: ../clawcode
-      dockerfile: Dockerfile
-    container_name: coding-engine-clawcode-router
-    ports:
-      - "8090:8090"
-    secrets:
-      - openrouter_api_key
-      - claude_credentials
-    environment:
-      # Fallback: also accept env vars directly (for local dev without secrets)
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      # Kilo config
-      - KILO_HOME=/root/.kilocode
-      # Egress firewall
-      - HTTP_PROXY=http://egress-proxy:8888
-      - HTTPS_PROXY=http://egress-proxy:8888
-      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,openclaude-service,egress-proxy
-    networks:
-      - default
-      - openclaude-net
-    volumes:
-      # Kilo CLI config (auth tokens etc.)
-      - ./config/kilo:/root/.kilocode:ro
-      # ClawCode provider config (mounted, not baked in — easy to change)
-      - ../clawcode/clawcode-providers.toml:/app/clawcode-providers.toml:ro
-      # Router routing config
-      - ../clawcode/clawcode-router.docker.toml:/app/clawcode-router.toml:ro
-    depends_on:
-      api:
-        condition: service_healthy
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
   # OpenClaude Service — Full Claude Code with 200+ model support + all tools
   # POST http://openclaude-service:8091/v1/chat/completions
   # For complex tasks needing file ops, bash, MCP, agent spawning
@@ -380,7 +329,7 @@ services:
       # Egress firewall — all outbound HTTP(S) must go through proxy
       - HTTP_PROXY=http://egress-proxy:8888
       - HTTPS_PROXY=http://egress-proxy:8888
-      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,clawcode-router,sandbox,gitea,egress-proxy
+      - NO_PROXY=localhost,127.0.0.1,api,redis,postgres,sandbox,gitea,egress-proxy
     volumes:
       - ./Data/generated:/workspace:rw
     networks:

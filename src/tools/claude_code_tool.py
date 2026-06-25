@@ -198,7 +198,7 @@ class FungusContextProvider:
 
 class LLMQuotaExhausted(Exception):
     """Phase 11.W — raised by ClaudeCodeTool when the router/backend reports
-    credit or rate-limit exhaustion (HTTP 402/429 from clawcode-router).
+    credit or rate-limit exhaustion (HTTP 402/429 from the router).
 
     The worker MUST catch this and atomically reset the task to PENDING;
     no partial output should be persisted. The user decides next steps
@@ -304,7 +304,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         skill: Optional["Skill"] = None,  # Skill for progressive disclosure prompt enrichment
         minimal_context: bool = False,  # Skip engine/skills docs for validation fixes
         skill_tier: Optional[str] = None,  # Override tier: "minimal", "standard", "full"
-        agent_role: Optional[str] = None,  # Phase 11.W: routes through clawcode-router role-dispatch
+        agent_role: Optional[str] = None,  # Phase 11.W: optional role hint passed to the router
     ):
         self.working_dir = working_dir
         self.timeout = timeout if timeout is not None else get_settings().cli_timeout
@@ -315,7 +315,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self.domain = domain  # NEW
         self.skill = skill  # Skill for progressive disclosure
         self.skill_tier = skill_tier  # Tier override for skill loading
-        self.agent_role = agent_role or "default"  # Phase 11.W: matches clawcode-router TOML key
+        self.agent_role = agent_role or "default"  # Phase 11.W: optional role hint
         self._skill_cache: dict[str, "Skill"] = {}  # Cache skills by agent_type
         self._doc_registry = None
         self.logger = logger.bind(tool="claude_code")
@@ -330,10 +330,10 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         self._openrouter_max_tokens = 16384
         self._using_router = False
         self._router_url: Optional[str] = None
-        self._router_kind: Optional[str] = None  # "openclaude" or "clawcode"
+        self._router_kind: Optional[str] = None  # "openclaude"
         self._instance_fallback_reason: Optional[str] = None
 
-        # Phase 11.W: clawcode-router is the preferred backend when reachable
+        # Phase 11.W: openclaude is the preferred HTTP backend when reachable
         self._detect_router_mode()
 
         # Check if LLM config has OpenRouter models configured
@@ -1411,17 +1411,10 @@ Use this for implementing features, fixing bugs, or creating new components.""",
     def _detect_router_mode(self):
         """Phase 11.W — primary backend: HTTP code-gen service.
 
-        Preference order (router as proxy/dispatcher; first healthy wins):
-          1. OPENCLAUDE_URL (default http://coding-openclaude:8091)
-             — openclaude HTTP wrapper around the openclaude CLI; speaks
-             OpenAI /v1/chat/completions; CLAUDE_CODE_USE_OPENAI=1 in the
-             container routes provider calls through OpenRouter HTTP
-             cleanly (no clawcode-binary parse bug, no per-role TOML).
-          2. CLAWCODE_ROUTER_URL (default http://coding-clawcode-router:8090)
-             — Rust router with TOML role-dispatch (architect/tester/...).
-             Currently all backends behind it are degraded (Anthropic
-             credits empty, clawcode-binary OpenRouter parse bug); kept
-             as a 2nd-choice that may come back once those are fixed.
+        OPENCLAUDE_URL (default http://coding-openclaude:8091) — openclaude
+        HTTP wrapper around the openclaude CLI; speaks OpenAI
+        /v1/chat/completions; CLAUDE_CODE_USE_OPENAI=1 in the container
+        routes provider calls through OpenRouter HTTP cleanly.
 
         Router DOWN ≠ quota exhausted: an outage falls through silently; a
         quota error is raised as LLMQuotaExhausted by _execute_via_router so
@@ -1429,7 +1422,7 @@ Use this for implementing features, fixing bugs, or creating new components.""",
         """
         import urllib.request
 
-        # 1) openclaude — preferred, single-shot HTTP, no role-dispatch but works
+        # openclaude — HTTP code-gen backend, single-shot OpenAI protocol
         openclaude_url = os.getenv("OPENCLAUDE_URL", "http://coding-openclaude:8091")
         try:
             req = urllib.request.Request(f"{openclaude_url}/health", method="GET")
@@ -1447,25 +1440,6 @@ Use this for implementing features, fixing bugs, or creating new components.""",
                     return
         except Exception as e:
             self.logger.debug("openclaude_unavailable", error=str(e)[:200])
-
-        # 2) clawcode-router — role-dispatched but backends currently degraded
-        url = os.getenv("CLAWCODE_ROUTER_URL", "http://coding-clawcode-router:8090")
-        try:
-            req = urllib.request.Request(f"{url}/health", method="GET")
-            with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — internal overlay
-                if r.status == 200:
-                    self._using_router = True
-                    self._router_url = url
-                    self._router_kind = "clawcode"
-                    self.logger.info(
-                        "backend_selected",
-                        backend="router",
-                        router_url=url,
-                        agent_role=self.agent_role,
-                    )
-                    return
-        except Exception as e:
-            self.logger.debug("router_unavailable_fallback", error=str(e)[:200])
         self._using_router = False
 
     def _detect_openrouter_config(self):
@@ -1519,18 +1493,12 @@ Use this for implementing features, fixing bugs, or creating new components.""",
     ) -> "CodeGenerationResult":
         """Phase 11.W — call the HTTP code-gen service selected at boot.
 
-        self._router_kind is either:
-          - "openclaude" : :8091 wrapper around the openclaude CLI, OpenAI
-                           protocol, currently the working primary; ignores
-                           agent_role but the field is harmlessly passed.
-          - "clawcode"   : :8090 Rust router with TOML role-dispatch
-                           (architect→claude, tester→claw, fixer→kilo, ...).
-                           Currently degraded (Anthropic credits empty +
-                           clawcode-binary OpenRouter parse bug).
+        self._router_kind is "openclaude": the :8091 wrapper around the
+        openclaude CLI, OpenAI protocol — the working primary; it ignores
+        agent_role but the field is harmlessly passed.
 
-        Both speak OpenAI /v1/chat/completions with the same shape, so this
-        method is identical for both — the only diff is whether agent_role
-        actually dispatches anything downstream.
+        It speaks OpenAI /v1/chat/completions; agent_role is passed through
+        but only dispatches anything downstream if the backend supports it.
 
         Failure modes:
           - HTTP 402/429 → LLMQuotaExhausted (worker rolls task back to PENDING)

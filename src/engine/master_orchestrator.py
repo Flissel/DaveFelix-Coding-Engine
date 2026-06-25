@@ -28,7 +28,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from src.engine.ollama_client import OllamaClient
-from src.engine.clawcode_client import ClawCodeClient
 from src.engine.minibook_client import MinibookClient
 from src.engine.minibook_agent import MinibookAgentBase, TaskContext, AgentResult
 from src.engine.agents import (
@@ -109,11 +108,7 @@ class MasterOrchestrator:
 
         # Clients
         self.minibook = MinibookClient(base_url=minibook_url)
-        if ollama_model.startswith("clawcode"):
-            self.ollama = ClawCodeClient(model=ollama_model, timeout=600)
-            logger.info("Using ClawCode as LLM backend (model=%s)", ollama_model)
-        else:
-            self.ollama = OllamaClient(model=ollama_model, base_url=ollama_url)
+        self.ollama = OllamaClient(model=ollama_model, base_url=ollama_url)
 
         # State
         self.requirements: Optional[ProjectRequirements] = None

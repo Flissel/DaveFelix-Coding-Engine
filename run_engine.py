@@ -57,8 +57,7 @@ Examples:
     parser.add_argument(
         "--model", "-m",
         default="qwen2.5-coder:7b",
-        help="LLM model. Ollama: 'qwen2.5-coder:7b'. ClawCode: 'clawcode', "
-             "'clawcode:openrouter/qwen3-coder:free', 'clawcode:ollama/codestral'",
+        help="LLM model for the Ollama backend, e.g. 'qwen2.5-coder:7b'.",
     )
     parser.add_argument(
         "--ollama-url",
