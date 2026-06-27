@@ -209,18 +209,6 @@ class EpicOrchestrator:
         except Exception as e:
             logger.info("DB sync not available (using JSON only): %s", e)
 
-        # ── Design + verification → vibemind supabase (truth: ground-truth) ──
-        # Additive, write-only. Persists SWE/arch design docs + the real build
-        # verdict so the brain's truth: validators can re-query them.
-        self.design_sync = None
-        try:
-            from supabase_design_sync import SupabaseDesignSync
-            self.design_sync = SupabaseDesignSync()
-            if self.design_sync.enabled:
-                logger.info("Supabase design/verification sync enabled")
-        except Exception as e:
-            logger.info("Supabase design sync not available: %s", e)
-
         # Execution state
         self._running = False
         self._paused = False
@@ -246,52 +234,6 @@ class EpicOrchestrator:
                 self.db_sync.update_task(task.id, status, error_message, execution_time_ms)
             except Exception as e:
                 logger.debug("DB sync failed for %s: %s", task.id, e)
-
-    @property
-    def _project_ref(self) -> str:
-        """Natural key for supabase design/verification rows (output dir name)."""
-        return os.path.basename(str(self.output_dir).rstrip("/\\")) or "project"
-
-    def _persist_design_to_supabase(self, epic_id: str, task_list) -> None:
-        """Best-effort: persist SWE/arch design artifacts to the vibemind supabase."""
-        if not self.design_sync or not getattr(self.design_sync, "enabled", False):
-            return
-        ref = self._project_ref
-        # Design docs produced by the SWE/arch step (whichever exist).
-        candidates = [
-            ("requirements", "user_stories/user_stories.md"),
-            ("requirements", "requirements/requirements.md"),
-            ("api_doc",      "api/api_documentation.md"),
-            ("data_dict",    "data/data_dictionary.md"),
-            ("architecture", "architecture/architecture.md"),
-        ]
-        try:
-            for art_type, rel in candidates:
-                fp = self.project_path / rel
-                if fp.exists() and fp.is_file():
-                    try:
-                        content = fp.read_text(encoding="utf-8", errors="replace")
-                    except Exception:
-                        continue
-                    self.design_sync.record_design_artifact(
-                        ref, art_type, fp.name, content,
-                        epic_id=epic_id, source_file=rel,
-                    )
-            # The epic task plan itself = architecture-as-tasks.
-            if task_list is not None and getattr(task_list, "tasks", None):
-                plan = json.dumps(
-                    {"epic_id": epic_id,
-                     "tasks": [getattr(t, "id", None) for t in task_list.tasks]},
-                    indent=2,
-                )
-                self.design_sync.record_design_artifact(
-                    ref, "epic", "%s task plan" % epic_id, plan,
-                    fmt="json", epic_id=epic_id,
-                    metadata={"task_count": len(task_list.tasks)},
-                )
-            logger.info("Design artifacts persisted to supabase (ref=%s)", ref)
-        except Exception as e:
-            logger.debug("Design persistence failed (non-fatal): %s", e)
 
     # =========================================================================
     # Main Execution Entry Points
@@ -390,9 +332,6 @@ class EpicOrchestrator:
                     )
                 except Exception as e:
                     logger.warning(f"Task enrichment failed (non-fatal): {e}")
-
-            # 1c. Persist SWE/arch design artifacts to vibemind supabase (best-effort)
-            self._persist_design_to_supabase(epic_id, task_list)
 
             # 2. Filter tasks based on mode, phases, and max count
             tasks_to_execute = self._filter_tasks_by_mode(
@@ -1942,22 +1881,6 @@ class EpicOrchestrator:
                 logger.warning(
                     f"[frontend_build_check] Epic {epic_id}: Frontend build has {fe_check['error_count']} error(s)"
                 )
-
-        # Persist the real build verdict to vibemind supabase — the ground-truth
-        # "build passed" signal the brain's truth: validators can re-query.
-        if self.design_sync and getattr(self.design_sync, "enabled", False):
-            ref = self._project_ref
-            for scope, chk in build_checks.items():
-                try:
-                    self.design_sync.record_verification(
-                        ref, "build", passed=bool(chk.get("success")),
-                        epic_id=epic_id,
-                        exit_code=0 if chk.get("success") else 1,
-                        command="tsc --noEmit (%s)" % scope,
-                        stderr=chk.get("errors", "") or "",
-                    )
-                except Exception as e:
-                    logger.debug("verification persist failed: %s", e)
 
         # Store on epic result for dashboard visibility
         epic_result_dict = epic_result.to_dict()
